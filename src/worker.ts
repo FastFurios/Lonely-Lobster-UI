@@ -34,7 +34,7 @@ class LogEntryWorker extends LogEntry {
 //    ASSIGNMENTS OF WORKERS TO PROCESS STEPS
 //----------------------------------------------------------------------
 
-interface Assignment {
+export interface Assignment {
     valueChainProcessStep: valueChainProcessStep
     worker:                Worker
 }

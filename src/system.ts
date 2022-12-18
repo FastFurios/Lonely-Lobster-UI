@@ -7,7 +7,7 @@ import { clock } from './_main.js'
 import { ValueChain } from './valuechain.js'
 import { WorkItemBasketHolder } from './workitembasketholder.js'
 import { Worker, AssignmentSet } from './worker.js'
-import { valueChains, outputBasket } from './_main.js'
+import { outputBasket } from './_main.js'
 
 
 interface WorkOrder {
@@ -17,17 +17,20 @@ interface WorkOrder {
 
 
 export class LonelyLobsterSystem {
-    constructor(public valueChains:         ValueChain[],
+    public workOrdersOverTime:  WorkOrder[] = []
+    constructor(public id:                  string,
+                public valueChains:         ValueChain[],
                 public workers:             Worker[],
-                public assignments:         AssignmentSet,
-                public workOrdersOverTime:  WorkOrder[]) {}
+                public assignments:         AssignmentSet) {}
+
+    public addWorkOrdersOverTime = (woot: WorkOrder[]): void => { this.workOrdersOverTime = woot }
 
     public run(terminateAtTime: Timestamp):void {
         console.log("_t_||" + this.valueChains.map(vc => vc.stringifyHeader()).reduce((a, b) => a + "||" + b) + "||_#outs__CT:[min___avg___max]____TP#__TP$") 
         for (; clock.time <= terminateAtTime; clock.tick()) {
             const stats = new WorkItemStats(outputBasket)
             console.log(      clock.time.toString().padStart(3, ' ') + "||" 
-                            + valueChains.map(vc => vc.stringifyRow()).reduce((a, b) => a + "||" + b) + "||" 
+                            + this.valueChains.map(vc => vc.stringifyRow()).reduce((a, b) => a + "||" + b) + "||" 
                             + outputBasket.workItemBasket.length.toString().padStart(6, " ") + " " 
                             + stats.show())
 

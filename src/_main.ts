@@ -12,6 +12,7 @@ import { LogEntryWorkItemWorked, WorkOrder } from './workitem.js'
 import { LonelyLobsterSystem } from './system.js'
 import { AssignmentSet, Worker, selectNextWorkItem_001 } from './worker.js'
 import { LogEntryType } from './logging.js'
+import { systemCreatedFromConfigFile } from './helpers.js'
 
 //----------------------------------------------------------------------
 //    TEST CASES
@@ -35,9 +36,10 @@ export const clock = new Clock()
 
 export const outputBasket = new OutputBasket()
 
-export const valueChains: ValueChain[]     = []
-export const workers: Worker[]             = []
+const system = systemCreatedFromConfigFile("src/LonelyLobster_01.json")
 
+
+/*
 //-- create value chains with process steps
 const blue = new ValueChain("Blue", 5)
 const blue1 = new ProcessStep("b1", blue, 1)
@@ -85,9 +87,16 @@ assignmentSet.addAssignment({valueChainProcessStep: { valueChain: green, process
 //assignmentSet.addAssignment({valueChainProcessStep: { valueChain: green, processStep: green1}, worker: woSally})
 //assignmentSet.addAssignment({valueChainProcessStep: { valueChain: green, processStep: green2}, worker: woHarry})
 
+*/
+
 
 // create incoming workorders i.e. workitems placed in first process step
 
+
+const blue = system.valueChains.find(vc => vc.id == "Blue")
+if (blue == undefined) throw Error("Could not find value chain \"Blue\" in system")
+const green = system.valueChains.find(vc => vc.id == "Green")
+if (green == undefined) throw Error("Could not find value chain \"Green\" in system")
 
 const workOrders: WorkOrder[] = [
     { orderTime: 0, valueChain: blue },
@@ -111,7 +120,9 @@ const workOrders: WorkOrder[] = [
     { orderTime: 18, valueChain: green },
     { orderTime: 19, valueChain: green },
     { orderTime: 20, valueChain: green }
-/*
+
+
+    /*
     { orderTime: 0, valueChain: blue },
     { orderTime: 0, valueChain: blue },
     { orderTime: 0, valueChain: blue },
@@ -134,14 +145,12 @@ const workOrders: WorkOrder[] = [
     { orderTime: 10, valueChain: green },
     { orderTime: 10, valueChain: green }
 */
+
 ]
 
 
-const system = new LonelyLobsterSystem( valueChains,
-                                        workers,
-                                        assignmentSet, 
-                                        workOrders )
 
+system.addWorkOrdersOverTime(workOrders)                                        
 system.run(50)
 
 //console.log(outputBasket.showBasketItems())
@@ -155,37 +164,46 @@ system.run(50)
 
 // console.log(woBilly.stringifyLog())
 
-const arr = [
+/*
+
+const arrObj = [
     {row: 0, col1: 10, col2: 500},
     {row: 1, col1: 10, col2: 400},
     {row: 2, col1: 10, col2: 300},
     {row: 3, col1: 20, col2: 200},
     {row: 4, col1: 20, col2: 100},
 ]
-
-console.log(arr[1]["col1"])
-
 interface ArrayRow {
     row:  number,
     col1: number,
     col2: number
 }
 
+const arr = [
+    [0, 15, 400],
+    [1, 15, 200],
+    [2, 10, 300],
+    [3, 10, 300],
+    [4, 20, 300],
+    [5, 20, 200],
+    [6, 30, 500]
+]
 
-type SortColVector = string[] 
-const sortColVector: SortColVector = ["col1", "col2"]
 
-function topOfsortedMultiCols(arr: ArrayRow[], sortColVec: SortColVector): ArrayRow[] {
-    if (arr.length == 0)        return arr
-    if (sortColVec.length == 0) return arr
+function topRowsOf(arr: number[][], colsSortVector: number[]): number[][] {
+    if (arr.length            == 0) return arr
+    if (colsSortVector.length == 0) return arr
 
-    const lastColArr = arr.pop()  // arr now one shorter 
-    const lastSortCol:string = <string>sortColVec.pop() // sortColVec now one shorter
+    const sortCol:                  number      = colsSortVector[0]
+    const topValInFirstSortVecCol:  number      = Math.min(...arr.map(r => r[sortCol]))
+    const topRowsByFirstSortVecCol: number[][]  = arr.filter(r => r[sortCol] == topValInFirstSortVecCol)
 
-    const allSortedButLastColArr: ArrayRow[] = topOfsortedMultiCols(arr, sortColVec) // sort the left columns
-
-    return allSortedButLastColArr.sort((a: ArrayRow, b: ArrayRow) => a["col1"] - b["col1"])
+    return topRowsOf(topRowsByFirstSortVecCol, colsSortVector.slice(1))
 }
 
-console.log(topOfsortedMultiCols(arr, sortColVector))
+const colsSortVector: number[]  = [1, 2]
+
+console.log(topRowsOf(arr, colsSortVector))
+*/
+
 
