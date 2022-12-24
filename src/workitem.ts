@@ -13,7 +13,7 @@ import { Worker } from './worker.js'
 type WorkItemId = number
 
 export interface WorkOrder {
-    orderTime:  Timestamp,
+    timestamp:  Timestamp,
     valueChain: ValueChain
 }
 

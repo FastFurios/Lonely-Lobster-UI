@@ -7,11 +7,11 @@
             "process_steps"     : [
                 {
                     "process_step_id"   : "Step A",
-                    "norm_effort"       : 5
+                    "norm_effort"       : 1
                 },
                 {
                     "process_step_id"   : "Step B",
-                    "norm_effort"       : 3
+                    "norm_effort"       : 1
                 }
             ]
         },
@@ -21,11 +21,11 @@
             "process_steps"     : [
                 {
                     "process_step_id"   : "Step 1",
-                    "norm_effort"       : 3
+                    "norm_effort"       : 1
                 },
                 {
                     "process_step_id"   : "Step 2",
-                    "norm_effort"       : 5
+                    "norm_effort"       : 1
                 },
                 {
                     "process_step_id"   : "Step 3",
@@ -41,10 +41,33 @@
                 {
                     "value_chain_id"  : "Blue",
                     "process_steps_id": "Step A"
-                },
+                }
+            ]
+        },
+        {
+            "worker_id" : "Rusty",
+            "process_step_assignments"  : [
                 {
-                    "value_chain_id"  : "Green",
-                    "process_steps_id": "Step 3"
+                    "value_chain_id"  : "Blue",
+                    "process_steps_id": "Step A"
+                }
+            ]
+        },
+        {
+            "worker_id" : "Charly",
+            "process_step_assignments"  : [
+                {
+                    "value_chain_id"  : "Blue",
+                    "process_steps_id": "Step B"
+                }
+            ]
+        },
+        {
+            "worker_id" : "Wally",
+            "process_step_assignments"  : [
+                {
+                    "value_chain_id"  : "Blue",
+                    "process_steps_id": "Step B"
                 }
             ]
         },
@@ -52,12 +75,12 @@
             "worker_id" : "Harry",
             "process_step_assignments"  : [
                 {
-                    "value_chain_id"  : "Blue",
-                    "process_steps_id": "Step B"
+                    "value_chain_id"  : "Green",
+                    "process_steps_id": "Step 1"
                 },
                 {
                     "value_chain_id"  : "Green",
-                    "process_steps_id": "Step 1"
+                    "process_steps_id": "Step 2"
                 }
             ]
         },
@@ -68,6 +91,15 @@
                     "value_chain_id"  : "Green",
                     "process_steps_id": "Step 1"
                 },
+                {
+                    "value_chain_id"  : "Green",
+                    "process_steps_id": "Step 2"
+                }
+            ]
+        },
+        {
+            "worker_id" : "Robby",
+            "process_step_assignments"  : [
                 {
                     "value_chain_id"  : "Green",
                     "process_steps_id": "Step 2"

@@ -11,10 +11,15 @@ export class Clock {
 
     constructor(public startTime: Timestamp = 0) { this.time = startTime }
 
+    public setToNow = (time: Timestamp): void => { this.time = time; return } 
+
+
+/*
     tick(): Timestamp {
         this.time += timeUnit
         return this.time            
     }
+*/
 }
 
 export const clock = new Clock()

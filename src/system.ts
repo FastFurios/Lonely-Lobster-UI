@@ -2,47 +2,45 @@
 //    SYSTEM
 //----------------------------------------------------------------------
 
-import { Timestamp } from './clock.js'
 import { clock } from './_main.js'
 import { ValueChain } from './valuechain.js'
 import { WorkItemBasketHolder } from './workitembasketholder.js'
 import { Worker, AssignmentSet } from './worker.js'
 import { outputBasket } from './_main.js'
-
-
-interface WorkOrder {
-    orderTime:  Timestamp,
-    valueChain: ValueChain 
-}
+import { WorkOrder } from "./workitem"
 
 
 export class LonelyLobsterSystem {
-    public workOrdersOverTime:  WorkOrder[] = []
+    public workOrderInFlow:  WorkOrder[] = []
     constructor(public id:                  string,
                 public valueChains:         ValueChain[],
                 public workers:             Worker[],
                 public assignments:         AssignmentSet) {}
 
-    public addWorkOrdersOverTime = (woot: WorkOrder[]): void => { this.workOrdersOverTime = woot }
+    //public addWorkOrdersOverTime = (woot: WorkOrder[]): void => { this.workOrderInFlow = woot }
 
-    public run(terminateAtTime: Timestamp):void {
-        console.log("_t_||" + this.valueChains.map(vc => vc.stringifyHeader()).reduce((a, b) => a + "||" + b) + "||_#outs__CT:[min___avg___max]____TP#__TP$") 
-        for (; clock.time <= terminateAtTime; clock.tick()) {
-            const stats = new WorkItemStats(outputBasket)
-            console.log(      clock.time.toString().padStart(3, ' ') + "||" 
-                            + this.valueChains.map(vc => vc.stringifyRow()).reduce((a, b) => a + "||" + b) + "||" 
-                            + outputBasket.workItemBasket.length.toString().padStart(6, " ") + " " 
-                            + stats.show())
+    public processWorkOrders(wos: WorkOrder[]): void {
+        clock.setToNow(wos[0].timestamp)
+        wos.forEach(w => w.valueChain.createAndInjectNewWorkItem())
 
-            this.workers.forEach(wo => wo.work(this.assignments))
-            this.valueChains.forEach(vc => vc.letWorkItemsFlow())
-            this.workOrdersOverTime.filter(woot => woot.orderTime == clock.time)
-                                   .forEach(woot => woot.valueChain.createAndInjectNewWorkItem())
-        }
-        console.log("Utilization of:")
-        this.workers.forEach(wo => console.log(`${wo.id.padEnd(10, " ")} ${(wo.log.length / terminateAtTime * 100).toFixed(1).padStart(4, ' ')}%`))
+        this.workers.forEach(wo => wo.work(this.assignments))
+        this.valueChains.forEach(vc => vc.letWorkItemsFlow())
 
+        const stats = new WorkItemStats(outputBasket)
+        this.showLine()
     }
+
+    public showHeader = () => console.log("_t_||" + this.valueChains.map(vc => vc.stringifyHeader()).reduce((a, b) => a + "||" + b) + "||_#outs__CT:[min___avg___max]____TP#__TP$") 
+
+    private showLine = () => console.log(clock.time.toString().padStart(3, ' ') + "||" 
+                                       + this.valueChains.map(vc => vc.stringifyRow()).reduce((a, b) => a + "||" + b) + "||" 
+                                       + outputBasket.workItemBasket.length.toString().padStart(6, " ") + " " 
+                                       + new WorkItemStats(outputBasket).show())
+
+    public showFooter = () => { 
+        console.log("Utilization of:")
+        this.workers.forEach(wo => console.log(`${wo.id.padEnd(10, " ")} ${(wo.log.length / (clock.time - clock.startTime) * 100).toFixed(1).padStart(4, ' ')}%`))
+    }                               
 }
 
 

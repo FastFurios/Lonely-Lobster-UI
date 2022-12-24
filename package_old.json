@@ -11,12 +11,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/csv-parse": "^1.2.2",
     "typescript": "^4.9.4"
   },
   "dependencies": {
-    "@types/csv-parse": "^1.2.2",
     "@types/node": "^18.11.16",
-    "csv-parse": "^5.3.3",
-    "readline": "^1.3.0"
+    "csv-parse": "file:node_modules/csv-parse"
   }
 }

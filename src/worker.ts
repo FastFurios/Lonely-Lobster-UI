@@ -128,7 +128,7 @@ interface ArrayRow {
     col2: number
 }
 
-
+/*
 const arr: ArrayRow[] = [
     {row: 0, col1: 10, col2: 500},
     {row: 1, col1: 20, col2: 400},
@@ -157,3 +157,4 @@ function topOfsortedMultiCols(arr: ArrayRow[], sortColVec: SortColVector): Array
 
 console.log(topOfsortedMultiCols(arr, sortColVector))
 
+*/

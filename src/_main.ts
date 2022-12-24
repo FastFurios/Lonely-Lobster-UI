@@ -6,13 +6,18 @@
 // ########################################################################################################
 
 import { Clock } from './clock.js'
-import { ProcessStep, OutputBasket } from './workitembasketholder.js'
-import { ValueChain } from './valuechain.js'
-import { LogEntryWorkItemWorked, WorkOrder } from './workitem.js'
-import { LonelyLobsterSystem } from './system.js'
-import { AssignmentSet, Worker, selectNextWorkItem_001 } from './worker.js'
-import { LogEntryType } from './logging.js'
-import { systemCreatedFromConfigFile } from './helpers.js'
+import { OutputBasket } from './workitembasketholder.js'
+import { systemCreatedFromConfigFile, processWorkOrderFile } from './helpers.js'
+
+export const clock = new Clock()
+
+export const outputBasket = new OutputBasket()
+
+export const lonelyLobsterSystem = systemCreatedFromConfigFile("src/LonelyLobster_01.json")
+
+processWorkOrderFile("src/workorder_001.csv", lonelyLobsterSystem)
+
+
 
 //----------------------------------------------------------------------
 //    TEST CASES
@@ -32,126 +37,11 @@ When loading under Node be sure to reference the child object.
 var { jStat } = require('jstat').
 */
 
-export const clock = new Clock()
-
-export const outputBasket = new OutputBasket()
-
-const system = systemCreatedFromConfigFile("src/LonelyLobster_01.json")
+//setTimeout(() => fr.show(), 3000)
 
 
-/*
-//-- create value chains with process steps
-const blue = new ValueChain("Blue", 5)
-const blue1 = new ProcessStep("b1", blue, 1)
-const blue2 = new ProcessStep("b2", blue, 2)
-blue.appendProcessStep(blue1)
-blue.appendProcessStep(blue2)
-valueChains.push(blue)
-
-const green = new ValueChain("Green", 5)
-const green1 = new ProcessStep("g1", green, 1)
-const green2 = new ProcessStep("g2", green, 3)
-const green3 = new ProcessStep("g3", green, 1)
-green.appendProcessStep(green1)
-green.appendProcessStep(green2)
-green.appendProcessStep(green3)
-valueChains.push(green)
-
-
-//-- recruit workers and assign them to the process steps 
-const woSally = new Worker("Sally", selectNextWorkItem_001)
-workers.push(woSally)
-const woHarry = new Worker("Harry", selectNextWorkItem_001)
-workers.push(woHarry)
-const woWilly = new Worker("Willy", selectNextWorkItem_001)
-workers.push(woWilly)
-const woJenny = new Worker("Jenny", selectNextWorkItem_001)
-workers.push(woJenny)
-const woBilly = new Worker("Billy", selectNextWorkItem_001)
-workers.push(woBilly)
-
-const assignmentSet = new AssignmentSet("first")
-assignmentSet.addAssignment({valueChainProcessStep: { valueChain: blue, processStep: blue1}, worker: woSally})
-assignmentSet.addAssignment({valueChainProcessStep: { valueChain: blue, processStep: blue2}, worker: woHarry})
-
-assignmentSet.addAssignment({valueChainProcessStep: { valueChain: green, processStep: green1}, worker: woWilly})
-assignmentSet.addAssignment({valueChainProcessStep: { valueChain: green, processStep: green2}, worker: woWilly})
-
-assignmentSet.addAssignment({valueChainProcessStep: { valueChain: green, processStep: green2}, worker: woJenny})
-assignmentSet.addAssignment({valueChainProcessStep: { valueChain: green, processStep: green3}, worker: woBilly})
-assignmentSet.addAssignment({valueChainProcessStep: { valueChain: green, processStep: green2}, worker: woBilly})
-
-//assignmentSet.addAssignment({valueChainProcessStep: { valueChain: blue, processStep: blue1}, worker: woWilly})
-//assignmentSet.addAssignment({valueChainProcessStep: { valueChain: blue, processStep: blue2}, worker: woJenny})
-
-//assignmentSet.addAssignment({valueChainProcessStep: { valueChain: green, processStep: green1}, worker: woSally})
-//assignmentSet.addAssignment({valueChainProcessStep: { valueChain: green, processStep: green2}, worker: woHarry})
-
-*/
-
-
-// create incoming workorders i.e. workitems placed in first process step
-
-
-const blue = system.valueChains.find(vc => vc.id == "Blue")
-if (blue == undefined) throw Error("Could not find value chain \"Blue\" in system")
-const green = system.valueChains.find(vc => vc.id == "Green")
-if (green == undefined) throw Error("Could not find value chain \"Green\" in system")
-
-const workOrders: WorkOrder[] = [
-    { orderTime: 0, valueChain: blue },
-    { orderTime: 1, valueChain: blue },
-    { orderTime: 2, valueChain: blue },
-    { orderTime: 3, valueChain: blue },
-    { orderTime: 4, valueChain: blue },
-    { orderTime: 5, valueChain: blue },
-    { orderTime: 6, valueChain: blue },
-    { orderTime: 7, valueChain: blue },
-    { orderTime: 8, valueChain: blue },
-    { orderTime: 9, valueChain: blue },
-    { orderTime: 10, valueChain: green },
-    { orderTime: 11, valueChain: green },
-    { orderTime: 12, valueChain: green },
-    { orderTime: 13, valueChain: green },
-    { orderTime: 14, valueChain: green },
-    { orderTime: 15, valueChain: green },
-    { orderTime: 16, valueChain: green },
-    { orderTime: 17, valueChain: green },
-    { orderTime: 18, valueChain: green },
-    { orderTime: 19, valueChain: green },
-    { orderTime: 20, valueChain: green }
-
-
-    /*
-    { orderTime: 0, valueChain: blue },
-    { orderTime: 0, valueChain: blue },
-    { orderTime: 0, valueChain: blue },
-    { orderTime: 0, valueChain: blue },
-    { orderTime: 0, valueChain: blue },
-    { orderTime: 0, valueChain: blue },
-    { orderTime: 0, valueChain: blue },
-    { orderTime: 0, valueChain: blue },
-    { orderTime: 0, valueChain: blue },
-    { orderTime: 0, valueChain: blue },
-    { orderTime: 10, valueChain: green },
-    { orderTime: 10, valueChain: green },
-    { orderTime: 10, valueChain: green },
-    { orderTime: 10, valueChain: green },
-    { orderTime: 10, valueChain: green },
-    { orderTime: 10, valueChain: green },
-    { orderTime: 10, valueChain: green },
-    { orderTime: 10, valueChain: green },
-    { orderTime: 10, valueChain: green },
-    { orderTime: 10, valueChain: green },
-    { orderTime: 10, valueChain: green }
-*/
-
-]
-
-
-
-system.addWorkOrdersOverTime(workOrders)                                        
-system.run(50)
+//system.addWorkOrdersOverTime(workOrders)                                        
+//system.run(50)
 
 //console.log(outputBasket.showBasketItems())
 //console.log(outputBasket.workItemBasket[5].showLog())
@@ -205,5 +95,54 @@ const colsSortVector: number[]  = [1, 2]
 
 console.log(topRowsOf(arr, colsSortVector))
 */
+
+/*
+console.log(">>>> now I try eachline: ")
+let allLines: string = ">>> all lines >>> "
+
+eachLine("srcs/workorder_001.csv", (line, last) => last ? console.log("<eof>") : allLines = allLines + line).
+console.log(">>>> here are all lines: " + allLines + " <<<")
+*/
+
+
+
+
+
+
+/*
+function* testGen(): Generator<ValueInColumn[], any, ValueInColumn[]> { // https://dev.to/gsarciotto/generators-in-typescript-4b37
+    let headers:        string[] = []
+    let valuesReturn:   ValueInColumn[] = []
+    console.log("testGen: setup")
+
+    while (true) {
+        const line: string[] = yield valuesReturn
+        console.log("testGen: read line: ")
+        console.log(line)
+        if (line[0] = "//") { } // just ignore 
+        else if (line[0] = "##") headers = line.map(s => "[" + s + "]") 
+        else { 
+            for (let i = 0; i < 3; i++) valuesReturn.push({ header: headers[i], value:  parseInt(line[i]) })
+            yield valuesReturn
+        }
+    }
+    return
+}
+
+console.log("tg = testGen()")
+const tg = testGen()
+tg.next()
+
+console.log("generator: comment:  ")
+console.log(tg.next(["//", "Dies und das"]))
+
+console.log("generator: header:   ")
+console.log(tg.next(["##", "blue", "green", "yellow"]))
+
+console.log("generator: values:   ")
+console.log(tg.next(["0", "1", "2", "3"]))
+*/
+
+
 
 
