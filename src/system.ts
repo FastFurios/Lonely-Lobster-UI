@@ -2,11 +2,11 @@
 //    SYSTEM
 //----------------------------------------------------------------------
 
-import { clock } from './_main.js'
+import { Timestamp } from './clock.js'
 import { ValueChain } from './valuechain.js'
 import { WorkItemBasketHolder } from './workitembasketholder.js'
 import { Worker, AssignmentSet } from './worker.js'
-import { outputBasket } from './_main.js'
+import { clock, outputBasket } from './_main.js'
 import { WorkOrder } from "./workitem"
 
 
@@ -17,12 +17,10 @@ export class LonelyLobsterSystem {
                 public workers:             Worker[],
                 public assignments:         AssignmentSet) {}
 
-    //public addWorkOrdersOverTime = (woot: WorkOrder[]): void => { this.workOrderInFlow = woot }
-
-    public processWorkOrders(wos: WorkOrder[]): void {
-        clock.setToNow(wos[0].timestamp)
-        wos.forEach(w => w.valueChain.createAndInjectNewWorkItem())
-
+    public processWorkOrders(now: Timestamp, wos: WorkOrder[]): void {
+        clock.setToNow(now)
+        if (wos.length > 0) wos.forEach(w => w.valueChain.createAndInjectNewWorkItem())
+        
         this.workers.forEach(wo => wo.work(this.assignments))
         this.valueChains.forEach(vc => vc.letWorkItemsFlow())
 
@@ -39,7 +37,8 @@ export class LonelyLobsterSystem {
 
     public showFooter = () => { 
         console.log("Utilization of:")
-        this.workers.forEach(wo => console.log(`${wo.id.padEnd(10, " ")} ${(wo.log.length / (clock.time - clock.startTime) * 100).toFixed(1).padStart(4, ' ')}%`))
+        this.workers.forEach(wo => console.log(`${wo.id.padEnd(10, " ")} ${(wo.log.length / (clock.time - clock.startTime + 1) * 100).toFixed(1).padStart(4, ' ')}%\t` 
+                                                + `${this.assignments.assignments.filter(a => a.worker.id == wo.id).map(a => a.valueChainProcessStep.valueChain.id + "." + a.valueChainProcessStep.processStep.id).reduce((a, b) => a + ", " + b)      } `))
     }                               
 }
 

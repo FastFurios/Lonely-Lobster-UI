@@ -13,8 +13,13 @@ import { LogEntry, LogEntryType } from './logging.js'
 //----------------------------------------------------------------------
 //    WORKER BEHAVIOUR 
 //----------------------------------------------------------------------
-export function selectNextWorkItem_001(wiSet: WorkItem[]): WorkItem {
-    return wiSet[0]
+export function selectNextWorkItem_001(wis: WorkItem[]): WorkItem {
+    return wis[0]
+} 
+
+export function selectNextWorkItem_002(wis: WorkItem[]): WorkItem {
+    const i = Math.floor(Math.random() * wis.length)
+    return wis[i]
 } 
 
 

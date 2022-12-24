@@ -1,16 +1,11 @@
-import * as fs from "fs"  // wohl doch nicht: braucht vorher: $npm install --save @types/node
-import { Interface } from "readline"
+import { createReadStream, readFileSync } from "fs"
+import { Interface, createInterface } from "readline"
+import { Timestamp } from "./clock.js"
 import { LonelyLobsterSystem } from "./system.js"
 import { ValueChain } from './valuechain.js'
 import { ProcessStep } from "./workitembasketholder.js"
-import { Worker, selectNextWorkItem_001, AssignmentSet, Assignment } from './worker.js'
-import { Timestamp } from "./clock.js"
 import { WorkOrder } from './workitem.js'
-import { createReadStream } from "fs"
-import { createInterface } from "readline" 
-import { lonelyLobsterSystem, clock } from "./_main.js" 
-
-
+import { Worker, selectNextWorkItem_002, AssignmentSet, Assignment } from './worker.js'
 
 // ------------------------------------------------------------
 //  nice little helper functions
@@ -24,15 +19,7 @@ function tupleBuilderFrom2Arrays<T, U>(a: T[], b: U[]): Tuple<T, U>[] {
     return tupleArray
 }
 
-
 const duplicate = <T>(item: T, n: number): T[] => Array.from({length: n}).map(e => item)
-
-export function sleep(time: any)
-{
-    return(new Promise(function(resolve, reject) {
-        setTimeout(function() { resolve("") }, time);
-    }));
-}
 
 
 // ------------------------------------------------------------
@@ -43,13 +30,11 @@ export function systemCreatedFromConfigFile(filename : string) : LonelyLobsterSy
 
     // read system parameter JSON file
     let paramsAsString : string = ""
-    try { paramsAsString  = fs.readFileSync(filename, "utf8") } 
+    try { paramsAsString  = readFileSync(filename, "utf8") } 
     catch (e: any) {
         switch (e.code) {
             case "ENOENT" : { throw new Error("System parameter file not found: " + e) }
             default       : { throw new Error("System parameter file: other error: " + e.message) }
-            //case "ENOENT" : { console.log("System parameter file not found: " + e); throw new Error() }
-            //default       : { console.log("System parameter file: other error: " + e.message); throw new Error() }
         }   
     } 
     finally {}
@@ -90,7 +75,7 @@ export function systemCreatedFromConfigFile(filename : string) : LonelyLobsterSy
         process_step_assignments: I_process_step_assignment[]
     }
 
-    const createNewWorker     = (woj: I_worker): Worker => new Worker(woj.worker_id, selectNextWorkItem_001) 
+    const createNewWorker     = (woj: I_worker): Worker => new Worker(woj.worker_id, selectNextWorkItem_002) 
     const addWorkerAssignment = (psaj: I_process_step_assignment, newWorker: Worker, vcs: ValueChain[], asSet: AssignmentSet): void  => {
         const mayBeVc = vcs.find(vc => vc.id == psaj.value_chain_id)
         if (mayBeVc == undefined) { console.log(`Reading system parameters: try to assign worker=${newWorker} to value chain=${psaj.value_chain_id}: could not find value chain`); throw new Error() }
@@ -120,47 +105,35 @@ export function systemCreatedFromConfigFile(filename : string) : LonelyLobsterSy
     // return the system
     return new LonelyLobsterSystem(systemId, valueChains, workers, asSet)
 } 
+
 // ------------------------------------------------------------
-//  read incoming work order stream from CSV file
+//  read work order inflow csv file and feed it to the LonelyLobster system
 // ------------------------------------------------------------
 
-/* *****
-interface I_NumWorkOrdersPerTimeAndValueChain { 
-    valueChainId:  string,
-    numWorkOrders: number
-}
-
-interface I_WorkOrdersForATimestamp {
-    time:                               Timestamp,
-    numWorkOrdersPerTimeAndValueChain:  I_NumWorkOrdersPerTimeAndValueChain[]
-}
-
-interface ParsedLine {
-    timestamp:  Timestamp,
-    workOrders: WorkOrder[]
-}
-*/
-
-// read csv file with number of new workorders per timestamp and valuechain
-
-// /*******
 type MaybeValueChain = ValueChain | undefined
+
+interface CsvTableProcessorResult {
+    time?:       Timestamp,
+    workOrders: WorkOrder[] 
+}
 
 class CsvTableProcessor {
     headers: MaybeValueChain[] = []
-    constructor() { }
+    constructor(private sys: LonelyLobsterSystem) { }
  
-    public workOrdersFromLine(line: string): WorkOrder[] {
+    public workOrdersFromLine(line: string): CsvTableProcessorResult {
         if (line.substring(0, 2) == "//") 
-            return []  // ignore
+            return { workOrders: [] }  // ignore
         if (line.substring(0, 2) == "##") { 
             this.headers =   line
                             .split(";")
                             .slice(1)
-                            .map(s => lonelyLobsterSystem.valueChains.find(vc => vc.id == s.trim()))
-            //console.log("headers:")
-            //console.log(this.headers)
-            return [] 
+                            .map(s => this.sys.valueChains.find(vc => vc.id == s.trim()))
+            return { workOrders: [] }  // ignore
+        }
+        if (line.substring(0, 2) == "??") { 
+            this.sys.showFooter()
+            return { workOrders: [] }  // ignore
         }
         if (this.headers.length == 0) throw Error("Reading csv-file for incoming work orders: values line w/o having read header line before")
         const timeAndnumWoPerVC: number[] = line  // timestamp and then number of work orders per value chain
@@ -172,19 +145,16 @@ class CsvTableProcessor {
         const vcNumTplArr: Tuple<MaybeValueChain, number>[] = tupleBuilderFrom2Arrays(this.headers, numWoPerVc)
 
         const wosFromLine: WorkOrder[] = vcNumTplArr.flatMap(tpl => duplicate<WorkOrder>( { timestamp: timestamp, valueChain: <ValueChain>tpl[0] }, tpl[1]  ))
-        //console.log("workOrdersFromLine: work orders:")
-        //console.log(wosOfLine)
-        return wosFromLine
+        return { time: timestamp, workOrders: wosFromLine }
     }
 }
 
-
 export function processWorkOrderFile(filename : string,sys: LonelyLobsterSystem): void {
-    const ctp = new CsvTableProcessor()
+    const ctp = new CsvTableProcessor(sys)
 
     function processWorkOrdersFromLine(line: string): void {
-        const wos: WorkOrder[] = ctp.workOrdersFromLine(line)
-        if (wos.length > 0) sys.processWorkOrders(ctp.workOrdersFromLine(line))
+        const { time, workOrders } = ctp.workOrdersFromLine(line)
+        if (time != undefined) sys.processWorkOrders(time, workOrders)
     }
 
     const fileReaderConfig      = { input: createReadStream(filename), terminal: false }
@@ -192,6 +162,5 @@ export function processWorkOrderFile(filename : string,sys: LonelyLobsterSystem)
 
     sys.showHeader()
     lineReader.on("line", line => processWorkOrdersFromLine(line))
-    //sys.showFooter()
 }
 

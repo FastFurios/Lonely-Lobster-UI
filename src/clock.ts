@@ -13,7 +13,6 @@ export class Clock {
 
     public setToNow = (time: Timestamp): void => { this.time = time; return } 
 
-
 /*
     tick(): Timestamp {
         this.time += timeUnit
@@ -21,5 +20,3 @@ export class Clock {
     }
 */
 }
-
-export const clock = new Clock()

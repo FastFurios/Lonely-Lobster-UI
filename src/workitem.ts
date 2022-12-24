@@ -81,7 +81,6 @@ export class WorkItem {
                                                     worker ))
     }
 
-    //public elapsedTime = (): TimeUnit => clock.time - this.log[0].timestamp
     public elapsedTime = (): TimeUnit => (this.log[this.log.length -1].timestamp < clock.time ? this.log[this.log.length -1].timestamp : clock.time) - this.log[0].timestamp
 
     public accumulatedEffort = (workItemBasketHolder?: WorkItemBasketHolder): Effort =>

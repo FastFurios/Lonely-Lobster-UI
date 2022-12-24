@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------
-//    WORKITEM BASKET HOLDER / PROCESS STEP 
+//    WORKITEM BASKET HOLDER
 //----------------------------------------------------------------------
 
 import { clock } from './_main.js'
@@ -23,7 +23,9 @@ export abstract class WorkItemBasketHolder {
     public stringifyBasketItems = (): string => this.workItemBasket.length == 0 ? "empty" : this.workItemBasket.map(wi => "\t\t" + wi.stringify()).reduce((a, b) => a + " " + b)
 }
 
-//-- regular PROCESS STEP in a value chain
+//----------------------------------------------------------------------
+//    PROCESS STEP 
+//----------------------------------------------------------------------
 
 export class ProcessStep extends WorkItemBasketHolder  {
     constructor(       id:            string,
@@ -39,13 +41,11 @@ export class ProcessStep extends WorkItemBasketHolder  {
     public stringify = () => `\tt=${clock.time} basket of ps=${this.id} ne=${this.normEffort}:\n` + this.stringifyBasketItems()
 }
 
-//-- overall  OUTPUT BASKET (just one unique instance): here the total output of all value chains is collected over time
 
-interface WorkItemStatsCycleTime {
-    min: number,
-    max: number,
-    avg: number
-}
+//----------------------------------------------------------------------
+//    OUTPUT BASKET 
+//----------------------------------------------------------------------
+//-- overall  OUTPUT BASKET (just one unique instance): here the total output of all value chains is collected over time
 
 export class OutputBasket extends WorkItemBasketHolder {
     static numInstances = 0
