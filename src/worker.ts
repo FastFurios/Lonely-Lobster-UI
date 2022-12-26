@@ -96,7 +96,7 @@ export class Worker {
 
         const workableWorkItemsAtHand: WorkItem[] = this.workItemsAtHand(asSet)
                                                     .filter(wi => !wi.finishedAtCurrentProcessStep())  // not yet in OutputBasket
-                                                    .filter(wi => !wi.hasBeenWorkedOn(clock.time))     // no one worked on it at current time
+                                                    .filter(wi => !wi.hasBeenWorkedOnAtCurrentTime(clock.time))     // no one worked on it at current time
 
         if (workableWorkItemsAtHand.length == 0) { return } // no workable workitems at hand
 

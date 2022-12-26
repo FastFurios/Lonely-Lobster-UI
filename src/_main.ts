@@ -13,11 +13,9 @@ export const clock = new Clock()
 
 export const outputBasket = new OutputBasket()
 
-export const lonelyLobsterSystem = systemCreatedFromConfigFile("src/LonelyLobster_00.json")
+export const lonelyLobsterSystem = systemCreatedFromConfigFile(process.argv[0])
 
-processWorkOrderFile("src/workorder_000.csv", lonelyLobsterSystem)
-
-
+processWorkOrderFile(process.argv[1], lonelyLobsterSystem)
 
 //----------------------------------------------------------------------
 //    TEST CASES

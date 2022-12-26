@@ -134,7 +134,11 @@ export class WorkItem {
                                            : this.log.filter(le => le.workItemBasketHolder == workItemBasketHolder))
         .filter(le => le.logEntryType == LogEntryType.workItemWorkedOn).length
 
-    public hasBeenWorkedOn = (timestamp: Timestamp): boolean  => this.log.filter(le => (le.timestamp == timestamp && le.logEntryType == LogEntryType.workItemWorkedOn)).length > 0
+    public hasBeenWorkedOnAtCurrentTime = (timestamp: Timestamp, ps?: ProcessStep): boolean  => 
+        this.log.filter(le => (le.timestamp == timestamp && le.logEntryType == LogEntryType.workItemWorkedOn)).length > 0
+    
+    public workedOnAtCurrentProcessStep = (): boolean => 
+        this.accumulatedEffort(<ProcessStep>this.currentProcessStep) > 0
 
     public finishedAtCurrentProcessStep = (): boolean => 
         this.accumulatedEffort(<ProcessStep>this.currentProcessStep) >= (<ProcessStep>this.currentProcessStep).normEffort

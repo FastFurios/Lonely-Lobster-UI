@@ -57,7 +57,7 @@ export class ValueChain {
     } 
     
     public stringifyRow(): string {
-        const showBar = (wis: WorkItem[]): string => wis.map(wi => wi.tag[0]).reduce((a, b) => a + b, '').padEnd(20, ' ')
+        const showBar = (wis: WorkItem[]): string => wis.map(wi => wi.workedOnAtCurrentProcessStep() ? wi.tag[1] : wi.tag[0]).reduce((a, b) => a + b, '').padEnd(20, ' ')
         return this.processSteps.map(ps => showBar(ps.workItemBasket)).reduce((a, b) => a + "|" + b)  
     } 
 }
