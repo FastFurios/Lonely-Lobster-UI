@@ -47,7 +47,8 @@ export function systemCreatedFromConfigFile(filename : string) : LonelyLobsterSy
     // extract value chains
     interface I_process_step {
         process_step_id: string,
-        norm_effort:     number
+        norm_effort:     number,
+        bar_length:      number
     } 
     interface I_value_chain {
         value_chain_id: string,
@@ -55,7 +56,7 @@ export function systemCreatedFromConfigFile(filename : string) : LonelyLobsterSy
         process_steps:  I_process_step[]  
     }
 
-    const createProcessStep      = (psj:  I_process_step, vc: ValueChain)   : ProcessStep   => new ProcessStep(psj.process_step_id, vc, psj.norm_effort)
+    const createProcessStep      = (psj:  I_process_step, vc: ValueChain)   : ProcessStep   => new ProcessStep(psj.process_step_id, vc, psj.norm_effort, psj.bar_length)
     const createEmptyValueChain  = (vcj:  I_value_chain)                    : ValueChain    => new ValueChain(vcj.value_chain_id, vcj.value_add)
     const addProcStepsToValChain = (pssj: I_process_step[], vc: ValueChain) : void          => pssj.forEach(psj => vc.processSteps.push(createProcessStep(psj, vc))) 
     const createFilledValueChain = (vcj:  I_value_chain)                    : ValueChain    => {

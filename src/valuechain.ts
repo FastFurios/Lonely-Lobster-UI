@@ -52,12 +52,9 @@ export class ValueChain {
     }
 
     public stringifyHeader(): string {
-        const stringifyColumnHeader = (wibh: WorkItemBasketHolder): string => `_${this.id}.${wibh.id}${"_".repeat(21)}`.substring(0, 20)
+        const stringifyColumnHeader = (wibh: ProcessStep): string => `_${this.id}.${wibh.id}${"_".repeat(wibh.barLen)}`.substring(0, wibh.barLen)
         return this.processSteps.map(ps => stringifyColumnHeader(ps)).reduce((a, b) => a + "|" + b)  
     } 
     
-    public stringifyRow(): string {
-        const showBar = (wis: WorkItem[]): string => wis.map(wi => wi.workedOnAtCurrentProcessStep() ? wi.tag[1] : wi.tag[0]).reduce((a, b) => a + b, '').padEnd(20, ' ')
-        return this.processSteps.map(ps => showBar(ps.workItemBasket)).reduce((a, b) => a + "|" + b)  
-    } 
+    public stringifyRow = (): string => this.processSteps.map(ps => ps.stringifyBar()).reduce((a, b) => a + "|" + b)  
 }

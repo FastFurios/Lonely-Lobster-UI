@@ -11,7 +11,8 @@ export type Effort    = number // measured in Worker Time Units
 export abstract class WorkItemBasketHolder {
     public workItemBasket: WorkItem[] = []
 
-    constructor(public id: string) {}
+    constructor(public id: string, 
+                public barLen: number = 20) {}
 
     public addToBasket(workItem: WorkItem) { 
         this.workItemBasket.push(workItem) 
@@ -19,6 +20,19 @@ export abstract class WorkItemBasketHolder {
     }
 
     public abstract stringify(): string
+
+    public stringifyBarSimple = (): string => this.workItemBasket.map(wi => wi.workedOnAtCurrentProcessStep() ? wi.tag[1] : wi.tag[0]).reduce((a, b) => a + b, '').padEnd(20, ' ')
+
+    public stringifyBar = (): string => { 
+        const strOfBskLen = this.workItemBasket.length.toString()
+        return this.workItemBasket
+                .map(wi => wi.workedOnAtCurrentProcessStep() ? wi.tag[1] : wi.tag[0])
+                .reduce((a, b) => a + b, "")
+                .padEnd(this.barLen - strOfBskLen.length, " ")
+                .substring(0, this.barLen - strOfBskLen.length)
+            + strOfBskLen 
+    }  
+//    public stringifyBar = (): string => this.workItemBasket.map(wi => wi.workedOnAtCurrentProcessStep() ? wi.tag[1] : wi.tag[0]).reduce((a, b) => a + b, '').padEnd(20, ' ')
 
     public stringifyBasketItems = (): string => this.workItemBasket.length == 0 ? "empty" : this.workItemBasket.map(wi => "\t\t" + wi.stringify()).reduce((a, b) => a + " " + b)
 }
@@ -30,8 +44,9 @@ export abstract class WorkItemBasketHolder {
 export class ProcessStep extends WorkItemBasketHolder  {
     constructor(       id:            string,
                 public valueChain:    ValueChain,
-                public normEffort:    Effort) {
-        super(id)
+                public normEffort:    Effort,
+                       barLen:        number) {
+        super(id, barLen)
     }
 
     public removeFromBasket(workItem: WorkItem) { 

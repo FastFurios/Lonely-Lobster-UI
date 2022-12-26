@@ -13,9 +13,16 @@ export const clock = new Clock()
 
 export const outputBasket = new OutputBasket()
 
-export const lonelyLobsterSystem = systemCreatedFromConfigFile(process.argv[0])
+enum InputArgs {
+    "SystemConfig"      = 2,
+    "WorkOrders"        = 3
+}
 
-processWorkOrderFile(process.argv[1], lonelyLobsterSystem)
+console.log("argv[2]=" + process.argv[2] + ", " + "argv[3]=" + process.argv[3])
+
+export const lonelyLobsterSystem = systemCreatedFromConfigFile(process.argv[InputArgs.SystemConfig])
+
+processWorkOrderFile(process.argv[InputArgs.WorkOrders], lonelyLobsterSystem)
 
 //----------------------------------------------------------------------
 //    TEST CASES

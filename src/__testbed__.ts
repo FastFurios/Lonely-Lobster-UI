@@ -1,38 +1,45 @@
-type WiTag = [string, string]
-const wiTags: WiTag[] = [
-    ["a", "A"],
-    ["b", "B"],
-    ["c", "C"],
-    ["d", "D"],
-    ["e", "E"],
-    ["f", "F"],
-    ["g", "G"],
-    ["h", "H"],
-    ["i", "I"],
-    ["j", "J"],
-    ["k", "K"],
-    ["l", "L"],
-    ["m", "M"],
-    ["n", "N"],
-    ["o", "O"],
-    ["p", "P"],
-    ["q", "Q"],
-    ["r", "R"],
-    ["s", "S"],
-    ["t", "T"],
-    ["u", "U"],
-    ["v", "V"],
-    ["w", "W"],
-    ["x", "X"],
-    ["y", "Y"],
-    ["z", "Z"]
-]  
+const barLength = 20
 
-function* wiTagGenerator(wiTags: WiTag[]) {
-    for (let i = 0; true; i = i < wiTags.length - 1 ? i + 1 : 0) 
-        yield wiTags[i] 
+function stringifyBar2(bsk: string[]): string {
+    const lenAsString = bsk.length.toString()
+
+    return "|" + (bsk.map(wi => wi)
+                     .reduce((a, b) => a + b)
+                     .padEnd(barLength - lenAsString.length))
+                 .substring(0, barLength - lenAsString.length) 
+               +  lenAsString + "|"
+
+}
+function stringifyBar(bsk: string[]): string {
+    const lenAsString = bsk.length.toString()
+
+    return "|" + (bsk.map(wi => wi)
+                     .reduce((a, b) => a + b)
+                     .padEnd(barLength - lenAsString.length))
+                 .substring(0, barLength - lenAsString.length) 
+               +  lenAsString + "|"
+
 }
 
-const tagIter = wiTagGenerator(wiTags)
+console.log("|--------------------|")
 
-for (let i = 0; i< 50; i++) console.log(tagIter.next().value)
+let basket = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+
+
+basket = ["a", "b", "c", "d"]
+console.log(stringifyBar(basket))
+
+basket = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
+console.log(stringifyBar(basket))
+
+basket = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+console.log(stringifyBar(basket))
+
+basket = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", 
+"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+console.log(stringifyBar(basket))
+
+
+
