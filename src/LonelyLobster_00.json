@@ -12,7 +12,7 @@
                 },
                 {
                     "process_step_id"   : "Step-B",
-                    "norm_effort"       : 3,
+                    "norm_effort"       : 1,
                     "bar_length"        : 40
                 }
             ]
@@ -20,7 +20,7 @@
     ],
     "workers" : [
         {
-            "worker_id" : "Anny",
+            "worker_id" : "Vicky",
             "process_step_assignments"  : [
                 {
                     "value_chain_id"  : "Blue",
@@ -29,7 +29,79 @@
             ]
         },
         {
+            "worker_id" : "Sally",
+            "process_step_assignments"  : [
+                {
+                    "value_chain_id"  : "Blue",
+                    "process_steps_id": "Step-A"
+                }
+            ]
+        },
+        {
+            "worker_id" : "Rusty",
+            "process_step_assignments"  : [
+                {
+                    "value_chain_id"  : "Blue",
+                    "process_steps_id": "Step-A"
+                }
+            ]
+        },
+        {
+            "worker_id" : "Robby",
+            "process_step_assignments"  : [
+                {
+                    "value_chain_id"  : "Blue",
+                    "process_steps_id": "Step-A"
+                }
+            ]
+        },
+        {
+            "worker_id" : "Teddy",
+            "process_step_assignments"  : [
+                {
+                    "value_chain_id"  : "Blue",
+                    "process_steps_id": "Step-A"
+                }
+            ]
+        },
+        {
+            "worker_id" : "Anny",
+            "process_step_assignments"  : [
+                {
+                    "value_chain_id"  : "Blue",
+                    "process_steps_id": "Step-B"
+                }
+            ]
+        },
+        {
             "worker_id" : "Benny",
+            "process_step_assignments"  : [
+                {
+                    "value_chain_id"  : "Blue",
+                    "process_steps_id": "Step-B"
+                }
+            ]
+        },
+        {
+            "worker_id" : "Charly",
+            "process_step_assignments"  : [
+                {
+                    "value_chain_id"  : "Blue",
+                    "process_steps_id": "Step-B"
+                }
+            ]
+        },
+        {
+            "worker_id" : "Danny",
+            "process_step_assignments"  : [
+                {
+                    "value_chain_id"  : "Blue",
+                    "process_steps_id": "Step-B"
+                }
+            ]
+        },
+        {
+            "worker_id" : "Franky",
             "process_step_assignments"  : [
                 {
                     "value_chain_id"  : "Blue",

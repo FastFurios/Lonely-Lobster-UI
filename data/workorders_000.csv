@@ -1,14 +1,14 @@
 // first csv test file Dec 2022
 // G.Lindorfer
 ## timestamp; Blue
-0; 20
-1; 20
-2; 20
+0; 10
+1; 0
+2; 0
 3; 0
 4; 0
 5; 0
 6; 0
 7; 0
-8; 2
-9; 2
+8; 0
+9; 0
 ?? show aggregated run stats

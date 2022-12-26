@@ -21,7 +21,7 @@ export abstract class WorkItemBasketHolder {
 
     public abstract stringify(): string
 
-    public stringifyBarSimple = (): string => this.workItemBasket.map(wi => wi.workedOnAtCurrentProcessStep() ? wi.tag[1] : wi.tag[0]).reduce((a, b) => a + b, '').padEnd(20, ' ')
+    //public stringifyBarSimple = (): string => this.workItemBasket.map(wi => wi.workedOnAtCurrentProcessStep() ? wi.tag[1] : wi.tag[0]).reduce((a, b) => a + b, '').padEnd(20, ' ')
 
     public stringifyBar = (): string => { 
         const strOfBskLen = this.workItemBasket.length.toString()
@@ -32,7 +32,6 @@ export abstract class WorkItemBasketHolder {
                 .substring(0, this.barLen - strOfBskLen.length)
             + strOfBskLen 
     }  
-//    public stringifyBar = (): string => this.workItemBasket.map(wi => wi.workedOnAtCurrentProcessStep() ? wi.tag[1] : wi.tag[0]).reduce((a, b) => a + b, '').padEnd(20, ' ')
 
     public stringifyBasketItems = (): string => this.workItemBasket.length == 0 ? "empty" : this.workItemBasket.map(wi => "\t\t" + wi.stringify()).reduce((a, b) => a + " " + b)
 }
