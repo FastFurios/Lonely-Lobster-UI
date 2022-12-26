@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------
-//    WORK ITEM LOGGING 
+//    WORK ITEM  
 //----------------------------------------------------------------------
 //-- work item: at the beginning it is typically an order, in its final state it is the end-product / service ------------------------------------------------------------------------
 import { TimeUnit, Timestamp } from './clock.js'
@@ -9,7 +9,11 @@ import { WorkItemBasketHolder, ProcessStep, Effort } from './workitembasketholde
 import { LogEntry, LogEntryType } from './logging.js'
 import { Worker } from './worker.js'
 
- 
+
+//----------------------------------------------------------------------
+//    HELPERS 
+//----------------------------------------------------------------------
+
 type WorkItemId = number
 
 export interface WorkOrder {
@@ -17,7 +21,50 @@ export interface WorkOrder {
     valueChain: ValueChain
 }
 
-// -- logging ------------------------
+// unique workitem identifier
+function* workItemIdGenerator(): IterableIterator<WorkItemId> { for(let i = 0; true; i++) yield i }
+export const idGen = workItemIdGenerator()
+
+// workitem tags for display: lower letter = untouched, upper letter = some work already exerted
+type WorkItemTag = [string, string]
+const wiTags: WorkItemTag[] = [
+    ["a", "A"],
+    ["b", "B"],
+    ["c", "C"],
+    ["d", "D"],
+    ["e", "E"],
+    ["f", "F"],
+    ["g", "G"],
+    ["h", "H"],
+    ["i", "I"],
+    ["j", "J"],
+    ["k", "K"],
+    ["l", "L"],
+    ["m", "M"],
+    ["n", "N"],
+    ["o", "O"],
+    ["p", "P"],
+    ["q", "Q"],
+    ["r", "R"],
+    ["s", "S"],
+    ["t", "T"],
+    ["u", "U"],
+    ["v", "V"],
+    ["w", "W"],
+    ["x", "X"],
+    ["y", "Y"],
+    ["z", "Z"]
+]  
+
+function* wiTagGenerator(wiTags: WorkItemTag[]): IterableIterator<WorkItemTag> {
+    for (let i = 0; true; i = i < wiTags.length - 1 ? i + 1 : 0) 
+        yield wiTags[i] 
+}
+export const tagGen = wiTagGenerator(wiTags)
+
+//----------------------------------------------------------------------
+//    WORK ITEM LOGGING 
+//----------------------------------------------------------------------
 
 abstract class LogEntryWorkItem extends LogEntry {
     constructor(    public workItem:            WorkItem,       
@@ -57,15 +104,14 @@ export class LogEntryWorkItemWorked extends LogEntryWorkItem {
 //    WORK ITEM  
 //----------------------------------------------------------------------
 
-function* workItemIdGenerator(): IterableIterator<WorkItemId> { for(let i = 0; true; i++) yield i }
-export const idIter = workItemIdGenerator()
-
 export class WorkItem {
-    log: LogEntryWorkItem[] = []
-
-    constructor(public id:                  WorkItemId, 
-                public valueChain:          ValueChain,
+    log:        LogEntryWorkItem[] = []
+    public id:  WorkItemId
+    public tag: WorkItemTag
+    constructor(public valueChain:          ValueChain,
                 public currentProcessStep:  WorkItemBasketHolder) {
+        this.id  = idGen.next().value
+        this.tag = tagGen.next().value
     }
 
     public logMovedTo(toProcessStep: WorkItemBasketHolder) {
