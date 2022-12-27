@@ -11,6 +11,7 @@ import { Worker, selectNextWorkItem_002, AssignmentSet, Assignment } from './wor
 //  nice little helper functions
 // ------------------------------------------------------------
 
+// --- create 2-tuples from two arrays
 type Tuple<T, U> = [T, U]
 
 function tupleBuilderFrom2Arrays<T, U>(a: T[], b: U[]): Tuple<T, U>[] {
@@ -19,7 +20,28 @@ function tupleBuilderFrom2Arrays<T, U>(a: T[], b: U[]): Tuple<T, U>[] {
     return tupleArray
 }
 
+// --- create array with n times an item
 const duplicate = <T>(item: T, n: number): T[] => Array.from({length: n}).map(e => item)
+
+// --- split an array at an index
+interface SplitArray<T> {
+    head:   T[] 
+    middle: T
+    tail:   T[]
+}
+export function reshuffle<T>(a: T[]): T[] {
+    if (a.length == 0) return []
+    const splitIndex = Math.floor(Math.random() * a.length)
+    const sa: SplitArray<T> = split(a, splitIndex)
+    return [a[splitIndex]].concat(reshuffle<T>(sa.head.concat(sa.tail)))
+}
+
+function split<T>(a: T[], splitIndex: number): SplitArray<T>  {
+   return { head: a.slice(undefined, splitIndex),
+            middle: a[splitIndex],
+            tail: a.slice(splitIndex + 1, undefined)
+          }
+}
 
 
 // ------------------------------------------------------------
@@ -155,7 +177,7 @@ export function processWorkOrderFile(filename : string,sys: LonelyLobsterSystem)
 
     function processWorkOrdersFromLine(line: string): void {
         const { time, workOrders } = ctp.workOrdersFromLine(line)
-        if (time != undefined) sys.processWorkOrders(time, workOrders)
+        if (time != undefined) sys.doNextIteration(time, workOrders)
     }
 
     const fileReaderConfig      = { input: createReadStream(filename), terminal: false }

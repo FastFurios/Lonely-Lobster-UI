@@ -56,6 +56,10 @@ export class AssignmentSet {
         this.assignments = this.assignments.filter(as => as != assignment)  
     }
 
+    public reshuffleArrayOrder(): void { // this is to avoid that more work is assigned to the first in the array for a process step than to subseqiuent workers  
+        this.assignments = reshuffle<Assignment>(this.assignments)
+    }
+
     public stringify(): string {
         let s: string = `t=${clock.time} Assignment set "${this.id}":\n`
         for (let as of this.assignments) {
@@ -103,7 +107,7 @@ export class Worker {
         const wi = this.selectNextWorkItem(workableWorkItemsAtHand)
         wi.logWorkedOn(this)
         this.logWorked()
-        //console.log(this.id + " has worked at t=" + clock.time + " on wi=" + wi)
+        //console.log(this.id + " has worked at t=" + clock.time + " on wi=" + wi.id + "/" + wi.tag[0])
     }
 
     public show(asSet: AssignmentSet): string {

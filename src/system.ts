@@ -8,6 +8,7 @@ import { WorkItemBasketHolder } from './workitembasketholder.js'
 import { Worker, AssignmentSet } from './worker.js'
 import { clock, outputBasket } from './_main.js'
 import { WorkOrder } from "./workitem"
+import { reshuffle } from './helpers.js'
 
 
 export class LonelyLobsterSystem {
@@ -15,20 +16,21 @@ export class LonelyLobsterSystem {
     constructor(public id:                  string,
                 public valueChains:         ValueChain[],
                 public workers:             Worker[],
-                public assignments:         AssignmentSet) {}
+                public assignmentSet:         AssignmentSet) {}
 
-    public processWorkOrders(now: Timestamp, wos: WorkOrder[]): void {
+    public doNextIteration(now: Timestamp, wos: WorkOrder[]): void {
         clock.setToNow(now)
         if (wos.length > 0) wos.forEach(w => w.valueChain.createAndInjectNewWorkItem())
         
-        this.workers.forEach(wo => wo.work(this.assignments))
+        this.workers = reshuffle(this.workers) // avoid that work is assigned to workers always in the same worker sequence  
+        this.workers.forEach(wo => wo.work(this.assignmentSet))
         this.valueChains.forEach(vc => vc.letWorkItemsFlow())
 
         const stats = new WorkItemStats(outputBasket)
         this.showLine()
     }
 
-    public showHeader = () => console.log("_t_||" + this.valueChains.map(vc => vc.stringifyHeader()).reduce((a, b) => a + "||" + b) + "||_#outs__CT:[min___avg___max]____TP#__TP$") 
+    public showHeader = () => console.log("_t_||" + this.valueChains.map(vc => vc.stringifyHeader()).reduce((a, b) => a + "||" + b) + "||_#outs__CT:[min___avg___max]_TP:[__#______$]") 
 
     private showLine = () => console.log(clock.time.toString().padStart(3, ' ') + "||" 
                                        + this.valueChains.map(vc => vc.stringifyRow()).reduce((a, b) => a + "||" + b) + "||" 
@@ -38,7 +40,7 @@ export class LonelyLobsterSystem {
     public showFooter = () => { 
         console.log("Utilization of:")
         this.workers.forEach(wo => console.log(`${wo.id.padEnd(10, " ")} ${(wo.log.length / (clock.time - clock.startTime + 1) * 100).toFixed(1).padStart(4, ' ')}%\t` 
-                                                + `${this.assignments.assignments.filter(a => a.worker.id == wo.id).map(a => a.valueChainProcessStep.valueChain.id + "." + a.valueChainProcessStep.processStep.id).reduce((a, b) => a + ", " + b)      } `))
+                                                + `${this.assignmentSet.assignments.filter(a => a.worker.id == wo.id).map(a => a.valueChainProcessStep.valueChain.id + "." + a.valueChainProcessStep.processStep.id).reduce((a, b) => a + ", " + b)      } `))
     }                               
 }
 
@@ -77,8 +79,7 @@ class WorkItemStats {
         }
     }
     public show = (): string => this.hasCalculatedStats 
-                                ? `    ${this.cycleTime.min.toFixed(1).padStart(4, ' ')}  ${this.cycleTime.avg.toFixed(1).padStart(4, ' ')}  ${this.cycleTime.max.toFixed(1).padStart(4, ' ')}    ${this.throughput.itemPerTimeUnit.toFixed(1).padStart(4, ' ')} ${this.throughput.valuePerTimeUnit.toFixed(1).padStart(4, ' ')}`
+                                ? `    ${this.cycleTime.min.toFixed(1).padStart(4, ' ')}  ${this.cycleTime.avg.toFixed(1).padStart(4, ' ')}  ${this.cycleTime.max.toFixed(1).padStart(4, ' ')}     ${this.throughput.itemPerTimeUnit.toFixed(1).padStart(4, ' ')}   ${this.throughput.valuePerTimeUnit.toFixed(1).padStart(4, ' ')}`
                                 : ""  
-
 }
 
