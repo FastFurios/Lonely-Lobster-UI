@@ -4,7 +4,7 @@ import { Timestamp } from "./clock.js"
 import { LonelyLobsterSystem } from "./system.js"
 import { ValueChain } from './valuechain.js'
 import { ProcessStep } from "./workitembasketholder.js"
-import { WorkOrder } from './workitem.js'
+import { WorkOrder, WorkItemId } from './workitem.js'
 import { Worker, selectNextWorkItem_002, AssignmentSet, Assignment } from './worker.js'
 
 // ------------------------------------------------------------
@@ -43,7 +43,43 @@ function split<T>(a: T[], splitIndex: number): SplitArray<T>  {
           }
 }
 
+// --- sort rows and select top row of a table i.e. of an array of arrays (tuples) 
+export enum SelectionCriterion {
+    min,
+    max
+}
+export interface SortVector {
+    colIndex:  number,
+    selCrit:   SelectionCriterion
+}
+type wiExtInfoTuple = [WorkItemId, number, number, number, number, number, number, number, number, number, number, number, number]
 
+
+export function topElemAfterSort(arrArr: wiExtInfoTuple[], sortVector: SortVector[]): wiExtInfoTuple {
+    if (arrArr.length     <  1) throw Error("topElemAfterSort(): received array w/o element") 
+    if (arrArr.length     == 1) return arrArr[0]
+    if (sortVector.length == 0) return arrArr[0]
+
+    const f = sortVector[0].selCrit == SelectionCriterion.max ? (a: number, b: number) => a > b ? a : b
+                                                              : (a: number, b: number) => a < b ? a : b
+    const v          = arrArr.map   (arr => arr[sortVector[0].colIndex]).reduce(f)
+    const arrArrTops = arrArr.filter(arr => arr[sortVector[0].colIndex] == v)
+
+    return topElemAfterSort(arrArrTops, sortVector.slice(1))
+}
+/*
+export function topElemAfterSort(arrArr: number[][], sortVector: SortVector[]): number[] {
+    if (arrArr.length     == 0) return []
+    if (sortVector.length == 0) return arrArr[0]
+
+    const f = sortVector[0].selCrit == SelectionCriterion.max ? (a: number, b: number) => a > b ? a : b
+                                                              : (a: number, b: number) => a < b ? a : b
+    const v          = arrArr.map   (arr => arr[sortVector[0].colIndex]).reduce(f)
+    const arrArrTops = arrArr.filter(arr => arr[sortVector[0].colIndex] == v)
+
+    return topElemAfterSort(arrArrTops, sortVector.slice(1))
+}
+*/
 // ------------------------------------------------------------
 //  read system configuration from JSON file
 // ------------------------------------------------------------

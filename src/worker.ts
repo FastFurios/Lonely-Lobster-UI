@@ -6,23 +6,36 @@ import { Timestamp } from './clock.js'
 import { clock } from './_main.js'
 import { ProcessStep } from './workitembasketholder.js'
 import { ValueChain } from './valuechain.js'
-import { WorkItem } from './workitem.js'
+import { WorkItem, WiExtInfoElem } from './workitem.js'
 import { LogEntry, LogEntryType } from './logging.js'
+import { topElemAfterSort, SortVector, SelectionCriterion } from "./helpers.js"
 
 
 //----------------------------------------------------------------------
 //    WORKER BEHAVIOUR 
 //----------------------------------------------------------------------
-export function selectNextWorkItem_001(wis: WorkItem[]): WorkItem {
+export function selectNextWorkItem_001(wis: WorkItem[]): WorkItem { // just take the first in the list of all accessible work items 
     return wis[0]
 } 
 
-export function selectNextWorkItem_002(wis: WorkItem[]): WorkItem {
+export function selectNextWorkItem_002(wis: WorkItem[]): WorkItem { // take randomly a work item in the list of all accessible workitems
     const i = Math.floor(Math.random() * wis.length)
     return wis[i]
 } 
 
+/*
+export function selectNextWorkItem_003(wis: WorkItem[]): WorkItem { // take the top-ranked work item after sorting the accessible work items
+    let sv: SortVector = [
+        { colIndex: WiExtInfoElem.remainingEffortInProcessStep, 
+          selCrit: SelectionCriterion.max } 
+    ]    
+    let arrArr: number[][] = 
+    topElemAfterSort
 
+
+    return wi
+} 
+*/
 //----------------------------------------------------------------------
 //    WORKER LOGGING 
 //----------------------------------------------------------------------
@@ -54,10 +67,6 @@ export class AssignmentSet {
 
     public removeAssignment(assignment: Assignment) {
         this.assignments = this.assignments.filter(as => as != assignment)  
-    }
-
-    public reshuffleArrayOrder(): void { // this is to avoid that more work is assigned to the first in the array for a process step than to subseqiuent workers  
-        this.assignments = reshuffle<Assignment>(this.assignments)
     }
 
     public stringify(): string {

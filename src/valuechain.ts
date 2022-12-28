@@ -37,6 +37,8 @@ export class ValueChain {
         nextProcessStep.addToBasket(wi)
     }
 
+    public updateWorkItemExtendedInfos = (): void => this.processSteps.forEach(ps => ps.workItemBasket.forEach(wi => wi.updateExtendedInfos()))
+
     public letWorkItemsFlow = (): void => 
         this.processSteps.forEach(ps =>         // for all process steps in the value chain 
             ps.workItemBasket                   

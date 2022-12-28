@@ -18,7 +18,7 @@ enum InputArgs {
     "WorkOrders"        = 3
 }
 
-console.log("argv[2]=" + process.argv[2] + ", " + "argv[3]=" + process.argv[3])
+console.log("argv[2]=" + process.argv[2] + ", " + "argv[3]=" + process.argv[3] +"\n")
 
 export const lonelyLobsterSystem = systemCreatedFromConfigFile(process.argv[InputArgs.SystemConfig])
 

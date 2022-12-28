@@ -14,7 +14,7 @@ import { Worker } from './worker.js'
 //    HELPERS 
 //----------------------------------------------------------------------
 
-type WorkItemId = number
+export type WorkItemId = number
 
 export interface WorkOrder {
     timestamp:  Timestamp,
@@ -104,14 +104,22 @@ export class LogEntryWorkItemWorked extends LogEntryWorkItem {
 //    WORK ITEM  
 //----------------------------------------------------------------------
 
+export enum ElapsedTimeMode {
+    firstToLastEntryFound,   // timestamp of last entry found - timestamp of first entry found in workitem list
+    firstEntryToNow          // clock.time - timestamp of first entry found in workitem list
+}
+
 export class WorkItem {
-    log:        LogEntryWorkItem[] = []
-    public id:  WorkItemId
-    public tag: WorkItemTag
+    private log:            LogEntryWorkItem[] = []
+    public  id:             WorkItemId
+    public  tag:            WorkItemTag
+    public  extendedInfos:  WorkItemExtendedInfos
+
     constructor(public valueChain:          ValueChain,
                 public currentProcessStep:  WorkItemBasketHolder) {
-        this.id  = idGen.next().value
-        this.tag = tagGen.next().value
+        this.id             = idGen.next().value
+        this.tag            = tagGen.next().value
+        this.extendedInfos  = new WorkItemExtendedInfos(this)   
     }
 
     public logMovedTo(toProcessStep: WorkItemBasketHolder) {
@@ -127,7 +135,26 @@ export class WorkItem {
                                                     worker ))
     }
 
-    public elapsedTime = (): TimeUnit => (this.log[this.log.length - 1].timestamp < clock.time ? this.log[this.log.length -1].timestamp : clock.time) - this.log[0].timestamp + 1
+
+
+//  public elapsedTime = (): TimeUnit => (this.log[this.log.length - 1].timestamp < clock.time ? this.log[this.log.length -1].timestamp : clock.time) - this.log[0].timestamp + 1
+
+    public elapsedTime (mode: ElapsedTimeMode, workItemBasketHolder?: WorkItemBasketHolder): TimeUnit { 
+        //if (this.id == 6) console.log(`elapsedTime(${workItemBasketHolder?.id}):`)
+        const logInScope: LogEntryWorkItem[] = workItemBasketHolder == undefined ? this.log
+                                                                                 : this.log.filter(le => le.workItemBasketHolder == workItemBasketHolder)
+        if (logInScope.length == 0) return -1                                                                         
+        //if (this.id == 6) logInScope.forEach(le => console.log(`${le.stringifyLeWi()}`))
+        
+        const maxTime   = mode == ElapsedTimeMode.firstEntryToNow ? clock.time : Math.max(logInScope[logInScope.length - 1].timestamp)
+        const minTime   = logInScope[0].timestamp
+        const deltaTime = maxTime - minTime
+        //if (this.id == 6) console.log(`elapsedTime(${workItemBasketHolder?.id}): a = ${deltaTime}\n`)
+        return deltaTime
+    }
+
+
+
 
     public accumulatedEffort = (workItemBasketHolder?: WorkItemBasketHolder): Effort =>
         (workItemBasketHolder == undefined ? this.log 
@@ -143,7 +170,10 @@ export class WorkItem {
     public finishedAtCurrentProcessStep = (): boolean => 
         this.accumulatedEffort(<ProcessStep>this.currentProcessStep) >= (<ProcessStep>this.currentProcessStep).normEffort
 
-    public stringify = (): string => `\tt=${clock.time} wi=${this.id} ps=${this.currentProcessStep.id} vc=${this.valueChain.id} et=${this.elapsedTime()} ae=${this.accumulatedEffort(this.currentProcessStep)} ${this.finishedAtCurrentProcessStep() ? "done" : ""}\n`
+    public updateExtendedInfos(): void {
+        this.extendedInfos = new WorkItemExtendedInfos(this)         
+    }
+    public stringify = (): string => `\tt=${clock.time} wi=${this.id} ps=${this.currentProcessStep.id} vc=${this.valueChain.id} et=${this.elapsedTime(ElapsedTimeMode.firstToLastEntryFound)} ae=${this.accumulatedEffort(this.currentProcessStep)} ${this.finishedAtCurrentProcessStep() ? "done" : ""}\n`
 
     public stringifyLog(): string {
         let s: string = `t=${clock.time} WorkItem Log:\n`
@@ -166,3 +196,95 @@ export class WorkItemSet {
    public stringify = (): string => `WorkItem Set: t=${clock.time} wi[]=${this.workItemBasket.map(wi => wi.id.toString()).reduce((a, b) => a + " " + b)}\n`
 }
 
+//----------------------------------------------------------------------
+//    WORKITEM EXTENDED INFO   ...for workers' decision making 
+//----------------------------------------------------------------------
+
+export enum WiExtInfoElem {
+    wiId                            =  0,
+
+    accumulatedEffortInProcessStep  =  1,
+    remainingEffortInProcessStep    =  2,
+    accumulatedEffortInValueChain   =  3,
+    remainingEffortInValueChain     =  4,
+
+    visitedProcessSteps             =  5,
+    remainingProcessSteps           =  6,
+
+    valueOfValueChain               =  7,
+    totalEffortInValueChain         =  8,
+    contributionOfValueChain        =  9,
+
+    sizeOfInventoryInProcessStep    = 10,
+
+    elapsedTimeInProcessStep        = 11,
+    elapsedTimeInValueChain         = 12
+
+}
+
+type wiDecisionInput = number  
+export type WiExtInfoElemTuple = [WorkItemId, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput]
+
+class WorkItemExtendedInfos {
+    public workOrderExtendedInfos: WiExtInfoElemTuple
+    constructor(public wi: WorkItem) {
+        let accumulatedEffortInProcessStep   = wi.accumulatedEffort(wi.currentProcessStep)
+        let remainingEffortInProcessStep     = (<ProcessStep>wi.currentProcessStep).normEffort - accumulatedEffortInProcessStep
+        let accumulatedEffortInValueChain    = wi.accumulatedEffort()
+        let remainingEffortInValueChain      = wi.valueChain.processSteps.map(ps => (<ProcessStep>ps).normEffort).reduce((a, b) => a + b) - accumulatedEffortInValueChain
+
+        let visitedProcessSteps              = (<ProcessStep>wi.currentProcessStep).valueChain.processSteps.indexOf(<ProcessStep>wi.currentProcessStep) + 1
+        let remainingProcessSteps            = (<ProcessStep>wi.currentProcessStep).valueChain.processSteps.length - visitedProcessSteps
+        
+        let valueOfValueChain                = (<ProcessStep>wi.currentProcessStep).valueChain.totalValueAdd
+        let totalEffortInValueChain          = accumulatedEffortInValueChain + remainingEffortInValueChain
+        let contributionOfValueChain         = valueOfValueChain - totalEffortInValueChain
+
+        let sizeOfInventoryInProcessStep     = (<ProcessStep>wi.currentProcessStep).workItemBasket.length
+
+        let elapsedTimeInProcessStep         = wi.elapsedTime(ElapsedTimeMode.firstEntryToNow, wi.currentProcessStep)
+        let elapsedTimeInValueChain          = wi.elapsedTime(ElapsedTimeMode.firstEntryToNow)
+
+        this.workOrderExtendedInfos = [
+            wi.id,
+            accumulatedEffortInProcessStep,   
+            remainingEffortInProcessStep,     
+            accumulatedEffortInValueChain,   
+            remainingEffortInValueChain,      
+    
+            visitedProcessSteps,              
+            remainingProcessSteps,           
+            
+            valueOfValueChain,                
+            totalEffortInValueChain,          
+            contributionOfValueChain,         
+    
+            sizeOfInventoryInProcessStep,    
+    
+            elapsedTimeInProcessStep,         
+            elapsedTimeInValueChain          
+        ]
+    }
+
+    public show (wiId: number, time?: Timestamp): void { 
+        if (this.wi.id == wiId) console.log(
+            `\nExtended infos for work item #${wiId}|${this.wi.tag} before work in process step ${this.wi.currentProcessStep.id} at time ${clock.time}:\n`
+            + `\taccumulatedEffortInProcessStep \t= ${this.workOrderExtendedInfos[WiExtInfoElem.accumulatedEffortInProcessStep]}\n`
+            + `\tremainingEffortInProcessStep \t= ${this.workOrderExtendedInfos[WiExtInfoElem.remainingEffortInProcessStep]}\n`
+            + `\taccumulatedEffortInValueChain \t= ${this.workOrderExtendedInfos[WiExtInfoElem.accumulatedEffortInValueChain]}\n`
+            + `\tremainingEffortInValueChain \t= ${this.workOrderExtendedInfos[WiExtInfoElem.remainingEffortInValueChain]}\n`
+
+            + `\tvisitedProcessSteps \t\t= ${this.workOrderExtendedInfos[WiExtInfoElem.visitedProcessSteps]}\n`
+            + `\tremainingProcessSteps \t\t= ${this.workOrderExtendedInfos[WiExtInfoElem.remainingProcessSteps]}\n`
+
+            + `\tvalueOfValueChain \t\t= ${this.workOrderExtendedInfos[WiExtInfoElem.valueOfValueChain]}\n`
+            + `\ttotalEffortInValueChain \t= ${this.workOrderExtendedInfos[WiExtInfoElem.totalEffortInValueChain]}\n`
+            + `\tcontributionOfValueChain \t= ${this.workOrderExtendedInfos[WiExtInfoElem.contributionOfValueChain]}\n`
+
+            + `\tsizeOfInventoryInProcessStep \t= ${this.workOrderExtendedInfos[WiExtInfoElem.sizeOfInventoryInProcessStep]}\n`
+
+            + `\telapsedTimeInProcessStep \t= ${this.workOrderExtendedInfos[WiExtInfoElem.elapsedTimeInProcessStep]}\n`
+            + `\telapsedTimeInValueChain \t= ${this.workOrderExtendedInfos[WiExtInfoElem.elapsedTimeInValueChain]}\n`
+        )
+   }
+}

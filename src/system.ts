@@ -7,7 +7,7 @@ import { ValueChain } from './valuechain.js'
 import { WorkItemBasketHolder } from './workitembasketholder.js'
 import { Worker, AssignmentSet } from './worker.js'
 import { clock, outputBasket } from './_main.js'
-import { WorkOrder } from "./workitem"
+import { WorkOrder, ElapsedTimeMode } from "./workitem.js"
 import { reshuffle } from './helpers.js'
 
 
@@ -20,13 +20,19 @@ export class LonelyLobsterSystem {
 
     public doNextIteration(now: Timestamp, wos: WorkOrder[]): void {
         clock.setToNow(now)
+        // populate process steps with work items (and first process steps with new work orders)
+        this.valueChains.forEach(vc => vc.letWorkItemsFlow())
         if (wos.length > 0) wos.forEach(w => w.valueChain.createAndInjectNewWorkItem())
-        
+
+        // prepare workitem extended statistical infos before workers make their choice 
+        this.valueChains.forEach(vc => vc.processSteps.forEach(ps => ps.workItemBasket.forEach(wi => wi.updateExtendedInfos())))
+        //this.valueChains.forEach(vc => vc.processSteps.forEach(ps => ps.workItemBasket.forEach(wi => wi.extendedInfos.show(6))))// to be deleted:
+
+        // workers select workitems and work them
         this.workers = reshuffle(this.workers) // avoid that work is assigned to workers always in the same worker sequence  
         this.workers.forEach(wo => wo.work(this.assignmentSet))
-        this.valueChains.forEach(vc => vc.letWorkItemsFlow())
-
-        const stats = new WorkItemStats(outputBasket)
+ 
+        // show valuechains line for current time
         this.showLine()
     }
 
@@ -69,10 +75,10 @@ class WorkItemStats {
     constructor(wibh: WorkItemBasketHolder) {
         this.hasCalculatedStats = wibh.workItemBasket.length > 0
         if (this.hasCalculatedStats) {
-            const sortedWorkBasket = wibh.workItemBasket.sort((wi1, wi2) => wi1.elapsedTime() - wi2.elapsedTime())
-            this.cycleTime.min = sortedWorkBasket[0].elapsedTime()
-            this.cycleTime.max = sortedWorkBasket[sortedWorkBasket.length - 1].elapsedTime()
-            this.cycleTime.avg = sortedWorkBasket.map(wi => wi.elapsedTime()).reduce((a, b) => a + b) / sortedWorkBasket.length
+            const sortedWorkBasket = wibh.workItemBasket.sort((wi1, wi2) => wi1.elapsedTime(ElapsedTimeMode.firstToLastEntryFound) - wi2.elapsedTime(ElapsedTimeMode.firstToLastEntryFound))
+            this.cycleTime.min = sortedWorkBasket[0].elapsedTime(ElapsedTimeMode.firstToLastEntryFound)
+            this.cycleTime.max = sortedWorkBasket[sortedWorkBasket.length - 1].elapsedTime(ElapsedTimeMode.firstToLastEntryFound)
+            this.cycleTime.avg = sortedWorkBasket.map(wi => wi.elapsedTime(ElapsedTimeMode.firstToLastEntryFound)).reduce((a, b) => a + b) / sortedWorkBasket.length
 
             this.throughput.itemPerTimeUnit  = wibh.workItemBasket.length / clock.time
             this.throughput.valuePerTimeUnit = wibh.workItemBasket.map(wi => wi.valueChain.totalValueAdd).reduce((a, b) => a + b)  / clock.time
