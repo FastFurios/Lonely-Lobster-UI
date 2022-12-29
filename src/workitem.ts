@@ -149,6 +149,8 @@ export class WorkItem {
         return deltaTime
     }
 
+    public timeOfLastLogEntry = (): Timestamp => this.log[this.log.length - 1].timestamp
+
     public accumulatedEffort = (workItemBasketHolder?: WorkItemBasketHolder): Effort =>
         (workItemBasketHolder == undefined ? this.log 
                                            : this.log.filter(le => le.workItemBasketHolder == workItemBasketHolder))
@@ -282,6 +284,7 @@ export class WorkItemExtendedInfos {
    }
 
    public static stringifiedHeader = (): string => "___wi___vc/ps___________aeps_reps_aevc_revc_vpss_rpss__vvc_tevc__cvc_sips_etps_etvc" 
+
    public stringifiedDataLine = (): string => `${this.wi.id.toString().padStart(4, ' ')}|${this.wi.tag[0]}: ` 
         + `${((<ProcessStep>this.wi.currentProcessStep).valueChain.id + "/" + this.wi.currentProcessStep.id).padEnd(15, ' ')}`
 
@@ -300,10 +303,5 @@ export class WorkItemExtendedInfos {
         + `${this.workOrderExtendedInfos[WiExtInfoElem.sizeOfInventoryInProcessStep].toFixed().padStart(5, ' ')}`
 
         + `${this.workOrderExtendedInfos[WiExtInfoElem.elapsedTimeInProcessStep].toFixed().padStart(5, ' ')}`
-        + `${this.workOrderExtendedInfos[WiExtInfoElem.elapsedTimeInValueChain].toFixed().padStart(5, ' ')}`
-    
-
-
-
-
+        + `${this.workOrderExtendedInfos[WiExtInfoElem.elapsedTimeInValueChain].toFixed().padStart(5, ' ')}`   
 }

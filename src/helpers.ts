@@ -2,6 +2,7 @@ import { createReadStream, readFileSync } from "fs"
 import { Interface, createInterface } from "readline"
 import { Timestamp } from "./clock.js"
 import { LonelyLobsterSystem } from "./system.js"
+import { DebugShowOptions, debugShowOptions } from "./_main.js"
 import { ValueChain } from './valuechain.js'
 import { ProcessStep } from "./workitembasketholder.js"
 import { WorkOrder, WiExtInfoTuple } from './workitem.js'

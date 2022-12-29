@@ -3,7 +3,7 @@
 //----------------------------------------------------------------------
 
 import { Timestamp } from './clock.js'
-import { clock } from './_main.js'
+import { clock, debugShowOptions } from './_main.js'
 import { ProcessStep } from './workitembasketholder.js'
 import { ValueChain } from './valuechain.js'
 import { WorkItem, WiExtInfoElem, WiExtInfoTuple, WorkItemExtendedInfos } from './workitem.js'
@@ -25,9 +25,11 @@ export function selectNextWorkItem_002(wis: WorkItem[]): WorkItem { // take rand
 
 export function selectNextWorkItem_003(wis: WorkItem[]): WorkItem { // take the top-ranked work item after sorting the accessible work items
     const sv: SortVector[] = [
+        { colIndex: WiExtInfoElem.remainingProcessSteps, 
+          selCrit: SelectionCriterion.min }, 
         { colIndex: WiExtInfoElem.remainingEffortInProcessStep, 
-          selCrit: SelectionCriterion.min } 
-    ]    
+        selCrit: SelectionCriterion.min } 
+      ]    
     const extInfoTuples: WiExtInfoTuple[] = wis.map(wi => wi.extendedInfos.workOrderExtendedInfos) 
 
     const selectedWi: WiExtInfoTuple = topElemAfterSort(extInfoTuples, sv)
@@ -111,17 +113,16 @@ export class Worker {
 
         if (workableWorkItemsAtHand.length == 0) { return } // no workable workitems at hand
 
-        //console.log("Worker__" + WorkItemExtendedInfos.stringifiedHeader())
-        //workableWorkItemsAtHand.forEach(wi => console.log(`${this.id.padEnd(6, ' ')}: ${wi.extendedInfos.stringifiedDataLine()}`)) // ***
+        if(debugShowOptions.workerChoices) console.log("Worker__" + WorkItemExtendedInfos.stringifiedHeader())
+        if(debugShowOptions.workerChoices) workableWorkItemsAtHand.forEach(wi => console.log(`${this.id.padEnd(6, ' ')}: ${wi.extendedInfos.stringifiedDataLine()}`)) // ***
 
         const wi = this.selectNextWorkItem(workableWorkItemsAtHand)
 
-        //console.log(`=> ${this.id} picked: ${wi.id}|${wi.tag[0]}`)
+        if(debugShowOptions.workerChoices) console.log(`=> ${this.id} picked: ${wi.id}|${wi.tag[0]}`)
 
 
         wi.logWorkedOn(this)
         this.logWorked()
-        //console.log(this.id + " has worked at t=" + clock.time + " on wi=" + wi.id + "/" + wi.tag[0])
     }
 
     public show(asSet: AssignmentSet): string {
@@ -140,44 +141,3 @@ export class Worker {
         return s 
     } 
 }
-
-//----------------------------------------------------------------------
-//    BEHAVIOUR 
-//----------------------------------------------------------------------
-
-interface ArrayRow {
-    row:  number,
-    col1: number,
-    col2: number
-}
-
-/*
-const arr: ArrayRow[] = [
-    {row: 0, col1: 10, col2: 500},
-    {row: 1, col1: 20, col2: 400},
-    {row: 2, col1: 30, col2: 300},
-    {row: 3, col1: 40, col2: 200},
-    {row: 4, col1: 50, col2: 100},
-]
-
-console.log(arr[1]["col1"])
-
-
-type SortColVector = string[] 
-const sortColVector: SortColVector = ["col1", "col2"]
-
-function topOfsortedMultiCols(arr: ArrayRow[], sortColVec: SortColVector): ArrayRow[] {
-    if (arr.length == 0)        return arr
-    if (sortColVec.length == 0) return arr
-
-    const lastColArr = arr.pop()  // arr now one shorter 
-    const lastSortCol:string = <string>sortColVec.pop() // sortColVec now one shorter
-
-    const allSortedButLastColArr: ArrayRow[] = topOfsortedMultiCols(arr, sortColVec) // sort the left columns
-
-    return allSortedButLastColArr.sort((a: ArrayRow, b: ArrayRow) => b["col1"] - a["col1"])
-}
-
-console.log(topOfsortedMultiCols(arr, sortColVector))
-
-*/

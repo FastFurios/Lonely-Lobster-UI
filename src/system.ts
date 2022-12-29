@@ -2,14 +2,13 @@
 //    SYSTEM
 //----------------------------------------------------------------------
 
-import { Timestamp } from './clock.js'
+import { Timestamp, TimeUnit } from './clock.js'
 import { ValueChain } from './valuechain.js'
 import { WorkItemBasketHolder } from './workitembasketholder.js'
 import { Worker, AssignmentSet } from './worker.js'
 import { clock, outputBasket } from './_main.js'
 import { WorkOrder, ElapsedTimeMode } from "./workitem.js"
 import { reshuffle } from './helpers.js'
-
 
 export class LonelyLobsterSystem {
     public workOrderInFlow:  WorkOrder[] = []
@@ -26,7 +25,6 @@ export class LonelyLobsterSystem {
 
         // prepare workitem extended statistical infos before workers make their choice 
         this.valueChains.forEach(vc => vc.processSteps.forEach(ps => ps.workItemBasket.forEach(wi => wi.updateExtendedInfos())))
-        //this.valueChains.forEach(vc => vc.processSteps.forEach(ps => ps.workItemBasket.forEach(wi => wi.extendedInfos.show(6))))// to be deleted:
 
         // workers select workitems and work them
         this.workers = reshuffle(this.workers) // avoid that work is assigned to workers always in the same worker sequence  
@@ -41,9 +39,12 @@ export class LonelyLobsterSystem {
     private showLine = () => console.log(clock.time.toString().padStart(3, ' ') + "||" 
                                        + this.valueChains.map(vc => vc.stringifyRow()).reduce((a, b) => a + "||" + b) + "||" 
                                        + outputBasket.workItemBasket.length.toString().padStart(6, " ") + " " 
-                                       + new WorkItemStats(outputBasket).show())
+                                       + new WorkItemStats(outputBasket, 5).show())
 
     public showFooter = () => { 
+        console.log("_t_||" + this.valueChains.map(vc => vc.stringifyHeader()).reduce((a, b) => a + "||" + b) + "||"
+        + outputBasket.workItemBasket.length.toString().padStart(6, " ") + " " 
+        + new WorkItemStats(outputBasket).show())
         console.log("Utilization of:")
         this.workers.forEach(wo => console.log(`${wo.id.padEnd(10, " ")} ${(wo.log.length / (clock.time - clock.startTime + 1) * 100).toFixed(1).padStart(4, ' ')}%\t` 
                                                 + `${this.assignmentSet.assignments.filter(a => a.worker.id == wo.id).map(a => a.valueChainProcessStep.valueChain.id + "." + a.valueChainProcessStep.processStep.id).reduce((a, b) => a + ", " + b)      } `))
@@ -72,16 +73,17 @@ class WorkItemStats {
     public cycleTime:  WorkItemStatsCycleTime  = { min: 0, max: 0, avg: 0 }
     public throughput: WorkItemStatsThroughput = { itemPerTimeUnit: 0, valuePerTimeUnit: 0 }
 
-    constructor(wibh: WorkItemBasketHolder) {
+    constructor(wibh: WorkItemBasketHolder, rollingWindowSize: TimeUnit = clock.time) {
         this.hasCalculatedStats = wibh.workItemBasket.length > 0
         if (this.hasCalculatedStats) {
-            const sortedWorkBasket = wibh.workItemBasket.sort((wi1, wi2) => wi1.elapsedTime(ElapsedTimeMode.firstToLastEntryFound) - wi2.elapsedTime(ElapsedTimeMode.firstToLastEntryFound))
+            const filteredWorkBasket = wibh.workItemBasket.filter(wi => wi.timeOfLastLogEntry() > clock.time - rollingWindowSize)
+            const sortedWorkBasket   = filteredWorkBasket.sort((wi1, wi2) => wi1.elapsedTime(ElapsedTimeMode.firstToLastEntryFound) - wi2.elapsedTime(ElapsedTimeMode.firstToLastEntryFound))
             this.cycleTime.min = sortedWorkBasket[0].elapsedTime(ElapsedTimeMode.firstToLastEntryFound)
             this.cycleTime.max = sortedWorkBasket[sortedWorkBasket.length - 1].elapsedTime(ElapsedTimeMode.firstToLastEntryFound)
             this.cycleTime.avg = sortedWorkBasket.map(wi => wi.elapsedTime(ElapsedTimeMode.firstToLastEntryFound)).reduce((a, b) => a + b) / sortedWorkBasket.length
 
-            this.throughput.itemPerTimeUnit  = wibh.workItemBasket.length / clock.time
-            this.throughput.valuePerTimeUnit = wibh.workItemBasket.map(wi => wi.valueChain.totalValueAdd).reduce((a, b) => a + b)  / clock.time
+            this.throughput.itemPerTimeUnit  = filteredWorkBasket.length / rollingWindowSize
+            this.throughput.valuePerTimeUnit = filteredWorkBasket.map(wi => wi.valueChain.totalValueAdd).reduce((a, b) => a + b)  / rollingWindowSize
         }
     }
     public show = (): string => this.hasCalculatedStats 
