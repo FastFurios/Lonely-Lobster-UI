@@ -12,7 +12,7 @@ export class Clock {
     constructor(public startTime: Timestamp = 0) { this.time = startTime }
 
     public setToNow = (time: Timestamp): void => { 
-        //console.log("---- new time is " + time + " -----------------------------------------------\n"); 
+//        console.log("\n---- new time is " + time + " -----------------------------------------------\n"); 
         this.time = time; 
         return 
     } 

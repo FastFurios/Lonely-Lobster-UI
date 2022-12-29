@@ -135,10 +135,6 @@ export class WorkItem {
                                                     worker ))
     }
 
-
-
-//  public elapsedTime = (): TimeUnit => (this.log[this.log.length - 1].timestamp < clock.time ? this.log[this.log.length -1].timestamp : clock.time) - this.log[0].timestamp + 1
-
     public elapsedTime (mode: ElapsedTimeMode, workItemBasketHolder?: WorkItemBasketHolder): TimeUnit { 
         //if (this.id == 6) console.log(`elapsedTime(${workItemBasketHolder?.id}):`)
         const logInScope: LogEntryWorkItem[] = workItemBasketHolder == undefined ? this.log
@@ -152,9 +148,6 @@ export class WorkItem {
         //if (this.id == 6) console.log(`elapsedTime(${workItemBasketHolder?.id}): a = ${deltaTime}\n`)
         return deltaTime
     }
-
-
-
 
     public accumulatedEffort = (workItemBasketHolder?: WorkItemBasketHolder): Effort =>
         (workItemBasketHolder == undefined ? this.log 
@@ -223,10 +216,10 @@ export enum WiExtInfoElem {
 }
 
 type wiDecisionInput = number  
-export type WiExtInfoElemTuple = [WorkItemId, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput]
+export type WiExtInfoTuple = [WorkItem, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput]
 
-class WorkItemExtendedInfos {
-    public workOrderExtendedInfos: WiExtInfoElemTuple
+export class WorkItemExtendedInfos {
+    public workOrderExtendedInfos: WiExtInfoTuple
     constructor(public wi: WorkItem) {
         let accumulatedEffortInProcessStep   = wi.accumulatedEffort(wi.currentProcessStep)
         let remainingEffortInProcessStep     = (<ProcessStep>wi.currentProcessStep).normEffort - accumulatedEffortInProcessStep
@@ -246,7 +239,7 @@ class WorkItemExtendedInfos {
         let elapsedTimeInValueChain          = wi.elapsedTime(ElapsedTimeMode.firstEntryToNow)
 
         this.workOrderExtendedInfos = [
-            wi.id,
+            wi,
             accumulatedEffortInProcessStep,   
             remainingEffortInProcessStep,     
             accumulatedEffortInValueChain,   
@@ -287,4 +280,30 @@ class WorkItemExtendedInfos {
             + `\telapsedTimeInValueChain \t= ${this.workOrderExtendedInfos[WiExtInfoElem.elapsedTimeInValueChain]}\n`
         )
    }
+
+   public static stringifiedHeader = (): string => "___wi___vc/ps___________aeps_reps_aevc_revc_vpss_rpss__vvc_tevc__cvc_sips_etps_etvc" 
+   public stringifiedDataLine = (): string => `${this.wi.id.toString().padStart(4, ' ')}|${this.wi.tag[0]}: ` 
+        + `${((<ProcessStep>this.wi.currentProcessStep).valueChain.id + "/" + this.wi.currentProcessStep.id).padEnd(15, ' ')}`
+
+        + `${this.workOrderExtendedInfos[WiExtInfoElem.accumulatedEffortInProcessStep].toFixed().padStart(5, ' ')}`
+        + `${this.workOrderExtendedInfos[WiExtInfoElem.remainingEffortInProcessStep].toFixed().padStart(5, ' ')}`
+        + `${this.workOrderExtendedInfos[WiExtInfoElem.accumulatedEffortInValueChain].toFixed().padStart(5, ' ')}`
+        + `${this.workOrderExtendedInfos[WiExtInfoElem.remainingEffortInValueChain].toFixed().padStart(5, ' ')}`
+
+        + `${this.workOrderExtendedInfos[WiExtInfoElem.visitedProcessSteps].toFixed().padStart(5, ' ')}`
+        + `${this.workOrderExtendedInfos[WiExtInfoElem.remainingProcessSteps].toFixed().padStart(5, ' ')}`
+
+        + `${this.workOrderExtendedInfos[WiExtInfoElem.valueOfValueChain].toFixed().padStart(5, ' ')}`
+        + `${this.workOrderExtendedInfos[WiExtInfoElem.totalEffortInValueChain].toFixed().padStart(5, ' ')}`
+        + `${this.workOrderExtendedInfos[WiExtInfoElem.contributionOfValueChain].toFixed().padStart(5, ' ')}`
+
+        + `${this.workOrderExtendedInfos[WiExtInfoElem.sizeOfInventoryInProcessStep].toFixed().padStart(5, ' ')}`
+
+        + `${this.workOrderExtendedInfos[WiExtInfoElem.elapsedTimeInProcessStep].toFixed().padStart(5, ' ')}`
+        + `${this.workOrderExtendedInfos[WiExtInfoElem.elapsedTimeInValueChain].toFixed().padStart(5, ' ')}`
+    
+
+
+
+
 }

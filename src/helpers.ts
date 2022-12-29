@@ -4,8 +4,8 @@ import { Timestamp } from "./clock.js"
 import { LonelyLobsterSystem } from "./system.js"
 import { ValueChain } from './valuechain.js'
 import { ProcessStep } from "./workitembasketholder.js"
-import { WorkOrder, WorkItemId } from './workitem.js'
-import { Worker, selectNextWorkItem_002, AssignmentSet, Assignment } from './worker.js'
+import { WorkOrder, WiExtInfoTuple } from './workitem.js'
+import { Worker, selectNextWorkItem_003, AssignmentSet, Assignment } from './worker.js'
 
 // ------------------------------------------------------------
 //  nice little helper functions
@@ -52,34 +52,20 @@ export interface SortVector {
     colIndex:  number,
     selCrit:   SelectionCriterion
 }
-type wiExtInfoTuple = [WorkItemId, number, number, number, number, number, number, number, number, number, number, number, number]
 
-
-export function topElemAfterSort(arrArr: wiExtInfoTuple[], sortVector: SortVector[]): wiExtInfoTuple {
+export function topElemAfterSort(arrArr: WiExtInfoTuple[], sortVector: SortVector[]): WiExtInfoTuple {
     if (arrArr.length     <  1) throw Error("topElemAfterSort(): received array w/o element") 
     if (arrArr.length     == 1) return arrArr[0]
-    if (sortVector.length == 0) return arrArr[0]
+    if (sortVector.length == 0) return arrArr[Math.floor(Math.random() * arrArr.length)]   // arrArr[0]
 
     const f = sortVector[0].selCrit == SelectionCriterion.max ? (a: number, b: number) => a > b ? a : b
                                                               : (a: number, b: number) => a < b ? a : b
-    const v          = arrArr.map   (arr => arr[sortVector[0].colIndex]).reduce(f)
+    const v          = (<number[]>arrArr.map   (arr => arr[sortVector[0].colIndex])).reduce(f)
     const arrArrTops = arrArr.filter(arr => arr[sortVector[0].colIndex] == v)
 
     return topElemAfterSort(arrArrTops, sortVector.slice(1))
 }
-/*
-export function topElemAfterSort(arrArr: number[][], sortVector: SortVector[]): number[] {
-    if (arrArr.length     == 0) return []
-    if (sortVector.length == 0) return arrArr[0]
 
-    const f = sortVector[0].selCrit == SelectionCriterion.max ? (a: number, b: number) => a > b ? a : b
-                                                              : (a: number, b: number) => a < b ? a : b
-    const v          = arrArr.map   (arr => arr[sortVector[0].colIndex]).reduce(f)
-    const arrArrTops = arrArr.filter(arr => arr[sortVector[0].colIndex] == v)
-
-    return topElemAfterSort(arrArrTops, sortVector.slice(1))
-}
-*/
 // ------------------------------------------------------------
 //  read system configuration from JSON file
 // ------------------------------------------------------------
@@ -134,7 +120,7 @@ export function systemCreatedFromConfigFile(filename : string) : LonelyLobsterSy
         process_step_assignments: I_process_step_assignment[]
     }
 
-    const createNewWorker     = (woj: I_worker): Worker => new Worker(woj.worker_id, selectNextWorkItem_002) 
+    const createNewWorker     = (woj: I_worker): Worker => new Worker(woj.worker_id, selectNextWorkItem_003) 
     const addWorkerAssignment = (psaj: I_process_step_assignment, newWorker: Worker, vcs: ValueChain[], asSet: AssignmentSet): void  => {
         const mayBeVc = vcs.find(vc => vc.id == psaj.value_chain_id)
         if (mayBeVc == undefined) { console.log(`Reading system parameters: try to assign worker=${newWorker} to value chain=${psaj.value_chain_id}: could not find value chain`); throw new Error() }

@@ -6,7 +6,7 @@ import { Timestamp } from './clock.js'
 import { clock } from './_main.js'
 import { ProcessStep } from './workitembasketholder.js'
 import { ValueChain } from './valuechain.js'
-import { WorkItem, WiExtInfoElem } from './workitem.js'
+import { WorkItem, WiExtInfoElem, WiExtInfoTuple, WorkItemExtendedInfos } from './workitem.js'
 import { LogEntry, LogEntryType } from './logging.js'
 import { topElemAfterSort, SortVector, SelectionCriterion } from "./helpers.js"
 
@@ -23,19 +23,17 @@ export function selectNextWorkItem_002(wis: WorkItem[]): WorkItem { // take rand
     return wis[i]
 } 
 
-/*
 export function selectNextWorkItem_003(wis: WorkItem[]): WorkItem { // take the top-ranked work item after sorting the accessible work items
-    let sv: SortVector = [
+    const sv: SortVector[] = [
         { colIndex: WiExtInfoElem.remainingEffortInProcessStep, 
-          selCrit: SelectionCriterion.max } 
+          selCrit: SelectionCriterion.min } 
     ]    
-    let arrArr: number[][] = 
-    topElemAfterSort
+    const extInfoTuples: WiExtInfoTuple[] = wis.map(wi => wi.extendedInfos.workOrderExtendedInfos) 
 
-
-    return wi
+    const selectedWi: WiExtInfoTuple = topElemAfterSort(extInfoTuples, sv)
+    return selectedWi[0]  // return workitem
 } 
-*/
+
 //----------------------------------------------------------------------
 //    WORKER LOGGING 
 //----------------------------------------------------------------------
@@ -113,7 +111,14 @@ export class Worker {
 
         if (workableWorkItemsAtHand.length == 0) { return } // no workable workitems at hand
 
+        //console.log("Worker__" + WorkItemExtendedInfos.stringifiedHeader())
+        //workableWorkItemsAtHand.forEach(wi => console.log(`${this.id.padEnd(6, ' ')}: ${wi.extendedInfos.stringifiedDataLine()}`)) // ***
+
         const wi = this.selectNextWorkItem(workableWorkItemsAtHand)
+
+        //console.log(`=> ${this.id} picked: ${wi.id}|${wi.tag[0]}`)
+
+
         wi.logWorkedOn(this)
         this.logWorked()
         //console.log(this.id + " has worked at t=" + clock.time + " on wi=" + wi.id + "/" + wi.tag[0])
