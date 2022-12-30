@@ -196,7 +196,7 @@ export class WorkItemSet {
 //----------------------------------------------------------------------
 
 export enum WiExtInfoElem {
-    wiId                            =  0,
+    workItem                        =  0,
 
     accumulatedEffortInProcessStep  =  1,
     remainingEffortInProcessStep    =  2,
@@ -219,6 +219,10 @@ export enum WiExtInfoElem {
 
 type wiDecisionInput = number  
 export type WiExtInfoTuple = [WorkItem, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput, wiDecisionInput]
+
+export type WiExtInfo = {
+    workItem: number,
+}
 
 export class WorkItemExtendedInfos {
     public workOrderExtendedInfos: WiExtInfoTuple

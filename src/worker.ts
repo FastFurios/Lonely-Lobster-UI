@@ -14,26 +14,21 @@ import { topElemAfterSort, SortVector, SelectionCriterion } from "./helpers.js"
 //----------------------------------------------------------------------
 //    WORKER BEHAVIOUR 
 //----------------------------------------------------------------------
-export function selectNextWorkItem_001(wis: WorkItem[]): WorkItem { // just take the first in the list of all accessible work items 
+/*
+export function selectNextWorkItem_first(wis: WorkItem[]): WorkItem { // just take the first in the list of all accessible work items 
     return wis[0]
 } 
 
-export function selectNextWorkItem_002(wis: WorkItem[]): WorkItem { // take randomly a work item in the list of all accessible workitems
+export function selectNextWorkItem_random(wis: WorkItem[]): WorkItem { // take randomly a work item in the list of all accessible workitems
     const i = Math.floor(Math.random() * wis.length)
     return wis[i]
 } 
+*/
 
-export function selectNextWorkItem_003(wis: WorkItem[]): WorkItem { // take the top-ranked work item after sorting the accessible work items
-    const sv: SortVector[] = [
-        { colIndex: WiExtInfoElem.remainingProcessSteps, 
-          selCrit: SelectionCriterion.min }, 
-        { colIndex: WiExtInfoElem.remainingEffortInProcessStep, 
-        selCrit: SelectionCriterion.min } 
-      ]    
+export function selectNextWorkItemBySortVector(wis: WorkItem[], svs: SortVector[]): WorkItem { // take the top-ranked work item after sorting the accessible work items
     const extInfoTuples: WiExtInfoTuple[] = wis.map(wi => wi.extendedInfos.workOrderExtendedInfos) 
-
-    const selectedWi: WiExtInfoTuple = topElemAfterSort(extInfoTuples, sv)
-    return selectedWi[0]  // return workitem
+    const selectedWi: WiExtInfoTuple = topElemAfterSort(extInfoTuples, svs)
+    return selectedWi[WiExtInfoElem.workItem]  // return workitem object reference
 } 
 
 //----------------------------------------------------------------------
@@ -92,8 +87,11 @@ interface valueChainProcessStep {
 export class Worker {
     log: LogEntryWorker[] = []
 
-    constructor(public  id:                 WorkerName,
-                private selectNextWorkItem: (wiSet: WorkItem[]) => WorkItem) {}
+    constructor(public  id:         WorkerName,
+                private sortVectorSequence: SortVector[]) {
+                    console.log("Worker.constructor() of " + id + " :")
+                    console.log(this.sortVectorSequence)
+                }
 
     public logWorked() { this.log.push(new LogEntryWorker(this)) }
 
@@ -105,6 +103,7 @@ export class Worker {
     public hasWorkedAt = (timestamp: Timestamp): boolean => this.log.filter(le => le.timestamp == timestamp).length > 0
 
     public work(asSet: AssignmentSet): void {
+        //throw Error(">>>> deliberate error");
         if (this.hasWorkedAt(clock.time)) { return } 
 
         const workableWorkItemsAtHand: WorkItem[] = this.workItemsAtHand(asSet)
@@ -116,7 +115,16 @@ export class Worker {
         if(debugShowOptions.workerChoices) console.log("Worker__" + WorkItemExtendedInfos.stringifiedHeader())
         if(debugShowOptions.workerChoices) workableWorkItemsAtHand.forEach(wi => console.log(`${this.id.padEnd(6, ' ')}: ${wi.extendedInfos.stringifiedDataLine()}`)) // ***
 
-        const wi = this.selectNextWorkItem(workableWorkItemsAtHand)
+        const wi = selectNextWorkItemBySortVector(workableWorkItemsAtHand, this.sortVectorSequence)
+/*
+            [
+                { colIndex: WiExtInfoElem.remainingProcessSteps, 
+                selCrit: SelectionCriterion.min }, 
+                { colIndex: WiExtInfoElem.remainingEffortInProcessStep, 
+                selCrit: SelectionCriterion.min } 
+            ]
+*/
+
 
         if(debugShowOptions.workerChoices) console.log(`=> ${this.id} picked: ${wi.id}|${wi.tag[0]}`)
 

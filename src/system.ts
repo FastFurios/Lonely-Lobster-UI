@@ -67,7 +67,6 @@ interface WorkItemStatsThroughput {
     valuePerTimeUnit:   number
 }
 
-
 class WorkItemStats {
     public hasCalculatedStats: boolean = false
     public cycleTime:  WorkItemStatsCycleTime  = { min: 0, max: 0, avg: 0 }
