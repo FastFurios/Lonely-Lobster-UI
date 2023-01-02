@@ -3,8 +3,8 @@
 //----------------------------------------------------------------------
 
 import { clock } from './_main.js'
-import { WorkItem } from './workitem.js'
 import { ValueChain } from './valuechain.js'
+import { WorkItem } from './workitem.js'
 
 export type Effort    = number // measured in Worker Time Units
 
@@ -19,11 +19,9 @@ export abstract class WorkItemBasketHolder {
         workItem.logMovedTo(this)
     }
 
-    public abstract stringify(): string
+    public abstract stringified(): string
 
-    //public stringifyBarSimple = (): string => this.workItemBasket.map(wi => wi.workedOnAtCurrentProcessStep() ? wi.tag[1] : wi.tag[0]).reduce((a, b) => a + b, '').padEnd(20, ' ')
-
-    public stringifyBar = (): string => { 
+    public stringifiedBar = (): string => { 
         const strOfBskLen = this.workItemBasket.length.toString()
         return this.workItemBasket
                 .map(wi => wi.workedOnAtCurrentProcessStep() ? wi.tag[1] : wi.tag[0])
@@ -33,7 +31,7 @@ export abstract class WorkItemBasketHolder {
             + strOfBskLen 
     }  
 
-    public stringifyBasketItems = (): string => this.workItemBasket.length == 0 ? "empty" : this.workItemBasket.map(wi => "\t\t" + wi.stringify()).reduce((a, b) => a + " " + b)
+    public stringifyBasketItems = (): string => this.workItemBasket.length == 0 ? "empty" : this.workItemBasket.map(wi => "\t\t" + wi.stringified()).reduce((a, b) => a + " " + b)
 }
 
 //----------------------------------------------------------------------
@@ -52,7 +50,7 @@ export class ProcessStep extends WorkItemBasketHolder  {
         this.workItemBasket = this.workItemBasket.filter(wi => wi != workItem)  
     }
 
-    public stringify = () => `\tt=${clock.time} basket of ps=${this.id} ne=${this.normEffort}:\n` + this.stringifyBasketItems()
+    public stringified = () => `\tt=${clock.time} basket of ps=${this.id} ne=${this.normEffort}:\n` + this.stringifyBasketItems()
 }
 
 
@@ -69,5 +67,5 @@ export class OutputBasket extends WorkItemBasketHolder {
         super("OutputBasket")
     } 
 
-    public stringify  = () => `t=${clock.time} ${this.id}:\n` + this.stringifyBasketItems()
+    public stringified  = () => `t=${clock.time} ${this.id}:\n` + this.stringifyBasketItems()
 }

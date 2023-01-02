@@ -16,6 +16,6 @@ export abstract class LogEntry { // records state at end of time unit
         this.timestamp = clock.time
     }
 
-    public abstract stringify: () => string
-    public stringifyLe = () => `t = ${this.timestamp}` 
+    public abstract stringified: () => string
+    public stringifiedLe = (): string => `t = ${this.timestamp}` 
 }

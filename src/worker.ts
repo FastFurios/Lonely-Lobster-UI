@@ -2,28 +2,18 @@
 //    WORKERS 
 //----------------------------------------------------------------------
 
+import { clock, debugShowOptions } from './_main.js'
 import { Timestamp } from './clock.js'
-import { clock } from './_main.js'
-import { ProcessStep } from './workitembasketholder.js'
+import { topElemAfterSort, SortVector } from "./helpers.js"
+import { LogEntry, LogEntryType } from './logging.js'
 import { ValueChain } from './valuechain.js'
 import { WorkItem, WiExtInfoElem, WiExtInfoTuple, WorkItemExtendedInfos } from './workitem.js'
-import { LogEntry, LogEntryType } from './logging.js'
-import { topElemAfterSort, SortVector, debugShowOptions } from "./helpers.js"
+import { ProcessStep } from './workitembasketholder.js'
 
 
 //----------------------------------------------------------------------
 //    WORKER BEHAVIOUR 
 //----------------------------------------------------------------------
-/*
-export function selectNextWorkItem_first(wis: WorkItem[]): WorkItem { // just take the first in the list of all accessible work items 
-    return wis[0]
-} 
-
-export function selectNextWorkItem_random(wis: WorkItem[]): WorkItem { // take randomly a work item in the list of all accessible workitems
-    const i = Math.floor(Math.random() * wis.length)
-    return wis[i]
-} 
-*/
 
 export function selectNextWorkItemBySortVector(wis: WorkItem[], svs: SortVector[]): WorkItem { // take the top-ranked work item after sorting the accessible work items
     const extInfoTuples: WiExtInfoTuple[] = wis.map(wi => wi.extendedInfos.workOrderExtendedInfos) 
@@ -40,7 +30,7 @@ class LogEntryWorker extends LogEntry {
         super(LogEntryType.workerWorked)
     }
 
-    public stringify = () => `${this.stringifyLe()}, ${this.logEntryType}, wo=${this.worker.id}` 
+    public stringified = (): string => `${this.stringifiedLe()}, ${this.logEntryType}, wo=${this.worker.id}` 
 } 
 
 //----------------------------------------------------------------------
@@ -60,6 +50,7 @@ export class AssignmentSet {
         this.assignments.push(as)
     }
 
+/*
     public removeAssignment(assignment: Assignment) {
         this.assignments = this.assignments.filter(as => as != assignment)  
     }
@@ -71,8 +62,9 @@ export class AssignmentSet {
         }
         return s 
     }
-
+*/
 }
+
 //----------------------------------------------------------------------
 //    WORKER 
 //----------------------------------------------------------------------
@@ -88,51 +80,38 @@ export class Worker {
     log: LogEntryWorker[] = []
 
     constructor(public  id:                 WorkerName,
-                private sortVectorSequence: SortVector[]) {
-        console.log("Worker.constructor() of " + id + " :")
-        console.log(this.sortVectorSequence)
-    }
+                private sortVectorSequence: SortVector[]) {}
 
-    public logWorked() { this.log.push(new LogEntryWorker(this)) }
+    private logWorked(): void { this.log.push(new LogEntryWorker(this)) }
 
     private  workItemsAtHand(asSet: AssignmentSet): WorkItem[] {
         const pss: ProcessStep[] = asSet.assignments.filter(as => as.worker.id == this.id).map(as => as.valueChainProcessStep.processStep)
         return pss.flatMap(ps => ps.workItemBasket) 
     }
 
-    public hasWorkedAt = (timestamp: Timestamp): boolean => this.log.filter(le => le.timestamp == timestamp).length > 0
+    private hasWorkedAt = (timestamp: Timestamp): boolean => this.log.filter(le => le.timestamp == timestamp).length > 0
 
     public work(asSet: AssignmentSet): void {
-        //throw Error(">>>> deliberate error");
-        if (this.hasWorkedAt(clock.time)) { return } 
+        if (this.hasWorkedAt(clock.time)) return    // worker has already worked at current time
 
         const workableWorkItemsAtHand: WorkItem[] = this.workItemsAtHand(asSet)
-                                                    .filter(wi => !wi.finishedAtCurrentProcessStep())  // not yet in OutputBasket
+                                                    .filter(wi => !wi.finishedAtCurrentProcessStep())               // not yet in OutputBasket
                                                     .filter(wi => !wi.hasBeenWorkedOnAtCurrentTime(clock.time))     // no one worked on it at current time
 
-        if (workableWorkItemsAtHand.length == 0) { return } // no workable workitems at hand
+        if (workableWorkItemsAtHand.length == 0) return // no workable workitems at hand
 
         if(debugShowOptions.workerChoices) console.log("Worker__" + WorkItemExtendedInfos.stringifiedHeader())
         if(debugShowOptions.workerChoices) workableWorkItemsAtHand.forEach(wi => console.log(`${this.id.padEnd(6, ' ')}: ${wi.extendedInfos.stringifiedDataLine()}`)) // ***
 
-        const wi = selectNextWorkItemBySortVector(workableWorkItemsAtHand, this.sortVectorSequence)
-/*
-            [
-                { colIndex: WiExtInfoElem.remainingProcessSteps, 
-                selCrit: SelectionCriterion.min }, 
-                { colIndex: WiExtInfoElem.remainingEffortInProcessStep, 
-                selCrit: SelectionCriterion.min } 
-            ]
-*/
-
+        const wi: WorkItem = selectNextWorkItemBySortVector(workableWorkItemsAtHand, this.sortVectorSequence)
 
         if(debugShowOptions.workerChoices) console.log(`=> ${this.id} picked: ${wi.id}|${wi.tag[0]}`)
-
 
         wi.logWorkedOn(this)
         this.logWorked()
     }
 
+/*
     public show(asSet: AssignmentSet): string {
         let s = `t=${clock.time} wo=${this.id}: workitems at hand:\n`
         for (let wi of this.workItemsAtHand(asSet)) {
@@ -144,8 +123,9 @@ export class Worker {
     public stringifyLog(): string {
         let s: string = `t=${clock.time} Worker Log:\n`
         for (let le of this.log) {
-            s += `\t${le.stringify()}\n` 
+            s += `\t${le.stringified()}\n` 
         }
         return s 
     } 
+*/
 }

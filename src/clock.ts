@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------
 //    CLOCK TIME 
 //----------------------------------------------------------------------
-import { debugShowOptions } from "./helpers.js"
+import { debugShowOptions } from "./_main.js"
 
 
 export type Timestamp = number
@@ -12,7 +12,9 @@ const timeUnit: TimeUnit = 1
 export class Clock {
     public time: Timestamp
 
-    constructor(public startTime: Timestamp = 0) { this.time = startTime }
+    constructor(public startTime: Timestamp = 0) { 
+        this.time = startTime
+    }
 
     public setToNow = (time: Timestamp): void => { 
         if(debugShowOptions.clock) console.log("\n---- new time is " + time + " -----------------------------------------------\n"); 
