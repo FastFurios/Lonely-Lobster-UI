@@ -21,7 +21,6 @@
     "workers" : [
         {
             "worker_id" : "Vicky",
-            "select_next_work_item_sort_vector_sequence" : [  { "measure": "remainingProcessSteps", "selection_criterion":  "minimum" }, { "measure": "remainingEffortInProcessStep", "selection_criterion":  "minimum" } ],
             "process_step_assignments"  : [
                 {
                     "value_chain_id"  : "Blue",
@@ -31,7 +30,6 @@
         },
         {
             "worker_id" : "Robby",
-            "select_next_work_item_sort_vector_sequence" : [  { "measure": "remainingProcessSteps", "selection_criterion":  "minimum" }, { "measure": "remainingEffortInProcessStep", "selection_criterion":  "minimum" } ],
             "process_step_assignments"  : [
                 {
                     "value_chain_id"  : "Blue",
@@ -41,7 +39,6 @@
         },
         {
             "worker_id" : "Teddy",
-            "select_next_work_item_sort_vector_sequence" : [  { "measure": "remainingProcessSteps", "selection_criterion":  "minimum" }, { "measure": "remainingEffortInProcessStep", "selection_criterion":  "minimum" } ],
             "process_step_assignments"  : [
                 {
                     "value_chain_id"  : "Blue",
@@ -51,7 +48,6 @@
         },
         {
             "worker_id" : "Anny",
-            "select_next_work_item_sort_vector_sequence" : [  { "measure": "remainingProcessSteps", "selection_criterion":  "minimum" }, { "measure": "remainingEffortInProcessStep", "selection_criterion":  "minimum" } ],
             "process_step_assignments"  : [
                 {
                     "value_chain_id"  : "Blue",
@@ -61,7 +57,6 @@
         },
         {
             "worker_id" : "Benny",
-            "select_next_work_item_sort_vector_sequence" : [  { "measure": "remainingProcessSteps", "selection_criterion":  "minimum" }, { "measure": "remainingEffortInProcessStep", "selection_criterion":  "minimum" } ],
             "process_step_assignments"  : [
                 {
                     "value_chain_id"  : "Blue",
@@ -71,7 +66,6 @@
         },
         {
             "worker_id" : "Charly",
-            "select_next_work_item_sort_vector_sequence" : [  { "measure": "remainingProcessSteps", "selection_criterion":  "minimum" }, { "measure": "remainingEffortInProcessStep", "selection_criterion":  "minimum" } ],
             "process_step_assignments"  : [
                 {
                     "value_chain_id"  : "Blue",
@@ -81,7 +75,6 @@
         },
         {
             "worker_id" : "Danny",
-            "select_next_work_item_sort_vector_sequence" : [  { "measure": "remainingProcessSteps", "selection_criterion":  "minimum" }, { "measure": "remainingEffortInProcessStep", "selection_criterion":  "minimum" } ],
             "process_step_assignments"  : [
                 {
                     "value_chain_id"  : "Blue",
@@ -91,7 +84,6 @@
         },
         {
             "worker_id" : "Franky",
-            "select_next_work_item_sort_vector_sequence" : [  { "measure": "remainingProcessSteps", "selection_criterion":  "minimum" }, { "measure": "remainingEffortInProcessStep", "selection_criterion":  "minimum" } ],
             "process_step_assignments"  : [
                 {
                     "value_chain_id"  : "Blue",
@@ -99,5 +91,10 @@
                 }
             ]
         }
-    ]
+    ],
+    "debug_show_options" : {
+        "clock":          true,
+        "worker_choices": true,
+        "read_files":     false
+    }
 }

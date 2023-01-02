@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------
 //    CLOCK TIME 
 //----------------------------------------------------------------------
-import { debugShowOptions } from "./_main.js"
+import { debugShowOptions } from "./helpers.js"
 
 
 export type Timestamp = number

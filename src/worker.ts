@@ -3,12 +3,12 @@
 //----------------------------------------------------------------------
 
 import { Timestamp } from './clock.js'
-import { clock, debugShowOptions } from './_main.js'
+import { clock } from './_main.js'
 import { ProcessStep } from './workitembasketholder.js'
 import { ValueChain } from './valuechain.js'
 import { WorkItem, WiExtInfoElem, WiExtInfoTuple, WorkItemExtendedInfos } from './workitem.js'
 import { LogEntry, LogEntryType } from './logging.js'
-import { topElemAfterSort, SortVector, SelectionCriterion } from "./helpers.js"
+import { topElemAfterSort, SortVector, debugShowOptions } from "./helpers.js"
 
 
 //----------------------------------------------------------------------
@@ -87,11 +87,11 @@ interface valueChainProcessStep {
 export class Worker {
     log: LogEntryWorker[] = []
 
-    constructor(public  id:         WorkerName,
+    constructor(public  id:                 WorkerName,
                 private sortVectorSequence: SortVector[]) {
-                    console.log("Worker.constructor() of " + id + " :")
-                    console.log(this.sortVectorSequence)
-                }
+        console.log("Worker.constructor() of " + id + " :")
+        console.log(this.sortVectorSequence)
+    }
 
     public logWorked() { this.log.push(new LogEntryWorker(this)) }
 

@@ -1,0 +1,50 @@
+{
+    "system_id"     : "System-Zero",
+    "value_chains"  : [
+        {
+            "value_chain_id"    : "Blue",
+            "value_add"         : 4,
+            "process_steps"     : [
+                {
+                    "process_step_id"   : "Step-A",
+                    "norm_effort"       : 1,
+                    "bar_length"        : 30
+                },
+                {
+                    "process_step_id"   : "Step-B",
+                    "norm_effort"       : 2,
+                    "bar_length"        : 30
+                }
+            ]
+        }
+    ],    
+    "workers" : [
+        {
+            "worker_id" : "Vicky",
+            "process_step_assignments"  : [
+                {
+                    "value_chain_id"  : "Blue",
+                    "process_steps_id": "Step-A"
+                },
+                {
+                    "value_chain_id"  : "Blue",
+                    "process_steps_id": "Step-B"
+                }
+            ]
+        },
+        {
+            "worker_id" : "Rusty",
+            "process_step_assignments"  : [
+                {
+                    "value_chain_id"  : "Blue",
+                    "process_steps_id": "Step-A"
+                }
+            ]
+        }
+    ],
+    "debug_show_options" : {
+        "clock":          false,
+        "worker_choices": false,
+        "read_files":     true
+    }
+}

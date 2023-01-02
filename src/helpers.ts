@@ -2,11 +2,18 @@ import { createReadStream, readFileSync } from "fs"
 import { Interface, createInterface } from "readline"
 import { Timestamp } from "./clock.js"
 import { LonelyLobsterSystem } from "./system.js"
-import { DebugShowOptions, debugShowOptions } from "./_main.js"
+import { DebugShowOptions } from "./_main.js"
 import { ValueChain } from './valuechain.js'
 import { ProcessStep } from "./workitembasketholder.js"
 import { WorkOrder, WiExtInfoTuple, WiExtInfoElem } from './workitem.js'
 import { Worker, AssignmentSet, Assignment } from './worker.js'
+import { debug } from "console"
+
+
+const debugShowOptionsDefaults: DebugShowOptions = { clock:          false,
+                                                     workerChoices:  false,
+                                                     readFiles:      false  }
+export var debugShowOptions: DebugShowOptions = debugShowOptionsDefaults 
 
 // ------------------------------------------------------------
 //  nice little helper functions
@@ -133,9 +140,13 @@ export function systemCreatedFromConfigFile(filename : string) : LonelyLobsterSy
                 selCrit:  Object.getOwnPropertyDescriptor(SelectionCriterion, svj.selection_criterion)?.value
             } 
         }
+//      console.log("helpers.js/createNewWorker/woj = ")
+//      console.log(woj)
         const svs: SortVector[] = woj.select_next_work_item_sort_vector_sequence == undefined 
                                 ? [] 
                                 : woj.select_next_work_item_sort_vector_sequence?.map(svj => sortVectorFromJson(svj))
+//      console.log("helpers.js/createNewWorker/svs = ")
+//      console.log(svs)
         return new Worker(woj.worker_id, svs) 
     }
 
@@ -166,6 +177,12 @@ export function systemCreatedFromConfigFile(filename : string) : LonelyLobsterSy
     const asSet:   AssignmentSet = new AssignmentSet("default")
     paj.workers.forEach((woj: I_worker) => createAndAssignWorker(woj, workers, valueChains, asSet))
     
+    if (paj.debug_show_options != undefined) {
+        debugShowOptions.clock          = paj.debug_show_options.clock
+        debugShowOptions.workerChoices  = paj.debug_show_options.worker_choices
+        debugShowOptions.readFiles      = paj.debug_show_options.read_files
+    }
+
     // return the system
     return new LonelyLobsterSystem(systemId, valueChains, workers, asSet)
 } 

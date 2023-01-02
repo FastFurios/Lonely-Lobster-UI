@@ -1,0 +1,136 @@
+{
+    "system_id"     : "System-Zero",
+    "value_chains"  : [
+        {
+            "value_chain_id"    : "Blue",
+            "value_add"         : 4,
+            "process_steps"     : [
+                {
+                    "process_step_id"   : "Step-A",
+                    "norm_effort"       : 1,
+                    "bar_length"        : 50
+                },
+                {
+                    "process_step_id"   : "Step-B",
+                    "norm_effort"       : 2,
+                    "bar_length"        : 50
+                }
+            ]
+        },
+        {
+            "value_chain_id"    : "Green",
+            "value_add"         : 10,
+            "process_steps"     : [
+                {
+                    "process_step_id"   : "Step-1",
+                    "norm_effort"       : 3,
+                    "bar_length"        : 50
+                },
+                {
+                    "process_step_id"   : "Step-2",
+                    "norm_effort"       : 1,
+                    "bar_length"        : 50
+                },
+                {
+                    "process_step_id"   : "Step-3",
+                    "norm_effort"       : 2,
+                    "bar_length"        : 50
+                }            
+            ]
+        }
+    ],    
+    "workers" : [
+        {
+            "worker_id" : "Vicky",
+            "select_next_work_item_sort_vector_sequence" : [  
+            ],
+           "process_step_assignments"  : [
+                {
+                    "value_chain_id"  : "Blue",
+                    "process_steps_id": "Step-A"
+                }
+            ]
+        },
+        {
+            "worker_id" : "Rusty",
+            "select_next_work_item_sort_vector_sequence" : [  
+            ],
+            "process_step_assignments"  : [
+                {
+                    "value_chain_id"  : "Blue",
+                    "process_steps_id": "Step-B"
+                }
+            ]
+        },
+        {
+            "worker_id" : "Sally",
+            "select_next_work_item_sort_vector_sequence" : [  
+            ],
+            "process_step_assignments"  : [
+                {
+                    "value_chain_id"  : "Blue",
+                    "process_steps_id": "Step-B"
+                }
+            ]
+        },        {
+            "worker_id" : "Ally",
+            "select_next_work_item_sort_vector_sequence" : [  
+            ],
+            "process_step_assignments"  : [
+                {
+                    "value_chain_id"  : "Green",
+                    "process_steps_id": "Step-1"
+                }
+            ]
+        },
+        {
+            "worker_id" : "Benny",
+            "select_next_work_item_sort_vector_sequence" : [  
+            ],
+            "process_step_assignments"  : [
+                {
+                    "value_chain_id"  : "Green",
+                    "process_steps_id": "Step-1"
+                }
+            ]
+        },
+        {
+            "worker_id" : "Charly",
+            "select_next_work_item_sort_vector_sequence" : [  
+            ],
+            "process_step_assignments"  : [
+                {
+                    "value_chain_id"  : "Green",
+                    "process_steps_id": "Step-2"
+                }
+            ]
+        },
+        {
+            "worker_id" : "Danny",
+            "select_next_work_item_sort_vector_sequence" : [  
+            ],
+            "process_step_assignments"  : [
+                {
+                    "value_chain_id"  : "Green",
+                    "process_steps_id": "Step-3"
+                }
+            ]
+        },
+        {
+            "worker_id" : "Franky",
+            "select_next_work_item_sort_vector_sequence" : [  
+            ],
+            "process_step_assignments"  : [
+                {
+                    "value_chain_id"  : "Green",
+                    "process_steps_id": "Step-3"
+                }
+            ]
+        }
+    ],
+    "debug_show_options" : {
+        "clock":          false,
+        "worker_choices": false,
+        "read_files":     true
+    }
+}
