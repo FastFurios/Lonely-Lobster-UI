@@ -1,6 +1,22 @@
-<div class="inventory-column">
+<div *ngIf="col.wis!.length > 0; else emptyColumn">
+    <div class="inventory-column">
+        <div  *ngFor="let wi of col.wis">
+            <app-inventory-workitem [wi] = "wi"></app-inventory-workitem>
+        </div>
+    </div>
+</div>
+<ng-template #emptyColumn>
+    <div class="empty-inventory-column"></div>
+</ng-template>
+
+
+<!--
+<ng-template *ngIf="col.wis!.length > 0; else emptyColumn">
+
+
+    <div class="inventory-column">
     <div  *ngFor="let wi of col.wis">
         <app-inventory-workitem [wi] = "wi"></app-inventory-workitem>
     </div>
 </div>
-
+-->

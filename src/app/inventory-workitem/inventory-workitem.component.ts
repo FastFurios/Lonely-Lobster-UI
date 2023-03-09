@@ -35,8 +35,6 @@ export class InventoryWorkitemComponent implements OnInit {
       blue:   minEffortRgb.blue - maxEffortRgb.blue
     }
 
-
-
     let rgb = {
       red:   minEffortRgb.red   - this.wi.accumulatedEffortInProcessStep / maxEffort * minMaxEffortRgbSpan.red,
       green: minEffortRgb.green - this.wi.accumulatedEffortInProcessStep / maxEffort * minMaxEffortRgbSpan.green,

@@ -32,13 +32,19 @@ export class WorkitemsInventoryService {
         { id: 3,  accumulatedEffortInProcessStep: 1,   elapsedTimeInProcessStep: 1 },
       ] 
     },
-    { colNr: 1,
+    { colNr: 2,
       wis: [
         { id: 4,  accumulatedEffortInProcessStep: 1,   elapsedTimeInProcessStep: 2 },
         { id: 5,  accumulatedEffortInProcessStep: 3,   elapsedTimeInProcessStep: 2 },
       ] 
     },
-    { colNr: 1,
+    { colNr: 3,
+      wis: []   
+    },
+    { colNr: 4,
+      wis: []   
+    },
+    { colNr: 5,
       wis: [
         { id: 6,  accumulatedEffortInProcessStep: 4,   elapsedTimeInProcessStep: 3 },
       ] 
