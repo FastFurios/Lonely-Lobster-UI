@@ -1,9 +1,23 @@
 .workitem {
-    border: 1px ridge white;
-    background-color: rgb(205, 150, 150);
-    width: 20px;
-    height: 20px;
+  /*border: 1px ridge red;*/
+  margin: 1px;
+  background-color: rgb(205, 150, 150);
+  width: 20px;
+  height: 20px;
 }
+
+.workitem-overflow {
+  /*border: 1px ridge red;*/
+  border-bottom: 3px solid red;
+  margin: 1px;
+  background-color: rgb(205, 150, 150);
+  width: 20px;
+  height: 17px;
+}
+
+
+
+
 /* background-color: rgb(255, 200, 200); effort = 0
    background-color: rgb(55, 0, 0); effort = max */
 
@@ -21,10 +35,10 @@
 .inventory {
   display: flex;
   flex-direction: row;
-  border: 1px ridge rgb(250, 49, 49);
+  border: 1px ridge lightgray;
   background-color: white;
   width: 200px;
-  height: 200px;
+  height: 63px;
   font-family: Arial, Helvetica, sans-serif;
   font-size: x-small; 
   text-align: center;
