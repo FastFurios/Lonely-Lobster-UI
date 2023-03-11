@@ -43,7 +43,4 @@ export class InventoryWorkitemComponent implements OnInit {
     return `background-color: rgb(${rgb.red}, ${rgb.green}, ${rgb.blue})`
   }
 
-  isLastWiBeforeColumnOverflow = (): boolean => this.wi.id == 3  // ** to be extended
-
-
 }

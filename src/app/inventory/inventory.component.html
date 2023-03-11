@@ -1,6 +1,16 @@
 <p>Basket: Green.1</p>
-<div class="inventory">
-    <div  *ngFor="let col of psInventory">
-        <app-inventory-column [col]="col"></app-inventory-column>
+<div *ngIf="psInventoryShow.overload; else standardInventory">
+    <div class="inventory-overloaded">
+        <div  *ngFor="let col of psInventoryShow.cols">
+            <app-inventory-column [col]="col"></app-inventory-column>
+        </div>
     </div>
 </div>
+
+<ng-template #standardInventory>
+    <div class="inventory">
+        <div  *ngFor="let col of psInventoryShow.cols">
+            <app-inventory-column [col]="col"></app-inventory-column>
+        </div>
+    </div>
+</ng-template>

@@ -1,6 +1,3 @@
-<div *ngIf="!isLastWiBeforeColumnOverflow(); else lastInColumn">
+<div>
     <div class="workitem" [style]="colorOfWorkitem"> {{ wi.id }}</div>
 </div>
-<ng-template #lastInColumn>
-    <div class="workitem-overflow" [style]="colorOfWorkitem"> {{ wi.id }}</div>
-</ng-template>

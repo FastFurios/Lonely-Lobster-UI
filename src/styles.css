@@ -1,44 +1,48 @@
 .workitem {
-  /*border: 1px ridge red;*/
   margin: 1px;
   background-color: rgb(205, 150, 150);
   width: 20px;
   height: 20px;
 }
+ 
 
-.workitem-overflow {
-  /*border: 1px ridge red;*/
-  border-bottom: 3px solid red;
-  margin: 1px;
-  background-color: rgb(205, 150, 150);
-  width: 20px;
-  height: 17px;
-}
-
-
-
-
-/* background-color: rgb(255, 200, 200); effort = 0
-   background-color: rgb(55, 0, 0); effort = max */
-
-   
 .inventory-column {
   display: inline-block;
   align-self: flex-end;
 }
-  
-.empty-inventory-column {
+
+.inventory-column-empty {
   width: 20px;
   border: 1px ridge solid-white;
 }
+
+.inventory-column-overloaded {
+  display: inline-block;
+  align-self: flex-end;
+  border-bottom: 3px solid red
+}
+
   
 .inventory {
   display: flex;
   flex-direction: row;
   border: 1px ridge lightgray;
   background-color: white;
-  width: 200px;
-  height: 63px;
+  width: 105px;
+  height: 66px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: x-small; 
+  text-align: center;
+}
+
+.inventory-overloaded {
+  display: flex;
+  flex-direction: row;
+  border: 1px ridge lightgray;
+  border-right: 3px ridge red;
+  background-color: white;
+  width: 105px;
+  height: 66px;
   font-family: Arial, Helvetica, sans-serif;
   font-size: x-small; 
   text-align: center;

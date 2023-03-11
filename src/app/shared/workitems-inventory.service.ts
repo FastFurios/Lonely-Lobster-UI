@@ -30,12 +30,14 @@ export class WorkitemsInventoryService {
         { id: 1,  accumulatedEffortInProcessStep: 1,   elapsedTimeInProcessStep: 1 },
         { id: 2,  accumulatedEffortInProcessStep: 0,   elapsedTimeInProcessStep: 1 },
         { id: 3,  accumulatedEffortInProcessStep: 1,   elapsedTimeInProcessStep: 1 },
+        { id: 31,  accumulatedEffortInProcessStep: 1,   elapsedTimeInProcessStep: 1 },
+        { id: 32,  accumulatedEffortInProcessStep: 1,   elapsedTimeInProcessStep: 1 },
       ] 
     },
     { colNr: 2,
       wis: [
-        { id: 4,  accumulatedEffortInProcessStep: 1,   elapsedTimeInProcessStep: 2 },
-        { id: 5,  accumulatedEffortInProcessStep: 3,   elapsedTimeInProcessStep: 2 },
+        { id: 5,  accumulatedEffortInProcessStep: 1,   elapsedTimeInProcessStep: 2 },
+        { id: 6,  accumulatedEffortInProcessStep: 3,   elapsedTimeInProcessStep: 2 },
       ] 
     },
     { colNr: 3,
@@ -46,7 +48,7 @@ export class WorkitemsInventoryService {
     },
     { colNr: 5,
       wis: [
-        { id: 6,  accumulatedEffortInProcessStep: 4,   elapsedTimeInProcessStep: 3 },
+        { id: 7,  accumulatedEffortInProcessStep: 4,   elapsedTimeInProcessStep: 3 },
       ] 
     }
   ]  
