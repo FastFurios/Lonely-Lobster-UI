@@ -1,0 +1,11 @@
+.workitem {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(205, 150, 150);
+    width: inherit;
+    height: 15px;
+    margin: 1px;
+  }
+   
+  

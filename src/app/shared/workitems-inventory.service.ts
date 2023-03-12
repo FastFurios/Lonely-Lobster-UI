@@ -36,15 +36,18 @@ export class WorkitemsInventoryService {
     },
     { colNr: 2,
       wis: [
-        { id: 5,  accumulatedEffortInProcessStep: 1,   elapsedTimeInProcessStep: 2 },
-        { id: 6,  accumulatedEffortInProcessStep: 3,   elapsedTimeInProcessStep: 2 },
+        { id: 21,  accumulatedEffortInProcessStep: 1,   elapsedTimeInProcessStep: 2 },
+        { id: 22,  accumulatedEffortInProcessStep: 3,   elapsedTimeInProcessStep: 2 },
       ] 
     },
     { colNr: 3,
-      wis: []   
+      wis: [
+      ]   
     },
     { colNr: 4,
-      wis: []   
+      wis: [
+        { id: 401,  accumulatedEffortInProcessStep: 1,   elapsedTimeInProcessStep: 2 },
+      ]   
     },
     { colNr: 5,
       wis: [
