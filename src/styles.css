@@ -16,13 +16,15 @@
   border: 1px ridge solid-white;
 }
 
+/*
 .inventory-column-overloaded {
   display: inline-block;
   align-self: flex-end;
   border-bottom: 3px solid red
 }
+*/
 
-  
+
 .inventory {
   display: flex;
   flex-direction: row;
@@ -47,3 +49,17 @@
   font-size: x-small; 
   text-align: center;
 }
+
+.excess-workitem-number-x {
+  color: red;
+  font-weight: bold;
+  padding: 5px;
+}
+
+.excess-workitem-number-y {
+  color: red;
+  font-weight: bold;
+  border-top: 3px solid red
+}
+  
+    

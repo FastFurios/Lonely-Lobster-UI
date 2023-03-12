@@ -3,7 +3,7 @@ import { PsInventory, WorkitemsInventoryService, PsInventoryColumn } from '../sh
 
 type PsInventoryShow = { 
   cols: PsInventory;
-  overload: boolean 
+  excessColsWiNum: number
 }
 
 @Component({
@@ -21,9 +21,10 @@ export class InventoryComponent implements OnInit {
   }
 
   ngOnInit(): void { 
+
     this.psInventoryShow = {
-      cols:     this.psInventory.slice(0, 5),
-      overload: this.psInventory.length > 5
+      cols:            this.psInventory.slice(0, 5),
+      excessColsWiNum: this.psInventory.slice(5).flatMap(col => col.wis).length
     }
   }
 

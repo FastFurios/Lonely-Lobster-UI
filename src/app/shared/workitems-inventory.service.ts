@@ -49,6 +49,7 @@ export class WorkitemsInventoryService {
     { colNr: 5,
       wis: [
         { id: 7,  accumulatedEffortInProcessStep: 4,   elapsedTimeInProcessStep: 3 },
+        { id: 8,  accumulatedEffortInProcessStep: 4,   elapsedTimeInProcessStep: 5 },
       ] 
     }
   ]  

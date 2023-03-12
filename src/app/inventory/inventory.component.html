@@ -1,8 +1,11 @@
 <p>Basket: Green.1</p>
-<div *ngIf="psInventoryShow.overload; else standardInventory">
+<div *ngIf="psInventoryShow.excessColsWiNum > 0; else standardInventory">
     <div class="inventory-overloaded">
         <div  *ngFor="let col of psInventoryShow.cols">
-            <app-inventory-column [col]="col"></app-inventory-column>
+            <app-inventory-column [psInventoryColumn]="col"></app-inventory-column>
+        </div>
+        <div class="excess-workitem-number-x">
+            +{{psInventoryShow.excessColsWiNum}}
         </div>
     </div>
 </div>
@@ -10,7 +13,7 @@
 <ng-template #standardInventory>
     <div class="inventory">
         <div  *ngFor="let col of psInventoryShow.cols">
-            <app-inventory-column [col]="col"></app-inventory-column>
+            <app-inventory-column [psInventoryColumn]="col"></app-inventory-column>
         </div>
     </div>
 </ng-template>

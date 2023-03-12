@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { PsInventoryWi, PsInventoryColumn, PsInventory } from '../shared/workitems-inventory.service'
+import { PsInventoryWi, PsInventoryColumn, PsInventory } from '../shared/workitems-inventory.service';
 
-type ColShow = PsInventoryColumn & { overload: boolean }
+type PsInventoryColumnShow = PsInventoryColumn & { excessWisNum: number }
 
 @Component({
   selector: 'app-inventory-column',
@@ -9,16 +9,16 @@ type ColShow = PsInventoryColumn & { overload: boolean }
   styleUrls: ['./inventory-column.component.css']
 })
 export class InventoryColumnComponent implements OnInit {
-  @Input() col: PsInventoryColumn
-  colShow: ColShow
+  @Input() psInventoryColumn: PsInventoryColumn
+  psInventoryColumnShow: PsInventoryColumnShow
 
   constructor() { }
 
   ngOnInit(): void {
-    this.colShow = {
-      colNr:    this.col.colNr, 
-      wis:      this.col.wis.slice(0,3),
-      overload: this.col.wis.length > 3
+    this.psInventoryColumnShow = {
+      colNr:        this.psInventoryColumn.colNr, 
+      wis:          this.psInventoryColumn.wis.slice(0,3),
+      excessWisNum: this.psInventoryColumn.wis.length - 3
     } 
   }
 }

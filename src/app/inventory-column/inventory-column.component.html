@@ -1,17 +1,14 @@
-<div *ngIf="colShow.wis!.length > 0; else emptyColumn">
-    <div *ngIf="colShow.overload; else standardColumn">
-        <div class="inventory-column-overloaded">
-            <div  *ngFor="let wi of colShow.wis">
-                <app-inventory-workitem [wi] = "wi"></app-inventory-workitem>
+<div *ngIf="psInventoryColumnShow.wis!.length > 0; else emptyColumn">
+    <div class="inventory-column">
+        <div  *ngFor="let wi of psInventoryColumnShow.wis">
+            <app-inventory-workitem [wi] = "wi"></app-inventory-workitem>
+        </div>
+        <div *ngIf="psInventoryColumnShow.excessWisNum > 0">
+            <div class="excess-workitem-number-y">
+                +{{ psInventoryColumnShow.excessWisNum }}
             </div>
         </div>
     </div>
-    <ng-template #standardColumn>
-        <div class="inventory-columns"></div>
-        <div  *ngFor="let wi of col.wis">
-            <app-inventory-workitem [wi] = "wi"></app-inventory-workitem>
-        </div>
-    </ng-template>
 </div>
 
 <ng-template #emptyColumn>
