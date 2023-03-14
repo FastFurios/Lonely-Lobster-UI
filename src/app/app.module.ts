@@ -6,6 +6,7 @@ import { MyFirstComponentComponent } from './my-first-component/my-first-compone
 import { InventoryComponent } from './inventory/inventory.component';
 import { InventoryColumnComponent } from './inventory-column/inventory-column.component';
 import { InventoryWorkitemComponent } from './inventory-workitem/inventory-workitem.component';
+import { FlowArrowComponent } from './flow-arrow/flow-arrow.component';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { InventoryWorkitemComponent } from './inventory-workitem/inventory-worki
     MyFirstComponentComponent,
     InventoryComponent,
     InventoryColumnComponent,
-    InventoryWorkitemComponent
+    InventoryWorkitemComponent,
+    FlowArrowComponent
   ],
   imports: [
     BrowserModule 

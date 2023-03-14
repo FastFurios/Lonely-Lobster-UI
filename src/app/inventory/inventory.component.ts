@@ -15,18 +15,15 @@ export class InventoryComponent implements OnInit {
 
   psInventory: PsInventory
   psInventoryShow: PsInventoryShow
-
-  constructor(private wiInvSrv: WorkitemsInventoryService) { 
+  
+  constructor(private wiInvSrv:     WorkitemsInventoryService) {
     this.psInventory = wiInvSrv.processStepInventory
   }
 
   ngOnInit(): void { 
-
     this.psInventoryShow = {
       cols:            this.psInventory.slice(0, 5),
       excessColsWiNum: this.psInventory.slice(5).flatMap(col => col.wis).length
     }
   }
-
-
 }
