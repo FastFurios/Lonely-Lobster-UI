@@ -15,20 +15,38 @@ export class FlowArrowComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.ctx = <CanvasRenderingContext2D>this.canvas.nativeElement.getContext('2d');
-    this.drawShape(100)
+    this.drawShape(40, 50)
   }
 
-  drawShape(thickness: number) {
+  drawShape(thickness: number, length: number) {
     console.log("ctx=" + this.ctx)
     // Filled right arrow
+    let realThickness: number;
+    if (thickness == 0) {
+      realThickness = 50
+      this.ctx.setLineDash([5, 5])
+    }
+    else {
+      realThickness = thickness
+    } 
     this.ctx.beginPath();
     this.ctx.lineTo(10, 0);
-    this.ctx.lineTo(250, 0);
-    this.ctx.lineTo(290, thickness/2);
-    this.ctx.lineTo(250, thickness);
-    this.ctx.lineTo(10, thickness);
+    this.ctx.lineTo(length, 0);
+    this.ctx.lineTo(length+20, realThickness/2);
+    this.ctx.lineTo(length, realThickness);
+    this.ctx.lineTo(10, realThickness);
     this.ctx.stroke();
-    this.ctx.fillStyle = "blue";
-    this.ctx.fill();
+    if (thickness > 0) {
+      this.ctx.fillStyle = "brown";
+      this.ctx.fill();
+    }
+    if (thickness == 0) {
+      this.ctx.fillStyle = "grey";
+    }
+    else {
+      this.ctx.fillStyle = "white";
+    } 
+    this.ctx.font = "10px Arial, Helvetica"
+    this.ctx.fillText(`${thickness}`, 20, realThickness <= 15 ? 10 : realThickness/2)
   }
 }

@@ -1,0 +1,15 @@
+<p>Valuechain: Green</p>
+<div class="value-chain" >
+    <ngx-slider [(value)]="value" [options]="options" (valueChange)="onSliderChange()"></ngx-slider>
+    <div>
+        <app-process-step></app-process-step>
+    </div>
+    <div>
+        <app-process-step></app-process-step>
+    </div>
+    <div>
+        <app-process-step></app-process-step>
+    </div>
+    {{ value }} * 2 = 
+    {{ doubleValue }}
+</div>

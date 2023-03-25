@@ -7,6 +7,9 @@ import { InventoryComponent } from './inventory/inventory.component';
 import { InventoryColumnComponent } from './inventory-column/inventory-column.component';
 import { InventoryWorkitemComponent } from './inventory-workitem/inventory-workitem.component';
 import { FlowArrowComponent } from './flow-arrow/flow-arrow.component';
+import { ProcessStepComponent } from './process-step/process-step.component';
+import { ValueChainComponent } from './value-chain/value-chain.component';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 
 @NgModule({
   declarations: [
@@ -15,10 +18,13 @@ import { FlowArrowComponent } from './flow-arrow/flow-arrow.component';
     InventoryComponent,
     InventoryColumnComponent,
     InventoryWorkitemComponent,
-    FlowArrowComponent
+    FlowArrowComponent,
+    ProcessStepComponent,
+    ValueChainComponent
   ],
   imports: [
-    BrowserModule 
+    BrowserModule,
+    NgxSliderModule
   ],
   providers: [],
   bootstrap: [AppComponent]
