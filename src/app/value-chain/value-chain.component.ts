@@ -13,13 +13,16 @@ export class ValueChainComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  // https://angular-slider.github.io/ngx-slider/demos
   value: number = 1;
   options: Options = {
-    floor: 0,
-    ceil: 5,
-    vertical: true,
+    floor: 0.1,
+    ceil: 100,
+    step: 0.1,
+    logScale: true,
     showTicks: true,
-    tickStep: 1
+    vertical: true,
+//  tickStep: 10
   };
 
   doubleValue: number

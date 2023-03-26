@@ -1,25 +1,35 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, ViewChild, ElementRef, AfterViewInit, Input, SimpleChange } from '@angular/core';
 
 @Component({
   selector: 'app-flow-arrow',
   templateUrl: './flow-arrow.component.html',
   styleUrls: ['./flow-arrow.component.css']
 })
-export class FlowArrowComponent implements OnInit, AfterViewInit {
+export class FlowArrowComponent implements OnInit, OnChanges, AfterViewInit {
   @ViewChild('myCanvas') canvas: ElementRef<HTMLCanvasElement>
   ctx: CanvasRenderingContext2D
   
+  @Input() flowRate: number
+  viewIsUp: boolean = false
+
   constructor() { }
 
   ngOnInit(): void { }
 
   ngAfterViewInit(): void {
     this.ctx = <CanvasRenderingContext2D>this.canvas.nativeElement.getContext('2d');
-    this.drawShape(40, 50)
+    this.drawShape(this.flowRate, 50)
+    this.viewIsUp = true
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.viewIsUp) {
+      this.ctx.clearRect(0, 0, 200, 200)
+      this.drawShape(this.flowRate, 50)
+    }
   }
 
   drawShape(thickness: number, length: number) {
-    console.log("ctx=" + this.ctx)
     // Filled right arrow
     let realThickness: number;
     if (thickness == 0) {
