@@ -38,7 +38,7 @@ class LogEntryWorker extends LogEntry {
 //----------------------------------------------------------------------
 
 export interface Assignment {
-    valueChainProcessStep: valueChainProcessStep
+    valueChainProcessStep: ValueChainProcessStep
     worker:                Worker
 }
 
@@ -71,7 +71,7 @@ export class AssignmentSet {
 
 type WorkerName = string
 
-interface valueChainProcessStep {
+interface ValueChainProcessStep {
     valueChain:  ValueChain,
     processStep: ProcessStep
 }
