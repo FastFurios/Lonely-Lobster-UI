@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { PsInventoryWi } from '../shared/workitems-inventory.service'
+import { PsInventoryWi } from '../shared/inventory-layout'
 
 type Color = { red: number; green: number; blue: number }
 
@@ -14,8 +14,7 @@ export class InventoryWorkitemComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   get colorOfWorkitem(): string {
     const maxEffort: number      = 10
@@ -40,7 +39,7 @@ export class InventoryWorkitemComponent implements OnInit {
       green: minEffortRgb.green - this.wi.accumulatedEffortInProcessStep / maxEffort * minMaxEffortRgbSpan.green,
       blue:  minEffortRgb.blue  - this.wi.accumulatedEffortInProcessStep / maxEffort * minMaxEffortRgbSpan.blue,
     }
-    return `background-color: rgb(${rgb.red}, ${rgb.green}, ${rgb.blue})`
+    return `rgb(${rgb.red}, ${rgb.green}, ${rgb.blue})`
   }
 
 }

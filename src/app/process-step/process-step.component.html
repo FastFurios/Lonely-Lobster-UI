@@ -1,9 +1,9 @@
-<p>Process-Step: Green.1</p>
+<p>{{ ps.id }}</p>
 <div class="process-step">
     <div>
-        <app-inventory></app-inventory>
+        <app-inventory [wis]=ps.workItems></app-inventory>
     </div>
     <div>
-        <app-flow-arrow [flowRate]="100"></app-flow-arrow>
+        <app-flow-arrow [flowRate]="ps.workItemFlow"></app-flow-arrow>
     </div>
 </div>

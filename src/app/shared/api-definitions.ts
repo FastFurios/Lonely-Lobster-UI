@@ -1,11 +1,3 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from "rxjs"
-import { map, retry, catchError } from "rxjs/operators"
-
-
-
-
 // ######################################################################
 // ## Lonely Lobster API definitions 
 // ######################################################################
@@ -24,23 +16,22 @@ type WorkerName     = string
 // request to iterate
 
 interface I_IterationRequest {
-  time?: number
-  newWorkOrders: {
-      valueChainId:ValueChainId 
-      numWorkOrders: number
-  }[]
+    time?: number
+    newWorkOrders: {
+        valueChainId:ValueChainId 
+        numWorkOrders: number
+    }[]
 }
-
 // response on "iterate" request
 
-interface I_WorkItem {
+export interface I_WorkItem {
     id:                             WorkItemId
     tag:                            WorkItemTag
     accumulatedEffortInProcessStep: number
     elapsedTimeInProcessStep:       number
 }
 
-interface I_ProcessStep {
+export interface I_ProcessStep {
     id:                             ProcessStepId
     normEffort:                     Effort
     workItems:                      I_WorkItem[]
@@ -71,46 +62,10 @@ interface I_WorkerState {
 }
 
 
-interface I_SystemState {
+export interface I_SystemState {
     id:                             string,
     valueChains:                    I_ValueChain[]
     outputBasket:                   I_OutputBasket
     workerUtilization:              I_WorkerState[]
 }
 
-
-
-
-// --- service class --------------------
-
-
-@Injectable({
-  providedIn: 'root'
-})
-export class WorkitemsInventoryService {
-  constructor(private http: HttpClient) { }
-
-  private errorHandler(error: HttpErrorResponse): Observable<any> {
-    console.error("errorHandler(): Fehler aufgetreten!" + error.message + error.ok)
-    return throwError(() => "error" /*new Error()*/)
-  }
-
-  get nextSystemState(): Observable<I_SystemState> {
-    return this.http.get<I_SystemState>("http://localhost:3000/").pipe(
-//      retry(3), 
-      catchError(this.errorHandler),
-    ) 
-  }
-
-  get nextSystemStateOnInput(): Observable<I_SystemState> {
-    const body = [ 
-      { valueChainId: 1, numWorkOrders: 2 },
-      { valueChainId: 2, numWorkOrders: 1 },
-    ]
-    return this.http.post<I_SystemState>("http://localhost:3000/", body).pipe(
-//      retry(3), 
-      catchError(this.errorHandler),
-    ) 
-  }
-
-}

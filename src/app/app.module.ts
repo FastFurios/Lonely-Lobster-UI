@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+
 import { AppComponent } from './app.component';
-import { MyFirstComponentComponent } from './my-first-component/my-first-component.component';
+//import { MyFirstComponentComponent } from './my-first-component/my-first-component.component';
 import { InventoryComponent } from './inventory/inventory.component';
 import { InventoryColumnComponent } from './inventory-column/inventory-column.component';
 import { InventoryWorkitemComponent } from './inventory-workitem/inventory-workitem.component';
@@ -14,7 +16,7 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
 @NgModule({
   declarations: [
     AppComponent,
-    MyFirstComponentComponent,
+//  MyFirstComponentComponent,
     InventoryComponent,
     InventoryColumnComponent,
     InventoryWorkitemComponent,
@@ -24,7 +26,8 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
   ],
   imports: [
     BrowserModule,
-    NgxSliderModule
+    NgxSliderModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

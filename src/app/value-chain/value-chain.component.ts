@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Options } from '@angular-slider/ngx-slider';
+import { I_SystemState } from '../shared/api-definitions'
+import { WorkitemsInventoryService } from '../shared/workitems-inventory.service'
+
+import { Observable } from "rxjs"
 
 @Component({
   selector: 'app-value-chain',
@@ -7,12 +11,22 @@ import { Options } from '@angular-slider/ngx-slider';
   styleUrls: ['./value-chain.component.css']
 })
 export class ValueChainComponent implements OnInit {
+  systemState$: Observable<I_SystemState>  
+//1  systemState: I_SystemState
 
-  constructor() { }
+  constructor( private wiInvSrv: WorkitemsInventoryService ) { }
 
   ngOnInit(): void {
+    this.systemState$ = this.wiInvSrv.nextSystemStateOnInput
+//1    this.systemState$.subscribe(sysState => this.systemState = sysState)
   }
 
+  nextIterationState(): void {
+    this.systemState$ = this.wiInvSrv.nextSystemStateOnInput
+//1    this.systemState$.subscribe(sysState => this.systemState = sysState)
+  }
+
+  
   // https://angular-slider.github.io/ngx-slider/demos
   value: number = 1;
   options: Options = {

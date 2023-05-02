@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { PsInventoryWi, PsInventoryColumn, PsInventory } from '../shared/workitems-inventory.service';
+import { PsInventoryColumn } from '../shared/inventory-layout'
 
 type PsInventoryColumnShow = PsInventoryColumn & { excessWisNum: number }
 
@@ -20,5 +20,6 @@ export class InventoryColumnComponent implements OnInit {
       wis:          this.psInventoryColumn.wis.slice(0,3),
       excessWisNum: this.psInventoryColumn.wis.length - 3
     } 
+    //console.log("InventoryColumnComponent/ngInit/psInventoryColumnShow.excessWisNum = " + this.psInventoryColumnShow.excessWisNum)
   }
 }

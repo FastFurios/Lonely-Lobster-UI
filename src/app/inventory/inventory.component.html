@@ -1,4 +1,5 @@
 <div class="inventory">
+ {{ psInventoryShow.cols.length }} 
     <div  *ngFor="let col of psInventoryShow.cols">
         <app-inventory-column [psInventoryColumn]="col"></app-inventory-column>
     </div>
