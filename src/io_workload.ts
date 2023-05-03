@@ -50,14 +50,13 @@ class CsvTableProcessor {  // is actually a function however needs to hold state
     }
 }
 
-export function processWorkOrderFile(filename : string,sys: LonelyLobsterSystem): void {
+export function processWorkOrderFile(filename : string, sys: LonelyLobsterSystem): void {
     const ctp = new CsvTableProcessor(sys)
 
     function processWorkOrdersFromLine(line: string): void {
         const { time, workOrders } = ctp.workedOrdersFromLine(line)
         if (time != undefined) sys.doNextIteration(time, workOrders)
     }
-
     const fileReaderConfig      = { input: createReadStream(filename), terminal: false }
     const lineReader: Interface = createInterface(fileReaderConfig)
 

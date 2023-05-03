@@ -8,8 +8,11 @@
 import { Clock } from './clock.js'
 import { DebugShowOptions, systemCreatedFromConfigFile } from './io_config.js'
 import { processWorkOrderFile } from './io_workload.js'
+import { workOrderList } from './io_api.js'
 import { workItemIdGenerator, wiTagGenerator, wiTags } from './workitem.js'
 import { OutputBasket } from './workitembasketholder.js'
+import { LonelyLobsterSystem } from './system.js'
+
 import express from 'express'
 
 // set debug defauls in case the io_connfig.json does not contain any debug properties
@@ -78,6 +81,14 @@ else {
         console.log("POST Request came in from " + req.headers.origin)
         console.log("Request body:")
         console.log(req.body)
+
+        lonelyLobsterSystem.doNextIteration(
+            req.body.time, 
+            workOrderList(lonelyLobsterSystem, 
+                          { time: req.body.time,
+                            newWorkOrders: req.body.newWorkOrders } ) 
+        )
+
         res.send(nextSystemState())
       })
       
