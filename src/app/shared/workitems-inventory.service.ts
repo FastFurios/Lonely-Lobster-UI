@@ -103,10 +103,13 @@ export class WorkitemsInventoryService {
   }
 
   get nextSystemStateOnInput(): Observable<I_SystemState> {
-    const body = [ 
-      { valueChainId: 1, numWorkOrders: 2 },
-      { valueChainId: 2, numWorkOrders: 1 },
-    ]
+    const body: I_IterationRequest =
+      { time: 0, 
+        newWorkOrders: [
+          { valueChainId: "Blue",   numWorkOrders: 2 },
+          { valueChainId: "Green",  numWorkOrders: 1 }
+        ]
+      }
     return this.http.post<I_SystemState>("http://localhost:3000/", body).pipe(
 //      retry(3), 
       catchError(this.errorHandler),
