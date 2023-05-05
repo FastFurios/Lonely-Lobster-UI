@@ -19,9 +19,9 @@ export class LonelyLobsterSystem {
                 public assignmentSet:       AssignmentSet) {}
 
     public doNextIteration(now: Timestamp, wos: WorkOrder[]): void {
-        console.log("doNextIteration: now =", now)
-        console.log("doNextIteration: wos =")
-        console.log(wos)
+        //console.log("doNextIteration: now =", now)
+        //console.log("doNextIteration: wos =")
+        //console.log(wos)
    
         clock.setToNow(now)
         // populate process steps with work items (and first process steps with new work orders)

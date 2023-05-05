@@ -8,7 +8,7 @@
 import { Clock } from './clock.js'
 import { DebugShowOptions, systemCreatedFromConfigFile } from './io_config.js'
 import { processWorkOrderFile } from './io_workload.js'
-import { workOrderList } from './io_api.js'
+import { nextSystemState } from './io_api.js'
 import { workItemIdGenerator, wiTagGenerator, wiTags } from './workitem.js'
 import { OutputBasket } from './workitembasketholder.js'
 import { LonelyLobsterSystem } from './system.js'
@@ -64,7 +64,7 @@ else {
       });
     
     let clockTime = 0
-    
+    /*
     function nextSystemState(): I_SystemState {
       const systemState = systemStates[clockTime]
       clockTime = clockTime >= 3 ? 0 : clockTime + 1
@@ -76,20 +76,23 @@ else {
       console.log("GET Request came in from " + req.headers.origin)
       res.send(nextSystemState())
     })
-    
+    */
     app.post('/', (req, res) => {
-        console.log("POST Request came in from " + req.headers.origin)
-        console.log("Request body:")
-        console.log(req.body)
-
+//        console.log("POST Request came in from " + req.headers.origin)
+//        console.log("Request body:")
+//        console.log(req.body)
+/*
         lonelyLobsterSystem.doNextIteration(
             req.body.time, 
             workOrderList(lonelyLobsterSystem, 
                           { time: req.body.time,
                             newWorkOrders: req.body.newWorkOrders } ) 
         )
-
-        res.send(nextSystemState())
+*/
+        const sysState: I_SystemState = nextSystemState(lonelyLobsterSystem, req.body)
+        console.log(sysState)
+        res.send({ body: sysState })
+//        res.send({ body: nextSystemState(lonelyLobsterSystem, req.body)})
       })
       
     app.listen(port, () => {

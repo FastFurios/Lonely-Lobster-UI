@@ -26,27 +26,27 @@ interface I_IterationRequest {
 
 // response on "iterate" request
 
-interface I_WorkItem {
+export interface I_WorkItem {
     id:                             WorkItemId
     tag:                            WorkItemTag
     accumulatedEffortInProcessStep: number
     elapsedTimeInProcessStep:       number
 }
 
-interface I_ProcessStep {
+export interface I_ProcessStep {
     id:                             ProcessStepId
     normEffort:                     Effort
     workItems:                      I_WorkItem[]
     workItemFlow:                   number
 }
 
-interface I_ValueChain {
+export interface I_ValueChain {
     id:                             ValueChainId
     totalValueAdd:                  Value
     processSteps:                   I_ProcessStep[]
 }
 
-interface I_EndProduct {
+export interface I_EndProduct {
     id:                             WorkItemId
     tag:                            WorkItemTag
     accumulatedEffortInValueChain:  number
@@ -54,17 +54,17 @@ interface I_EndProduct {
     elapsedTimeInValueChain:        number
 }
 
-interface I_OutputBasket {
+export interface I_OutputBasket {
     workItems:                      I_EndProduct[]
 }
 
-interface I_WorkerState {
+export interface I_WorkerState {
     worker:                         WorkerName
     utilization:                    number
 }
 
 
-interface I_SystemState {
+export interface I_SystemState {
     id:                             string,
     valueChains:                    I_ValueChain[]
     outputBasket:                   I_OutputBasket
