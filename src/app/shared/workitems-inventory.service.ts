@@ -102,11 +102,13 @@ export class WorkitemsInventoryService {
     ) 
   }
 
+
+  private time: number = 0
   get nextSystemStateOnInput(): Observable<I_SystemState> {
     const body: I_IterationRequest =
-      { time: 0, 
+      { time: ++this.time, 
         newWorkOrders: [
-          { valueChainId: "Blue",   numWorkOrders: 2 },
+          { valueChainId: "Blue",   numWorkOrders: 1 },
           { valueChainId: "Green",  numWorkOrders: 1 }
         ]
       }
