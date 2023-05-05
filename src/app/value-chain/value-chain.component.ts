@@ -17,11 +17,14 @@ export class ValueChainComponent implements OnInit {
   constructor( private wiInvSrv: WorkitemsInventoryService ) { }
 
   ngOnInit(): void {
+//  this.systemState$ = this.wiInvSrv.nextSystemState
     this.systemState$ = this.wiInvSrv.nextSystemStateOnInput
 //1    this.systemState$.subscribe(sysState => this.systemState = sysState)
   }
 
   nextIterationState(): void {
+    console.log(this.systemState$)
+//  this.systemState$ = this.wiInvSrv.nextSystemState
     this.systemState$ = this.wiInvSrv.nextSystemStateOnInput
 //1    this.systemState$.subscribe(sysState => this.systemState = sysState)
   }

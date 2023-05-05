@@ -88,6 +88,8 @@ interface I_SystemState {
   providedIn: 'root'
 })
 export class WorkitemsInventoryService {
+  private time: number = 0
+
   constructor(private http: HttpClient) { }
 
   private errorHandler(error: HttpErrorResponse): Observable<any> {
@@ -102,20 +104,20 @@ export class WorkitemsInventoryService {
     ) 
   }
 
-
-  private time: number = 0
+  
   get nextSystemStateOnInput(): Observable<I_SystemState> {
     const body: I_IterationRequest =
       { time: ++this.time, 
         newWorkOrders: [
-          { valueChainId: "Blue",   numWorkOrders: 1 },
+          { valueChainId: "Blue",   numWorkOrders: 6 },
           { valueChainId: "Green",  numWorkOrders: 1 }
         ]
       }
-    return this.http.post<I_SystemState>("http://localhost:3000/", body).pipe(
-//      retry(3), 
-      catchError(this.errorHandler),
-    ) 
+    return this.http.post<I_SystemState>("http://localhost:3000/", body /*, {responseType: "json"}*/)
+        .pipe(
+          catchError((error: HttpErrorResponse) =>this.errorHandler(error))
+        )
+    
   }
 
 }
