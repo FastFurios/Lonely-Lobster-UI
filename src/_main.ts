@@ -64,7 +64,8 @@ else {
       });
     
     let clockTime = 0
-    /*
+
+/*    
     function nextSystemState(): I_SystemState {
       const systemState = systemStates[clockTime]
       clockTime = clockTime >= 3 ? 0 : clockTime + 1
@@ -76,7 +77,7 @@ else {
       console.log("GET Request came in from " + req.headers.origin)
       res.send(nextSystemState())
     })
-    */
+*/    
     app.post('/', (req, res) => {
 //        console.log("POST Request came in from " + req.headers.origin)
 //        console.log("Request body:")
@@ -89,10 +90,12 @@ else {
                             newWorkOrders: req.body.newWorkOrders } ) 
         )
 */
-        const sysState: I_SystemState = nextSystemState(lonelyLobsterSystem, req.body)
-        console.log(sysState)
-        res.send({ body: sysState })
-//        res.send({ body: nextSystemState(lonelyLobsterSystem, req.body)})
+//      const sysState: I_SystemState = nextSystemState(lonelyLobsterSystem, req.body)
+//      const sysState: I_SystemState = systemStates[0]
+        console.log("Returning real sysState json to Angular FE... ")
+//      console.log(sysState)
+//      res.send(sysState)
+        res.send(nextSystemState(lonelyLobsterSystem, req.body))
       })
       
     app.listen(port, () => {
