@@ -12,6 +12,7 @@ import { FlowArrowComponent } from './flow-arrow/flow-arrow.component';
 import { ProcessStepComponent } from './process-step/process-step.component';
 import { ValueChainComponent } from './value-chain/value-chain.component';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
+import { SystemComponent } from './system/system.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
     InventoryWorkitemComponent,
     FlowArrowComponent,
     ProcessStepComponent,
-    ValueChainComponent
+    ValueChainComponent,
+    SystemComponent
   ],
   imports: [
     BrowserModule,

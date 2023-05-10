@@ -109,7 +109,7 @@ export class WorkitemsInventoryService {
     const body: I_IterationRequest =
       { time: ++this.time, 
         newWorkOrders: [
-          { valueChainId: "Blue",   numWorkOrders: 6 },
+          { valueChainId: "Blue",   numWorkOrders: 1 },
           { valueChainId: "Green",  numWorkOrders: 1 }
         ]
       }

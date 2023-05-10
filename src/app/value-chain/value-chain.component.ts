@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Options } from '@angular-slider/ngx-slider';
-import { I_SystemState } from '../shared/api-definitions'
+import { I_ValueChain } from '../shared/api-definitions'
 import { WorkitemsInventoryService } from '../shared/workitems-inventory.service'
 
 import { Observable } from "rxjs"
@@ -11,23 +11,23 @@ import { Observable } from "rxjs"
   styleUrls: ['./value-chain.component.css']
 })
 export class ValueChainComponent implements OnInit {
-  systemState$: Observable<I_SystemState>  
+  @Input() vc: I_ValueChain//2  systemState$: Observable<I_SystemState>  
 //1  systemState: I_SystemState
 
-  constructor( private wiInvSrv: WorkitemsInventoryService ) { }
+  constructor( /*2 private wiInvSrv: WorkitemsInventoryService */ ) { }
 
   ngOnInit(): void {
 //  this.systemState$ = this.wiInvSrv.nextSystemState
-    this.systemState$ = this.wiInvSrv.nextSystemStateOnInput
+//2    this.systemState$ = this.wiInvSrv.nextSystemStateOnInput
 //1    this.systemState$.subscribe(sysState => this.systemState = sysState)
   }
 
-  nextIterationState(): void {
-    console.log(this.systemState$)
-//  this.systemState$ = this.wiInvSrv.nextSystemState
-    this.systemState$ = this.wiInvSrv.nextSystemStateOnInput
+//2  nextIterationState(): void {
+//2    console.log(this.systemState$)
+//2//  this.systemState$ = this.wiInvSrv.nextSystemState
+//2    this.systemState$ = this.wiInvSrv.nextSystemStateOnInput
 //1    this.systemState$.subscribe(sysState => this.systemState = sysState)
-  }
+//2  }
 
   
   // https://angular-slider.github.io/ngx-slider/demos

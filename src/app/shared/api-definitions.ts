@@ -38,13 +38,13 @@ export interface I_ProcessStep {
     workItemFlow:                   number
 }
 
-interface I_ValueChain {
+export interface I_ValueChain {
     id:                             ValueChainId
     totalValueAdd:                  Value
     processSteps:                   I_ProcessStep[]
 }
 
-interface I_EndProduct {
+export interface I_EndProduct {
     id:                             WorkItemId
     tag:                            WorkItemTag
     accumulatedEffortInValueChain:  number
@@ -52,11 +52,11 @@ interface I_EndProduct {
     elapsedTimeInValueChain:        number
 }
 
-interface I_OutputBasket {
+export interface I_OutputBasket {
     workItems:                      I_EndProduct[]
 }
 
-interface I_WorkerState {
+export interface I_WorkerState {
     worker:                         WorkerName
     utilization:                    number
 }

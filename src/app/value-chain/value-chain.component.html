@@ -1,8 +1,7 @@
-<ng-container *ngIf="systemState$ | async as systemState; else loading">
-    <div class="value-chain">
-        <p> 
-            System / Valuechain:  {{ systemState.id }} / {{ systemState.valueChains[0].id }}
-        </p>
+<div class="value-chain">
+    <p> 
+        Valuechain:  {{ vc.id }}
+    </p>
     
 <!--
         <ngx-slider [(value)]="value" [options]="options" (valueChange)="onSliderChange()"></ngx-slider>
@@ -10,21 +9,7 @@
             <app-flow-arrow  [flowRate]="value"></app-flow-arrow>
         </div>
 -->
-        <div *ngFor="let ps of systemState.valueChains[0].processSteps">
-                <app-process-step [ps]="ps"></app-process-step>
-        </div>
+    <div *ngFor="let ps of vc.processSteps">
+            <app-process-step [ps]="ps"></app-process-step>
     </div>
-</ng-container>
-
-<ng-template #loading>
-    <div class="ui active dimmer">
-        <div class="ui large text loader">System state loading ... </div>
-    </div>
-</ng-template>
-<br/>
-<br/>
-
-<button type="button" class="ui mini button"
-  (click)="nextIterationState()">
-  Next Iteration
-</button>
+</div>

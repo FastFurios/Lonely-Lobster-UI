@@ -1,0 +1,22 @@
+<ng-container *ngIf="systemState$ | async as systemState; else loading">
+    <div class="system">
+        <p> System: {{ systemState.id }} </p>
+    
+        <div *ngFor="let vc of systemState.valueChains">
+                <app-value-chain [vc]="vc"></app-value-chain>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #loading>
+    <div class="ui active dimmer">
+        <div class="ui large text loader">System state loading ... </div>
+    </div>
+</ng-template>
+<br/>
+<br/>
+
+<button type="button" class="ui mini button"
+  (click)="nextIterationState()">
+  Next Iteration
+</button>
