@@ -87,7 +87,8 @@ export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRe
       function i_workerState(wo: Worker): I_WorkerState {
         return {
           worker: wo.id,
-          utilization: 0 // yet to be filled
+          utilization: wo.stats.utilization,
+          assignmentsInfo: wo.stats.assignmentsInfo
         }
       }
 

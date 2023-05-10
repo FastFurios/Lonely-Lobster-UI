@@ -61,6 +61,7 @@ export interface I_OutputBasket {
 export interface I_WorkerState {
     worker:                         WorkerName
     utilization:                    number
+    assignmentsInfo:                string
 }
 
 
@@ -124,7 +125,8 @@ let systemStates: I_SystemState[] = [
         workerUtilization: [
             {
                 worker: "Harry",
-                utilization: 80
+                utilization: 80,
+                assignmentsInfo: "blabla"
             }
         ]
     },
@@ -177,11 +179,15 @@ let systemStates: I_SystemState[] = [
         workerUtilization: [
             {
                 worker: "Harry",
-                utilization: 100
+                utilization: 100,
+                assignmentsInfo: "blabla"
+
             },
             {
                 worker: "Sally",
-                utilization: 50
+                utilization: 50,
+                assignmentsInfo: "blabla"
+
             }
         ]
     },
@@ -234,11 +240,15 @@ let systemStates: I_SystemState[] = [
         workerUtilization: [
             {
                 worker: "Harry",
-                utilization: 100
+                utilization: 100,
+                assignmentsInfo: "blabla"
+
             },
             {
                 worker: "Sally",
-                utilization: 40
+                utilization: 40,
+                assignmentsInfo: "blabla"
+
             }
         ]
     },
@@ -291,11 +301,15 @@ let systemStates: I_SystemState[] = [
         workerUtilization: [
             {
                 worker: "Harry",
-                utilization: 100
+                utilization: 100,
+                assignmentsInfo: "blabla"
+
             },
             {
                 worker: "Sally",
-                utilization: 20
+                utilization: 20,
+                assignmentsInfo: "blabla"
+
             }
         ]
     }

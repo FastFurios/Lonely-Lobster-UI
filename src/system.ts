@@ -35,6 +35,9 @@ export class LonelyLobsterSystem {
         this.workers = reshuffle(this.workers) // avoid that work is assigned to workers always in the same worker sequence  
         this.workers.forEach(wo => wo.work(this.assignmentSet))
  
+        // update workers stats after having worked
+        this.workers.forEach(wo => wo.utilization(this))
+
         // show valuechains line for current time
         this.showLine()
     }
@@ -53,8 +56,8 @@ export class LonelyLobsterSystem {
         + outputBasket.workItemBasket.length.toString().padStart(6, " ") + " " 
         + workItemStats(outputBasket))
         console.log("Utilization of:")
-        this.workers.forEach(wo => console.log(`${wo.id.padEnd(10, " ")} ${(wo.log.length / (clock.time - clock.startTime + 1) * 100).toFixed(1).padStart(4, ' ')}%\t` 
-                                                + `${this.assignmentSet.assignments.filter(a => a.worker.id == wo.id).map(a => a.valueChainProcessStep.valueChain.id + "." + a.valueChainProcessStep.processStep.id).reduce((a, b) => a + ", " + b)      } `))
+        this.workers.forEach(wo => wo.utilization(this))
+        this.workers.forEach(wo => console.log(`${wo.id.padEnd(10, " ")} ${wo.stats.utilization.toFixed(1).padStart(4, ' ')}%\t` + wo.stats.assignmentsInfo))
     }                               
 }
 
