@@ -2,15 +2,14 @@
 //  take api request and feed it to the LonelyLobster system for the next iteration
 // --------------------------------------------------------------------------------
 
-import { Timestamp } from "./clock.js"
-import { Tuple, duplicate, tupleBuilderFrom2Arrays } from "./helpers.js"
+import { duplicate } from "./helpers.js"
 import { LonelyLobsterSystem } from "./system.js"
 import { ValueChain } from './valuechain.js'
 import { WorkOrder, WiExtInfoElem } from './workitem.js'
 import { I_SystemState, I_ValueChain, I_ProcessStep, I_WorkItem, I_OutputBasket, I_EndProduct, I_WorkerState } from './api-definitions.js'
 import { WorkItem, wiTags } from './workitem.js';
 import { ProcessStep, OutputBasket } from './workitembasketholder.js';
-import { outputBasket } from './_main.js'
+import { clock, outputBasket } from './_main.js'
 import { Worker } from './worker';
 
 
@@ -94,9 +93,10 @@ export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRe
 
       return {
         id: sys.id,
+        time: clock.time,
         valueChains: sys.valueChains.map(vc => i_valueChain(vc)),
         outputBasket: { workItems: outputBasket.workItemBasket.map(wi => i_endProduct(wi)) },
-        workerUtilization: sys.workers.map(wo => i_workerState(wo))
+        workersState: sys.workers.map(wo => i_workerState(wo))
       }
     }
 

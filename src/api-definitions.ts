@@ -12,6 +12,7 @@ type ProcessStepId  = string
 type WorkItemId     = number
 type WorkItemTag    = [string, string]
 type WorkerName     = string
+type TimeStamp      = number
 
 
 // request to iterate
@@ -67,9 +68,10 @@ export interface I_WorkerState {
 
 export interface I_SystemState {
     id:                             string,
+    time:                           TimeStamp,
     valueChains:                    I_ValueChain[]
     outputBasket:                   I_OutputBasket
-    workerUtilization:              I_WorkerState[]
+    workersState:                   I_WorkerState[]
 }
 
 
@@ -79,6 +81,7 @@ let systemStates: I_SystemState[] = [
     // clock == 0
     {
         id: "Mock-Machine",
+        time: 0,
         valueChains: [
             {
                 id: "blue",
@@ -122,7 +125,7 @@ let systemStates: I_SystemState[] = [
         outputBasket: {
             workItems: [] 
         },
-        workerUtilization: [
+        workersState: [
             {
                 worker: "Harry",
                 utilization: 80,
@@ -133,6 +136,7 @@ let systemStates: I_SystemState[] = [
 // clock == 1
     {
         id: "Mock-Machine",
+        time: 1,
         valueChains: [
             {
                 id: "blue",
@@ -176,7 +180,7 @@ let systemStates: I_SystemState[] = [
         outputBasket: {
             workItems: [] 
         },
-        workerUtilization: [
+        workersState: [
             {
                 worker: "Harry",
                 utilization: 100,
@@ -194,6 +198,7 @@ let systemStates: I_SystemState[] = [
 // clock == 1
     {
         id: "Mock-Machine",
+        time: 2,
         valueChains: [
             {
                 id: "blue",
@@ -237,7 +242,7 @@ let systemStates: I_SystemState[] = [
         outputBasket: {
             workItems: [] 
         },
-        workerUtilization: [
+        workersState: [
             {
                 worker: "Harry",
                 utilization: 100,
@@ -255,6 +260,7 @@ let systemStates: I_SystemState[] = [
 // clock == 2
     {
         id: "Mock-Machine",
+        time: 3,
         valueChains: [
             {
                 id: "blue",
@@ -298,7 +304,7 @@ let systemStates: I_SystemState[] = [
                     elapsedTimeInValueChain:        6                }
             ]
         },
-        workerUtilization: [
+        workersState: [
             {
                 worker: "Harry",
                 utilization: 100,
