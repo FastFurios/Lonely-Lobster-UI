@@ -1,9 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Options } from '@angular-slider/ngx-slider';
 import { I_ValueChain } from '../shared/api-definitions'
-import { WorkitemsInventoryService } from '../shared/workitems-inventory.service'
-
-import { Observable } from "rxjs"
 
 @Component({
   selector: 'app-value-chain',
@@ -11,7 +8,7 @@ import { Observable } from "rxjs"
   styleUrls: ['./value-chain.component.css']
 })
 export class ValueChainComponent implements OnInit {
-  @Input() vc: I_ValueChain//2  systemState$: Observable<I_SystemState>  
+  @Input() vc: I_ValueChain  //2  systemState$: Observable<I_SystemState>  
 //1  systemState: I_SystemState
 
   constructor( /*2 private wiInvSrv: WorkitemsInventoryService */ ) { }

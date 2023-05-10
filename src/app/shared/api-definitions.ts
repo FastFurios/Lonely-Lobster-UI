@@ -12,10 +12,11 @@ type ProcessStepId  = string
 type WorkItemId     = number
 type WorkItemTag    = [string, string]
 type WorkerName     = string
+type TimeStamp      = number
 
 // request to iterate
 
-interface I_IterationRequest {
+export interface I_IterationRequest {
     time?: number
     newWorkOrders: {
         valueChainId:ValueChainId 
@@ -59,13 +60,22 @@ export interface I_OutputBasket {
 export interface I_WorkerState {
     worker:                         WorkerName
     utilization:                    number
+    assignmentsInfo:                string
 }
+
+/*
+export interface I_WorkerState {
+    worker:                         WorkerName
+    utilization:                    number
+}
+*/
 
 
 export interface I_SystemState {
     id:                             string,
+    time:                           TimeStamp,
     valueChains:                    I_ValueChain[]
     outputBasket:                   I_OutputBasket
-    workerUtilization:              I_WorkerState[]
+    workersState:                   I_WorkerState[]
 }
 
