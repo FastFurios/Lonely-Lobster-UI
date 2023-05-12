@@ -57,7 +57,8 @@ export class LonelyLobsterSystem {
         + workItemStats(outputBasket))
         console.log("Utilization of:")
         this.workers.forEach(wo => wo.utilization(this))
-        this.workers.forEach(wo => console.log(`${wo.id.padEnd(10, " ")} ${wo.stats.utilization.toFixed(1).padStart(4, ' ')}%\t` + wo.stats.assignmentsInfo))
+        this.workers.forEach(wo => console.log(`${wo.id.padEnd(10, " ")} ${wo.stats.utilization.toFixed(1).padStart(4, ' ')}%\t` 
+            + wo.stats.assignments.map(a => a.valueChain.id + "." + a.processStep.id).reduce((a, b) => a + " / " + b)))
     }                               
 }
 

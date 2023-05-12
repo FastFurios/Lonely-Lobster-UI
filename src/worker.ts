@@ -71,21 +71,22 @@ export class AssignmentSet {
 //    WORKER 
 //----------------------------------------------------------------------
 
-type WorkerName = string
-type WorkerStats = {
-    assignmentsInfo: string,  
-    utilization: number // in percent, i.e. 55 is 55%
-}
-
 interface ValueChainProcessStep {
     valueChain:  ValueChain,
     processStep: ProcessStep
 }
+type WorkerName = string
+type WorkerStats = {
+    assignments: ValueChainProcessStep[],  
+    utilization: number // in percent, i.e. 55 is 55%
+}
+
+
 
 export class Worker {
     log:    LogEntryWorker[] = []
     stats:  WorkerStats = { 
-        assignmentsInfo: "",
+        assignments: [],
         utilization: 0
      }
 
@@ -124,7 +125,11 @@ export class Worker {
     public utilization(sys: LonelyLobsterSystem): void {
         this.stats.utilization = this.log.length / (clock.time - clock.startTime + 1) * 100 
 //      console.log("Calculating utilization for " + this.id + " from elapsed time = " + (clock.time - clock.startTime + 1) + " and worklog.length= " + this.log.length)
-        this.stats.assignmentsInfo = `${sys.assignmentSet.assignments.filter(a => a.worker.id == this.id).map(a => a.valueChainProcessStep.valueChain.id + "." + a.valueChainProcessStep.processStep.id).reduce((a, b) => a + ", " + b)      } `
+        this.stats.assignments = sys.assignmentSet.assignments
+                                .filter(a => a.worker.id == this.id)
+                                .map(a => { return { valueChain:  a.valueChainProcessStep.valueChain,
+                                                     processStep: a.valueChainProcessStep.processStep }
+                                            })
     }
 
 /*

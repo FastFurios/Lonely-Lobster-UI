@@ -87,7 +87,12 @@ export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRe
         return {
           worker: wo.id,
           utilization: wo.stats.utilization,
-          assignmentsInfo: wo.stats.assignmentsInfo
+          assignments: wo.stats.assignments.map(a => {
+            return {
+              valueChain:  a.valueChain.id,
+              processStep: a.processStep.id
+            }
+          })
         }
       }
 

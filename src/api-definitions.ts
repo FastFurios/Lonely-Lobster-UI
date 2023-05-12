@@ -59,12 +59,16 @@ export interface I_OutputBasket {
     workItems:                      I_EndProduct[]
 }
 
+export interface I_ValueChainProcessStep {
+    valueChain:  ValueChainId,
+    processStep: ProcessStepId
+}
 export interface I_WorkerState {
     worker:                         WorkerName
     utilization:                    number
-    assignmentsInfo:                string
+//  assignmentsInfo:                string
+    assignments:                    I_ValueChainProcessStep[]
 }
-
 
 export interface I_SystemState {
     id:                             string,
@@ -76,7 +80,7 @@ export interface I_SystemState {
 
 
 // mock data
-
+/*
 let systemStates: I_SystemState[] = [
     // clock == 0
     {
@@ -320,4 +324,4 @@ let systemStates: I_SystemState[] = [
         ]
     }
 ]
-
+*/
