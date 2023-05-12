@@ -55,7 +55,7 @@ export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRe
           id: ps.id,
           normEffort: ps.normEffort,
           workItems: ps.workItemBasket.map(wi => i_workItem(wi)),
-          workItemFlow: 0 // yet to be filled
+          workItemFlow: ps.lastIterationFlowRate
         }
       }
 

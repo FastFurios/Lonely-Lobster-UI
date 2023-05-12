@@ -39,6 +39,8 @@ export abstract class WorkItemBasketHolder {
 //----------------------------------------------------------------------
 
 export class ProcessStep extends WorkItemBasketHolder  {
+    public lastIterationFlowRate: number = 0
+
     constructor(       id:            string,
                 public valueChain:    ValueChain,
                 public normEffort:    Effort,
@@ -47,6 +49,7 @@ export class ProcessStep extends WorkItemBasketHolder  {
     }
 
     public removeFromBasket(workItem: WorkItem) { 
+        this.lastIterationFlowRate += this.workItemBasket.some(wi => wi == workItem) ? 1 : 0  
         this.workItemBasket = this.workItemBasket.filter(wi => wi != workItem)  
     }
 
