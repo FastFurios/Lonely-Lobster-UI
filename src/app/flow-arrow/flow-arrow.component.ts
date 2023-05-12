@@ -33,11 +33,11 @@ export class FlowArrowComponent implements OnInit, OnChanges, AfterViewInit {
     // Filled right arrow
     let realThickness: number;
     if (thickness == 0) {
-      realThickness = 50
+      realThickness = 10
       this.ctx.setLineDash([5, 5])
     }
     else {
-      realThickness = thickness
+      realThickness = thickness * 10
     } 
     this.ctx.beginPath();
     this.ctx.lineTo(10, 0);

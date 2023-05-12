@@ -1,6 +1,9 @@
 .worker {
     display: flex;
     flex-direction: column;
+    border-style: solid;
+    border-width:thin;
+    border-color: black;
     align-items: flex-start;
     background-color: cornsilk;
     font-family: Arial, Helvetica, sans-serif;
