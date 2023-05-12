@@ -1,10 +1,17 @@
 <ng-container *ngIf="systemState$ | async as systemState; else loading">
-    <div class="system">
+    <div >
         <p> System: {{ systemState.id }} </p>
         <p> Time:   {{ systemState.time }} </p>
-    
-        <div *ngFor="let vc of systemState.valueChains">
-                <app-value-chain [vc]="vc"></app-value-chain>
+        <div class="valueChainsAndOutputBasket">
+            <div class="valueChains">
+                <div *ngFor="let vc of systemState.valueChains">
+                    <app-value-chain [vc]="vc"></app-value-chain>
+                </div>
+            </div>
+            <div >
+                <app-output-basket [ob]="systemState.outputBasket"></app-output-basket>
+            </div>
+
         </div>
     </div>
     <app-workers-stats [wosStats]="systemState.workersState" ></app-workers-stats>

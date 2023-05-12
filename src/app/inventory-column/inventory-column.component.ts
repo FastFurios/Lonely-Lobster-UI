@@ -15,10 +15,11 @@ export class InventoryColumnComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    const colHeight = 15
     this.psInventoryColumnShow = {
       colNr:        this.psInventoryColumn.colNr, 
-      wis:          this.psInventoryColumn.wis.slice(0,3),
-      excessWisNum: this.psInventoryColumn.wis.length - 3
+      wis:          this.psInventoryColumn.wis.slice(0,colHeight),
+      excessWisNum: this.psInventoryColumn.wis.length - colHeight
     } 
     //console.log("InventoryColumnComponent/ngInit/psInventoryColumnShow.excessWisNum = " + this.psInventoryColumnShow.excessWisNum)
   }

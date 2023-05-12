@@ -16,6 +16,7 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { SystemComponent } from './system/system.component';
 import { WorkerComponent } from './worker/worker.component';
 import { WorkersStatsComponent } from './workers-stats/workers-stats.component';
+import { OutputBasketComponent } from './output-basket/output-basket.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { WorkersStatsComponent } from './workers-stats/workers-stats.component';
     ValueChainComponent,
     SystemComponent,
     WorkerComponent,
-    WorkersStatsComponent
+    WorkersStatsComponent,
+    OutputBasketComponent
   ],
   imports: [
     BrowserModule,
