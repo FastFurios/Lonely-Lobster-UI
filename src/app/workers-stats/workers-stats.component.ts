@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { I_WorkerState } from '../shared/api-definitions';
 
 @Component({
@@ -6,7 +6,7 @@ import { I_WorkerState } from '../shared/api-definitions';
   templateUrl: './workers-stats.component.html',
   styleUrls: ['./workers-stats.component.css']
 })
-export class WorkersStatsComponent implements OnInit {
+export class WorkersStatsComponent implements OnInit, OnChanges {
   @Input() wosStats: I_WorkerState[]
   constructor() { }
 
@@ -15,4 +15,7 @@ export class WorkersStatsComponent implements OnInit {
 //  console.log(this.wosStats)
   }
 
+  ngOnChanges(): void {
+    this.wosStats = this.wosStats.sort((a, b) => a.worker < b.worker ? -1 : 1)
+  }
 }
