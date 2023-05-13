@@ -11,10 +11,11 @@ type Color = { red: number; green: number; blue: number }
 export class InventoryWorkitemComponent implements OnInit {
   @Input() wi: PsInventoryWi
 
-
   constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { 
+    //console.log("InventoryWorkitemComponent/ngOnInit:" + this.wi.id)
+  }
 
   get colorOfWorkitem(): string {
     const maxEffort: number      = 5

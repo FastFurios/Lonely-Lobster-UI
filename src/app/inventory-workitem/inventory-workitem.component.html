@@ -1,4 +1,10 @@
-<div class="workitem" [style]="'background-color:' + colorOfWorkitem"> {{ wi.id }} </div>
+
+<div *ngIf="wi.valueChainId == 'OutputBasket'">
+    <div class="workitem" [style]="'background-color: green'"> {{ wi.id }} </div>
+</div>    
+<div *ngIf="wi.valueChainId != 'OutputBasket'">
+    <div class="workitem" [style]="'background-color:' + colorOfWorkitem"> {{ wi.id }} </div>
+</div>    
 
 <!--
 <div class="workitem" [style]="colorOfWorkitem"> {{ wi.id }} </div>

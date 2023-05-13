@@ -6,9 +6,9 @@
 // see: https://wallis.dev/blog/typescript-project-references
 
 type Effort         = number // measured in Worker Time Units
-type Value          = number // measured in Worker Time Units
-type ValueChainId   = string
-type ProcessStepId  = string
+export type Value          = number // measured in Worker Time Units
+export type ValueChainId   = string
+export type ProcessStepId  = string
 type WorkItemId     = number
 type WorkItemTag    = [string, string]
 type WorkerName     = string
@@ -32,6 +32,7 @@ export interface I_WorkItem {
     tag:                            WorkItemTag
     valueChainId:                   ValueChainId
     value:                          Value
+    processStepId:                  ProcessStepId,
     accumulatedEffort:              number // ... in process step or overall when in the Output basket
     elapsedTime:                    number // ... in process step or overall when in the Output basket
 }
@@ -49,6 +50,7 @@ export interface I_ValueChain {
     processSteps:                   I_ProcessStep[]
 }
 
+/*
 export interface I_EndProduct {
     id:                             WorkItemId
     tag:                            WorkItemTag
@@ -56,9 +58,10 @@ export interface I_EndProduct {
     valueOfValueChain:              Value
     elapsedTimeInValueChain:        number
 }
-
+*/
 export interface I_OutputBasket {
-    workItems:                      I_EndProduct[]
+//  workItems:                      I_EndProduct[]
+    workItems:                      I_WorkItem[]
 }
 
 export interface I_ValueChainProcessStep {

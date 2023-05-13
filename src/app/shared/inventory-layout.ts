@@ -1,11 +1,13 @@
 // helper functions to build a proper PsInventory from a list of workitems and their stats  
-import { I_WorkItem } from "./api-definitions"
+import { ValueChainId, Value, I_WorkItem } from "./api-definitions"
 
 
 export type PsInventoryWi = {
     id:                number,
+    valueChainId:      ValueChainId,
+    valueOfValueChain: Value,    
     accumulatedEffort: number,
-    elapsedTime:       number    
+    elapsedTime:       number,
   }
   
   export type PsInventoryColumn = {
@@ -33,6 +35,13 @@ export type PsInventoryWi = {
             { colNr: col, 
               wis: wiList.filter(wi => wi.elapsedTime == col)
                          .sort((wi1, wi2) => wi2.accumulatedEffort - wi1.accumulatedEffort)
+                         .map(wi => { return {
+                            id:                 wi.id,
+                            valueChainId:       wi.valueChainId,
+                            valueOfValueChain:  wi.value,
+                            accumulatedEffort:  wi.accumulatedEffort,
+                            elapsedTime:        wi.elapsedTime
+                         }})
             }
         )
     }

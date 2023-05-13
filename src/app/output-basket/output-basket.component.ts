@@ -19,11 +19,12 @@ export class OutputBasketComponent implements OnInit, OnChanges {
     this.wis = this.ob.workItems.map(ep => {
       return {
         id: ep.id,
-        tag: ["", ""],
-        accumulatedEffort: ep.accumulatedEffortInValueChain,
-        elapsedTime: ep.elapsedTimeInValueChain,
-        valueChainId: "unknown", // needs to be fixed later
-        value: -1                // needs to be fixed later
+        tag: ["", ""],  // fix later when I know what to do with the tags
+        valueChainId: "OutputBasket", //ep.valueChainId, 
+        value: ep.value,
+        processStepId: ep.processStepId,
+        accumulatedEffort: ep.accumulatedEffort,
+        elapsedTime: ep.elapsedTime
       }
     })
 
