@@ -6,7 +6,7 @@ import { duplicate } from "./helpers.js"
 import { LonelyLobsterSystem } from "./system.js"
 import { ValueChain } from './valuechain.js'
 import { WorkOrder, WiExtInfoElem } from './workitem.js'
-import { I_SystemState, I_ValueChain, I_ProcessStep, I_WorkItem, I_OutputBasket, I_EndProduct, I_WorkerState } from './api-definitions.js'
+import { I_SystemState, I_ValueChain, I_ProcessStep, I_WorkItem, I_OutputBasket, I_WorkerState } from './api-definitions.js'
 import { WorkItem, wiTags } from './workitem.js';
 import { ProcessStep, OutputBasket } from './workitembasketholder.js';
 import { clock, outputBasket } from './_main.js'
@@ -45,10 +45,11 @@ export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRe
         return {
           id: wi.id,
           tag: wiTags[0],
+          valueChainId: wi.valueChain.id,
+          value: wi.valueChain.totalValueAdd,
+          processStepId: wi.currentProcessStep.id,
           accumulatedEffort: wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.accumulatedEffortInProcessStep],
-          elapsedTime: wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.elapsedTimeInProcessStep],
-          valueChainId: "unknown",  // fix later
-          value: 0                  // fix later
+          elapsedTime: wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.elapsedTimeInProcessStep]
         }
       }
 
@@ -69,13 +70,15 @@ export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRe
         }
       }
 
-      function i_endProduct (wi: WorkItem): I_EndProduct { 
+      function i_endProduct (wi: WorkItem): I_WorkItem { 
         return {
           id: wi.id,
           tag: wiTags[0],
-          accumulatedEffortInValueChain: wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.accumulatedEffortInValueChain],
-          valueOfValueChain: wi.valueChain.totalValueAdd,
-          elapsedTimeInValueChain: wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.elapsedTimeInValueChain]
+          valueChainId: wi.valueChain.id,
+          value: wi.valueChain.totalValueAdd,
+          processStepId: wi.currentProcessStep.id,
+          accumulatedEffort: wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.accumulatedEffortInValueChain],
+          elapsedTime: wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.elapsedTimeInValueChain]
         }
       }
 
