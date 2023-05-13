@@ -45,8 +45,10 @@ export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRe
         return {
           id: wi.id,
           tag: wiTags[0],
-          accumulatedEffortInProcessStep: wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.accumulatedEffortInProcessStep],
-          elapsedTimeInProcessStep: wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.elapsedTimeInProcessStep]
+          accumulatedEffort: wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.accumulatedEffortInProcessStep],
+          elapsedTime: wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.elapsedTimeInProcessStep],
+          valueChainId: "unknown",  // fix later
+          value: 0                  // fix later
         }
       }
 

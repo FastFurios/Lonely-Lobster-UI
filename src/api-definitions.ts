@@ -17,7 +17,7 @@ type TimeStamp      = number
 
 // request to iterate
 
-interface I_IterationRequest {
+export interface I_IterationRequest {
     time?: number
     newWorkOrders: {
         valueChainId:ValueChainId 
@@ -30,8 +30,10 @@ interface I_IterationRequest {
 export interface I_WorkItem {
     id:                             WorkItemId
     tag:                            WorkItemTag
-    accumulatedEffortInProcessStep: number
-    elapsedTimeInProcessStep:       number
+    valueChainId:                   ValueChainId
+    value:                          Value
+    accumulatedEffort:              number // ... in process step or overall when in the Output basket
+    elapsedTime:                    number // ... in process step or overall when in the Output basket
 }
 
 export interface I_ProcessStep {
