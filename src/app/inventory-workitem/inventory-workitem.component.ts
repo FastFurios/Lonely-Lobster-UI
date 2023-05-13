@@ -17,7 +17,7 @@ export class InventoryWorkitemComponent implements OnInit {
   ngOnInit(): void {}
 
   get colorOfWorkitem(): string {
-    const maxEffort: number      = 10
+    const maxEffort: number      = 5
     const maxEffortRgb: Color = {
       red:    55,
       green:  0,
@@ -35,9 +35,9 @@ export class InventoryWorkitemComponent implements OnInit {
     }
 
     let rgb = {
-      red:   minEffortRgb.red   - this.wi.accumulatedEffortInProcessStep / maxEffort * minMaxEffortRgbSpan.red,
-      green: minEffortRgb.green - this.wi.accumulatedEffortInProcessStep / maxEffort * minMaxEffortRgbSpan.green,
-      blue:  minEffortRgb.blue  - this.wi.accumulatedEffortInProcessStep / maxEffort * minMaxEffortRgbSpan.blue,
+      red:   minEffortRgb.red   - this.wi.accumulatedEffort / maxEffort * minMaxEffortRgbSpan.red,
+      green: minEffortRgb.green - this.wi.accumulatedEffort / maxEffort * minMaxEffortRgbSpan.green,
+      blue:  minEffortRgb.blue  - this.wi.accumulatedEffort / maxEffort * minMaxEffortRgbSpan.blue,
     }
     return `rgb(${rgb.red}, ${rgb.green}, ${rgb.blue})`
   }

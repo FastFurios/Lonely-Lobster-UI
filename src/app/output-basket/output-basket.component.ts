@@ -20,8 +20,10 @@ export class OutputBasketComponent implements OnInit, OnChanges {
       return {
         id: ep.id,
         tag: ["", ""],
-        accumulatedEffortInProcessStep: ep.accumulatedEffortInValueChain,
-        elapsedTimeInProcessStep: ep.elapsedTimeInValueChain
+        accumulatedEffort: ep.accumulatedEffortInValueChain,
+        elapsedTime: ep.elapsedTimeInValueChain,
+        valueChainId: "unknown", // needs to be fixed later
+        value: -1                // needs to be fixed later
       }
     })
 
