@@ -5,14 +5,16 @@
 // to-do: share these definitions as project references wth backend and frontend
 // see: https://wallis.dev/blog/typescript-project-references
 
-type Effort         = number // measured in Worker Time Units
-type Value          = number // measured in Worker Time Units
-type ValueChainId   = string
-type ProcessStepId  = string
+export type Effort         = number // measured in Worker Time Units
+export type Value          = number // measured in Worker Time Units
+export type ValueChainId   = string
+export type ProcessStepId  = string
 type WorkItemId     = number
 type WorkItemTag    = [string, string]
 type WorkerName     = string
 type TimeStamp      = number
+export type RgbColor       = [number, number, number]
+
 
 // request to iterate
 
@@ -23,13 +25,18 @@ export interface I_IterationRequest {
         numWorkOrders: number
     }[]
 }
-// response on "iterate" request
 
-export interface I_WorkItem {
+// response on "iterate" request
+    export interface I_WorkItem {
     id:                             WorkItemId
     tag:                            WorkItemTag
-    accumulatedEffortInProcessStep: number
-    elapsedTimeInProcessStep:       number
+    rgbColor?:                      RgbColor         // not assigned at backend but by the frontend after having received system-state data
+    valueChainId:                   ValueChainId
+    value:                          Value
+    maxEffort:                      Effort
+    processStepId:                  ProcessStepId
+    accumulatedEffort:              number // ... in process step or overall when in the Output basket
+    elapsedTime:                    number // ... in process step or overall when in the Output basket
 }
 
 export interface I_ProcessStep {
@@ -45,6 +52,7 @@ export interface I_ValueChain {
     processSteps:                   I_ProcessStep[]
 }
 
+/*
 export interface I_EndProduct {
     id:                             WorkItemId
     tag:                            WorkItemTag
@@ -52,9 +60,10 @@ export interface I_EndProduct {
     valueOfValueChain:              Value
     elapsedTimeInValueChain:        number
 }
-
+*/
 export interface I_OutputBasket {
-    workItems:                      I_EndProduct[]
+//  workItems:                      I_EndProduct[]
+    workItems:                      I_WorkItem[]
 }
 
 export interface I_ValueChainProcessStep {
@@ -67,14 +76,6 @@ export interface I_WorkerState {
 //  assignmentsInfo:                string
     assignments:                    I_ValueChainProcessStep[]
 }
-
-/*
-export interface I_WorkerState {
-    worker:                         WorkerName
-    utilization:                    number
-}
-*/
-
 
 export interface I_SystemState {
     id:                             string,

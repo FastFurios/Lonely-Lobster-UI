@@ -1,5 +1,5 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
-import { I_WorkerState } from '../shared/api-definitions';
+import { I_WorkerState } from '../shared/io_api_definitions';
 
 @Component({
   selector: 'app-workers-stats',

@@ -1,11 +1,14 @@
 // helper functions to build a proper PsInventory from a list of workitems and their stats  
-import { ValueChainId, Value, I_WorkItem } from "./api-definitions"
+import { ValueChainId, Effort, Value, RgbColor, I_WorkItem } from "./io_api_definitions"
 
 
 export type PsInventoryWi = {
     id:                number,
     valueChainId:      ValueChainId,
-    valueOfValueChain: Value,    
+    isEndProduct:      boolean,
+    rgbColor:          RgbColor,
+    valueOfValueChain: Value,   
+    maxEffort:         Effort, 
     accumulatedEffort: number,
     elapsedTime:       number,
   }
@@ -23,7 +26,7 @@ export type PsInventoryWi = {
   }
   
 
-  export function workitemsAsPsInventory(wiList: I_WorkItem[]): PsInventory {
+  export function workitemsAsPsInventory(wiList: I_WorkItem[], isListOfEndProducts: boolean): PsInventory {
     const max = <T>(a:T, b:T): T => a > b ? a : b
     const maxEt = (wis: I_WorkItem[]): number => 
             wis.length == 0 ? 0 
@@ -38,7 +41,10 @@ export type PsInventoryWi = {
                          .map(wi => { return {
                             id:                 wi.id,
                             valueChainId:       wi.valueChainId,
+                            isEndProduct:       isListOfEndProducts,
+                            rgbColor:           wi.rgbColor!,
                             valueOfValueChain:  wi.value,
+                            maxEffort:          wi.maxEffort,
                             accumulatedEffort:  wi.accumulatedEffort,
                             elapsedTime:        wi.elapsedTime
                          }})

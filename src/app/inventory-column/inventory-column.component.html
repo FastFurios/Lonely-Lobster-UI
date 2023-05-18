@@ -1,7 +1,7 @@
 <div *ngIf="psInventoryColumnShow.wis!.length > 0; else emptyColumn">
     <div class="inventory-column">
         <div  *ngFor="let wi of psInventoryColumnShow.wis">
-            <app-inventory-workitem [wi] = "wi"></app-inventory-workitem>
+            <app-inventory-workitem [wi] = "wi" [isListOfEndProducts]="isListOfEndProducts"></app-inventory-workitem>
         </div>
         <div *ngIf="psInventoryColumnShow.excessWisNum > 0">
             <div class="excess-workitem-number-y">

@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { I_ProcessStep } from '../shared/api-definitions'
+import { I_ProcessStep } from '../shared/io_api_definitions'
+import { RgbColor } from '../shared/color-mapper.service'
+
 
 @Component({
   selector: 'app-process-step',

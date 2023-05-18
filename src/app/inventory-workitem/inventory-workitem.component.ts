@@ -1,5 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core'
 import { PsInventoryWi } from '../shared/inventory-layout'
+import { RgbColor } from '../shared/color-mapper.service'
+
 
 type Color = { red: number; green: number; blue: number }
 
@@ -10,37 +12,31 @@ type Color = { red: number; green: number; blue: number }
 })
 export class InventoryWorkitemComponent implements OnInit {
   @Input() wi: PsInventoryWi
+  @Input() isListOfEndProducts: boolean
 
   constructor() { }
 
   ngOnInit(): void { 
-    //console.log("InventoryWorkitemComponent/ngOnInit:" + this.wi.id)
+    console.log("InventoryWorkitemComponent.onInit: wi = ")
+    console.log(this.wi)
   }
 
-  get colorOfWorkitem(): string {
-    const maxEffort: number      = 5
-    const maxEffortRgb: Color = {
-      red:    55,
-      green:  0,
-      blue:   0
-    }
-    const minEffortRgb: Color = {
-      red:    255,
-      green:  200,
-      blue:   200
-    }
-    const minMaxEffortRgbSpan: Color = {
-      red:    minEffortRgb.red - maxEffortRgb.red,
-      green:  minEffortRgb.green - maxEffortRgb.green,
-      blue:   minEffortRgb.blue - maxEffortRgb.blue
-    }
+  get rgbColorString(): string {
+//    console.log(this.wi.id + ": rgb=" + this.wi.rgbColor[0] + "/" + this.wi.rgbColor[1] + "/" + this.wi.rgbColor[2])
+    //console.log(`InventoryWorkitemComponent.rgbColorString() = rgb(${this.wi.rgbColor[0]}, ${this.wi.rgbColor[1]}, ${this.wi.rgbColor[2]})`)
+    const displayRgbColor: RgbColor = this.isListOfEndProducts ? this.wi.rgbColor : this.darkenedByEffort()
+    return `rgb(${displayRgbColor[0]}, ${displayRgbColor[1]}, ${displayRgbColor[2]})`
+  }
 
-    let rgb = {
-      red:   minEffortRgb.red   - this.wi.accumulatedEffort / maxEffort * minMaxEffortRgbSpan.red,
-      green: minEffortRgb.green - this.wi.accumulatedEffort / maxEffort * minMaxEffortRgbSpan.green,
-      blue:  minEffortRgb.blue  - this.wi.accumulatedEffort / maxEffort * minMaxEffortRgbSpan.blue,
-    }
-    return `rgb(${rgb.red}, ${rgb.green}, ${rgb.blue})`
+  private darkenedByEffort(): RgbColor {
+    const darkeningRange: number = Math.min(...this.wi.rgbColor)
+    const darkeningStep: number  = this.wi.accumulatedEffort / this.wi.maxEffort * darkeningRange
+    console.log(`InventoryWorkitemComponent.darkenedByEffort: wi=${this.wi.id} darkeningStep = ${darkeningStep}` )
+
+    console.log(`InventoryWorkitemComponent.darkenedByEffort: wi=${this.wi.id} rgb-in = rgb(${this.wi.rgbColor[0]}, ${this.wi.rgbColor[1]}, ${this.wi.rgbColor[2]})` )
+    const darkenedRgbColor = <RgbColor>this.wi.rgbColor.map(ch => Math.round(ch - darkeningStep))
+    console.log(`InventoryWorkitemComponent.darkenedByEffort: wi=${this.wi.id} rgb-out= rgb(${darkenedRgbColor[0]}, ${darkenedRgbColor[1]}, ${darkenedRgbColor[2]})` )
+    return darkenedRgbColor
   }
 
 }

@@ -1,6 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Options } from '@angular-slider/ngx-slider';
-import { I_ValueChain } from '../shared/api-definitions'
+import { Component, OnInit, Input } from '@angular/core'
+import { Options } from '@angular-slider/ngx-slider'
+import { I_ValueChain } from '../shared/io_api_definitions'
+import { ColorMapperService, RgbColor } from '../shared/color-mapper.service'
+
 
 @Component({
   selector: 'app-value-chain',
@@ -8,25 +10,25 @@ import { I_ValueChain } from '../shared/api-definitions'
   styleUrls: ['./value-chain.component.css']
 })
 export class ValueChainComponent implements OnInit {
-  @Input() vc: I_ValueChain  //2  systemState$: Observable<I_SystemState>  
-//1  systemState: I_SystemState
-
-  constructor( /*2 private wiInvSrv: WorkitemsInventoryService */ ) { }
-
+  @Input() vc: I_ValueChain  
+  valueChainColor: RgbColor
+ 
+  constructor(private cms: ColorMapperService) { }
+ 
   ngOnInit(): void {
-//  this.systemState$ = this.wiInvSrv.nextSystemState
-//2    this.systemState$ = this.wiInvSrv.nextSystemStateOnInput
-//1    this.systemState$.subscribe(sysState => this.systemState = sysState)
+    this.valueChainColor = this.cms.colorOfObject(["value-chain", this.vc.id])
+    this.vc.processSteps.forEach(ps => ps.workItems.forEach(wi => wi.rgbColor = this.valueChainColor))
+    console.log("ValueChainComponent.onInit vc =")
+    console.log(this.vc)
   }
 
-//2  nextIterationState(): void {
-//2    console.log(this.systemState$)
-//2//  this.systemState$ = this.wiInvSrv.nextSystemState
-//2    this.systemState$ = this.wiInvSrv.nextSystemStateOnInput
-//1    this.systemState$.subscribe(sysState => this.systemState = sysState)
-//2  }
+/*  
+  ngOnChanges(): void {
+    console.log("ValueChainComponent/ngOnChanges vc.id = " +  this.vc.id)
+    console.log("ValueChainComponent/ngOnChanges vcIdToCssColorMap = " +  this.cms.vcIdToCssColorMap.size)
 
-  
+  }
+*/  
   // https://angular-slider.github.io/ngx-slider/demos
   value: number = 1;
   options: Options = {

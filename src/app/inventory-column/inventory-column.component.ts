@@ -3,6 +3,7 @@ import { PsInventoryColumn } from '../shared/inventory-layout'
 
 type PsInventoryColumnShow = PsInventoryColumn & { excessWisNum: number }
 
+
 @Component({
   selector: 'app-inventory-column',
   templateUrl: './inventory-column.component.html',
@@ -10,6 +11,7 @@ type PsInventoryColumnShow = PsInventoryColumn & { excessWisNum: number }
 })
 export class InventoryColumnComponent implements OnInit {
   @Input() psInventoryColumn: PsInventoryColumn
+  @Input() isListOfEndProducts: boolean
   psInventoryColumnShow: PsInventoryColumnShow
 
   constructor() { }

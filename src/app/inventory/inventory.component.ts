@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core'
-import { I_WorkItem } from '../shared/api-definitions'
+import { I_WorkItem } from '../shared/io_api_definitions'
 import { PsInventory, PsInventoryShow, workitemsAsPsInventory } from '../shared/inventory-layout'
 
 // --- Component Class ----------------------------------------------
@@ -11,6 +11,7 @@ import { PsInventory, PsInventoryShow, workitemsAsPsInventory } from '../shared/
 })
 export class InventoryComponent implements OnInit {
   @Input() wis: I_WorkItem[]
+  @Input() isListOfEndProducts: boolean
   psInventory: PsInventory
   psInventoryShow: PsInventoryShow
   
@@ -22,7 +23,7 @@ export class InventoryComponent implements OnInit {
 */
 
   ngOnInit(): void { 
-    this.psInventory = workitemsAsPsInventory(this.wis)
+    this.psInventory = workitemsAsPsInventory(this.wis, this.isListOfEndProducts)
 //    console.log("InventoryComponent/ngOnInit()/this.psInventory.length=" + this.psInventory.length)
     const numCols = 5
     this.psInventoryShow = {
