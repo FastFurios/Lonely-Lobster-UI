@@ -6,7 +6,7 @@ import { duplicate } from "./helpers.js"
 import { LonelyLobsterSystem } from "./system.js"
 import { ValueChain } from './valuechain.js'
 import { WorkOrder, WiExtInfoElem } from './workitem.js'
-import { I_SystemState, I_ValueChain, I_ProcessStep, I_WorkItem, I_OutputBasket, I_WorkerState } from './api-definitions.js'
+import { I_SystemState, I_ValueChain, I_ProcessStep, I_WorkItem, I_OutputBasket, I_WorkerState } from './io_api_definitions.js'
 import { WorkItem, wiTags } from './workitem.js';
 import { ProcessStep, OutputBasket } from './workitembasketholder.js';
 import { clock, outputBasket } from './_main.js'
@@ -47,6 +47,7 @@ export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRe
           tag: wiTags[0],
           valueChainId: wi.valueChain.id,
           value: wi.valueChain.totalValueAdd,
+          maxEffort: (<ProcessStep>wi.currentProcessStep).normEffort,
           processStepId: wi.currentProcessStep.id,
           accumulatedEffort: wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.accumulatedEffortInProcessStep],
           elapsedTime: wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.elapsedTimeInProcessStep]
@@ -76,6 +77,7 @@ export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRe
           tag: wiTags[0],
           valueChainId: wi.valueChain.id,
           value: wi.valueChain.totalValueAdd,
+          maxEffort: wi.valueChain.processSteps.map(ps => ps.normEffort).reduce((e1, e2) => e1 + e2),
           processStepId: wi.currentProcessStep.id,
           accumulatedEffort: wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.accumulatedEffortInValueChain],
           elapsedTime: wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.elapsedTimeInValueChain]

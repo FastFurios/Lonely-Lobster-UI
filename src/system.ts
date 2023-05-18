@@ -26,7 +26,7 @@ export class LonelyLobsterSystem {
         clock.setToNow(now)
         // populate process steps with work items (and first process steps with new work orders)
 //      this.valueChains.forEach(vc => vc.processSteps.forEach(ps => console.log(ps.id + " had flow:" + ps.lastIterationFlowRate)))
-        this.valueChains.forEach(vc => vc.processSteps.forEach(ps => ps.lastIterationFlowRate = 0))
+        this.valueChains.forEach(vc => vc.processSteps.forEach(ps => ps.lastIterationFlowRate = 0))  // reset flow counters
         this.valueChains.forEach(vc => vc.letWorkItemsFlow())
         if (wos.length > 0) wos.forEach(w => w.valueChain.createAndInjectNewWorkItem())
 
