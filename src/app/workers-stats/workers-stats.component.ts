@@ -11,8 +11,6 @@ export class WorkersStatsComponent implements OnInit, OnChanges {
   constructor() { }
 
   ngOnInit(): void {
-//  console.log("WorkersStatsComponent.wosStats")
-//  console.log(this.wosStats)
   }
 
   ngOnChanges(): void {

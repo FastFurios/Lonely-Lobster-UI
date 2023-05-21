@@ -12,10 +12,8 @@ export class WorkerComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-//  console.log(`Before: Util of ${this.woStats.worker} is ${this.woStats.utilization}`)
     this.woStats.worker = this.woStats.worker.padEnd(20).substring(0, 10)
     this.woStats.utilization = Math.round(this.woStats.utilization)
-//  console.log(`After: Util of ${this.woStats.worker} is ${this.woStats.utilization}`)
   }
 
 }

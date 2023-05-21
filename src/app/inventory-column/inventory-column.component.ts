@@ -23,6 +23,5 @@ export class InventoryColumnComponent implements OnInit {
       wis:          this.psInventoryColumn.wis.slice(0,colHeight),
       excessWisNum: this.psInventoryColumn.wis.length - colHeight
     } 
-    //console.log("InventoryColumnComponent/ngInit/psInventoryColumnShow.excessWisNum = " + this.psInventoryColumnShow.excessWisNum)
   }
 }

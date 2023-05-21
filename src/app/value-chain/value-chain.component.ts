@@ -18,17 +18,8 @@ export class ValueChainComponent implements OnInit {
   ngOnInit(): void {
     this.valueChainColor = this.cms.colorOfObject(["value-chain", this.vc.id])
     this.vc.processSteps.forEach(ps => ps.workItems.forEach(wi => wi.rgbColor = this.valueChainColor))
-    console.log("ValueChainComponent.onInit vc =")
-    console.log(this.vc)
   }
 
-/*  
-  ngOnChanges(): void {
-    console.log("ValueChainComponent/ngOnChanges vc.id = " +  this.vc.id)
-    console.log("ValueChainComponent/ngOnChanges vcIdToCssColorMap = " +  this.cms.vcIdToCssColorMap.size)
-
-  }
-*/  
   // https://angular-slider.github.io/ngx-slider/demos
   value: number = 1;
   options: Options = {

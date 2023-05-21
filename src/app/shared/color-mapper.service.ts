@@ -45,11 +45,8 @@ export class ColorMapperService {
     const e = this.objTypeAndIdToCssColorMap.getKeyWithContent(key)
     if (e != undefined) return e
 
-//  console.log("colorOfObject(...): assigning next color for key=[" + key[0] + "," + key[1] + "]")
     const nextColor = this.colDispIter.next().value
     this.objTypeAndIdToCssColorMap.set(key, nextColor)
-//  console.log("colorOfObject(...) objColMap.size is now =" + this.objTypeAndIdToCssColorMap.size)
-//  console.log("colorOfObject(...) nextColor =" + nextColor)
     return nextColor
   } 
 

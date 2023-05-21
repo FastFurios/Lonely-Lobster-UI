@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from "rxjs"
-import { map, retry, catchError } from "rxjs/operators"
+import { catchError } from "rxjs/operators"
 
 import { I_IterationRequest, I_SystemState } from './io_api_definitions'
 
