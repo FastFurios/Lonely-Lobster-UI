@@ -5,10 +5,12 @@ import { I_SystemState } from '../shared/io_api_definitions'
 import { Observable } from "rxjs"
 
 
-type UiCellSize = {
+type UiBoxSize = {
   width:  number
-  heigth: number
+  height: number
 }
+const UiSystemHeaderHeight = 300  // px
+const UiWorkerStatsHeight  = 600  // px
 
 
 @Component({
@@ -18,26 +20,43 @@ type UiCellSize = {
 })
 export class SystemComponent implements OnInit {
   systemState$: Observable<I_SystemState>  
-  innerCellSize: UiCellSize 
+  numValueChains: number
+  vcsBoxSize: UiBoxSize = { width: 0, height: 0 }   // all Value Chains
+  vcBoxSize:  UiBoxSize = { width: 0, height: 0 }   // a single Value Chain
+  obBoxSize:  UiBoxSize = { width: 0, height: 0 }   // Output Basket
+  
 
   constructor( private wiInvSrv: WorkitemsInventoryService ) { 
     this.systemState$ = this.wiInvSrv.nextSystemStateOnInput
-    this.innerCellSize = { width: 0, heigth: 0 }
+    this.systemState$.subscribe(syst => { this.numValueChains = syst.valueChains.length; this.calcSizeOfUiBoxes() })
   }
 
   ngOnInit(): void {
-//  this.systemState$.subscribe(sysState => console.log("SystemComponent.onInit: number of valuechains = " + sysState.valueChains.length ))
-    this.innerCellSize.width = window.innerWidth
-    this.innerCellSize.heigth = window.innerHeight
+//    this.calcSizeOfUiBoxes()
   }
  
   @HostListener('window:resize', ['$event'])
   onResize(event: Event) {
-    this.innerCellSize.width = window.innerWidth
-    this.innerCellSize.heigth = window.innerHeight
+    this.calcSizeOfUiBoxes()
   }
 
-  nextIterationState(): void {
+  private calcSizeOfUiBoxes(): void {
+    this.vcsBoxSize = { 
+      width:  Math.round( window.innerWidth / 2), 
+      height: Math.round(window.innerHeight - UiSystemHeaderHeight - UiWorkerStatsHeight)
+    }
+    this.vcBoxSize = { 
+      width:  this.vcsBoxSize.width, 
+      height: this.vcsBoxSize.height / this.numValueChains
+    }
+    this.obBoxSize = { 
+      width:  Math.round( window.innerWidth  - this.vcBoxSize.width), 
+      //heigth: Math.round((window.innerHeight - UiSystemHeaderHeight - UiWorkerStatsHeight))
+      height: this.vcsBoxSize.height
+    }
+  }
+
+  public nextIterationState(): void {
     console.log(this.systemState$)
     this.systemState$ = this.wiInvSrv.nextSystemStateOnInput
   }

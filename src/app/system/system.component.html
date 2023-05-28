@@ -2,17 +2,20 @@
     <div >
         <p> System: {{ systemState.id }} </p>
         <p> Time:   {{ systemState.time }} </p>
+
         <div class="valueChainsAndOutputBasket">
-            <div class="valueChains">
+
+            <div class="valueChains" [style]="'width:' + vcsBoxSize.width + 'px; height:' + vcsBoxSize.height + 'px' ">
                 <div *ngFor="let vc of systemState.valueChains">
-                    <app-value-chain [vc]="vc"></app-value-chain>
+                    <app-value-chain [vc]="vc" [vcBoxSize]="vcBoxSize"></app-value-chain>
                 </div>
             </div>
-            <div >
-                <app-output-basket [ob]="systemState.outputBasket"></app-output-basket>
-            </div>
 
+            <div class="outputBasket" [style]="'width:' + obBoxSize.width + 'px; height:' + obBoxSize.height + 'px' ">
+                    <app-output-basket [ob]="systemState.outputBasket" [obBoxSize]="obBoxSize"></app-output-basket>
+            </div>
         </div>
+ 
     </div>
     <app-workers-stats [wosStats]="systemState.workersState" ></app-workers-stats>
 
@@ -32,5 +35,8 @@
 </button>
 <br/>
 <br/>
-<p>Window width = {{ innerCellSize.width}} </p>
-<p>Window heigth = {{ innerCellSize.heigth}} </p>
+<p># value-chains = {{ this.numValueChains }}
+<p>vcsBoxSize = w: {{ this.vcsBoxSize.width }}, h: {{ this.vcsBoxSize.height }}
+<p>vcBoxSize = w: {{ this.vcBoxSize.width }}, h: {{ this.vcBoxSize.height }}
+
+<p>obBoxSize = w: {{ this.obBoxSize.width }}, h: {{ this.obBoxSize.height }}

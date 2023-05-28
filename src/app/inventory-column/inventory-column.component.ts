@@ -3,6 +3,10 @@ import { PsInventoryColumn } from '../shared/inventory-layout'
 
 type PsInventoryColumnShow = PsInventoryColumn & { excessWisNum: number }
 
+type UiBoxSize = {
+  width:  number
+  height: number
+}
 
 @Component({
   selector: 'app-inventory-column',
@@ -12,16 +16,16 @@ type PsInventoryColumnShow = PsInventoryColumn & { excessWisNum: number }
 export class InventoryColumnComponent implements OnInit {
   @Input() psInventoryColumn: PsInventoryColumn
   @Input() isListOfEndProducts: boolean
+  @Input() inventoryColumnBoxSize: UiBoxSize
   psInventoryColumnShow: PsInventoryColumnShow
 
   constructor() { }
 
   ngOnInit(): void {
-    const colHeight = 15
     this.psInventoryColumnShow = {
       colNr:        this.psInventoryColumn.colNr, 
-      wis:          this.psInventoryColumn.wis.slice(0,colHeight),
-      excessWisNum: this.psInventoryColumn.wis.length - colHeight
+      wis:          this.psInventoryColumn.wis.slice(0, this.inventoryColumnBoxSize.height / 15),
+      excessWisNum: this.psInventoryColumn.wis.length - this.inventoryColumnBoxSize.height / 15
     } 
   }
 }

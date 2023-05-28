@@ -3,11 +3,13 @@
     flex-direction: row;
     align-items: flex-end;
     background-color: rgb(247, 242, 242);
-/*    width: 100px; */
-    height: 150px; 
+/*    width: 100px; 
+    height: 150px; */
     font-family: Arial, Helvetica, sans-serif;
     font-size: xx-small; 
     text-align: center;
+    border-style: dashed;
+    border-color: purple;
   }
   
   .excess-workitem-number-x {

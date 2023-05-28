@@ -1,6 +1,6 @@
-<div class="inventory" [style]="'width:' + width + 'px'">
+<div class="inventory" [style]="'width:' + inventoryBoxSize.width + 'px'">
     <div  *ngFor="let col of psInventoryShow.cols">
-        <app-inventory-column [psInventoryColumn]="col" [isListOfEndProducts]="isListOfEndProducts"></app-inventory-column>
+        <app-inventory-column [psInventoryColumn]="col" [isListOfEndProducts]="isListOfEndProducts" [inventoryColumnBoxSize]="inventoryColumnBoxSize"></app-inventory-column>
     </div>
     <div *ngIf="psInventoryShow.excessColsWiNum > 0">
         <div class="excess-workitem-number-x">

@@ -1,7 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { I_ProcessStep } from '../shared/io_api_definitions'
+import { I_ProcessStep, I_WorkItem } from '../shared/io_api_definitions'
 import { RgbColor } from '../shared/color-mapper.service'
+import { ColorMapperService } from '../shared/color-mapper.service'
 
+type UiBoxSize = {
+  width:  number
+  height: number
+}
+
+const arrowWidth = 100
 
 @Component({
   selector: 'app-process-step',
@@ -10,9 +17,22 @@ import { RgbColor } from '../shared/color-mapper.service'
 })
 export class ProcessStepComponent implements OnInit {
   @Input() ps: I_ProcessStep
-  constructor() { }
+  @Input() psBoxSize: UiBoxSize
+  wis: I_WorkItem[]
+  inventoryBoxSize: UiBoxSize
+
+  constructor(private cms: ColorMapperService) { }
 
   ngOnInit(): void {
+    this.wis = this.ps.workItems.map(wi =>  { 
+      return  { 
+                ...wi,
+                rgbColor: this.cms.colorOfObject(["value-chain", wi.valueChainId])
+              }
+    })
+    this.inventoryBoxSize = {
+      width:  this.psBoxSize.width - arrowWidth,
+      height: this.psBoxSize.height
+    }
   }
-
 }

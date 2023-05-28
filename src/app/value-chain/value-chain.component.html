@@ -10,6 +10,11 @@
         </div>
 -->
     <div *ngFor="let ps of vc.processSteps">
-            <app-process-step [ps]="ps"></app-process-step>
+            <app-process-step [ps]="ps" [psBoxSize]="psBoxSize"></app-process-step>
     </div>
 </div>
+<br/>
+<br/>
+<p>VC box width =  {{ vcBoxSize.width}} </p>
+<p>VC box heigth = {{ vcBoxSize.height}} </p>
+

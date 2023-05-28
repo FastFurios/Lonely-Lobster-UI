@@ -1,9 +1,16 @@
 <p>{{ ps.id }}</p>
-<div class="process-step">
+<div class="process-step" [style]="'width:' + psBoxSize.width + 'px'">
     <div>
-        <app-inventory [wis]="ps.workItems" [isListOfEndProducts]="false"></app-inventory>
+        <app-inventory [wis]="wis" [isListOfEndProducts]="false" [inventoryBoxSize]="inventoryBoxSize"></app-inventory>
     </div>
     <div>
         <app-flow-arrow [flowRate]="ps.workItemFlow"></app-flow-arrow>
     </div>
 </div>
+<!--
+<br/>
+<br/>
+<p>PS box width =  {{ psBoxSize.width}} </p>
+<p>PS box heigth = {{ psBoxSize.height}} </p>
+<p>inventory box width = {{ inventoryBoxSize.width}} </p>
+-->
