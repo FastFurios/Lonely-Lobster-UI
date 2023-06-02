@@ -29,7 +29,10 @@ interface I_IterationRequest {
 type MaybeValueChain = ValueChain | undefined
 
 export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRequest): I_SystemState {
-    function workOrderList(sys: LonelyLobsterSystem, iterReq: I_IterationRequest): WorkOrder[] {
+  console.log("Lonely Lobster Backend: io_api: nextSystemState(): iterReq=")
+  console.log(iterReq)
+
+  function workOrderList(sys: LonelyLobsterSystem, iterReq: I_IterationRequest): WorkOrder[] {
       //    console.log("io_api//workOrderList/iterReq =")
       //    console.log(iterReq)
           return iterReq.newWorkOrders.flatMap(nwo => duplicate<WorkOrder>(
