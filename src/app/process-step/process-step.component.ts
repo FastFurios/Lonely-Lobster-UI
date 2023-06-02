@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { I_ProcessStep, I_WorkItem } from '../shared/io_api_definitions'
 import { RgbColor } from '../shared/color-mapper.service'
 import { ColorMapperService } from '../shared/color-mapper.service'
@@ -15,7 +15,7 @@ const arrowWidth = 100
   templateUrl: './process-step.component.html',
   styleUrls: ['./process-step.component.css']
 })
-export class ProcessStepComponent implements OnInit {
+export class ProcessStepComponent implements OnInit, OnChanges {
   @Input() ps: I_ProcessStep
   @Input() psBoxSize: UiBoxSize
   wis: I_WorkItem[]
@@ -30,9 +30,19 @@ export class ProcessStepComponent implements OnInit {
                 rgbColor: this.cms.colorOfObject(["value-chain", wi.valueChainId])
               }
     })
+    this.calcSizeOfInventoryBox()
+  }
+
+  ngOnChanges(): void {
+    console.log("ProcessStepComponent:psBoxSize changed")
+    this.calcSizeOfInventoryBox()
+  }
+
+  private calcSizeOfInventoryBox(): void {
     this.inventoryBoxSize = {
       width:  this.psBoxSize.width - arrowWidth,
       height: this.psBoxSize.height
     }
   }
+
 }

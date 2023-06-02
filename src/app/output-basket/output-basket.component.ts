@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges } from '@angular/core';
 import { I_OutputBasket, I_WorkItem } from '../shared/io_api_definitions';
 import { ColorMapperService } from '../shared/color-mapper.service'
 import { PsInventory, PsInventoryShow } from '../shared/inventory-layout'
@@ -12,7 +12,7 @@ type UiBoxSize = {
   templateUrl: './output-basket.component.html',
   styleUrls: ['./output-basket.component.css']
 })
-export class OutputBasketComponent implements OnInit {
+export class OutputBasketComponent implements OnInit, OnChanges {
   @Input() ob: I_OutputBasket
   @Input() obBoxSize: UiBoxSize
   wis: I_WorkItem[]
@@ -32,4 +32,9 @@ export class OutputBasketComponent implements OnInit {
                           })
 
   }
+
+  ngOnChanges(): void {
+    console.log("OutputBasketComponent: obBoxSize changed")
+  }
+
 }

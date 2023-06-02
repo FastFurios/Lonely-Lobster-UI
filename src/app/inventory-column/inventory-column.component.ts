@@ -22,10 +22,22 @@ export class InventoryColumnComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.calcHeightOfInventoryColumn()
+  }
+
+  ngOnChanges(): void {
+//  console.log("InventoryColumnComponent:inventoryColumnBoxSize changed")
+    this.calcHeightOfInventoryColumn()
+  }
+
+  private calcHeightOfInventoryColumn(): void {
+    const wisShow = this.psInventoryColumn.wis.slice(0, Math.floor(this.inventoryColumnBoxSize.height / 15))
+    const excessWisNum = this.psInventoryColumn.wis.length - wisShow.length
+
     this.psInventoryColumnShow = {
       colNr:        this.psInventoryColumn.colNr, 
-      wis:          this.psInventoryColumn.wis.slice(0, this.inventoryColumnBoxSize.height / 15),
-      excessWisNum: this.psInventoryColumn.wis.length - this.inventoryColumnBoxSize.height / 15
+      wis:          wisShow,
+      excessWisNum: excessWisNum
     } 
   }
 }

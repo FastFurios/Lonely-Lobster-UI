@@ -3,7 +3,10 @@
         <p> System: {{ systemState.id }} </p>
         <p> Time:   {{ systemState.time }} </p>
 
-        <div class="valueChainsAndOutputBasket">
+<!--
+        <div class="valueChainsAndOutputBasket" [style]="'height:1000px'" >
+-->
+    <div class="valueChainsAndOutputBasket" [style]="'height:' +  vcsBoxSize.height  + 'px'" >
 
             <div class="valueChains" [style]="'width:' + vcsBoxSize.width + 'px; height:' + vcsBoxSize.height + 'px' ">
                 <div *ngFor="let vc of systemState.valueChains">

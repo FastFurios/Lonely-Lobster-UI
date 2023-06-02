@@ -31,14 +31,7 @@ export class WorkitemsInventoryService {
   }
 
   
-  get nextSystemStateOnInput(): Observable<I_SystemState> {
-    const body: I_IterationRequest =
-      { time: ++this.time, 
-        newWorkOrders: [
-          { valueChainId: "Blue",   numWorkOrders: 1 },
-          { valueChainId: "Green",  numWorkOrders: 1 }
-        ]
-      }
+  nextSystemStateOnInput(body: I_IterationRequest): Observable<I_SystemState> {
     return this.http.post<I_SystemState>("http://localhost:3000/", body /*, {responseType: "json"}*/)
         .pipe(
           catchError((error: HttpErrorResponse) =>this.errorHandler(error))
