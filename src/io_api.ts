@@ -119,8 +119,7 @@ export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRe
         iterReq.time!, 
         workOrderList(sys, 
                       { time: iterReq.time!,
-                        newWorkOrders: iterReq.newWorkOrders } ) 
-    )
+                        newWorkOrders: iterReq.newWorkOrders } ))
     return i_systemState(sys)
 }
 

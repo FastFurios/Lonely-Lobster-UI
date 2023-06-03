@@ -95,6 +95,8 @@ else {
         console.log("Returning real sysState json to Angular FE... ")
 //      console.log(sysState)
 //      res.send(sysState)
+        console.log("_main: app.post: received request=")
+        console.log(req.body)
         res.send(nextSystemState(lonelyLobsterSystem, req.body))
       })
       

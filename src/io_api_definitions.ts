@@ -19,7 +19,7 @@ type RgbColor       = [number, number, number]
 // request to iterate
 
 export interface I_IterationRequest {
-    time?: number
+    time: number
     newWorkOrders: {
         valueChainId:ValueChainId 
         numWorkOrders: number
