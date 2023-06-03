@@ -17,8 +17,9 @@ type VcFeederParmsAndState = {
 export class WorkorderFeederService {
 
     /* private */ vcFeederTimeUnitMap = new Map<ValueChainId, VcFeederParmsAndState>()
+    /* private */ timeNow = 0
 
-    constructor() {}
+    constructor() {this.timeNow = 0}
 
     public setParms(vcId: ValueChainId, avgInjThroughput: number, injProb: number) {
         const aggrWos: number = this.vcFeederTimeUnitMap.has(vcId) 
@@ -36,7 +37,13 @@ export class WorkorderFeederService {
     }
 
     public iterationRequest4AllVcs(): I_IterationRequest {
-        const iterationRequest: I_IterationRequest = { newWorkOrders: [] } 
+        const iterationRequest: I_IterationRequest = { 
+            time:           this.timeNow++,
+            newWorkOrders:  [] 
+        } 
+
+        console.log("workorder-feeder service: iterationRequest4AllVcs(): before VCs filled: iterationRequest=")
+        console.log(iterationRequest)
 
         for (const [vcId, vcFeederParmsAndState] of this.vcFeederTimeUnitMap.entries()) {
             vcFeederParmsAndState.aggregatedWorkOrders += vcFeederParmsAndState.parms.avgInjectionThroughput 
@@ -53,7 +60,7 @@ export class WorkorderFeederService {
                 numWorkOrders: injectWosNum
             })
         }
-        iterationRequest.time = 0 
+         
         console.log("workorder-feeder service: iterationRequest4AllVcs(): iterationRequest=")
         console.log(iterationRequest)
         return iterationRequest

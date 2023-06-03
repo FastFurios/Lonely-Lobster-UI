@@ -32,6 +32,8 @@ export class WorkitemsInventoryService {
 
   
   nextSystemStateOnInput(body: I_IterationRequest): Observable<I_SystemState> {
+    console.log("WorkItemInventoryService: nextSystemStateOnInput(...): body=")
+    console.log(body)
     return this.http.post<I_SystemState>("http://localhost:3000/", body /*, {responseType: "json"}*/)
         .pipe(
           catchError((error: HttpErrorResponse) =>this.errorHandler(error))

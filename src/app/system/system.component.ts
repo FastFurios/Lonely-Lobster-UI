@@ -31,13 +31,7 @@ export class SystemComponent implements OnInit {
 
   constructor( private wiInvSrv: WorkitemsInventoryService,
                private wof:      WorkorderFeederService ) { 
-    const body: I_IterationRequest = { 
-      newWorkOrders: [
-        { valueChainId: "Blue",   numWorkOrders: 1 },
-        { valueChainId: "Green",  numWorkOrders: 1 }
-      ]
-    }  
-    this.systemState$ = this.wiInvSrv.nextSystemStateOnInput(body)
+    this.systemState$ = this.wiInvSrv.nextSystemStateOnInput(this.wof.iterationRequest4AllVcs())
     this.systemState$.subscribe(syst => { this.numValueChains = syst.valueChains.length; this.calcSizeOfUiBoxes() })
   }
 
@@ -67,15 +61,8 @@ export class SystemComponent implements OnInit {
   }
 
   public nextIterationState(): void {
-    const body: I_IterationRequest = { 
-      time: 0,
-      newWorkOrders: [
-        { valueChainId: "Blue",   numWorkOrders: 1 },
-        { valueChainId: "Green",  numWorkOrders: 2 }
-      ]
-    }
-    console.log(this.systemState$)
-    this.systemState$ = this.wiInvSrv.nextSystemStateOnInput(body)
+    //console.log(this.systemState$)
+    this.systemState$ = this.wiInvSrv.nextSystemStateOnInput(this.wof.iterationRequest4AllVcs())
   }
 
 }
