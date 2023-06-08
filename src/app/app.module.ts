@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
+
 
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
@@ -15,6 +17,8 @@ import { SystemComponent } from './system/system.component';
 import { WorkerComponent } from './worker/worker.component';
 import { WorkersStatsComponent } from './workers-stats/workers-stats.component';
 import { OutputBasketComponent } from './output-basket/output-basket.component';
+import { TestParentComponent } from './test-parent/test-parent.component';
+import { TestChildComponent } from './test-child/test-child.component';
 
 @NgModule({
   declarations: [
@@ -28,10 +32,13 @@ import { OutputBasketComponent } from './output-basket/output-basket.component';
     SystemComponent,
     WorkerComponent,
     WorkersStatsComponent,
-    OutputBasketComponent
+    OutputBasketComponent,
+    TestParentComponent,
+    TestChildComponent
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     NgxSliderModule,
     HttpClientModule
   ],

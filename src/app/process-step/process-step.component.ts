@@ -24,6 +24,7 @@ export class ProcessStepComponent implements OnInit, OnChanges {
   constructor(private cms: ColorMapperService) { }
 
   ngOnInit(): void {
+    //console.log("ProcessStepComponent: ngOnInit()")
     this.wis = this.ps.workItems.map(wi =>  { 
       return  { 
                 ...wi,
@@ -34,7 +35,7 @@ export class ProcessStepComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
-    console.log("ProcessStepComponent:psBoxSize changed")
+    //console.log("ProcessStepComponent:psBoxSize changed")
     this.calcSizeOfInventoryBox()
   }
 

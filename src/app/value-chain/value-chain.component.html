@@ -2,10 +2,14 @@
     <div class="feeder-section">
     <p><strong> Valuechain:  {{ vc.id }} </strong></p>
     <br>
-    <p> Inject:</p>
-    <p> TP: 1 </p>
-    <p> Prob: 30% </p>
-
+    <label for="throughput">Throughput:</label>
+    <input type="number" class="form-control" id="throughput" name="throughput" min="0" step="0.1"
+        required
+        [(ngModel)]="feedParms.avgInjectionThroughput">
+    <label for="probability">Inject Prob:</label>
+    <input type="number" class="form-control" id="probability" name="probability" min="0" max="1" step="0.1"
+        required
+        [(ngModel)]="feedParms.injectProbability">
 </div>
 <!--
         <ngx-slider [(value)]="value" [options]="options" (valueChange)="onSliderChange()"></ngx-slider>
@@ -18,7 +22,9 @@
     </div>
 </div>
 <br/>
-<br/>
 <p>VC box width =  {{ vcBoxSize.width}} </p>
 <p>VC box heigth = {{ vcBoxSize.height}} </p>
+<p>Injection throughput of Work Orders {{ feedParms.avgInjectionThroughput }} </p>
+<p>Injection probabilty of Work Orders {{ feedParms.injectProbability }} </p>
+
 

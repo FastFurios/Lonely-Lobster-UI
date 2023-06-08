@@ -1,8 +1,8 @@
-import { Component, OnInit, OnChanges, Input } from '@angular/core'
+import { Component, OnInit, OnChanges, Input, SimpleChanges } from '@angular/core'
 import { Options } from '@angular-slider/ngx-slider'
 import { I_ValueChain } from '../shared/io_api_definitions'
 import { ColorMapperService, RgbColor } from '../shared/color-mapper.service'
-import { WorkorderFeederService } from '../shared/workorder-feeder.service'
+import { WorkorderFeederService, VcFeederParms } from '../shared/workorder-feeder.service'
 
 type UiBoxSize = {
   width:  number
@@ -17,6 +17,8 @@ type UiBoxSize = {
 export class ValueChainComponent implements OnInit, OnChanges {
   @Input() vc: I_ValueChain  
   @Input() vcBoxSize: UiBoxSize
+  feedParms: VcFeederParms = { avgInjectionThroughput: 0, injectProbability: 0 }
+
   valueChainColor: RgbColor
   psBoxSize: UiBoxSize = { width: 0, height: 0 }
 
@@ -24,14 +26,24 @@ export class ValueChainComponent implements OnInit, OnChanges {
               private wof: WorkorderFeederService) { }
  
   ngOnInit(): void {
+    console.log("ValueChainComponent "+this.vc.id + ": ngOnInit()")
     this.valueChainColor = this.cms.colorOfObject(["value-chain", this.vc.id])
     this.calcSizeOfProcessStepBox()  
-    this.wof.setParms(this.vc.id, 1, 0.7)
+
+    const fp = this.wof.getParms(this.vc.id)
+//  console.log("ValueChainComponent: fp=")
+//  console.log(fp)
+   
+    this.feedParms = fp ?  fp : { avgInjectionThroughput: 1, injectProbability: 1 }
+    this.wof.setParms(this.vc.id, this.feedParms.avgInjectionThroughput, this.feedParms.injectProbability)
   }
 
-  ngOnChanges(): void {
-    console.log("ValueChainComponent: vcBoxSize changed")
+  ngOnChanges(changes: SimpleChanges): void {
+    
+    console.log("ValueChainComponent "+this.vc.id + ": ngOnChanges(): simple change=")
+    console.log(changes)
     this.calcSizeOfProcessStepBox()
+    if (this.feedParms!.avgInjectionThroughput > 0 && this.feedParms!.injectProbability > 0) this.wof.setParms(this.vc.id, this.feedParms!.avgInjectionThroughput, this.feedParms!.injectProbability)
   }
   
   private calcSizeOfProcessStepBox(): void {

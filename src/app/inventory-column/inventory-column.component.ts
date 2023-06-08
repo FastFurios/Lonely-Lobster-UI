@@ -22,6 +22,7 @@ export class InventoryColumnComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    //console.log("InventoryColumnComponent: this.ngOnInit()")
     this.calcHeightOfInventoryColumn()
   }
 

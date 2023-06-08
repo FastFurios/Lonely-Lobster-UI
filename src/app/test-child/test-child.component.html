@@ -1,0 +1,34 @@
+    <h3> -------- test-child -------- </h3>
+    <p>Child Counter: {{ childCounter }}</p>
+    <button type="button" class="ui mini button"
+    (click)="clickHandler()">
+    Increment Child Counter
+    </button>
+
+    <br/>
+    <br/>
+
+    <label for="child_counter">Set Child Counter:</label>
+    <input  type="number" 
+            class="form-control" 
+            id="child_counter" 
+            [(ngModel)] = "childCounter"
+            (change)="numberInputHandler($event)">
+
+    <br/>
+    <br/>
+
+    <button class="ui button" (click)="submit()">
+        Sync parent counter to child's
+    </button>
+        
+    <p>- - - - - - - - - - - - - - - - - - - - </p>
+    <p>Example how to bind a text input field and react on changes:</p>
+    
+    <p>You have made {{changeCount}} changes so far. (I am counting whenver you leave the field focus.)</p>
+    <p>Current content is "{{inputTextField}}".</p>
+    <input
+        type="text"
+        [(ngModel)] = "inputTextField"
+        (change)="textInputHandler($event)"
+        placeholder="Enter some text here" />

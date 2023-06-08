@@ -1,0 +1,15 @@
+<h3>-------- test-parent -------- </h3>
+
+
+<p>Counter in complex object: {{ complexObject.counters[0] }}</p>
+
+<button type="button" class="ui mini button"
+  (click)="clickHandler()">
+  Increment Counter in complex object
+</button>
+<br/>
+<br/>
+<br/>
+
+
+<app-test-child [childCounter]="complexObject.counters[0]" (submitChildCounter)="syncCounters($event)"></app-test-child>

@@ -14,15 +14,16 @@ const UiSystemHeaderHeight = 200  // px
 const UiWorkerStatsHeight  = 200  // px
 
 
-
-
 @Component({
   selector: 'app-system',
   templateUrl: './system.component.html',
   styleUrls: ['./system.component.css']
 })
 export class SystemComponent implements OnInit {
-  systemState$: Observable<I_SystemState>  
+  systemState$: Observable<I_SystemState> 
+  systemState: I_SystemState
+  systemStateStatic: I_SystemState
+
   numValueChains: number
   vcsBoxSize: UiBoxSize // = { width: 0, height: 0 }   // all Value Chains
   vcBoxSize:  UiBoxSize // = { width: 0, height: 0 }   // a single Value Chain
@@ -32,7 +33,10 @@ export class SystemComponent implements OnInit {
   constructor( private wiInvSrv: WorkitemsInventoryService,
                private wof:      WorkorderFeederService ) { 
     this.systemState$ = this.wiInvSrv.nextSystemStateOnInput(this.wof.iterationRequest4AllVcs())
-    this.systemState$.subscribe(syst => { this.numValueChains = syst.valueChains.length; this.calcSizeOfUiBoxes() })
+    this.systemState$.subscribe(systemState => { this.systemState = systemState })
+
+    this.systemState$.subscribe(systemState => { this.numValueChains = systemState.valueChains.length; this.calcSizeOfUiBoxes() })
+
   }
 
   ngOnInit(): void {
@@ -63,6 +67,7 @@ export class SystemComponent implements OnInit {
   public nextIterationState(): void {
     //console.log(this.systemState$)
     this.systemState$ = this.wiInvSrv.nextSystemStateOnInput(this.wof.iterationRequest4AllVcs())
+    this.systemState$.subscribe(syst => { this.systemState = syst })
   }
 
 }
