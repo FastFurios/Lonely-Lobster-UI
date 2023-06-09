@@ -5,11 +5,13 @@
     <label for="throughput">Throughput:</label>
     <input type="number" class="form-control" id="throughput" name="throughput" min="0" step="0.1"
         required
-        [(ngModel)]="feedParms.avgInjectionThroughput">
+        [(ngModel)]="feedParms.avgInjectionThroughput"
+        (change)="feedParmsInputHandler($event)">
     <label for="probability">Inject Prob:</label>
     <input type="number" class="form-control" id="probability" name="probability" min="0" max="1" step="0.1"
         required
-        [(ngModel)]="feedParms.injectProbability">
+        [(ngModel)]="feedParms.injectProbability"
+        (change)="feedParmsInputHandler($event)">
 </div>
 <!--
         <ngx-slider [(value)]="value" [options]="options" (valueChange)="onSliderChange()"></ngx-slider>

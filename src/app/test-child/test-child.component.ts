@@ -33,7 +33,7 @@ export class TestChildComponent implements OnInit {
   }
 
   textInputHandler(e: Event) {
-    console.log("TestChildComponent.inputHandler(e):" )
+    console.log("TestChildComponent.textInputHandler(e):" )
     //console.log(e)
 
     this.changeCount++

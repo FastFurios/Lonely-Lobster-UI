@@ -25,6 +25,10 @@ export class SystemComponent implements OnInit {
   systemStateStatic: I_SystemState
 
   numValueChains: number
+
+  numIterationsToExecute: number = 1
+  numIterationsToGo: number
+
   vcsBoxSize: UiBoxSize // = { width: 0, height: 0 }   // all Value Chains
   vcBoxSize:  UiBoxSize // = { width: 0, height: 0 }   // a single Value Chain
   obBoxSize:  UiBoxSize // = { width: 0, height: 0 }   // Output Basket
@@ -32,11 +36,8 @@ export class SystemComponent implements OnInit {
 
   constructor( private wiInvSrv: WorkitemsInventoryService,
                private wof:      WorkorderFeederService ) { 
-    this.systemState$ = this.wiInvSrv.nextSystemStateOnInput(this.wof.iterationRequest4AllVcs())
-    this.systemState$.subscribe(systemState => { this.systemState = systemState })
-
+    this.nextIterationStates()
     this.systemState$.subscribe(systemState => { this.numValueChains = systemState.valueChains.length; this.calcSizeOfUiBoxes() })
-
   }
 
   ngOnInit(): void {
@@ -64,10 +65,23 @@ export class SystemComponent implements OnInit {
     }
   }
 
-  public nextIterationState(): void {
+  private nextIterationSubscriber(syst: I_SystemState) {
+    this.systemState = syst 
+    console.log("SystemComponent.nextIterationSubscriber(): systemState.outputBasket.workitems.length=" + this.systemState.outputBasket.workItems.length)
+    this.numIterationsToGo--
+    if (this.numIterationsToGo > 0)
+      this.nextIterationStates()
+  }
+
+  public nextIterationStates(): void {
     //console.log(this.systemState$)
     this.systemState$ = this.wiInvSrv.nextSystemStateOnInput(this.wof.iterationRequest4AllVcs())
-    this.systemState$.subscribe(syst => { this.systemState = syst })
+    this.systemState$.subscribe(syst => this.nextIterationSubscriber(syst))
+  }
+
+  public nextIterationHandler() {
+    this.numIterationsToGo = this.numIterationsToExecute
+    this.nextIterationStates()
   }
 
 }

@@ -22,8 +22,10 @@ export class OutputBasketComponent implements OnInit, OnChanges {
   constructor(private cms: ColorMapperService) { }
 
   ngOnInit(): void {
+    console.log("OutputBasketComponent.ngOnInit")
+
     //console.log("OutputBasketComponent.ngOnInit obBoxSize w/h=" + this.obBoxSize.width + " / " + this.obBoxSize.height)
-    this.wis = this.ob.workItems
+/*    this.wis = this.ob.workItems
               .map(wi =>  { 
                             return  { 
                                       ...wi,
@@ -31,10 +33,18 @@ export class OutputBasketComponent implements OnInit, OnChanges {
                                     }
                           })
 
-  }
+                        */  
+    }
 
   ngOnChanges(): void {
-    //console.log("OutputBasketComponent: obBoxSize changed")
+    console.log("OutputBasketComponent.ngOnChanges")
+    this.wis = this.ob.workItems
+              .map(wi =>  { 
+                            return  { 
+                                      ...wi,
+                                      rgbColor: this.cms.colorOfObject(["value-chain", wi.valueChainId])
+                                    }
+                          })
   }
 
 }

@@ -1,15 +1,23 @@
 <!--
 <ng-container *ngIf="systemState$ | async as systemState; else loading">
 -->
+    
 <ng-container *ngIf="systemState; else loading">
-    <div >
-        <p> System: {{ systemState.id }} </p>
-        <p> Time:   {{ systemState.time }} </p>
-
+    
+    <div class="headerRow">
+        <img src="../../../assets/LonelyLobster.jfif" alt="Lonely Lobster" height="100">
+ 
+        <div>
+            <p> System: {{ systemState.id }} </p>
+            <p> Time:   {{ systemState.time }} </p>
+        </div>
+ 
+    </div>
+    <div>
 <!--
         <div class="valueChainsAndOutputBasket" [style]="'height:1000px'" >
 -->
-    <div class="valueChainsAndOutputBasket" [style]="'height:' +  vcsBoxSize.height  + 'px'" >
+        <div class="valueChainsAndOutputBasket" [style]="'height:' +  vcsBoxSize.height  + 'px'" >
 
             <div class="valueChains" [style]="'width:' + vcsBoxSize.width + 'px; height:' + vcsBoxSize.height + 'px' ">
                 <div *ngFor="let vc of systemState.valueChains">
@@ -35,9 +43,16 @@
 <br/>
 <br/>
 
+<label for="numIterations"># iterations per click:</label>
+<input  type="number" 
+        class="form-control" 
+        min="1"
+        id="numIteration" 
+        [(ngModel)] = "numIterationsToExecute">
+
 <button type="button" class="ui mini button"
-  (click)="nextIterationState()">
-  Next Iteration
+  (click)="nextIterationHandler()">
+  Next {{numIterationsToExecute}} Iteration(s)
 </button>
 <br/>
 <br/>

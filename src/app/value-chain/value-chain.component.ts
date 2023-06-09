@@ -26,7 +26,7 @@ export class ValueChainComponent implements OnInit, OnChanges {
               private wof: WorkorderFeederService) { }
  
   ngOnInit(): void {
-    console.log("ValueChainComponent "+this.vc.id + ": ngOnInit()")
+    //console.log("ValueChainComponent "+this.vc.id + ": ngOnInit()")
     this.valueChainColor = this.cms.colorOfObject(["value-chain", this.vc.id])
     this.calcSizeOfProcessStepBox()  
 
@@ -40,8 +40,8 @@ export class ValueChainComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     
-    console.log("ValueChainComponent "+this.vc.id + ": ngOnChanges(): simple change=")
-    console.log(changes)
+    //console.log("ValueChainComponent "+this.vc.id + ": ngOnChanges(): simple change=")
+    //console.log(changes)
     this.calcSizeOfProcessStepBox()
     if (this.feedParms!.avgInjectionThroughput > 0 && this.feedParms!.injectProbability > 0) this.wof.setParms(this.vc.id, this.feedParms!.avgInjectionThroughput, this.feedParms!.injectProbability)
   }
@@ -53,6 +53,11 @@ export class ValueChainComponent implements OnInit, OnChanges {
     }
   }
 
+  feedParmsInputHandler(e: Event) {
+    console.log("ValueChainComponent.feedParmsInputHandler(e): this.feedParms=")
+    console.log(this.feedParms)
+    this.wof.setParms(this.vc.id, this.feedParms!.avgInjectionThroughput, this.feedParms!.injectProbability)
+  }
 
   // https://angular-slider.github.io/ngx-slider/demos
   value: number = 1;

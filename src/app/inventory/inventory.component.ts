@@ -28,14 +28,11 @@ export class InventoryComponent implements OnInit {
   
   constructor() { }
 
-  ngOnInit(): void { 
-    //console.log("InventoryComponent:ngOnInit()")
-    this.psInventory = workitemsAsPsInventory(this.wis, this.isListOfEndProducts)
-    this.calcSizesOfInventoryColumn()
-  }
+  ngOnInit(): void { }
 
   ngOnChanges(): void {
     //console.log("InventoryComponent:inventoryColumnBoxSize changed")
+    this.psInventory = workitemsAsPsInventory(this.wis, this.isListOfEndProducts)
     this.calcSizesOfInventoryColumn()
   }
 
