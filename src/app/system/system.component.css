@@ -1,7 +1,8 @@
 .headerRow {
   display: flex;
   flex-direction: row; 
-  font-family: Arial, Helvetica, sans-serif;
+  align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
   font-size: large; 
   text-align: left;
 }
@@ -23,8 +24,6 @@
     flex-direction: column;
     align-items: flex-start;
     background-color: cornsilk;
-    border-style: dashed;
-    border-color: brown;
     /* width: 1000px;
     height: 200px;  
     font-family: Arial, Helvetica, sans-serif;
@@ -33,9 +32,7 @@
   }
 
   .outputBasket {
-    background-color: lightseagreen;
-    border-style: dashed;
-    border-color: green;
+    background-color: cornsilk;
     /* width: 1000px;
     height: 200px;  
     font-family: Arial, Helvetica, sans-serif;

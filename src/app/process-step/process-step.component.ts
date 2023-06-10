@@ -2,13 +2,8 @@ import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { I_ProcessStep, I_WorkItem } from '../shared/io_api_definitions'
 import { RgbColor } from '../shared/color-mapper.service'
 import { ColorMapperService } from '../shared/color-mapper.service'
+import { UiBoxSize, UiPsHeaderHeight, UiInvWidthOfPsWidth} from '../shared/ui-boxes-definitions';
 
-type UiBoxSize = {
-  width:  number
-  height: number
-}
-
-const arrowWidth = 100
 
 @Component({
   selector: 'app-process-step',
@@ -16,10 +11,9 @@ const arrowWidth = 100
   styleUrls: ['./process-step.component.css']
 })
 export class ProcessStepComponent implements OnInit, OnChanges {
-  @Input() ps: I_ProcessStep
+  @Input() ps:        I_ProcessStep
   @Input() psBoxSize: UiBoxSize
-  wis: I_WorkItem[]
-  inventoryBoxSize: UiBoxSize
+  wis:                I_WorkItem[]
 
   constructor(private cms: ColorMapperService) { }
 
@@ -31,18 +25,29 @@ export class ProcessStepComponent implements OnInit, OnChanges {
                 rgbColor: this.cms.colorOfObject(["value-chain", wi.valueChainId])
               }
     })
-    this.calcSizeOfInventoryBox()
+    this.calcSizeOfUiBoxes()
   }
 
   ngOnChanges(): void {
     //console.log("ProcessStepComponent:psBoxSize changed")
-    this.calcSizeOfInventoryBox()
+    this.calcSizeOfUiBoxes()
   }
 
-  private calcSizeOfInventoryBox(): void {
+
+  // ----- (re-)sizing of childs' UI boxes  -------------
+
+  inventoryBoxSize: UiBoxSize
+  flowArrowBoxSize: UiBoxSize
+  uiPsHeaderHeight = UiPsHeaderHeight
+
+  private calcSizeOfUiBoxes(): void {
     this.inventoryBoxSize = {
-      width:  this.psBoxSize.width - arrowWidth,
-      height: this.psBoxSize.height
+      width:  this.psBoxSize.width * UiInvWidthOfPsWidth,
+      height: this.psBoxSize.height - UiPsHeaderHeight
+    }
+    this.flowArrowBoxSize = {
+      width:  this.psBoxSize.width - this.inventoryBoxSize.width ,
+      height: this.inventoryBoxSize.height
     }
   }
 

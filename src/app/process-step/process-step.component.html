@@ -1,10 +1,12 @@
-<p>{{ ps.id }}</p>
+<div [style]="'height:' + uiPsHeaderHeight">
+    <p>{{ ps.id }}</p>
+</div>
 <div class="process-step" [style]="'width:' + psBoxSize.width + 'px'">
     <div>
         <app-inventory [wis]="wis" [isListOfEndProducts]="false" [inventoryBoxSize]="inventoryBoxSize"></app-inventory>
     </div>
     <div>
-        <app-flow-arrow [flowRate]="ps.workItemFlow"></app-flow-arrow>
+        <app-flow-arrow [flowRate]="ps.workItemFlow" [flowArrowBoxSize]="flowArrowBoxSize"></app-flow-arrow>
     </div>
 </div>
 <!--

@@ -8,9 +8,19 @@
         <img src="../../../assets/LonelyLobster.jfif" alt="Lonely Lobster" height="100">
  
         <div>
-            <p> System: {{ systemState.id }} </p>
-            <p> Time:   {{ systemState.time }} </p>
+            <h4>Lonely Lobster</h4>
+            <p> System: "<strong>{{ systemState.id }}</strong>"  Time:   {{ systemState.time }} </p>
         </div>
+        <label for="numIterations"># iterations per click:</label>
+        <input  type="number" 
+                class="inputFormNumber" 
+                min="1"
+                id="numIteration" 
+                [(ngModel)] = "numIterationsToExecute">
+
+        <button type="button" class="submitButton" (click)="nextIterationHandler()">
+            Next {{numIterationsToExecute}} Iteration(s)
+        </button>
  
     </div>
     <div>
@@ -43,17 +53,7 @@
 <br/>
 <br/>
 
-<label for="numIterations"># iterations per click:</label>
-<input  type="number" 
-        class="form-control" 
-        min="1"
-        id="numIteration" 
-        [(ngModel)] = "numIterationsToExecute">
 
-<button type="button" class="ui mini button"
-  (click)="nextIterationHandler()">
-  Next {{numIterationsToExecute}} Iteration(s)
-</button>
 <br/>
 <br/>
 <p># value-chains = {{ this.numValueChains }}

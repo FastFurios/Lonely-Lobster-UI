@@ -3,11 +3,8 @@ import { Options } from '@angular-slider/ngx-slider'
 import { I_ValueChain } from '../shared/io_api_definitions'
 import { ColorMapperService, RgbColor } from '../shared/color-mapper.service'
 import { WorkorderFeederService, VcFeederParms } from '../shared/workorder-feeder.service'
+import { UiBoxSize, UiVcBoxLeftMargin} from '../shared/ui-boxes-definitions';
 
-type UiBoxSize = {
-  width:  number
-  height: number
-}
 
 @Component({
   selector: 'app-value-chain',
@@ -15,12 +12,11 @@ type UiBoxSize = {
   styleUrls: ['./value-chain.component.css']
 })
 export class ValueChainComponent implements OnInit, OnChanges {
-  @Input() vc: I_ValueChain  
+  @Input() vc:        I_ValueChain  
   @Input() vcBoxSize: UiBoxSize
-  feedParms: VcFeederParms = { avgInjectionThroughput: 0, injectProbability: 0 }
+  feedParms:          VcFeederParms // = { avgInjectionThroughput: 0, injectProbability: 0 }
 
-  valueChainColor: RgbColor
-  psBoxSize: UiBoxSize = { width: 0, height: 0 }
+  valueChainColor:    RgbColor
 
   constructor(private cms: ColorMapperService,
               private wof: WorkorderFeederService) { }
@@ -46,19 +42,25 @@ export class ValueChainComponent implements OnInit, OnChanges {
     if (this.feedParms!.avgInjectionThroughput > 0 && this.feedParms!.injectProbability > 0) this.wof.setParms(this.vc.id, this.feedParms!.avgInjectionThroughput, this.feedParms!.injectProbability)
   }
   
-  private calcSizeOfProcessStepBox(): void {
-    this.psBoxSize = { 
-      width:  Math.round(this.vcBoxSize.width / this.vc.processSteps.length),
-      height: this.vcBoxSize.height 
-    }
-  }
-
   feedParmsInputHandler(e: Event) {
     console.log("ValueChainComponent.feedParmsInputHandler(e): this.feedParms=")
     console.log(this.feedParms)
     this.wof.setParms(this.vc.id, this.feedParms!.avgInjectionThroughput, this.feedParms!.injectProbability)
   }
 
+  // ----- (re-)sizing of childs' UI boxes  -------------
+  psBoxSize:          UiBoxSize // = { width: 0, height: 0 }
+
+  private calcSizeOfProcessStepBox(): void {
+    this.psBoxSize = { 
+      width:  Math.round((this.vcBoxSize.width - UiVcBoxLeftMargin) / this.vc.processSteps.length),
+      height: this.vcBoxSize.height 
+    }
+  }
+
+
+
+/*
   // https://angular-slider.github.io/ngx-slider/demos
   value: number = 1;
   options: Options = {
@@ -75,4 +77,5 @@ export class ValueChainComponent implements OnInit, OnChanges {
   onSliderChange(): void {
     this.doubleValue = this.value * 2
   }
+*/
 }

@@ -1,18 +1,17 @@
 <div class="value-chain">
     <div class="feeder-section">
-    <p><strong> Valuechain:  {{ vc.id }} </strong></p>
-    <br>
-    <label for="throughput">Throughput:</label>
-    <input type="number" class="form-control" id="throughput" name="throughput" min="0" step="0.1"
-        required
-        [(ngModel)]="feedParms.avgInjectionThroughput"
-        (change)="feedParmsInputHandler($event)">
-    <label for="probability">Inject Prob:</label>
-    <input type="number" class="form-control" id="probability" name="probability" min="0" max="1" step="0.1"
-        required
-        [(ngModel)]="feedParms.injectProbability"
-        (change)="feedParmsInputHandler($event)">
-</div>
+        <p><strong> {{ vc.id }} </strong></p>
+        <label for="throughput">Throughput:</label>
+        <input type="number" class="inputFormNumber" id="throughput" name="throughput" min="0" step="0.1"
+            required
+            [(ngModel)]="feedParms.avgInjectionThroughput"
+            (change)="feedParmsInputHandler($event)">
+        <label for="probability">Inject Prob:</label>
+        <input type="number" class="inputFormNumber" id="probability" name="probability" min="0" max="1" step="0.1"
+            required
+            [(ngModel)]="feedParms.injectProbability"
+            (change)="feedParmsInputHandler($event)">
+    </div>
 <!--
         <ngx-slider [(value)]="value" [options]="options" (valueChange)="onSliderChange()"></ngx-slider>
         <div>
@@ -23,10 +22,12 @@
             <app-process-step [ps]="ps" [psBoxSize]="psBoxSize"></app-process-step>
     </div>
 </div>
+<!--
 <br/>
-<p>VC box width =  {{ vcBoxSize.width}} </p>
+
+<p>VC box width =  {{ vcBoxSize.width}} </p>00
 <p>VC box heigth = {{ vcBoxSize.height}} </p>
 <p>Injection throughput of Work Orders {{ feedParms.avgInjectionThroughput }} </p>
 <p>Injection probabilty of Work Orders {{ feedParms.injectProbability }} </p>
-
+-->
 

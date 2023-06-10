@@ -1,5 +1,10 @@
 import { Component, OnInit, OnChanges, SimpleChanges, ViewChild, ElementRef, AfterViewInit, Input } from '@angular/core';
 
+type UiBoxSize = {
+  width:  number
+  height: number
+}
+
 @Component({
   selector: 'app-flow-arrow',
   templateUrl: './flow-arrow.component.html',
@@ -10,6 +15,7 @@ export class FlowArrowComponent implements OnInit, OnChanges, AfterViewInit {
   ctx: CanvasRenderingContext2D
   
   @Input() flowRate: number
+  @Input() flowArrowBoxSize: UiBoxSize
   viewIsUp: boolean = false
 
   constructor() { }
@@ -18,14 +24,14 @@ export class FlowArrowComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.ctx = <CanvasRenderingContext2D>this.canvas.nativeElement.getContext('2d');
-    this.drawShape(this.flowRate, 50)
+    this.drawShape(this.flowRate, this.flowArrowBoxSize.width)
     this.viewIsUp = true
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.viewIsUp) {
-      this.ctx.clearRect(0, 0, 200, 200)
-      this.drawShape(this.flowRate, 50)
+      this.ctx.clearRect(0, 0, this.flowArrowBoxSize.width, this.flowArrowBoxSize.height)
+      this.drawShape(this.flowRate, this.flowArrowBoxSize.width)
     }
   }
 
@@ -41,9 +47,9 @@ export class FlowArrowComponent implements OnInit, OnChanges, AfterViewInit {
     } 
     this.ctx.beginPath();
     this.ctx.lineTo(10, 0);
-    this.ctx.lineTo(length, 0);
-    this.ctx.lineTo(length+20, realThickness/2);
-    this.ctx.lineTo(length, realThickness);
+    this.ctx.lineTo((length - 10) * 0.8, 0);
+    this.ctx.lineTo((length - 10), realThickness/2);
+    this.ctx.lineTo((length - 10) * 0.8, realThickness);
     this.ctx.lineTo(10, realThickness);
     this.ctx.stroke();
     if (thickness > 0) {

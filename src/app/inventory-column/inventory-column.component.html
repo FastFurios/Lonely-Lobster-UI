@@ -1,5 +1,5 @@
 <div *ngIf="psInventoryColumnShow.wis!.length > 0; else emptyColumn">
-    <div class="inventory-column">
+    <div class="inventory-column" height="inventoryColumnBoxSize.height">
         <div  *ngFor="let wi of psInventoryColumnShow.wis">
             <app-inventory-workitem [wi] = "wi" [isListOfEndProducts]="isListOfEndProducts"></app-inventory-workitem>
         </div>
