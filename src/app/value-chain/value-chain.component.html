@@ -1,6 +1,6 @@
-<div class="value-chain">
+<div class="value-chain" [style]="'height:' + vcBoxSize.height + 'px'">
     <div class="feeder-section">
-        <p><strong> {{ vc.id }} </strong></p>
+        <p><strong> {{ vcWu.vc.id }} </strong></p>
         <label for="throughput">Throughput:</label>
         <input type="number" class="inputFormNumber" id="throughput" name="throughput" min="0" step="0.1"
             required
@@ -13,13 +13,19 @@
             (change)="feedParmsInputHandler($event)">
     </div>
 <!--
+    <div>
+        h={{ vcBoxSize.height }}
+        w={{ vcBoxSize.width }}
+    </div>
+-->
+<!--
         <ngx-slider [(value)]="value" [options]="options" (valueChange)="onSliderChange()"></ngx-slider>
         <div>
             <app-flow-arrow  [flowRate]="value"></app-flow-arrow>
         </div>
 -->
-    <div *ngFor="let ps of vc.processSteps">
-            <app-process-step [ps]="ps" [psBoxSize]="psBoxSize"></app-process-step>
+    <div *ngFor="let psWu of pssWithWorkersWithUtil">
+            <app-process-step [psWu]="psWu" [psBoxSize]="psBoxSize"></app-process-step>
     </div>
 </div>
 <!--

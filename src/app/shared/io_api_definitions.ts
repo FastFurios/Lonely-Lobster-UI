@@ -11,12 +11,37 @@ export type ValueChainId   = string
 export type ProcessStepId  = string
 type WorkItemId     = number
 type WorkItemTag    = [string, string]
-type WorkerName     = string
+export type WorkerName     = string
 type TimeStamp      = number
 export type RgbColor       = [number, number, number]
 
+export type WorkerWithUtilization = {
+    worker:                         WorkerName,
+    utilization:                    number
+}
 
-// request to iterate
+export type PsWorkerUtilization = WorkerWithUtilization & {
+/*
+    worker:                         WorkerName,
+    utilization:                    number
+*/
+    assignedProcessSteps:           ProcessStepId[]
+}
+  
+export interface VcWithWorkersUtil {
+    vc:         I_ValueChain,
+    wosUtil:    PsWorkerUtilization[]
+}  
+
+
+export interface PsWithWorkersWithUtil {
+    ps:         I_ProcessStep,
+    wosUtil:    WorkerWithUtilization[]
+}  
+
+
+
+  // request to iterate
 
 export interface I_IterationRequest {
     time: number

@@ -23,6 +23,8 @@
         </button>
  
     </div>
+
+
     <div>
 <!--
         <div class="valueChainsAndOutputBasket" [style]="'height:1000px'" >
@@ -30,8 +32,11 @@
         <div class="valueChainsAndOutputBasket" [style]="'height:' +  vcsBoxSize.height  + 'px'" >
 
             <div class="valueChains" [style]="'width:' + vcsBoxSize.width + 'px; height:' + vcsBoxSize.height + 'px' ">
-                <div *ngFor="let vc of systemState.valueChains">
-                    <app-value-chain [vc]="vc" [vcBoxSize]="vcBoxSize"></app-value-chain>
+                <div *ngFor="let vcWu of vcsWithWorkersUtil">
+                    <app-value-chain [vcWu]="vcWu" [vcBoxSize]="vcBoxSize"></app-value-chain>
+                </div>
+                <div>
+                    vcs h={{ vcsBoxSize.height }} w={{ vcsBoxSize.width }}
                 </div>
             </div>
 

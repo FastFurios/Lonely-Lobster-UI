@@ -1,5 +1,5 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
-import { I_ProcessStep, I_WorkItem } from '../shared/io_api_definitions'
+import { I_ProcessStep, I_WorkItem, PsWithWorkersWithUtil } from '../shared/io_api_definitions'
 import { RgbColor } from '../shared/color-mapper.service'
 import { ColorMapperService } from '../shared/color-mapper.service'
 import { UiBoxSize, UiPsHeaderHeight, UiInvWidthOfPsWidth} from '../shared/ui-boxes-definitions';
@@ -11,7 +11,7 @@ import { UiBoxSize, UiPsHeaderHeight, UiInvWidthOfPsWidth} from '../shared/ui-bo
   styleUrls: ['./process-step.component.css']
 })
 export class ProcessStepComponent implements OnInit, OnChanges {
-  @Input() ps:        I_ProcessStep
+  @Input() psWu:      PsWithWorkersWithUtil
   @Input() psBoxSize: UiBoxSize
   wis:                I_WorkItem[]
 
@@ -19,7 +19,7 @@ export class ProcessStepComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     //console.log("ProcessStepComponent: ngOnInit()")
-    this.wis = this.ps.workItems.map(wi =>  { 
+    this.wis = this.psWu.ps.workItems.map(wi =>  { 
       return  { 
                 ...wi,
                 rgbColor: this.cms.colorOfObject(["value-chain", wi.valueChainId])
@@ -29,6 +29,8 @@ export class ProcessStepComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
+    console.log("ProcessStepComponent.ngOnChanges(): psWu=")
+    console.log(this.psWu)
     //console.log("ProcessStepComponent:psBoxSize changed")
     this.calcSizeOfUiBoxes()
   }
@@ -43,11 +45,11 @@ export class ProcessStepComponent implements OnInit, OnChanges {
   private calcSizeOfUiBoxes(): void {
     this.inventoryBoxSize = {
       width:  this.psBoxSize.width * UiInvWidthOfPsWidth,
-      height: this.psBoxSize.height - UiPsHeaderHeight
+      height: this.psBoxSize.height - this.uiPsHeaderHeight 
     }
     this.flowArrowBoxSize = {
       width:  this.psBoxSize.width - this.inventoryBoxSize.width ,
-      height: this.inventoryBoxSize.height
+      height: this.inventoryBoxSize.height 
     }
   }
 

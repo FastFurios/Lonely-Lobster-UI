@@ -1,9 +1,6 @@
 import { Component, OnInit, OnChanges, SimpleChanges, ViewChild, ElementRef, AfterViewInit, Input } from '@angular/core';
+import { UiBoxSize} from '../shared/ui-boxes-definitions';
 
-type UiBoxSize = {
-  width:  number
-  height: number
-}
 
 @Component({
   selector: 'app-flow-arrow',

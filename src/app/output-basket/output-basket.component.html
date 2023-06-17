@@ -1,5 +1,23 @@
-<p><strong>Output Basket</strong></p> 
-<app-inventory [wis]=wis [isListOfEndProducts]="true" [inventoryBoxSize]="obBoxSize"></app-inventory>
+<div class="output-basket">
+    <div [style]="'height:' + uiObHeaderHeight + 'px'">
+        <p><strong>Output Basket</strong> {{ uiObHeaderHeight }} </p>
+    </div>
+    <div [style]="'height:' + inventoryBoxSize.height + 'px'">
+        <app-inventory [wis]=wis [isListOfEndProducts]="true" [inventoryBoxSize]="inventoryBoxSize"></app-inventory>
+    </div>
+</div>
+
+
+<div>
+    <br/>
+    <br/>
+    <br/>
+    ob: h={{ obBoxSize.height }}
+    w={{ obBoxSize.width }}
+    inv: h={{ inventoryBoxSize.height }}
+    w={{ inventoryBoxSize.width }}
+</div>
+
 <!--
 <p>wis.length={{ wis.length }}; obBoxSize=w:{{obBoxSize.width}}, h: {{obBoxSize.height}} </p>
 -->

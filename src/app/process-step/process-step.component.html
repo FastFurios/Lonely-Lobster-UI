@@ -1,12 +1,17 @@
-<div [style]="'height:' + uiPsHeaderHeight">
-    <p>{{ ps.id }}</p>
+<div class="process-step-header" [style]="'height:' + uiPsHeaderHeight + 'px'">
+    <p><strong>{{ psWu.ps.id }}</strong> {{ uiPsHeaderHeight }}</p>
 </div>
 <div class="process-step" [style]="'width:' + psBoxSize.width + 'px'">
     <div>
         <app-inventory [wis]="wis" [isListOfEndProducts]="false" [inventoryBoxSize]="inventoryBoxSize"></app-inventory>
     </div>
     <div>
-        <app-flow-arrow [flowRate]="ps.workItemFlow" [flowArrowBoxSize]="flowArrowBoxSize"></app-flow-arrow>
+        <app-flow-arrow [flowRate]="psWu.ps.workItemFlow" [flowArrowBoxSize]="flowArrowBoxSize"></app-flow-arrow>
+    </div>
+</div>
+<div class="process-step-workers">
+    <div *ngFor="let woUtil of psWu.wosUtil">
+        <div class="util-extreme">{{ woUtil.worker}}</div>
     </div>
 </div>
 <!--

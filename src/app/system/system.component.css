@@ -13,7 +13,9 @@
 /*    align-items: flex-start; */
     /* background-color: royalblue;
     /* width: 1000px;
-    height: 200px; */ 
+    height: 200px; 
+      border-style: dashed;
+      border-color: red;*/ 
     font-family: Arial, Helvetica, sans-serif;
     font-size: x-small; 
     text-align: center;

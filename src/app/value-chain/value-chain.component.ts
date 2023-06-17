@@ -1,6 +1,5 @@
 import { Component, OnInit, OnChanges, Input, SimpleChanges } from '@angular/core'
-import { Options } from '@angular-slider/ngx-slider'
-import { I_ValueChain } from '../shared/io_api_definitions'
+import { I_ValueChain, ProcessStepId, PsWorkerUtilization, PsWithWorkersWithUtil, VcWithWorkersUtil, WorkerWithUtilization } from '../shared/io_api_definitions'
 import { ColorMapperService, RgbColor } from '../shared/color-mapper.service'
 import { WorkorderFeederService, VcFeederParms } from '../shared/workorder-feeder.service'
 import { UiBoxSize, UiVcBoxLeftMargin} from '../shared/ui-boxes-definitions';
@@ -12,10 +11,12 @@ import { UiBoxSize, UiVcBoxLeftMargin} from '../shared/ui-boxes-definitions';
   styleUrls: ['./value-chain.component.css']
 })
 export class ValueChainComponent implements OnInit, OnChanges {
-  @Input() vc:        I_ValueChain  
+  @Input() vcWu:      VcWithWorkersUtil  
   @Input() vcBoxSize: UiBoxSize
   feedParms:          VcFeederParms // = { avgInjectionThroughput: 0, injectProbability: 0 }
-
+  
+  pssWithWorkersWithUtil: PsWithWorkersWithUtil[]
+  
   valueChainColor:    RgbColor
 
   constructor(private cms: ColorMapperService,
@@ -23,29 +24,35 @@ export class ValueChainComponent implements OnInit, OnChanges {
  
   ngOnInit(): void {
     //console.log("ValueChainComponent "+this.vc.id + ": ngOnInit()")
-    this.valueChainColor = this.cms.colorOfObject(["value-chain", this.vc.id])
+    this.valueChainColor = this.cms.colorOfObject(["value-chain", this.vcWu.vc.id])
     this.calcSizeOfProcessStepBox()  
 
-    const fp = this.wof.getParms(this.vc.id)
+    const fp = this.wof.getParms(this.vcWu.vc.id)
 //  console.log("ValueChainComponent: fp=")
 //  console.log(fp)
    
     this.feedParms = fp ?  fp : { avgInjectionThroughput: 1, injectProbability: 1 }
-    this.wof.setParms(this.vc.id, this.feedParms.avgInjectionThroughput, this.feedParms.injectProbability)
+    this.wof.setParms(this.vcWu.vc.id, this.feedParms.avgInjectionThroughput, this.feedParms.injectProbability)
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    
+  ngOnChanges(/*changes: SimpleChanges*/): void {
+
+    this.pssWithWorkersWithUtil = this.vcWu.vc.processSteps
+                                  .map(ps => { return {
+                                    ps: ps,
+                                    wosUtil: this.workersWithUtilOfProcessStep(ps.id)
+                                  }})
+
     //console.log("ValueChainComponent "+this.vc.id + ": ngOnChanges(): simple change=")
     //console.log(changes)
     this.calcSizeOfProcessStepBox()
-    if (this.feedParms!.avgInjectionThroughput > 0 && this.feedParms!.injectProbability > 0) this.wof.setParms(this.vc.id, this.feedParms!.avgInjectionThroughput, this.feedParms!.injectProbability)
+    if (this.feedParms!.avgInjectionThroughput > 0 && this.feedParms!.injectProbability > 0) this.wof.setParms(this.vcWu.vc.id, this.feedParms!.avgInjectionThroughput, this.feedParms!.injectProbability)
   }
   
   feedParmsInputHandler(e: Event) {
-    console.log("ValueChainComponent.feedParmsInputHandler(e): this.feedParms=")
-    console.log(this.feedParms)
-    this.wof.setParms(this.vc.id, this.feedParms!.avgInjectionThroughput, this.feedParms!.injectProbability)
+    //console.log("ValueChainComponent.feedParmsInputHandler(e): this.feedParms=")
+    //console.log(this.feedParms)
+    this.wof.setParms(this.vcWu.vc.id, this.feedParms!.avgInjectionThroughput, this.feedParms!.injectProbability)
   }
 
   // ----- (re-)sizing of childs' UI boxes  -------------
@@ -53,11 +60,20 @@ export class ValueChainComponent implements OnInit, OnChanges {
 
   private calcSizeOfProcessStepBox(): void {
     this.psBoxSize = { 
-      width:  Math.round((this.vcBoxSize.width - UiVcBoxLeftMargin) / this.vc.processSteps.length),
+      width:  Math.round((this.vcBoxSize.width - UiVcBoxLeftMargin) / this.vcWu.vc.processSteps.length),
       height: this.vcBoxSize.height 
     }
   }
 
+  private workersWithUtilOfProcessStep(ps: ProcessStepId): WorkerWithUtilization[] {
+    const aux: WorkerWithUtilization[] = this.vcWu.wosUtil.filter((woUtil: PsWorkerUtilization) => woUtil.assignedProcessSteps.some(_ps => _ps == ps))
+                                        .map((woUtil: PsWorkerUtilization) => { return { worker:               woUtil.worker, 
+                                                                utilization:          woUtil.utilization }})
+
+    console.log("ValueChainComponent.workersUtilOfProcessStep(" + ps + ")=")                                                              
+    console.log(aux)
+    return aux                                                              
+  }
 
 
 /*

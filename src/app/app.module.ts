@@ -39,7 +39,7 @@ import { TestChildComponent } from './test-child/test-child.component';
   imports: [
     BrowserModule,
     FormsModule,
-    NgxSliderModule,
+//  NgxSliderModule,
     HttpClientModule
   ],
   providers: [],

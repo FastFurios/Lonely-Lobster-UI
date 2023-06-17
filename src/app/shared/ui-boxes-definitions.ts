@@ -7,9 +7,10 @@ export type UiBoxSize = {
 export const UiBoxMarginToWindow  = 20   
 export const UiSystemHeaderHeight = 100  
 export const UiWorkerStatsHeight  = 200  
-export const UiObHeaderHeight     = 50   
+export const UiPsHeaderHeight     = 50
+export const UiObHeaderHeight     = UiPsHeaderHeight   
 export const UiVcBoxLeftMargin    = 80
-export const UiPsHeaderHeight     = 100
+export const UiInventoryBoxHeightShrink = 0.8
 export const UiInvWidthOfPsWidth  = 0.8   // space for inventory, remaining space for flow arrow
 export const UiInventoryColWidth  = 15
 

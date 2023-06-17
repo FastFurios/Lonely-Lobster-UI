@@ -1,6 +1,8 @@
 .process-step {
     display: flex;
     flex-direction: row;
+    align-items: flex-start;
+
     background-color: cornsilk;
     font-family: Arial, Helvetica, sans-serif;
     font-size: x-small; 
@@ -8,6 +10,32 @@
   }
 
   .process-step-header {
-    height: 20px
-  }
-  
+/*    height: 40px;
+    border-style: dotted;
+    border-color: purle;
+  */
+}
+
+.process-step-workers {
+  display: flex;
+  flex-direction: row;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: x-small; 
+  text-align: center;
+}
+
+.util-low {
+  background-color: lightgreen
+}
+
+.util-medium {
+  background-color: green
+}
+
+.util-high {
+  background-color: yellow
+}
+
+.util-extreme {
+  background-color: red
+}

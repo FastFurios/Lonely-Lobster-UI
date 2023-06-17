@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core'
 import { I_WorkItem } from '../shared/io_api_definitions'
 import { PsInventory, PsInventoryShow, workitemsAsPsInventory } from '../shared/inventory-layout'
-import { UiBoxSize, UiInventoryColWidth} from '../shared/ui-boxes-definitions';
+import { UiBoxSize, UiInventoryColWidth, UiInventoryBoxHeightShrink} from '../shared/ui-boxes-definitions';
 
 
 // --- Component Class ----------------------------------------------
@@ -22,7 +22,8 @@ export class InventoryComponent implements OnInit {
   
   constructor() { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { 
+  }
 
   ngOnChanges(): void {
     //console.log("InventoryComponent:inventoryColumnBoxSize changed")
@@ -36,9 +37,10 @@ export class InventoryComponent implements OnInit {
 
   private calcSizesOfInventoryColumn(): void {
     if (!this.psInventory) return
+    this.inventoryBoxSize.height *= UiInventoryBoxHeightShrink
     this.inventoryColumnBoxSize = { 
       width:  UiInventoryColWidth, 
-      height: this.inventoryBoxSize.height }
+      height: 0 } //this.inventoryBoxSize.height }
     this.numColsShown = Math.round((this.inventoryBoxSize.width - 20) / UiInventoryColWidth)
     this.psInventoryShow = {
       cols:            this.psInventory.slice(0, this.numColsShown),
