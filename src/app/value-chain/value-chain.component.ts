@@ -70,8 +70,8 @@ export class ValueChainComponent implements OnInit, OnChanges {
                                         .map((woUtil: PsWorkerUtilization) => { return { worker:               woUtil.worker, 
                                                                 utilization:          woUtil.utilization }})
 
-    console.log("ValueChainComponent.workersUtilOfProcessStep(" + ps + ")=")                                                              
-    console.log(aux)
+    //console.log("ValueChainComponent.workersUtilOfProcessStep(" + ps + ")=")                                                              
+    //console.log(aux)
     return aux                                                              
   }
 

@@ -1,8 +1,8 @@
 <div class="worker">
-    <p> {{ woStats.worker }} </p>
+    <app-worker-strain [woUtil]="woUtil"></app-worker-strain>
     <p> {{ woStats.utilization }} % </p>
     <div *ngFor="let woAss of woStats.assignments">
-        <p> {{ woAss.valueChain }}.{{ woAss.processStep }} </p>
+         {{ woAss.valueChain }}.{{ woAss.processStep }} 
     </div>
 
 </div>

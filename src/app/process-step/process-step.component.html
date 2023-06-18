@@ -11,7 +11,7 @@
 </div>
 <div class="process-step-workers">
     <div *ngFor="let woUtil of psWu.wosUtil">
-        <div class="util-extreme">{{ woUtil.worker}}</div>
+        <app-worker-strain [woUtil]="woUtil"></app-worker-strain>
     </div>
 </div>
 <!--

@@ -8,20 +8,23 @@
         <img src="../../../assets/LonelyLobster.jfif" alt="Lonely Lobster" height="100">
  
         <div>
-            <h4>Lonely Lobster</h4>
-            <p> System: "<strong>{{ systemState.id }}</strong>"  Time:   {{ systemState.time }} </p>
-        </div>
-        <label for="numIterations"># iterations per click:</label>
-        <input  type="number" 
-                class="inputFormNumber" 
-                min="1"
-                id="numIteration" 
-                [(ngModel)] = "numIterationsToExecute">
+            <div><strong>Lonely Lobster</strong></div>
+            <div> System: "<strong>{{ systemState.id }}</strong>"</div>
+            <div> Time:   {{ systemState.time }} </div>
+            <label for="numIterations"># iterations per click:</label>
+            <input  type="number" 
+                    class="inputFormNumber" 
+                    min="1"
+                    id="numIteration" 
+                    [(ngModel)] = "numIterationsToExecute">
 
-        <button type="button" class="submitButton" (click)="nextIterationHandler()">
-            Next {{numIterationsToExecute}} Iteration(s)
-        </button>
- 
+            <button type="button" class="submitButton" (click)="nextIterationHandler()">
+                Next {{numIterationsToExecute}} Iteration(s)
+            </button>
+        </div>    
+        <div>
+            <app-workers-stats [wosStats]="systemState.workersState" ></app-workers-stats>
+        </div>
     </div>
 
 
@@ -46,7 +49,6 @@
         </div>
  
     </div>
-    <app-workers-stats [wosStats]="systemState.workersState" ></app-workers-stats>
 
 </ng-container>
 

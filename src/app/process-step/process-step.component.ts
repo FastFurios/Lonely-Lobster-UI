@@ -2,7 +2,7 @@ import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { I_ProcessStep, I_WorkItem, PsWithWorkersWithUtil } from '../shared/io_api_definitions'
 import { RgbColor } from '../shared/color-mapper.service'
 import { ColorMapperService } from '../shared/color-mapper.service'
-import { UiBoxSize, UiPsHeaderHeight, UiInvWidthOfPsWidth} from '../shared/ui-boxes-definitions';
+import { UiBoxSize, UiPsHeaderHeight, UiInvWidthOfPsWidth, UiInventoryBoxHeightShrink} from '../shared/ui-boxes-definitions';
 
 
 @Component({
@@ -29,8 +29,9 @@ export class ProcessStepComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
-    console.log("ProcessStepComponent.ngOnChanges(): psWu=")
-    console.log(this.psWu)
+    this.psWu.wosUtil.sort((w1, w2) => w1.worker < w2.worker ? -1 : 1 )
+//    console.log("ProcessStepComponent.ngOnChanges(): psWu=")
+//    console.log(this.psWu)
     //console.log("ProcessStepComponent:psBoxSize changed")
     this.calcSizeOfUiBoxes()
   }
@@ -45,7 +46,7 @@ export class ProcessStepComponent implements OnInit, OnChanges {
   private calcSizeOfUiBoxes(): void {
     this.inventoryBoxSize = {
       width:  this.psBoxSize.width * UiInvWidthOfPsWidth,
-      height: this.psBoxSize.height - this.uiPsHeaderHeight 
+      height: this.psBoxSize.height * UiInventoryBoxHeightShrink - this.uiPsHeaderHeight 
     }
     this.flowArrowBoxSize = {
       width:  this.psBoxSize.width - this.inventoryBoxSize.width ,

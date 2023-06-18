@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, OnChanges, HostListener } from '@angular/core';
 //import { Options } from '@angular-slider/ngx-slider';
 import { WorkitemsInventoryService } from '../shared/workitems-inventory.service'
 import { I_IterationRequest,I_SystemState, I_WorkerState, PsWorkerUtilization, ValueChainId, WorkerName, ProcessStepId, VcWithWorkersUtil } from '../shared/io_api_definitions'
@@ -13,7 +13,7 @@ import { UiBoxSize, UiBoxMarginToWindow, UiSystemHeaderHeight, UiWorkerStatsHeig
   templateUrl: './system.component.html',
   styleUrls: ['./system.component.css']
 })
-export class SystemComponent implements OnInit {
+export class SystemComponent implements OnInit, OnChanges {
   systemState$: Observable<I_SystemState> 
   systemState: I_SystemState
   //systemStateStatic: I_SystemState
@@ -36,6 +36,12 @@ export class SystemComponent implements OnInit {
     this.calcSizeOfUiBoxes()
   }
  
+  ngOnChanges(): void {
+    //console.log("SystemComponent.ngOnInit()")
+    this.calcSizeOfUiBoxes()
+  }
+ 
+
   private nextIterationSubscriber(syst: I_SystemState) {
     this.systemState = syst 
     //console.log("SystemComponent.nextIterationSubscriber(): systemState.outputBasket.workitems.length=" + this.systemState.outputBasket.workItems.length)
@@ -72,8 +78,8 @@ export class SystemComponent implements OnInit {
                                                                 utilization:          woSt.utilization,
                                                                 assignedProcessSteps: woSt.assignments.map(vcPs => vcPs.processStep)}})
 
-    console.log("SystemComponent.workersUtilOfValueChain(" + vc + ")=")                                                              
-    console.log(aux)
+    //console.log("SystemComponent.workersUtilOfValueChain(" + vc + ")=")                                                              
+    //console.log(aux)
     return aux                                                              
   }
 

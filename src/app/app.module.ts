@@ -19,6 +19,7 @@ import { WorkersStatsComponent } from './workers-stats/workers-stats.component';
 import { OutputBasketComponent } from './output-basket/output-basket.component';
 import { TestParentComponent } from './test-parent/test-parent.component';
 import { TestChildComponent } from './test-child/test-child.component';
+import { WorkerStrainComponent } from './worker-strain/worker-strain.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { TestChildComponent } from './test-child/test-child.component';
     WorkersStatsComponent,
     OutputBasketComponent,
     TestParentComponent,
-    TestChildComponent
+    TestChildComponent,
+    WorkerStrainComponent
   ],
   imports: [
     BrowserModule,

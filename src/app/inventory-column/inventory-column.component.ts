@@ -14,9 +14,9 @@ type UiBoxSize = {
   styleUrls: ['./inventory-column.component.css']
 })
 export class InventoryColumnComponent implements OnInit {
-  @Input() psInventoryColumn: PsInventoryColumn
-  @Input() isListOfEndProducts: boolean
-  @Input() inventoryColumnBoxSize: UiBoxSize
+  @Input() psInventoryColumn:       PsInventoryColumn
+  @Input() isListOfEndProducts:     boolean
+  @Input() inventoryColumnBoxSize:  UiBoxSize
   psInventoryColumnShow: PsInventoryColumnShow
 
   constructor() { }
@@ -24,6 +24,9 @@ export class InventoryColumnComponent implements OnInit {
   ngOnInit(): void {
     //console.log("InventoryColumnComponent: this.ngOnInit()")
     this.calcHeightOfInventoryColumn()
+//  console.log("InventoryColumnComponent:ngOnChanges() psInventoryColumnShow.wis.length=" + this.psInventoryColumnShow.wis.length)
+//  console.log("InventoryColumnComponent:ngOnChanges() inventoryColumnBoxSize.height=" + this.inventoryColumnBoxSize.height)
+
   }
 
   ngOnChanges(): void {

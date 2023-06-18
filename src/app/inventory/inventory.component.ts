@@ -26,7 +26,6 @@ export class InventoryComponent implements OnInit {
   }
 
   ngOnChanges(): void {
-    //console.log("InventoryComponent:inventoryColumnBoxSize changed")
     this.psInventory = workitemsAsPsInventory(this.wis, this.isListOfEndProducts)
     this.calcSizesOfInventoryColumn()
   }
@@ -37,15 +36,18 @@ export class InventoryComponent implements OnInit {
 
   private calcSizesOfInventoryColumn(): void {
     if (!this.psInventory) return
-    this.inventoryBoxSize.height *= UiInventoryBoxHeightShrink
+//    this.inventoryBoxSize.height *= UiInventoryBoxHeightShrink
     this.inventoryColumnBoxSize = { 
       width:  UiInventoryColWidth, 
-      height: 0 } //this.inventoryBoxSize.height }
+      height: this.inventoryBoxSize.height }
     this.numColsShown = Math.round((this.inventoryBoxSize.width - 20) / UiInventoryColWidth)
     this.psInventoryShow = {
       cols:            this.psInventory.slice(0, this.numColsShown),
       excessColsWiNum: this.psInventory.length <= this.numColsShown ? 0 : this.psInventory.slice(this.numColsShown).map(col => col.wis.length).reduce((a, b) => a + b)    // /*slice(5).*/flatMap(col => col.wis).length
     }
+    //console.log("InventoryComponent.calcSizesOfInventoryColumn(): psInventoryShow=")
+    //console.log(this.psInventoryShow)
+    //console.log("InventoryComponent.calcSizesOfInventoryColumn(): inventoryBoxSize=")
+    //console.log(this.inventoryBoxSize)
   }
-
 }
