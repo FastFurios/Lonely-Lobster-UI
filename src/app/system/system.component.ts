@@ -5,7 +5,9 @@ import { I_IterationRequest,I_SystemState, I_WorkerState, PsWorkerUtilization, V
 import { Observable } from "rxjs"
 import { WorkorderFeederService } from '../shared/workorder-feeder.service';
 import { UiBoxSize, UiBoxMarginToWindow, UiSystemHeaderHeight, UiWorkerStatsHeight, UiObHeaderHeight } from '../shared/ui-boxes-definitions';
-
+import { AnyCatcher } from 'rxjs/internal/AnyCatcher';
+import { catchError } from "rxjs/operators"
+import { ConfigFileReaderService } from '../shared/config-file-reader.service';
 
 
 @Component({
@@ -18,6 +20,7 @@ export class SystemComponent implements OnInit, OnChanges {
   systemState: I_SystemState
   //systemStateStatic: I_SystemState
   vcsWithWorkersUtil: VcWithWorkersUtil[] 
+  
 
   numValueChains: number
 
@@ -26,7 +29,8 @@ export class SystemComponent implements OnInit, OnChanges {
 
   
   constructor( private wiInvSrv: WorkitemsInventoryService,
-               private wof:      WorkorderFeederService ) { 
+               private wof:      WorkorderFeederService ,
+               private cfr:      ConfigFileReaderService) { 
     this.nextIterationStates()
     this.systemState$.subscribe(systemState => { this.numValueChains = systemState.valueChains.length; this.calcSizeOfUiBoxes() })
   }
@@ -34,6 +38,7 @@ export class SystemComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     //console.log("SystemComponent.ngOnInit()")
     this.calcSizeOfUiBoxes()
+    
   }
  
   ngOnChanges(): void {
@@ -83,6 +88,56 @@ export class SystemComponent implements OnInit, OnChanges {
     return aux                                                              
   }
 
+  filename: string = ""
+  sysConfigJsonContent: string
+
+  onFileSelected(e: Event) { 
+    this.filename = this.filename.substring(this.filename.lastIndexOf('\\') + 1)
+
+    this.cfr.getJsonFile(this.filename).subscribe(data => {
+      console.log("SystemComponent.onFileSelected(): filename = " + this.filename)
+      this.sysConfigJsonContent = data
+      console.log("SystemComponent.onFileSelected(): cfr.sysConfigJson =")
+      console.log(this.sysConfigJsonContent)
+    })
+
+  }
+
+  readSystemConfigFile(filename : string) : void {
+ /*     // read system parameter JSON file
+      let paramsAsString : string = ""
+      try { paramsAsString  = readFileSync(filename, "utf8") } 
+      catch (e: any) {
+          switch (e.code) {
+              case "ENOENT" : { throw new Error("System parameter file not found: " + e) }
+              default       : { throw new Error("System parameter file: other error: " + e.message) }
+          }   
+      } 
+      finally {}
+  
+      const paj = JSON.parse(paramsAsString)  // "paj" = parameters as JSON 
+      console.log("SystemComponent.readSystemConfigFile(" + filename + ")=")
+      console.log(paj)
+
+    // https://blog.angular-university.io/angular-file-upload/
+//    if (!event.target.files[0]) return 
+
+    const file:File = event[target].files[0]
+
+    if (file) {
+
+        this.fileName = file.name;
+
+        const formData = new FormData();
+
+        formData.append("thumbnail", file);
+
+        const upload$ = this.http.post("/api/thumbnail-upload", formData);
+
+        upload$.subscribe();
+    }
+*/
+  }
 
   // ----- (re-)sizing of childs' UI boxes  -------------
   
