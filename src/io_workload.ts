@@ -61,6 +61,6 @@ export function processWorkOrderFile(filename : string, sys: LonelyLobsterSystem
     const lineReader: Interface = createInterface(fileReaderConfig)
 
     sys.showHeader()
-    lineReader.on("line", line => processWorkOrdersFromLine(line))
+    
+    lineReader.on('line', line => processWorkOrdersFromLine(line))
 }
-

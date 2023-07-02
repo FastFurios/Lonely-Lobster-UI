@@ -10,12 +10,14 @@ import { ValueChain } from './valuechain.js'
 import { Worker, AssignmentSet, Assignment } from './worker.js'
 import { WiExtInfoElem } from './workitem.js'
 import { ProcessStep } from "./workitembasketholder.js"
+import { I_SystemState, I_ValueChain, I_ProcessStep, I_WorkItem, I_OutputBasket, I_WorkerState } from './io_api_definitions.js'
 
 export interface DebugShowOptions  {
     clock:          boolean,
     workerChoices:  boolean,
     readFiles:      boolean
 }
+
 
 export function systemCreatedFromConfigFile(filename : string) : LonelyLobsterSystem {
     // read system parameter JSON file
@@ -29,8 +31,12 @@ export function systemCreatedFromConfigFile(filename : string) : LonelyLobsterSy
     } 
     finally {}
 
-    const paj = JSON.parse(paramsAsString)  // "paj" = parameters as JSON 
+    const paj: any = JSON.parse(paramsAsString)  // "paj" = parameters as JSON 
+    return systemCreatedFromConfigJson(paj)
+}
 
+
+export function systemCreatedFromConfigJson(paj: any) : LonelyLobsterSystem {
     // extract system id
     const systemId: string = paj.system_id
 

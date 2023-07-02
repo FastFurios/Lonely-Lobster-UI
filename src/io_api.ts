@@ -6,7 +6,7 @@ import { duplicate } from "./helpers.js"
 import { LonelyLobsterSystem } from "./system.js"
 import { ValueChain } from './valuechain.js'
 import { WorkOrder, WiExtInfoElem } from './workitem.js'
-import { I_SystemState, I_ValueChain, I_ProcessStep, I_WorkItem, I_OutputBasket, I_WorkerState } from './io_api_definitions.js'
+import { I_IterationRequest, I_SystemState, I_ValueChain, I_ProcessStep, I_WorkItem, I_OutputBasket, I_WorkerState } from './io_api_definitions.js'
 import { WorkItem, wiTags } from './workitem.js';
 import { ProcessStep, OutputBasket } from './workitembasketholder.js';
 import { clock, outputBasket } from './_main.js'
@@ -17,29 +17,38 @@ import { Worker } from './worker';
 
 type ValueChainId = string 
 
-interface I_IterationRequest {
-    time?: number
-    newWorkOrders: {
-        valueChainId: ValueChainId 
-        numWorkOrders: number
-    }[]
-  }
-  
+
 
 type MaybeValueChain = ValueChain | undefined
 
-export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRequest): I_SystemState {
-  console.log("Lonely Lobster Backend: io_api: nextSystemState(): iterReq=")
-  console.log(iterReq)
+export function emptyIterationRequest(sys: LonelyLobsterSystem): I_IterationRequest {
+  return {
+    time: 0,
+    newWorkOrders: sys.valueChains.map(vc => { 
+      return {
+        valueChainId: vc.id, 
+        numWorkOrders: 0
 
-  function workOrderList(sys: LonelyLobsterSystem, iterReq: I_IterationRequest): WorkOrder[] {
-      //    console.log("io_api//workOrderList/iterReq =")
-      //    console.log(iterReq)
-          return iterReq.newWorkOrders.flatMap(nwo => duplicate<WorkOrder>(
-                                                  { timestamp:    iterReq.time!, 
-                                                    valueChain:   sys.valueChains.find(vc => vc.id == nwo.valueChainId.trim())! },
-                                                  nwo.numWorkOrders ))
-      }
+      } 
+    })
+  }
+}
+
+
+
+
+export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRequest): I_SystemState { // iterReq is undefined when initialization request received
+    console.log("Lonely Lobster Backend: io_api: nextSystemState(" + sys.id + "): iterReq=")
+    console.log(iterReq)
+
+    function workOrderList(sys: LonelyLobsterSystem, iterReq: I_IterationRequest): WorkOrder[] {
+        //    console.log("io_api//workOrderList/iterReq =")
+        //    console.log(iterReq)
+            return iterReq.newWorkOrders.flatMap(nwo => duplicate<WorkOrder>(
+                                                    { timestamp:    iterReq.time!, 
+                                                      valueChain:   sys.valueChains.find(vc => vc.id == nwo.valueChainId.trim())! },
+                                                    nwo.numWorkOrders ))
+    }
     
 
     function i_systemState(sys: LonelyLobsterSystem): I_SystemState {
@@ -115,11 +124,15 @@ export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRe
       }
     }
 
+    console.log("io_api/nextSystemState() iterReq=")
+    console.log(iterReq)
+    
     sys.doNextIteration(
         iterReq.time!, 
         workOrderList(sys, 
                       { time: iterReq.time!,
                         newWorkOrders: iterReq.newWorkOrders } ))
+
     return i_systemState(sys)
 }
 
