@@ -23,6 +23,8 @@ export class InventoryComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void { 
+//    console.log("InventoryComponent.ngOnInit() this.inventoryBoxSize=")
+//    console.log(this.inventoryBoxSize)
   }
 
   ngOnChanges(): void {

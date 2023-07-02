@@ -1,13 +1,10 @@
 import { Component, OnInit, OnChanges, HostListener } from '@angular/core';
 //import { Options } from '@angular-slider/ngx-slider';
 import { WorkitemsInventoryService } from '../shared/workitems-inventory.service'
-import { I_IterationRequest,I_SystemState, I_WorkerState, PsWorkerUtilization, ValueChainId, WorkerName, ProcessStepId, VcWithWorkersUtil } from '../shared/io_api_definitions'
+import { I_SystemState, PsWorkerUtilization, ValueChainId, VcWithWorkersUtil } from '../shared/io_api_definitions'
 import { Observable } from "rxjs"
 import { WorkorderFeederService } from '../shared/workorder-feeder.service';
-import { UiBoxSize, UiBoxMarginToWindow, UiSystemHeaderHeight, UiWorkerStatsHeight, UiObHeaderHeight } from '../shared/ui-boxes-definitions';
-import { AnyCatcher } from 'rxjs/internal/AnyCatcher';
-import { catchError } from "rxjs/operators"
-import { ConfigFileReaderService } from '../shared/config-file-reader.service';
+import { UiBoxSize, UiBoxMarginToWindow, UiSystemHeaderHeight, UiWorkerStatsHeight } from '../shared/ui-boxes-definitions';
 
 
 @Component({
@@ -30,9 +27,13 @@ export class SystemComponent implements OnInit, OnChanges {
   
   constructor( private wiInvSrv: WorkitemsInventoryService,
                private wof:      WorkorderFeederService ,
-               private cfr:      ConfigFileReaderService) { 
+               /*private cfr:      ConfigFileReaderService*/) { 
+
+/*
+    console.log("SystemComponent.constructor: calling nextIterationStates()...")
     this.nextIterationStates()
     this.systemState$.subscribe(systemState => { this.numValueChains = systemState.valueChains.length; this.calcSizeOfUiBoxes() })
+*/
   }
 
   ngOnInit(): void {
@@ -48,7 +49,11 @@ export class SystemComponent implements OnInit, OnChanges {
  
 
   private nextIterationSubscriber(syst: I_SystemState) {
+//  console.log("SystemComponent.nextIterationSubscriber()")
     this.systemState = syst 
+    this.calcSizeOfUiBoxes()
+//  console.log("SystemComponent.nextIterationState() this.systemState=")
+//  console.log(this.systemState)
     //console.log("SystemComponent.nextIterationSubscriber(): systemState.outputBasket.workitems.length=" + this.systemState.outputBasket.workItems.length)
 
     // add to valuechains data also the corresponding workers with their process step asignments and utilization  
@@ -66,6 +71,7 @@ export class SystemComponent implements OnInit, OnChanges {
   }
 
   public nextIterationStates(): void {
+//  console.log("SystemComponent.nextIterationStates()")
     //console.log(this.systemState$)
     this.systemState$ = this.wiInvSrv.nextSystemStateOnInput(this.wof.iterationRequest4AllVcs())
     this.systemState$.subscribe(syst => this.nextIterationSubscriber(syst))
@@ -88,56 +94,52 @@ export class SystemComponent implements OnInit, OnChanges {
     return aux                                                              
   }
 
-  filename: string = ""
-  sysConfigJsonContent: string
-
-  onFileSelected(e: Event) { 
-    this.filename = this.filename.substring(this.filename.lastIndexOf('\\') + 1)
-
-    this.cfr.getJsonFile(this.filename).subscribe(data => {
-      console.log("SystemComponent.onFileSelected(): filename = " + this.filename)
-      this.sysConfigJsonContent = data
-      console.log("SystemComponent.onFileSelected(): cfr.sysConfigJson =")
-      console.log(this.sysConfigJsonContent)
-    })
-
-  }
-
-  readSystemConfigFile(filename : string) : void {
- /*     // read system parameter JSON file
-      let paramsAsString : string = ""
-      try { paramsAsString  = readFileSync(filename, "utf8") } 
-      catch (e: any) {
-          switch (e.code) {
-              case "ENOENT" : { throw new Error("System parameter file not found: " + e) }
-              default       : { throw new Error("System parameter file: other error: " + e.message) }
-          }   
-      } 
-      finally {}
   
-      const paj = JSON.parse(paramsAsString)  // "paj" = parameters as JSON 
-      console.log("SystemComponent.readSystemConfigFile(" + filename + ")=")
-      console.log(paj)
+  filename: string = ""
+//  sysConfigJsonContent: string
 
-    // https://blog.angular-university.io/angular-file-upload/
-//    if (!event.target.files[0]) return 
+  systemId: string = "- empty -"
+  objFromJsonFile: any 
 
-    const file:File = event[target].files[0]
+  onFileSelected(e: any) { 
+    const file: File = e.target.files[0] 
+    this.filename = file.name
 
-    if (file) {
+    const obs$ = this.readFileContentObs(file)
+    obs$.subscribe((fileContent: string) => {
+      this.objFromJsonFile = JSON.parse(fileContent) 
+      this.systemId  = this.objFromJsonFile.system_id
 
-        this.fileName = file.name;
+//    console.log("SystemComponent.onFileSelected() objFromJsonFile=")
+//    console.log(this.objFromJsonFile)
 
-        const formData = new FormData();
-
-        formData.append("thumbnail", file);
-
-        const upload$ = this.http.post("/api/thumbnail-upload", formData);
-
-        upload$.subscribe();
-    }
-*/
+//    this.wiInvSrv.systemStateOnInitialization(this.objFromJsonFile)
+      this.numIterationsToGo = 0
+      this.systemState$ = this.wiInvSrv.systemStateOnInitialization(this.objFromJsonFile)
+      this.systemState$.subscribe(syst => this.nextIterationSubscriber(syst))
+      this.systemState$.subscribe(systemState => { this.numValueChains = systemState.valueChains.length; this.calcSizeOfUiBoxes() })
+    })
   }
+
+  readFileContentObs(file: File): Observable<string> {
+    return new Observable((subscriber) => {
+      if (!file) subscriber.error("no file selected")
+      if (file.size == 0) subscriber.error("selected file is empty")
+
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        if (!reader.result) subscriber.error("no result from reading")
+        else subscriber.next(reader.result.toString())
+      }
+      reader.onerror = (error) => {
+        subscriber.error(error);
+      }
+
+      reader.readAsText(file)
+    })
+  }
+
+  
 
   // ----- (re-)sizing of childs' UI boxes  -------------
   
@@ -159,6 +161,10 @@ export class SystemComponent implements OnInit, OnChanges {
       width:  this.vcsBoxSize.width, 
       height: Math.round(this.vcsBoxSize.height / this.numValueChains)
     }
+//  console.log("SystemComponent: calcSizeOfUiBoxes() this.numValueChains=" + this.numValueChains)  
+//  console.log("SystemComponent: calcSizeOfUiBoxes() this.vcBoxSize=")
+//  console.log(this.vcBoxSize)
+
     this.obBoxSize = { 
       width:  window.innerWidth - this.vcBoxSize.width - UiBoxMarginToWindow,
       height: this.vcsBoxSize.height

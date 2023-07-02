@@ -23,23 +23,34 @@ export class WorkitemsInventoryService {
     return throwError(() => "error" /*new Error()*/)
   }
 
+/*  
   get nextSystemState(): Observable<I_SystemState> {
     console.log("WorkitemsInventoryService: nextSystemState(): returning Observable")
-    return this.http.get<I_SystemState>("http://localhost:3000/").pipe(
+    return this.http.get<I_SystemState>("http://localhost:3000/iterate/").pipe(
 //      retry(3), 
       catchError(this.errorHandler),
     ) 
   }
-
+*/
   
-  nextSystemStateOnInput(body: I_IterationRequest): Observable<I_SystemState> {
-//  console.log("WorkItemInventoryService: nextSystemStateOnInput(...): body=")
-//  console.log(body)
-    return this.http.post<I_SystemState>("http://localhost:3000/", body /*, {responseType: "json"}*/)
+  systemStateOnInitialization(systemParmsAsJson: any): Observable<I_SystemState> {
+//  console.log("WorkItemInventoryService: systemStateOnInitialization(...): systemParmsAsJson=")
+//  console.log(systemParmsAsJson)
+    return this.http.post<I_SystemState>("http://localhost:3000/initialize/", systemParmsAsJson /*, {responseType: "json"}*/)
         .pipe(
           catchError((error: HttpErrorResponse) =>this.errorHandler(error))
         )
     
   }
 
+  nextSystemStateOnInput(iterationRequest: I_IterationRequest): Observable<I_SystemState> {
+//  console.log("WorkItemInventoryService: nextSystemStateOnInput(...): iterationRequest=")
+//  console.log(iterationRequest)
+      return this.http.post<I_SystemState>("http://localhost:3000/iterate/", iterationRequest /*, {responseType: "json"}*/)
+          .pipe(
+            catchError((error: HttpErrorResponse) =>this.errorHandler(error))
+          )
+        
+  }
+  
 }

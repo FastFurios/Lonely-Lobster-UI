@@ -23,6 +23,9 @@ export class ValueChainComponent implements OnInit, OnChanges {
               private wof: WorkorderFeederService) { }
  
   ngOnInit(): void {
+//  console.log("ValueChainComponent: ngOnInit() this.vcBoxSize=")
+//  console.log(this.vcBoxSize)
+
     //console.log("ValueChainComponent "+this.vc.id + ": ngOnInit()")
     this.valueChainColor = this.cms.colorOfObject(["value-chain", this.vcWu.vc.id])
     this.calcSizeOfProcessStepBox()  
@@ -46,6 +49,8 @@ export class ValueChainComponent implements OnInit, OnChanges {
     //console.log("ValueChainComponent "+this.vc.id + ": ngOnChanges(): simple change=")
     //console.log(changes)
     this.calcSizeOfProcessStepBox()
+
+    if (!this.feedParms) return
     if (this.feedParms!.avgInjectionThroughput > 0 && this.feedParms!.injectProbability > 0) this.wof.setParms(this.vcWu.vc.id, this.feedParms!.avgInjectionThroughput, this.feedParms!.injectProbability)
   }
   

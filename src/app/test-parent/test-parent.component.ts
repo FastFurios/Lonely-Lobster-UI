@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from "rxjs"
-import { readFile } from 'fs';
+import { Observable } from 'rxjs'
 
 @Component({
   selector: 'app-test-parent',
@@ -23,9 +21,10 @@ export class TestParentComponent implements OnInit {
     this.complexObject.counters[0] = 0
   }
 
-  ngOnInit(): void {
-  }
-  
+  ngOnInit(): void { }
+
+// --- communicating with childs ---  
+
   ngOnChanges(): void {
     console.log("TestParentComponent.ngOnChnages()")
   }
@@ -41,125 +40,86 @@ export class TestParentComponent implements OnInit {
     this.complexObject.counters[0] = childCounter
   }
 
+
+// --- reading local files ---  
+
   filename: string = ""
-  sysConfigJsonContent: string
+  firstname: string = "- empty -"
+  lastname: string = "- empty -"
+//  sysConfigJsonContent: string
   objFromJsonFile: any 
 
-  async onFileSelected(e: any) { 
-//  this.filename = this.filename.substring(this.filename.lastIndexOf('\\') + 1)
-
-    console.log("TestParentComponent.onFileSelected(e) this.filename=")
-    console.log(this.filename)
-
-
+  /* async */ onFileSelected(e: any) { 
     const file: File = e.target.files[0] 
-    const url = URL.createObjectURL(file)
-
-    console.log("TestParentComponent.onFileSelected(e) e:Event=")
-    console.log(file)
-
     this.filename = file.name
-    console.log("TestParentComponent.onFileSelected(e) this.filename=")
-    console.log(this.filename)
-    console.log("TestParentComponent.onFileSelected(e) url=")
-    console.log(url)
-    console.log("TestParentComponent.onFileSelected(e) webkitrelativepath=")
-    console.log(file.webkitRelativePath)
-    console.log("TestParentComponent.onFileSelected(e) size=")
-    console.log(file.size)
+    let fileContent: string
 
+/*
+    // Promise async -await way of doing it
+    try {
+      fileContent = await this.readFileContent(file)
+    }     
+    catch (e: any) {
+      switch (e.code) {
+          case "ENOENT" : { throw new Error("System parameter file not found: " + e) }
+          default       : { throw new Error("System parameter file: other error: " + e.message) }
+      }   
+    } 
+    finally {}
+*/
 
-    const fileContent = await this.readFileContent(e.target.files[0]);
-    console.log("TestParentComponent.onFileSelected(e) fileContent=")
-    console.log(">>" + fileContent + "<<")
-
-    this.objFromJsonFile = JSON.parse(fileContent) 
-    console.log("TestParentComponent.onFileSelected(e) objFromJsonFile=")
-    console.log(this.objFromJsonFile)
-
+    // Observable way of doing it
+    const obs$ = this.readFileContentObs(file)
+    obs$.subscribe((fileContent: string) => {
+      this.objFromJsonFile = JSON.parse(fileContent) 
+      this.firstname = this.objFromJsonFile.firstname
+      this.lastname  = this.objFromJsonFile.lastname
+      console.log("Content=")
+      console.log(this.objFromJsonFile)
+    })
   }
 
+
+  // -- version with Observable -- 
+
+  readFileContentObs(file: File): Observable<string> {
+    return new Observable((subscriber) => {
+      if (!file) subscriber.error("no file selected")
+      if (file.size == 0) subscriber.error("selected file is empty")
+
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        if (!reader.result) subscriber.error("no result from reading")
+        else subscriber.next(reader.result.toString())
+      }
+      reader.onerror = (error) => {
+        subscriber.error(error);
+      }
+
+      reader.readAsText(file)
+    })
+  }
+
+/*
+  // -- version with Promise -- 
   readFileContent(file: File): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-        if (!file) {
-            resolve('empty');
-        }
+        if (!file) reject("no file selected")
+        if (file.size == 0) reject("selected file is empty")
 
-        const reader = new FileReader();
-
+        const reader = new FileReader()
         reader.onload = (e) => {
-          if (reader.error) resolve("ERROR" + reader.error)
-          //if (!reader.result) resolve("ERROR- no result")
-          const text = reader.result!.toString();
-            resolve(text);
-        };
-        reader.onerror = (error) => {
-          console.log("reader.onerror=" + error);
+          if (!reader.result) reject("no result from reading")
+          else resolve(reader.result.toString())
         }
-        reader.readAsText(file) //, 'UTF-8');
-    });
-  }
+        reader.onerror = (error) => {
+          reject(error);
+        }
 
-
-
-  readJsonFile(file: File) {
-    let fileReader = new FileReader();
-    fileReader.onloadend = () => {
-      console.log("TestParentComponent.readJsonFile-Handler(" + file.name + ") fileReader.result=")
-      console.log(fileReader.result ? "defined" : "undefined");
-      console.log("TestParentComponent.readJsonFile-Handler(" + file.name + ") After")
-
-    }
-    console.log("TestParentComponent.fileReader.readAsText(" + file.name + ")")
-    fileReader.readAsText(file);
-  }
-/*
-    this.cfr.getJsonFile(this.filename).subscribe(data => {
-      console.log("SystemComponent.onFileSelected(): filename = " + this.filename)
-      this.sysConfigJsonContent = data
-      console.log("SystemComponent.onFileSelected(): cfr.sysConfigJson =")
-      console.log(this.sysConfigJsonContent)
+        reader.readAsText(file)
     })
-
   }
 */
- /*     // read system parameter JSON file
-  readSystemConfigFile(filename : string) : void {
-    // read system parameter JSON file
-      let paramsAsString : string = ""
-      try { paramsAsString  = readFileSync(filename, "utf8") } 
-      catch (e: any) {
-          switch (e.code) {
-              case "ENOENT" : { throw new Error("System parameter file not found: " + e) }
-              default       : { throw new Error("System parameter file: other error: " + e.message) }
-          }   
-      } 
-      finally {}
-  
-      const paj = JSON.parse(paramsAsString)  // "paj" = parameters as JSON 
-      console.log("SystemComponent.readSystemConfigFile(" + filename + ")=")
-      console.log(paj)
-
-    // https://blog.angular-university.io/angular-file-upload/
-//    if (!event.target.files[0]) return 
-
-    const file:File = event[target].files[0]
-
-    if (file) {
-
-        this.fileName = file.name;
-
-        const formData = new FormData();
-
-        formData.append("thumbnail", file);
-
-        const upload$ = this.http.post("/api/thumbnail-upload", formData);
-
-        upload$.subscribe();
-    }
-
-  }
-  */
 
 }
 
@@ -178,5 +138,9 @@ export class TestParentComponent implements OnInit {
 
   <input ...>
   6. Dealing with <input> fields in the child's template: <input ... onchange="inputHandler($event)"> does not work: runtime error "inputHandler is not defined at HTMLInputyElement.onchange" 
+  7. <input type="file" ...> lets you choose a file via Explorer. The file's content is then made available in the 
+     event and can be read with a Reader Object.  
+
+
 
 */

@@ -1,7 +1,9 @@
 <!--
 <ng-container *ngIf="systemState$ | async as systemState; else loading">
--->
-    
+-->    
+<input type="file" required (change)="onFileSelected($event)"/> System ID is: {{systemId}}
+
+
 <ng-container *ngIf="systemState; else loading">
     
     <div class="headerRow">
@@ -59,13 +61,6 @@
 </ng-template>
 <br/>
 <br/>
-
-<input type="file" 
-required
-[(ngModel)]="filename"
-(change)="onFileSelected($event)">
-
-<p>File name is: {{filename}}</p>
 
 <!--
 <img [src]="filename" alt="file not found" height="100">

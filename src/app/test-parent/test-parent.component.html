@@ -2,17 +2,17 @@
 
 <h5>-------- Selecting and reading files -------- </h5>
 
-<!--
-<input type="file" required
-  [(ngModel)]="filename"
-  (change)="onFileSelected($event)">
--->
 <input type="file" required 
   (change)="onFileSelected($event)"/>
 
-  <p>File name is: {{filename}}</p>
+<p>File name is: {{filename}}</p>
 
-<!--
+<p>Firstname is: {{firstname}}; Lastname is: {{lastname}}</p>
+
+
+
+<br/>
+<br/>
 <h5>-------- communication with child components -------- </h5>
 
 <p>Counter in complex object: {{ complexObject.counters[0] }}</p>
@@ -27,5 +27,4 @@
 
 
 <app-test-child [childCounter]="complexObject.counters[0]" (submitChildCounter)="syncCounters($event)"></app-test-child>
--->
 

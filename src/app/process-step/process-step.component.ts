@@ -18,7 +18,6 @@ export class ProcessStepComponent implements OnInit, OnChanges {
   constructor(private cms: ColorMapperService) { }
 
   ngOnInit(): void {
-    //console.log("ProcessStepComponent: ngOnInit()")
     this.wis = this.psWu.ps.workItems.map(wi =>  { 
       return  { 
                 ...wi,
