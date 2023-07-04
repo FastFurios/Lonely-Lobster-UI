@@ -64,7 +64,7 @@ export function systemCreatedFromConfigJson(paj: any) : LonelyLobsterSystem {
 
     // extract workers and assignments
     interface I_process_step_assignment {
-        value_chain_id:     string
+        value_chain_id:      string
         process_steps_id:   string
     }
     interface I_worker {

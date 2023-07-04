@@ -14,7 +14,6 @@ import { OutputBasket } from './workitembasketholder.js'
 import { LonelyLobsterSystem } from './system.js'
 
 import express from 'express'
-import { exit } from 'process'
 
 // set debug defauls in case the io_connfig.json does not contain any debug properties
 const debugShowOptionsDefaults: DebugShowOptions = { 
@@ -36,8 +35,8 @@ export const tagGen = wiTagGenerator(wiTags)
 
 function manual(): void {
     console.log("Run it in one of 2 modes:")
-    console.log("$ node target/_main.js batch <system-config-file> <work-order-file> &")
-    console.log("$ node target/_main.js api &")
+    console.log("$ node target/_main.js --batch <system-config-file> <work-order-file>")
+    console.log("$ node target/_main.js --api &")
 }
 
 // define where to find the comand line arguments (e.g. $ node target/_main.js test/LonelyLobster_Testcase0037.json test/workload_50_blue_burst_15_green_burst_10.csv)
@@ -47,11 +46,9 @@ enum InputArgs {
     "WorkOrders"        = 4
 }
 
-
 export let lonelyLobsterSystem: LonelyLobsterSystem
 
-if(debugShowOptions.readFiles || true) console.log("argv[2]=" + process.argv[2] + ", " + "argv[3]=" + process.argv[3] + ", " + "argv[4]=" + process.argv[4] + "\n")
-
+if(debugShowOptions.readFiles) console.log("argv[2]=" + process.argv[2] + ", " + "argv[3]=" + process.argv[3] + ", " + "argv[4]=" + process.argv[4] + "\n")
 
 switch(process.argv[InputArgs.Mode]) {
     case "--batch": { 
@@ -84,7 +81,7 @@ switch(process.argv[InputArgs.Mode]) {
             next();
             });
         
-        let clockTime = 0
+//??    let clockTime = 0
 
         app.post('/initialize', (req, res) => {
                 console.log("_main: app.post \"initialize\" : received request=")

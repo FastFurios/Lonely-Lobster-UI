@@ -12,14 +12,7 @@ import { ProcessStep, OutputBasket } from './workitembasketholder.js';
 import { clock, outputBasket } from './_main.js'
 import { Worker } from './worker';
 
-
-
-
-type ValueChainId = string 
-
-
-
-type MaybeValueChain = ValueChain | undefined
+//?? 3.7.23 type ValueChainId = string 
 
 export function emptyIterationRequest(sys: LonelyLobsterSystem): I_IterationRequest {
   return {
@@ -34,12 +27,9 @@ export function emptyIterationRequest(sys: LonelyLobsterSystem): I_IterationRequ
   }
 }
 
-
-
-
 export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRequest): I_SystemState { // iterReq is undefined when initialization request received
-    console.log("Lonely Lobster Backend: io_api: nextSystemState(" + sys.id + "): iterReq=")
-    console.log(iterReq)
+//  console.log("Lonely Lobster Backend: io_api: nextSystemState(" + sys.id + "): iterReq=")
+//  console.log(iterReq)
 
     function workOrderList(sys: LonelyLobsterSystem, iterReq: I_IterationRequest): WorkOrder[] {
         //    console.log("io_api//workOrderList/iterReq =")
@@ -50,49 +40,48 @@ export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRe
                                                     nwo.numWorkOrders ))
     }
     
-
     function i_systemState(sys: LonelyLobsterSystem): I_SystemState {
 
       function i_workItem (wi: WorkItem): I_WorkItem { 
         return {
-          id: wi.id,
-          tag: wiTags[0],
-          valueChainId: wi.valueChain.id,
-          value: wi.valueChain.totalValueAdd,
-          maxEffort: (<ProcessStep>wi.currentProcessStep).normEffort,
-          processStepId: wi.currentProcessStep.id,
-          accumulatedEffort: wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.accumulatedEffortInProcessStep],
-          elapsedTime: wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.elapsedTimeInProcessStep]
+          id:                 wi.id,
+          tag:                wiTags[0],
+          valueChainId:       wi.valueChain.id,
+          value:              wi.valueChain.totalValueAdd,
+          maxEffort:          (<ProcessStep>wi.currentProcessStep).normEffort,
+          processStepId:      wi.currentProcessStep.id,
+          accumulatedEffort:  wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.accumulatedEffortInProcessStep],
+          elapsedTime:        wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.elapsedTimeInProcessStep]
         }
       }
 
       function i_processStep(ps: ProcessStep): I_ProcessStep {
         return {
-          id: ps.id,
-          normEffort: ps.normEffort,
-          workItems: ps.workItemBasket.map(wi => i_workItem(wi)),
-          workItemFlow: ps.lastIterationFlowRate
+          id:                 ps.id,
+          normEffort:         ps.normEffort,
+          workItems:          ps.workItemBasket.map(wi => i_workItem(wi)),
+          workItemFlow:       ps.lastIterationFlowRate
         }
       }
 
       function i_valueChain(vc: ValueChain): I_ValueChain {
         return {
-          id: vc.id,
-          totalValueAdd: vc.totalValueAdd,
-          processSteps: vc.processSteps.map(ps => i_processStep(ps))
+          id:                 vc.id,
+          totalValueAdd:      vc.totalValueAdd,
+          processSteps:       vc.processSteps.map(ps => i_processStep(ps))
         }
       }
 
       function i_endProduct (wi: WorkItem): I_WorkItem { 
         return {
-          id: wi.id,
-          tag: wiTags[0],
-          valueChainId: wi.valueChain.id,
-          value: wi.valueChain.totalValueAdd,
-          maxEffort: wi.valueChain.processSteps.map(ps => ps.normEffort).reduce((e1, e2) => e1 + e2),
-          processStepId: wi.currentProcessStep.id,
-          accumulatedEffort: wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.accumulatedEffortInValueChain],
-          elapsedTime: wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.elapsedTimeInValueChain]
+          id:                 wi.id,
+          tag:                wiTags[0],
+          valueChainId:       wi.valueChain.id,
+          value:              wi.valueChain.totalValueAdd,
+          maxEffort:          wi.valueChain.processSteps.map(ps => ps.normEffort).reduce((e1, e2) => e1 + e2),
+          processStepId:      wi.currentProcessStep.id,
+          accumulatedEffort:  wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.accumulatedEffortInValueChain],
+          elapsedTime:        wi.extendedInfos.workOrderExtendedInfos[WiExtInfoElem.elapsedTimeInValueChain]
         }
       }
 
@@ -104,7 +93,7 @@ export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRe
 
       function i_workerState(wo: Worker): I_WorkerState {
         return {
-          worker: wo.id,
+          worker:      wo.id,
           utilization: wo.stats.utilization,
           assignments: wo.stats.assignments.map(a => {
             return {
@@ -116,21 +105,21 @@ export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRe
       }
 
       return {
-        id: sys.id,
-        time: clock.time,
-        valueChains: sys.valueChains.map(vc => i_valueChain(vc)),
+        id:           sys.id,
+        time:         clock.time,
+        valueChains:  sys.valueChains.map(vc => i_valueChain(vc)),
         outputBasket: { workItems: outputBasket.workItemBasket.map(wi => i_endProduct(wi)) },
         workersState: sys.workers.map(wo => i_workerState(wo))
       }
     }
 
-    console.log("io_api/nextSystemState() iterReq=")
-    console.log(iterReq)
-    
+//  console.log("io_api/nextSystemState() iterReq=")
+//  console.log(iterReq)
+
     sys.doNextIteration(
         iterReq.time!, 
         workOrderList(sys, 
-                      { time: iterReq.time!,
+                      { time:          iterReq.time!,
                         newWorkOrders: iterReq.newWorkOrders } ))
 
     return i_systemState(sys)
