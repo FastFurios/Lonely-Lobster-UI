@@ -1,17 +1,20 @@
-<div class="process-step-header" [style]="'height:' + uiPsHeaderHeight + 'px'">
-    <p><strong>{{ psWu.ps.id }}</strong> </p>
-</div>
-<div class="process-step" [style]="'width:' + psBoxSize.width + 'px'">
-    <div>
-        <app-inventory [wis]="wis" [isListOfEndProducts]="false" [inventoryBoxSize]="inventoryBoxSize"></app-inventory>
+<div class="process-step" [style]="'height:' + psBoxSize.height + 'px'">
+    <div class="process-step-header" [style]="'height:' + uiPsHeaderHeight + 'px'">
+        <h3>{{ psWu.ps.id }} </h3>-<h5>norm effort: {{psWu.ps.normEffort}}</h5> 
     </div>
-    <div>
-        <app-flow-arrow [flowRate]="psWu.ps.workItemFlow" [flowArrowBoxSize]="flowArrowBoxSize"></app-flow-arrow>
+    <div class="process-step-inv-and-arrow" [style]="'height:' + inventoryBoxSize.height + 'px; width:' + psBoxSize.width + 'px'">
+        <div>
+            <app-inventory [wis]="wis" [isListOfEndProducts]="false" [inventoryBoxSize]="inventoryBoxSize"></app-inventory>
+        </div>
+        <div>
+            <app-flow-arrow [flowRate]="psWu.ps.workItemFlow" [flowArrowBoxSize]="flowArrowBoxSize"></app-flow-arrow>
+        </div>
     </div>
-</div>
-<div class="process-step-workers">
-    <div *ngFor="let woUtil of psWu.wosUtil">
-        <app-worker-strain [woUtil]="woUtil"></app-worker-strain>
+
+    <div class="process-step-workers" [style]="'height:' + uiWorkerNameHeight + 'px'">
+        <div *ngFor="let woUtil of psWu.wosUtil">
+            <app-worker-strain [woUtil]="woUtil"></app-worker-strain>
+        </div>
     </div>
 </div>
 <!--

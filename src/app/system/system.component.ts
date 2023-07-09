@@ -146,9 +146,7 @@ export class SystemComponent implements OnInit, OnChanges {
     })
   }
 
-  
-
-  // ----- (re-)sizing of childs' UI boxes  -------------
+    // ----- (re-)sizing of childs' UI boxes  -------------
   
   @HostListener('window:resize', ['$event'])
   onResize(/*event: Event*/) {
@@ -174,7 +172,7 @@ export class SystemComponent implements OnInit, OnChanges {
 
     this.obBoxSize = { 
       width:  window.innerWidth - this.vcBoxSize.width - UiBoxMarginToWindow,
-      height: this.vcsBoxSize.height
+      height: this.vcsBoxSize.height -20
     }
   }
 

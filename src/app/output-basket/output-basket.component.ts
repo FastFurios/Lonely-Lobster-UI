@@ -53,7 +53,7 @@ export class OutputBasketComponent implements OnInit, OnChanges {
   private calcSizeOfInventoryBox(): void {
     this.inventoryBoxSize = { 
       width:  this.obBoxSize.width,
-      height: this.obBoxSize.height - this.uiObHeaderHeight 
+      height: this.obBoxSize.height - UiObHeaderHeight
     }
     //console.log("OutputBasketComponent.calcSizeOfProcessStepBox(): inventoryBox Size h=" + this.inventoryBoxSize.height)
   }

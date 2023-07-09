@@ -1,9 +1,18 @@
 .output-basket {
-    background-color: cornsilk;
-    font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-family: Arial, Helvetica, sans-serif;
     font-size: x-small; 
     text-align: center;
-    /*  border-style: dashed;
-      border-color: green;
-*/
+    box-sizing: content-box;
+/*      border-style: solid;
+      border-color: blue;*/
+  }
+
+
+  .output-basket-header {
+    box-sizing: border-box;
+    /*    border-style:solid;
+    border-color: purple; */ 
   }

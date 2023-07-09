@@ -1,4 +1,6 @@
 .worker-strain {
+    box-sizing: border-box;
+
     border-color: cornsilk;
     border-style: solid;
     padding: 3px;

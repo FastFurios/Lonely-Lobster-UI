@@ -46,11 +46,11 @@ export class ProcessStepComponent implements OnInit, OnChanges {
   private calcSizeOfUiBoxes(): void {
     this.inventoryBoxSize = {
       width:  this.psBoxSize.width * UiInvWidthOfPsWidth,
-      height: this.psBoxSize.height * UiInventoryBoxHeightShrink - this.uiPsHeaderHeight - this.uiWorkerNameHeight
+      height: this.psBoxSize.height * UiInventoryBoxHeightShrink - UiPsHeaderHeight - UiWorkerNameHeight
     }
     this.flowArrowBoxSize = {
       width:  this.psBoxSize.width - this.inventoryBoxSize.width ,
-      height: this.inventoryBoxSize.height 
+      height: this.inventoryBoxSize.height
     }
   }
 

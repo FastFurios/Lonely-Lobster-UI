@@ -9,6 +9,7 @@
 .submitButton {
     background-color: orangered;
     height: 30px;
+    box-sizing: border-box;
     border-radius: 5px;
     border-style: outset;
     border-color: red

@@ -66,7 +66,7 @@ export class ValueChainComponent implements OnInit, OnChanges {
   private calcSizeOfProcessStepBox(): void {
     this.psBoxSize = { 
       width:  Math.round((this.vcBoxSize.width - UiVcBoxLeftMargin) / this.vcWu.vc.processSteps.length),
-      height: this.vcBoxSize.height 
+      height: this.vcBoxSize.height
     }
   }
 

@@ -1,27 +1,46 @@
 .process-step {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: flex-start;
-
+    box-sizing: border-box;
     background-color: cornsilk;
     font-family: Arial, Helvetica, sans-serif;
     font-size: x-small; 
     text-align: center;
-    border-style:solid;
-    border-color: red; 
+/*    border-style:solid;
+    border-color: red; */ 
+  }
+
+  .process-step-inv-and-arrow {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: x-small; 
+    text-align: center;
+    /*border-style:solid;
+    border-color: green;*/ 
   }
 
   .process-step-header {
-/*    height: 40px;
-    border-style: dotted;
-    border-color: purle;
-  */
-}
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    box-sizing: border-box; 
+/*    border-style:solid;
+    border-color: purple; */
+  }
+
+
 
 .process-step-workers {
   display: flex;
   flex-direction: row;
-  font-family: Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
+/*  border-style:solid;
+  border-color: purple; */
+font-family: Arial, Helvetica, sans-serif;
   font-size: x-small; 
   text-align: center;
 }
