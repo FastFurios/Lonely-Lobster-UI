@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { I_IterationRequest, ValueChainId } from './io_api_definitions'
+import { Timestamp } from 'rx';
 
 export type VcFeederParms = {  // for each time unit
   avgInjectionThroughput: number, // any number e.g. 1, 0.5, 2.1, ...
@@ -16,10 +17,12 @@ type VcFeederParmsAndState = {
 })
 export class WorkorderFeederService {
 
-    /* private */ vcFeederTimeUnitMap = new Map<ValueChainId, VcFeederParmsAndState>()
-    /* private */ timeNow = 0
+    /* private */ vcFeederTimeUnitMap: Map<ValueChainId, VcFeederParmsAndState>
+    /* private */ timeNow: number
 
-    constructor() {this.timeNow = 0}
+    constructor() {
+        this.initialize()
+    }
 
 
 
@@ -93,4 +96,10 @@ export class WorkorderFeederService {
   //    console.log(iterationRequest)
         return iterationRequest
     }
+
+    initialize(): void {
+        this.timeNow = 0
+        this.vcFeederTimeUnitMap = new Map<ValueChainId, VcFeederParmsAndState>()
+    }
+
 }

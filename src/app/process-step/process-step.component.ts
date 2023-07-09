@@ -2,7 +2,7 @@ import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { I_ProcessStep, I_WorkItem, PsWithWorkersWithUtil } from '../shared/io_api_definitions'
 import { RgbColor } from '../shared/color-mapper.service'
 import { ColorMapperService } from '../shared/color-mapper.service'
-import { UiBoxSize, UiPsHeaderHeight, UiInvWidthOfPsWidth, UiInventoryBoxHeightShrink} from '../shared/ui-boxes-definitions';
+import { UiBoxSize, UiPsHeaderHeight, UiInvWidthOfPsWidth, UiInventoryBoxHeightShrink, UiWorkerNameHeight} from '../shared/ui-boxes-definitions';
 
 
 @Component({
@@ -40,12 +40,13 @@ export class ProcessStepComponent implements OnInit, OnChanges {
 
   inventoryBoxSize: UiBoxSize
   flowArrowBoxSize: UiBoxSize
-  uiPsHeaderHeight = UiPsHeaderHeight
+  uiPsHeaderHeight    = UiPsHeaderHeight
+  uiWorkerNameHeight  = UiWorkerNameHeight
 
   private calcSizeOfUiBoxes(): void {
     this.inventoryBoxSize = {
       width:  this.psBoxSize.width * UiInvWidthOfPsWidth,
-      height: this.psBoxSize.height * UiInventoryBoxHeightShrink - this.uiPsHeaderHeight 
+      height: this.psBoxSize.height * UiInventoryBoxHeightShrink - this.uiPsHeaderHeight - this.uiWorkerNameHeight
     }
     this.flowArrowBoxSize = {
       width:  this.psBoxSize.width - this.inventoryBoxSize.width ,

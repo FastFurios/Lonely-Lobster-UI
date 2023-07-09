@@ -21,7 +21,10 @@
                     [(ngModel)] = "numIterationsToExecute">
 
             <button type="button" class="submitButton" (click)="nextIterationHandler()">
-                Next {{numIterationsToExecute}} Iteration(s)
+                Run
+            </button>
+            <button type="button" class="submitButton" (click)="stopIterationHandler()">
+                Stop
             </button>
         </div>    
         <div>

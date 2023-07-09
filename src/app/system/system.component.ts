@@ -71,7 +71,7 @@ export class SystemComponent implements OnInit, OnChanges {
   }
 
   public nextIterationStates(): void {
-//  console.log("SystemComponent.nextIterationStates()")
+    console.log("SystemComponent.nextIterationStates()")
     //console.log(this.systemState$)
     this.systemState$ = this.wiInvSrv.nextSystemStateOnInput(this.wof.iterationRequest4AllVcs())
     this.systemState$.subscribe(syst => this.nextIterationSubscriber(syst))
@@ -82,6 +82,9 @@ export class SystemComponent implements OnInit, OnChanges {
     this.nextIterationStates()
   }
   
+  public stopIterationHandler() {
+    this.numIterationsToGo = 0
+  }
 
   private workersUtilOfValueChain(vc: ValueChainId): PsWorkerUtilization[] {
     const aux = this.systemState.workersState.filter(woSt => woSt.assignments.some(vcPs => vcPs.valueChain == vc))
@@ -101,24 +104,29 @@ export class SystemComponent implements OnInit, OnChanges {
   systemId: string = "- empty -"
   objFromJsonFile: any 
 
-  onFileSelected(e: any) { 
-    const file: File = e.target.files[0] 
-    this.filename = file.name
-
-    const obs$ = this.readFileContentObs(file)
-    obs$.subscribe((fileContent: string) => {
+  private parseAndInititalize(fileContent: string): void {
       this.objFromJsonFile = JSON.parse(fileContent) 
       this.systemId  = this.objFromJsonFile.system_id
 
+ //   console.log("SystemComponent.onFileSelected() obj$.subscribe() Lambda executing")
 //    console.log("SystemComponent.onFileSelected() objFromJsonFile=")
 //    console.log(this.objFromJsonFile)
 
 //    this.wiInvSrv.systemStateOnInitialization(this.objFromJsonFile)
       this.numIterationsToGo = 0
+      this.wof.initialize()
       this.systemState$ = this.wiInvSrv.systemStateOnInitialization(this.objFromJsonFile)
-      this.systemState$.subscribe(syst => this.nextIterationSubscriber(syst))
+      this.systemState$.subscribe(systemState => this.nextIterationSubscriber(systemState))
       this.systemState$.subscribe(systemState => { this.numValueChains = systemState.valueChains.length; this.calcSizeOfUiBoxes() })
-    })
+  }
+
+
+  onFileSelected(e: any) { 
+    const file: File = e.target.files[0] 
+    this.filename = file.name
+
+    const obs$ = this.readFileContentObs(file)
+    obs$.subscribe((fileContent: string) => this.parseAndInititalize(fileContent))
   }
 
   readFileContentObs(file: File): Observable<string> {
@@ -134,7 +142,6 @@ export class SystemComponent implements OnInit, OnChanges {
       reader.onerror = (error) => {
         subscriber.error(error);
       }
-
       reader.readAsText(file)
     })
   }
