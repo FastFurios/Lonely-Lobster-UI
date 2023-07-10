@@ -26,6 +26,9 @@
             <button type="button" class="submitButton" (click)="stopIterationHandler()">
                 Stop
             </button>
+            <button type="button" class="submitButton" (click)="resetSystemHandler()">
+                Reset
+            </button>
         </div>    
         <div>
             <app-workers-stats [wosStats]="systemState.workersState" ></app-workers-stats>

@@ -12,7 +12,6 @@ import { InventoryWorkitemComponent } from './inventory-workitem/inventory-worki
 import { FlowArrowComponent } from './flow-arrow/flow-arrow.component';
 import { ProcessStepComponent } from './process-step/process-step.component';
 import { ValueChainComponent } from './value-chain/value-chain.component';
-import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { SystemComponent } from './system/system.component';
 import { WorkerComponent } from './worker/worker.component';
 import { WorkersStatsComponent } from './workers-stats/workers-stats.component';
@@ -41,7 +40,6 @@ import { WorkerStrainComponent } from './worker-strain/worker-strain.component';
   imports: [
     BrowserModule,
     FormsModule,
-//  NgxSliderModule,
     HttpClientModule
   ],
   providers: [],

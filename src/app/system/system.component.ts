@@ -1,11 +1,13 @@
 import { Component, OnInit, OnChanges, HostListener } from '@angular/core';
-//import { Options } from '@angular-slider/ngx-slider';
+import { Observable } from "rxjs"
 import { WorkitemsInventoryService } from '../shared/workitems-inventory.service'
 import { I_SystemState, PsWorkerUtilization, ValueChainId, VcWithWorkersUtil } from '../shared/io_api_definitions'
-import { Observable } from "rxjs"
 import { WorkorderFeederService } from '../shared/workorder-feeder.service';
 import { UiBoxSize, UiBoxMarginToWindow, UiSystemHeaderHeight, UiWorkerStatsHeight } from '../shared/ui-boxes-definitions';
 
+// =======================================================================================
+// SYSTEM COMPONENT
+// =======================================================================================
 
 @Component({
   selector: 'app-system',
@@ -13,69 +15,51 @@ import { UiBoxSize, UiBoxMarginToWindow, UiSystemHeaderHeight, UiWorkerStatsHeig
   styleUrls: ['./system.component.css']
 })
 export class SystemComponent implements OnInit, OnChanges {
-  systemState$: Observable<I_SystemState> 
-  systemState: I_SystemState
-  //systemStateStatic: I_SystemState
+  systemState$:       Observable<I_SystemState> 
+  systemState:        I_SystemState
   vcsWithWorkersUtil: VcWithWorkersUtil[] 
-  
-
-  numValueChains: number
+  numValueChains:     number
 
   numIterationsToExecute: number = 1
   numIterationsToGo: number
-
   
   constructor( private wiInvSrv: WorkitemsInventoryService,
-               private wof:      WorkorderFeederService ,
-               /*private cfr:      ConfigFileReaderService*/) { 
-
-/*
-    console.log("SystemComponent.constructor: calling nextIterationStates()...")
-    this.nextIterationStates()
-    this.systemState$.subscribe(systemState => { this.numValueChains = systemState.valueChains.length; this.calcSizeOfUiBoxes() })
-*/
-  }
+               private wof:      WorkorderFeederService   ) { }
 
   ngOnInit(): void {
-    //console.log("SystemComponent.ngOnInit()")
     this.calcSizeOfUiBoxes()
-    
   }
  
   ngOnChanges(): void {
-    //console.log("SystemComponent.ngOnInit()")
     this.calcSizeOfUiBoxes()
   }
- 
+
+  // ---------------------------------------------------------------------------------------
+  // iterating, reseting, stopping
+  // ---------------------------------------------------------------------------------------
 
   private nextIterationSubscriber(syst: I_SystemState) {
-//  console.log("SystemComponent.nextIterationSubscriber()")
     this.systemState = syst 
     this.calcSizeOfUiBoxes()
-//  console.log("SystemComponent.nextIterationState() this.systemState=")
-//  console.log(this.systemState)
-    //console.log("SystemComponent.nextIterationSubscriber(): systemState.outputBasket.workitems.length=" + this.systemState.outputBasket.workItems.length)
-
     // add to valuechains data also the corresponding workers with their process step asignments and utilization  
     this.vcsWithWorkersUtil = this.systemState.valueChains
                               .map(vc => { return {
                                 vc:       vc,
                                 wosUtil:  this.workersUtilOfValueChain(vc.id)
                               }})
-                              
     this.numIterationsToGo--
     if (this.numIterationsToGo > 0)
       this.nextIterationStates()
-
-    //this.systemState.valueChains.forEach(vc => this.workersUtilOfValueChain(vc.id))
   }
 
   public nextIterationStates(): void {
-    console.log("SystemComponent.nextIterationStates()")
-    //console.log(this.systemState$)
     this.systemState$ = this.wiInvSrv.nextSystemStateOnInput(this.wof.iterationRequest4AllVcs())
     this.systemState$.subscribe(syst => this.nextIterationSubscriber(syst))
   }
+
+  // ---------------------------------------------------------------------------------------
+  // <button> handlers
+  // ---------------------------------------------------------------------------------------
 
   public nextIterationHandler() {
     this.numIterationsToGo = this.numIterationsToExecute
@@ -86,50 +70,26 @@ export class SystemComponent implements OnInit, OnChanges {
     this.numIterationsToGo = 0
   }
 
-  private workersUtilOfValueChain(vc: ValueChainId): PsWorkerUtilization[] {
-    const aux = this.systemState.workersState.filter(woSt => woSt.assignments.some(vcPs => vcPs.valueChain == vc))
-                                        .map(woSt => { return { worker:               woSt.worker, 
-                                                                utilization:          woSt.utilization,
-                                                                assignedProcessSteps: woSt.assignments.map(vcPs => vcPs.processStep)}})
-
-    //console.log("SystemComponent.workersUtilOfValueChain(" + vc + ")=")                                                              
-    //console.log(aux)
-    return aux                                                              
+  public resetSystemHandler() {
+    this.setOrResetSystem()
   }
 
+  // ---------------------------------------------------------------------------------------
+  // read system config file  
+  // ---------------------------------------------------------------------------------------
   
-  filename: string = ""
-//  sysConfigJsonContent: string
+  filename:         string = ""
+  systemId:         string = "- empty -"
+  objFromJsonFile:  any 
 
-  systemId: string = "- empty -"
-  objFromJsonFile: any 
-
-  private parseAndInititalize(fileContent: string): void {
-      this.objFromJsonFile = JSON.parse(fileContent) 
-      this.systemId  = this.objFromJsonFile.system_id
-
- //   console.log("SystemComponent.onFileSelected() obj$.subscribe() Lambda executing")
-//    console.log("SystemComponent.onFileSelected() objFromJsonFile=")
-//    console.log(this.objFromJsonFile)
-
-//    this.wiInvSrv.systemStateOnInitialization(this.objFromJsonFile)
-      this.numIterationsToGo = 0
-      this.wof.initialize()
-      this.systemState$ = this.wiInvSrv.systemStateOnInitialization(this.objFromJsonFile)
-      this.systemState$.subscribe(systemState => this.nextIterationSubscriber(systemState))
-      this.systemState$.subscribe(systemState => { this.numValueChains = systemState.valueChains.length; this.calcSizeOfUiBoxes() })
-  }
-
-
-  onFileSelected(e: any) { 
+  public onFileSelected(e: any) { 
     const file: File = e.target.files[0] 
     this.filename = file.name
-
     const obs$ = this.readFileContentObs(file)
     obs$.subscribe((fileContent: string) => this.parseAndInititalize(fileContent))
   }
 
-  readFileContentObs(file: File): Observable<string> {
+  private readFileContentObs(file: File): Observable<string> {
     return new Observable((subscriber) => {
       if (!file) subscriber.error("no file selected")
       if (file.size == 0) subscriber.error("selected file is empty")
@@ -146,7 +106,38 @@ export class SystemComponent implements OnInit, OnChanges {
     })
   }
 
-    // ----- (re-)sizing of childs' UI boxes  -------------
+  // ---------------------------------------------------------------------------------------
+  // initialize system  
+  // ---------------------------------------------------------------------------------------
+  
+  private parseAndInititalize(fileContent: string): void {
+      this.objFromJsonFile = JSON.parse(fileContent) 
+      this.systemId  = this.objFromJsonFile.system_id
+      this.setOrResetSystem()
+  }
+
+  private setOrResetSystem() {
+      this.numIterationsToGo = 0
+      this.wof.initialize()
+      this.systemState$ = this.wiInvSrv.systemStateOnInitialization(this.objFromJsonFile)
+      this.systemState$.subscribe(systemState => this.nextIterationSubscriber(systemState))
+      this.systemState$.subscribe(systemState => { this.numValueChains = systemState.valueChains.length; this.calcSizeOfUiBoxes() })
+  }
+
+  // ---------------------------------------------------------------------------------------
+  // prepare workers shown for each valuechain
+  // ---------------------------------------------------------------------------------------
+
+  private workersUtilOfValueChain(vc: ValueChainId): PsWorkerUtilization[] {
+    return this.systemState.workersState.filter(woSt => woSt.assignments.some(vcPs => vcPs.valueChain == vc))
+                                        .map(woSt => { return { worker:               woSt.worker, 
+                                                                utilization:          woSt.utilization,
+                                                                assignedProcessSteps: woSt.assignments.map(vcPs => vcPs.processStep)}})
+  }
+
+  // ---------------------------------------------------------------------------------------
+  // (re-)sizing of childs' UI boxes  
+  // ---------------------------------------------------------------------------------------
   
   @HostListener('window:resize', ['$event'])
   onResize(/*event: Event*/) {
@@ -166,15 +157,9 @@ export class SystemComponent implements OnInit, OnChanges {
       width:  this.vcsBoxSize.width, 
       height: Math.round(this.vcsBoxSize.height / this.numValueChains)
     }
-//  console.log("SystemComponent: calcSizeOfUiBoxes() this.numValueChains=" + this.numValueChains)  
-//  console.log("SystemComponent: calcSizeOfUiBoxes() this.vcBoxSize=")
-//  console.log(this.vcBoxSize)
-
     this.obBoxSize = { 
       width:  window.innerWidth - this.vcBoxSize.width - UiBoxMarginToWindow,
       height: this.vcsBoxSize.height -20
     }
   }
-
-
 }
