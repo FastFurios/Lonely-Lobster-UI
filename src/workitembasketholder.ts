@@ -66,9 +66,13 @@ export class OutputBasket extends WorkItemBasketHolder {
     static numInstances = 0
     constructor() { 
         super("OutputBasket")
-        if (OutputBasket.numInstances > 0) throw new Error("Can have only one single OutBasket!") 
+        if (OutputBasket.numInstances > 0) throw new Error("Can have only one single OutputBasket!") 
         OutputBasket.numInstances++
     } 
+
+    public emptyBasket(): void {
+        this.workItemBasket = []
+    }
 
     public stringified  = () => `t=${clock.time} ${this.id}:\n` + this.stringifyBasketItems()
 }

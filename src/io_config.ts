@@ -10,7 +10,7 @@ import { ValueChain } from './valuechain.js'
 import { Worker, AssignmentSet, Assignment } from './worker.js'
 import { WiExtInfoElem } from './workitem.js'
 import { ProcessStep } from "./workitembasketholder.js"
-import { I_SystemState, I_ValueChain, I_ProcessStep, I_WorkItem, I_OutputBasket, I_WorkerState } from './io_api_definitions.js'
+//?? 7.4. import { I_SystemState, I_ValueChain, I_ProcessStep, I_WorkItem, I_OutputBasket, I_WorkerState } from './io_api_definitions.js'
 
 export interface DebugShowOptions  {
     clock:          boolean,
@@ -64,7 +64,7 @@ export function systemCreatedFromConfigJson(paj: any) : LonelyLobsterSystem {
 
     // extract workers and assignments
     interface I_process_step_assignment {
-        value_chain_id:      string
+        value_chain_id:     string
         process_steps_id:   string
     }
     interface I_worker {

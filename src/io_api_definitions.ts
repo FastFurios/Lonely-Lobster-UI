@@ -86,3 +86,21 @@ export interface I_SystemState {
     workersState:                   I_WorkerState[]
 }
 
+// response to statistics request
+
+interface WorkItemStatsCycleTime {
+    min: number,
+    avg: number,
+    max: number
+}
+
+interface WorkItemStatsThroughput {
+    itemPerTimeUnit:    number,
+    valuePerTimeUnit:   number
+}
+
+export interface I_WorkItemStats {
+    hasCalculatedStats: boolean,
+    throughput:         WorkItemStatsThroughput,
+    cycleTime:          WorkItemStatsCycleTime
+}

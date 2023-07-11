@@ -11,7 +11,7 @@ import { processWorkOrderFile } from './io_workload.js'
 import { nextSystemState, emptyIterationRequest } from './io_api.js'
 import { workItemIdGenerator, wiTagGenerator, wiTags } from './workitem.js'
 import { OutputBasket } from './workitembasketholder.js'
-import { LonelyLobsterSystem } from './system.js'
+import { LonelyLobsterSystem, workItemStats } from './system.js'
 
 import express from 'express'
 
@@ -22,6 +22,7 @@ const debugShowOptionsDefaults: DebugShowOptions = {
     readFiles:      false  
 }
 export var debugShowOptions: DebugShowOptions = debugShowOptionsDefaults 
+
 
 // create a clock (it will be 'ticked' by the read rows of the workflow file)
 export const clock = new Clock()
@@ -81,12 +82,14 @@ switch(process.argv[InputArgs.Mode]) {
             next();
             });
         
-//??    let clockTime = 0
+//3.7.23  let clockTime = 0
 
         app.post('/initialize', (req, res) => {
                 console.log("_main: app.post \"initialize\" : received request=")
                 console.log(req.body)
+                clock.setToNow(0)
                 lonelyLobsterSystem = systemCreatedFromConfigJson(req.body)
+                outputBasket.emptyBasket()
                 res.send(nextSystemState(lonelyLobsterSystem, emptyIterationRequest(lonelyLobsterSystem)))
             })
 
@@ -94,6 +97,10 @@ switch(process.argv[InputArgs.Mode]) {
             console.log("_main: app.post \"iterate\" : received request=")
             console.log(req.body)
             res.send(nextSystemState(lonelyLobsterSystem, req.body))
+        })
+        
+        app.get('/statistics', (req, res) => {
+            res.send(workItemStats(outputBasket))
         })
         
         app.listen(port, () => {
