@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, HostListener } from '@angular/core';
 import { Observable } from "rxjs"
 import { WorkitemsInventoryService } from '../shared/workitems-inventory.service'
-import { I_SystemState, PsWorkerUtilization, ValueChainId, VcWithWorkersUtil } from '../shared/io_api_definitions'
+import { I_SystemState, PsWorkerUtilization, ValueChainId, I_WorkItemStats, VcWithWorkersUtil } from '../shared/io_api_definitions'
 import { WorkorderFeederService } from '../shared/workorder-feeder.service';
 import { UiBoxSize, UiBoxMarginToWindow, UiSystemHeaderHeight, UiWorkerStatsHeight } from '../shared/ui-boxes-definitions';
 
@@ -17,6 +17,8 @@ import { UiBoxSize, UiBoxMarginToWindow, UiSystemHeaderHeight, UiWorkerStatsHeig
 export class SystemComponent implements OnInit, OnChanges {
   systemState$:       Observable<I_SystemState> 
   systemState:        I_SystemState
+  systemStatistics$:  Observable<I_WorkItemStats>
+  systemStatistics:   I_WorkItemStats
   vcsWithWorkersUtil: VcWithWorkersUtil[] 
   numValueChains:     number
 
@@ -74,6 +76,10 @@ export class SystemComponent implements OnInit, OnChanges {
     this.setOrResetSystem()
   }
 
+  public fetchStatisticsHandler() {
+    this.fetchStatistics()
+  }
+
   // ---------------------------------------------------------------------------------------
   // read system config file  
   // ---------------------------------------------------------------------------------------
@@ -122,6 +128,12 @@ export class SystemComponent implements OnInit, OnChanges {
       this.systemState$ = this.wiInvSrv.systemStateOnInitialization(this.objFromJsonFile)
       this.systemState$.subscribe(systemState => this.nextIterationSubscriber(systemState))
       this.systemState$.subscribe(systemState => { this.numValueChains = systemState.valueChains.length; this.calcSizeOfUiBoxes() })
+  }
+
+  private fetchStatistics() {
+    console.log("systemComponent.fetchStatistics()")
+    this.systemStatistics$ = this.wiInvSrv.currentSystemStats()
+    this.systemStatistics$.subscribe(systemStatistics => this.systemStatistics = systemStatistics)
   }
 
   // ---------------------------------------------------------------------------------------

@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from "rxjs"
 import { catchError } from "rxjs/operators"
 
-import { I_IterationRequest, I_SystemState } from './io_api_definitions'
+import { I_IterationRequest, I_SystemState, I_WorkItemStats } from './io_api_definitions'
 
 
 
@@ -53,4 +53,12 @@ export class WorkitemsInventoryService {
         
   }
   
+  currentSystemStats(): Observable<I_WorkItemStats> {
+      return this.http.get<I_WorkItemStats>("http://localhost:3000/statistics/"/*, {responseType: "json"}*/)
+              .pipe(
+                catchError((error: HttpErrorResponse) =>this.errorHandler(error))
+              )
+            
+  }
+
 }

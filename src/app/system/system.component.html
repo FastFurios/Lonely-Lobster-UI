@@ -33,6 +33,16 @@
         <div>
             <app-workers-stats [wosStats]="systemState.workersState" ></app-workers-stats>
         </div>
+        <div>
+            <button type="button" class="submitButton" (click)="fetchStatisticsHandler()">
+                Show stats
+            </button>
+        </div>
+        <div *ngIf="systemStatistics">
+            <p> Cycle-time: {{ systemStatistics.cycleTime.avg }} </p>
+            <p> Throughput items: {{ systemStatistics.throughput.itemPerTimeUnit }} </p>
+            
+        </div>
     </div>
 
 
