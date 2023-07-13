@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { I_ProcessStep, I_WorkItem, PsWithWorkersWithUtil } from '../shared/io_api_definitions'
-import { RgbColor } from '../shared/color-mapper.service'
+//import { RgbColor } from '../shared/color-mapper.service'
 import { ColorMapperService } from '../shared/color-mapper.service'
 import { UiBoxSize, UiPsHeaderHeight, UiInvWidthOfPsWidth, UiInventoryBoxHeightShrink, UiWorkerNameHeight} from '../shared/ui-boxes-definitions';
 

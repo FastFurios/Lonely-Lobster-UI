@@ -133,7 +133,14 @@ export class SystemComponent implements OnInit, OnChanges {
   private fetchStatistics() {
     console.log("systemComponent.fetchStatistics()")
     this.systemStatistics$ = this.wiInvSrv.currentSystemStats()
-    this.systemStatistics$.subscribe(systemStatistics => this.systemStatistics = systemStatistics)
+    this.systemStatistics$.subscribe(systemStatistics => {
+      this.systemStatistics = systemStatistics
+      this.systemStatistics.cycleTime.avg               = Math.round(this.systemStatistics.cycleTime.avg * 10) / 10
+      this.systemStatistics.cycleTime.min               = Math.round(this.systemStatistics.cycleTime.min * 10) / 10
+      this.systemStatistics.cycleTime.max               = Math.round(this.systemStatistics.cycleTime.max * 10) / 10
+      this.systemStatistics.throughput.itemPerTimeUnit  = Math.round(this.systemStatistics.throughput.itemPerTimeUnit  * 10) / 10
+      this.systemStatistics.throughput.valuePerTimeUnit = Math.round(this.systemStatistics.throughput.valuePerTimeUnit * 10) / 10
+    })
   }
 
   // ---------------------------------------------------------------------------------------
