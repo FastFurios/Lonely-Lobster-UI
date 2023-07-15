@@ -3,10 +3,11 @@
 //----------------------------------------------------------------------
 //-- terminology remark: work item: at the beginning it is typically a work order, in its final state it is the end-product / service ------------------------------------------------------------------------
 
+//import { last } from 'rxjs'
 import { clock, outputBasket, idGen, tagGen } from './_main.js'
 import { TimeUnit, Timestamp } from './clock.js'
 import { LogEntry, LogEntryType } from './logging.js'
-import { ValueChain } from './valuechain.js'
+import { Value, ValueChain } from './valuechain.js'
 import { Worker } from './worker.js'
 import { WorkItemBasketHolder, ProcessStep, Effort } from './workitembasketholder.js'
 
@@ -20,6 +21,7 @@ export interface WorkOrder {
     timestamp:  Timestamp,
     valueChain: ValueChain
 }
+
 
 // unique workitem identifier
 export function* workItemIdGenerator(): IterableIterator<WorkItemId> { 
@@ -105,12 +107,22 @@ export class LogEntryWorkItemWorked extends LogEntryWorkItem {
 //----------------------------------------------------------------------
 
 export enum ElapsedTimeMode {
-    firstToLastEntryFound,   // timestamp of last entry found - timestamp of first entry found in workitem list
-    firstEntryToNow          // clock.time - timestamp of first entry found in workitem list
+    firstToLastEntryFound,   // timestamp of last entry found minus timestamp of first entry found in a workitem list
+    firstEntryToNow          // clock.time minus timestamp of first entry found in workitem list
+}
+
+export interface StatsEventForFinishingAProcessStep {
+    wi:           WorkItem,
+    vc:           ValueChain,
+    psLeft:       ProcessStep,        
+    psEntered:    WorkItemBasketHolder,
+    finishedTime: Timestamp,
+    elapsedTime:  TimeUnit,
+    injectionIntoValueChainTime: Timestamp // used for calculating cycletimes of the valuechain  
 }
 
 export class WorkItem {
-    private log:            LogEntryWorkItem[] = []
+    /* private */ log:            LogEntryWorkItem[] = []
     public  id:             WorkItemId
     public  tag:            WorkItemTag
     public  extendedInfos:  WorkItemExtendedInfos
@@ -140,7 +152,7 @@ export class WorkItem {
                                                                                  : this.log.filter(le => le.workItemBasketHolder == workItemBasketHolder)
         if (logInScope.length == 0) return -1                                                                         
         
-        const maxTime   = mode == ElapsedTimeMode.firstEntryToNow ? clock.time : Math.max(logInScope[logInScope.length - 1].timestamp)
+        const maxTime   = mode == ElapsedTimeMode.firstEntryToNow ? clock.time : Math.max(logInScope[logInScope.length - 1].timestamp)  // ## Math.max?! WTF 
         const minTime   = logInScope[0].timestamp
         const deltaTime = maxTime - minTime
 
@@ -154,7 +166,7 @@ export class WorkItem {
                                            : this.log.filter(le => le.workItemBasketHolder == workItemBasketHolder))
         .filter(le => le.logEntryType == LogEntryType.workItemWorkedOn).length
 
-    public hasBeenWorkedOnAtCurrentTime = (timestamp: Timestamp, ps?: ProcessStep): boolean  => 
+    public hasBeenWorkedOnAtCurrentTime = (timestamp: Timestamp, ps?: ProcessStep): boolean  => // ## "ps?: ProcessStep" delete?
         this.log.filter(le => (le.timestamp == timestamp && le.logEntryType == LogEntryType.workItemWorkedOn)).length > 0
     
     public workedOnAtCurrentProcessStep = (): boolean => 
@@ -166,17 +178,40 @@ export class WorkItem {
     public updateExtendedInfos(): void {
         this.extendedInfos = new WorkItemExtendedInfos(this)         
     }
-    public stringified = (): string => `\tt=${clock.time} wi=${this.id} ps=${this.currentProcessStep.id} vc=${this.valueChain.id} et=${this.elapsedTime(ElapsedTimeMode.firstToLastEntryFound)} ae=${this.accumulatedEffort(this.currentProcessStep)} ${this.finishedAtCurrentProcessStep() ? "done" : ""}\n`
 
-/*
-    public stringifyLog(): string {
-        let s: string = `t=${clock.time} WorkItem Log:\n`
-        for (let le of this.log) {
-            s += `${le.stringified()}\n` 
+    public statsEventsForFinishingAProcessSteps(fromTime: Timestamp = 0, toTime: Timestamp = clock.time): StatsEventForFinishingAProcessStep[]  {
+//      console.log("workitem.statsEventsForFinishingAProcessSteps(fromTime: " + fromTime + ", toTime: " + toTime +")")
+        const statEvents: StatsEventForFinishingAProcessStep[] = []
+
+        const moveToLogEntries = this.log
+                                .filter(le => le.logEntryType == "movedTo")
+                                .filter(le => le.timestamp <= toTime)
+//      console.log("workitem.statsEventsForFinishingAProcessSteps().moveToLogEntries=")
+//      console.log(moveToLogEntries)
+        let firstMovedToEvent = <LogEntryWorkItem>moveToLogEntries[0]
+        let lastMovedToEvent  = <LogEntryWorkItem>moveToLogEntries.pop()
+
+//      console.log("workitem.statsEventsForFinishingAProcessSteps().lastMovedToEvent=")
+//      console.log(lastMovedToEvent)
+        for (let le of moveToLogEntries.reverse()) {
+            statEvents.push(
+                {
+                    wi:                          this,
+                    vc:                          this.valueChain,
+                    psLeft:                      <ProcessStep>le.workItemBasketHolder,
+                    psEntered:                   lastMovedToEvent.workItemBasketHolder,           
+                    finishedTime:                lastMovedToEvent.timestamp,
+                    elapsedTime:                 lastMovedToEvent.timestamp - le.timestamp,
+                    injectionIntoValueChainTime: firstMovedToEvent.timestamp
+                }
+            )           
+            if (le.timestamp < fromTime) break
+            lastMovedToEvent = le
         }
-        return s 
-    } 
-*/
+        return statEvents
+    }
+
+    public stringified = (): string => `\tt=${clock.time} wi=${this.id} ps=${this.currentProcessStep.id} vc=${this.valueChain.id} et=${this.elapsedTime(ElapsedTimeMode.firstToLastEntryFound)} ae=${this.accumulatedEffort(this.currentProcessStep)} ${this.finishedAtCurrentProcessStep() ? "done" : ""}\n`
 }
 
 //----------------------------------------------------------------------

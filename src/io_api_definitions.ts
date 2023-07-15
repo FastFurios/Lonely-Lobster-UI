@@ -95,12 +95,30 @@ interface WorkItemStatsCycleTime {
 }
 
 interface WorkItemStatsThroughput {
-    itemPerTimeUnit:    number,
-    valuePerTimeUnit:   number
+    itemsPerTimeUnit:    number,
+    valuePerTimeUnit:    number
 }
 
-export interface I_WorkItemStats {
+export interface I_WorkItemStatistics {
     hasCalculatedStats: boolean,
     throughput:         WorkItemStatsThroughput,
     cycleTime:          WorkItemStatsCycleTime
+}
+
+export interface I_ProcessStepStatistics {
+    id: string
+    stats: I_WorkItemStatistics
+} 
+
+export interface I_ValueChainStatistics {
+    id: ValueChainId
+    stats: {
+        vc:  I_WorkItemStatistics,
+        pss: I_ProcessStepStatistics[]
+    }
+} 
+
+export interface I_SystemStatistics {
+    outputBasket: I_WorkItemStatistics
+    valueChains:  I_ValueChainStatistics[]
 }

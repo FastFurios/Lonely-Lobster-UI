@@ -16,7 +16,7 @@ export class Clock {
         this.time = startTime
     }
 
-    public setToNow = (time: Timestamp): void => { 
+    public setTo = (time: Timestamp): void => { 
         if(debugShowOptions.clock) console.log("\n---- new time is " + time + " -----------------------------------------------\n"); 
         this.time = time; 
         return 

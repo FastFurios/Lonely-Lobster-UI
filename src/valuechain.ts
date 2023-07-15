@@ -15,9 +15,9 @@ export class ValueChain {
                 public totalValueAdd:   Value) {
     }
 
-    private appendProcessStep(ps: ProcessStep): void {
-        this.processSteps.push(ps)
-    }    
+    //private appendProcessStep(ps: ProcessStep): void {
+    //    this.processSteps.push(ps)
+    //}    
 
     public createAndInjectNewWorkItem(): void { 
         const wi = new WorkItem(this, this.processSteps[0])

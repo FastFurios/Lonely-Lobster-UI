@@ -111,6 +111,10 @@
                 },
                 {
                     "value_chain_id"  : "Green",
+                    "process_steps_id": "Step-2"
+                },
+                {
+                    "value_chain_id"  : "Green",
                     "process_steps_id": "Step-3"
                 }
             ]

@@ -2,14 +2,20 @@
 //    SYSTEM
 //----------------------------------------------------------------------
 
-import { clock, outputBasket } from './_main.js'
+import { clock, lonelyLobsterSystem, outputBasket } from './_main.js'
 import { Timestamp, TimeUnit } from './clock.js'
 import { reshuffle } from './helpers.js'
-import { ValueChain } from './valuechain.js'
+import { Value, ValueChain } from './valuechain.js'
+import { ProcessStep } from './workitembasketholder.js'
 import { Worker, AssignmentSet } from './worker.js'
-import { WorkOrder, ElapsedTimeMode } from "./workitem.js"
+import { WorkOrder, ElapsedTimeMode, StatsEventForFinishingAProcessStep } from "./workitem.js"
 import { WorkItemBasketHolder } from './workitembasketholder.js'
-import { I_WorkItemStats } from './io_api_definitions.js'
+import { I_SystemStatistics, I_ValueChainStatistics, I_ProcessStepStatistics, I_WorkItemStatistics, ProcessStepId, ValueChainId } from './io_api_definitions.js'
+import { min } from 'rxjs'
+
+
+// tbd
+let statEvents: StatsEventForFinishingAProcessStep[]
 
 
 export class LonelyLobsterSystem {
@@ -21,7 +27,7 @@ export class LonelyLobsterSystem {
 
     public doNextIteration(now: Timestamp, wos: WorkOrder[]): void {
    
-        clock.setToNow(now)
+        clock.setTo(now)
         // populate process steps with work items (and first process steps with new work orders)
         this.valueChains.forEach(vc => vc.processSteps.forEach(ps => ps.lastIterationFlowRate = 0))  // reset flow counters
         this.valueChains.forEach(vc => vc.letWorkItemsFlow())
@@ -39,6 +45,35 @@ export class LonelyLobsterSystem {
 
         // show valuechains line for current time
         this.showLine()
+
+        // #### to be deleted ######
+        const wiId = 2
+        if (clock.time == 18) { 
+        /*
+            console.log("\n>> WORKITEM LOG" + outputBasket.workItemBasket[wiId].stringified())
+            outputBasket.workItemBasket[wiId].log.filter(le => le.logEntryType == "movedTo").forEach(le => console.log(">> " + le.stringified()))
+            outputBasket.workItemBasket[wiId].statsEventsForFinishingAProcessSteps().forEach(se => {
+                console.log(">> t=" + se.finishedTime  + ", vc=" + se.vc.id + ", ps=" + se.ps.id + ", et=" + se.elapsedTime)
+            })
+            statEvents = this.valueChains.flatMap(vc => vc.processSteps.flatMap(ps => ps.stats(0, 100)))
+            statEvents = statEvents.concat(outputBasket.stats(0,100))
+        */
+            console.log(">> systemStats(lonelyLobsterSystem).outputBasket=")
+            console.log(systemStatistics(lonelyLobsterSystem).outputBasket)
+            console.log(">> systemStats(lonelyLobsterSystem).valueChains=")
+            systemStatistics(lonelyLobsterSystem).valueChains.forEach(vc => {
+                console.log(vc.id)
+                console.log(vc.stats.vc)
+                vc.stats.pss.forEach(ps => {
+                    console.log(ps.id)
+                    console.log(ps.stats)
+                })
+            })
+            //statEvents.forEach(se => console.log(">> wi=" + se.wi.id + "/" + se.wi.tag[0] + ", vc=" + se.vc.id + ", ps=" + se.ps.id + ", it=" + se.injectionIntoValueChainTime + ", ft=" + se.finishedTime  + ", et=" + se.elapsedTime))
+        }
+        //this.valueChains.forEach(vc => vc.processSteps.forEach(ps => console.log(ps.stats(0, 100))))
+        // #########################
+
     }
 
     private headerForValueChains = ():string => "_t_||" + this.valueChains.map(vc => vc.stringifiedHeader()).reduce((a, b) => a + "| |" + b) +"| "
@@ -48,12 +83,12 @@ export class LonelyLobsterSystem {
     private showLine = () => console.log(clock.time.toString().padStart(3, ' ') + "||" 
                                        + this.valueChains.map(vc => vc.stringifiedRow()).reduce((a, b) => a + "| |" + b) + "| " 
                                        + outputBasket.workItemBasket.length.toString().padStart(6, " ") + " " 
-                                       + workItemStatsAsString(outputBasket, 5))
+                                       + obStatsAsString(5))
 
     public showFooter = () => { 
         console.log(this.headerForValueChains()
         + outputBasket.workItemBasket.length.toString().padStart(6, " ") + " " 
-        + workItemStatsAsString(outputBasket))
+        + obStatsAsString())
         console.log("Utilization of:")
         this.workers.forEach(wo => wo.utilization(this))
         this.workers.forEach(wo => console.log(`${wo.id.padEnd(10, " ")} ${wo.stats.utilization.toFixed(1).padStart(4, ' ')}%\t` 
@@ -66,31 +101,83 @@ export class LonelyLobsterSystem {
 //    STATISTICS
 //----------------------------------------------------------------------
 
-export function workItemStats(wibh: WorkItemBasketHolder, rollingWindowSize: TimeUnit = clock.time): I_WorkItemStats {
-    const stats: I_WorkItemStats = {
-        hasCalculatedStats:     false,
-        cycleTime:  { min: 0, max: 0, avg: 0 },
-        throughput: { itemPerTimeUnit: 0, valuePerTimeUnit: 0 }
+export function systemStatistics(sys: LonelyLobsterSystem): I_SystemStatistics {
+
+    interface elapsedTimeWithValueAdd {
+        valueAdd:       Value,
+        elapsedTime:    Timestamp
     }
 
-    const filteredWorkBasket = wibh.workItemBasket.filter(wi => wi.timeOfLastLogEntry() > clock.time - rollingWindowSize)
-    const sortedWorkBasket   = filteredWorkBasket.sort((wi1, wi2) => wi1.elapsedTime(ElapsedTimeMode.firstToLastEntryFound) - wi2.elapsedTime(ElapsedTimeMode.firstToLastEntryFound))
-
-    stats.hasCalculatedStats = sortedWorkBasket.length > 0
-    if (stats.hasCalculatedStats) {    
-        stats.cycleTime.min = sortedWorkBasket[0].elapsedTime(ElapsedTimeMode.firstToLastEntryFound)
-        stats.cycleTime.max = sortedWorkBasket[sortedWorkBasket.length - 1].elapsedTime(ElapsedTimeMode.firstToLastEntryFound)
-        stats.cycleTime.avg = sortedWorkBasket.map(wi => wi.elapsedTime(ElapsedTimeMode.firstToLastEntryFound)).reduce((a, b) => a + b) / sortedWorkBasket.length
-
-        stats.throughput.itemPerTimeUnit  = filteredWorkBasket.length / Math.min(rollingWindowSize, clock.time)
-        stats.throughput.valuePerTimeUnit = filteredWorkBasket.map(wi => wi.valueChain.totalValueAdd).reduce((a, b) => a + b)  / Math.min(rollingWindowSize, clock.time)
+    function workItemStatistics(elapsedTimesWithValueAdd: elapsedTimeWithValueAdd[]): I_WorkItemStatistics {
+        const elapsedTimes: TimeUnit[] = elapsedTimesWithValueAdd.flatMap(el => el.elapsedTime)
+        return {
+            hasCalculatedStats: true,
+            throughput: {
+                itemsPerTimeUnit: elapsedTimesWithValueAdd.length,
+                valuePerTimeUnit: elapsedTimesWithValueAdd.map(el => el.valueAdd).reduce((va1, va2) => va1 + va2, 0)
+            },
+            cycleTime: {
+                min: Math.min.apply(elapsedTimes),
+                avg: elapsedTimes.reduce((a, b) => a + b, 0) / elapsedTimes.length,
+                max: Math.max.apply(elapsedTimes)
+            }
+        } 
     }
-    return stats
+
+    function obStatistics(ses: StatsEventForFinishingAProcessStep[]): I_WorkItemStatistics {
+        const sesOfOb = ses.filter(se => se.psEntered == outputBasket)
+        const elapsedTimesWithValueAdd = sesOfOb.map(se => { return { 
+            valueAdd:    se.vc.totalValueAdd,
+            elapsedTime: se.finishedTime - se.injectionIntoValueChainTime 
+        }})
+        return workItemStatistics(elapsedTimesWithValueAdd)
+    }
+
+    function psStatistics(ses: StatsEventForFinishingAProcessStep[], vc: ValueChain, ps: ProcessStep): I_ProcessStepStatistics {
+        const elapsedTimesWithValueAdd = ses.filter(se => se.vc == vc && se.psLeft == ps)
+                                        .map(se => { return {
+                                            valueAdd:    se.vc.totalValueAdd,
+                                            elapsedTime: se.finishedTime
+                                        }})
+        return {
+            id: ps.id,
+            stats: workItemStatistics(elapsedTimesWithValueAdd)
+        }
+    }
+
+    function vcStatistics(ses: StatsEventForFinishingAProcessStep[], vc: ValueChain): I_ValueChainStatistics {
+        function vcOverallStatistics(elapsedTimes: Timestamp[]): I_WorkItemStatistics {
+            const elapsedTimesWithValueAdd = ses.filter(se => se.vc == vc && se.psEntered == outputBasket)
+                                            .map(se => { return {
+                                                valueAdd:    se.vc.totalValueAdd,
+                                                elapsedTime: se.elapsedTime
+                                            }})
+            return workItemStatistics(elapsedTimesWithValueAdd)
+        }
+        const sesOfVc = ses.filter(se => se.vc == vc && se.psEntered == outputBasket)
+        const elapsedTimesWithValueAdd = sesOfVc.map(se => { return {
+                valueAdd:    se.vc.totalValueAdd,
+                elapsedTime: se.finishedTime - se.injectionIntoValueChainTime
+            }})
+        return {
+            id: vc.id,
+            stats: {
+                vc:     workItemStatistics(elapsedTimesWithValueAdd),
+                pss:    vc.processSteps.map(ps => psStatistics(sesOfVc, vc, ps))
+            }
+        }
+    }
+
+    statEvents = sys.valueChains.flatMap(vc => vc.processSteps.flatMap(ps => ps.stats(0, 100)))
+                    .concat(outputBasket.stats(0,100))
+    return {
+        outputBasket: obStatistics(statEvents),
+        valueChains:  sys.valueChains.map(vc => vcStatistics(statEvents, vc))
+    } 
 }
 
-
-function workItemStatsAsString(wibh: WorkItemBasketHolder, rollingWindowSize: TimeUnit = clock.time): string {
-    const stats: I_WorkItemStats | null = workItemStats(wibh, rollingWindowSize)
-    return stats == null ? "" : `    ${stats.cycleTime.min.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.avg.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.max.toFixed(1).padStart(4, ' ')}     ${stats.throughput.itemPerTimeUnit.toFixed(1).padStart(4, ' ')}   ${stats.throughput.valuePerTimeUnit.toFixed(1).padStart(4, ' ')}`
+function obStatsAsString(rollingWindowSize: TimeUnit = clock.time): string {
+    const stats: I_WorkItemStatistics = systemStatistics(lonelyLobsterSystem).outputBasket
+    return `    ${stats.cycleTime.min.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.avg.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.max.toFixed(1).padStart(4, ' ')}     ${stats.throughput.itemsPerTimeUnit.toFixed(1).padStart(4, ' ')}   ${stats.throughput.valuePerTimeUnit.toFixed(1).padStart(4, ' ')}`
 
 }

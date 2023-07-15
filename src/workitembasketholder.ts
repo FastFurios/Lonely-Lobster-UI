@@ -3,8 +3,9 @@
 //----------------------------------------------------------------------
 
 import { clock } from './_main.js'
+import { Timestamp } from './clock.js'
 import { ValueChain } from './valuechain.js'
-import { WorkItem } from './workitem.js'
+import { WorkItem, StatsEventForFinishingAProcessStep } from './workitem.js'
 
 export type Effort    = number // measured in Worker Time Units
 
@@ -19,6 +20,10 @@ export abstract class WorkItemBasketHolder {
         workItem.logMovedTo(this)
     }
 
+    public stats(fromTime: Timestamp, toTime: Timestamp): StatsEventForFinishingAProcessStep[] {
+        return this.workItemBasket.flatMap(wi => wi.statsEventsForFinishingAProcessSteps(fromTime, toTime))
+    }
+ 
     public abstract stringified(): string
 
     public stringifiedBar = (): string => { 

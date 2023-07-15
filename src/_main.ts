@@ -11,7 +11,7 @@ import { processWorkOrderFile } from './io_workload.js'
 import { nextSystemState, emptyIterationRequest } from './io_api.js'
 import { workItemIdGenerator, wiTagGenerator, wiTags } from './workitem.js'
 import { OutputBasket } from './workitembasketholder.js'
-import { LonelyLobsterSystem, workItemStats } from './system.js'
+import { LonelyLobsterSystem, systemStatistics } from './system.js'
 
 import express from 'express'
 
@@ -52,6 +52,7 @@ export let lonelyLobsterSystem: LonelyLobsterSystem
 if(debugShowOptions.readFiles) console.log("argv[2]=" + process.argv[2] + ", " + "argv[3]=" + process.argv[3] + ", " + "argv[4]=" + process.argv[4] + "\n")
 
 switch(process.argv[InputArgs.Mode]) {
+
     case "--batch": { 
         console.log("Running in batch mode ...")
         // create the system from the config JSON file
@@ -61,7 +62,9 @@ switch(process.argv[InputArgs.Mode]) {
         console.log("processWorkOrderFile( " + process.argv[InputArgs.WorkOrders] + " , lonelyLobsterSystem")
         processWorkOrderFile(process.argv[InputArgs.WorkOrders], lonelyLobsterSystem)
 
-        console.log("_main after processWorkOrderFile(...)")
+        console.log("OutputBasket stats=")
+        console.log(outputBasket.stats)
+
         break;
     } 
 
@@ -87,7 +90,7 @@ switch(process.argv[InputArgs.Mode]) {
         app.post('/initialize', (req, res) => {
                 console.log("_main: app.post \"initialize\" : received request=")
                 console.log(req.body)
-                clock.setToNow(0)
+                clock.setTo(0)
                 lonelyLobsterSystem = systemCreatedFromConfigJson(req.body)
                 outputBasket.emptyBasket()
                 res.send(nextSystemState(lonelyLobsterSystem, emptyIterationRequest(lonelyLobsterSystem)))
@@ -100,11 +103,11 @@ switch(process.argv[InputArgs.Mode]) {
         })
         
         app.get('/statistics', (req, res) => {
-            res.send(workItemStats(outputBasket))
+            res.send(systemStatistics(lonelyLobsterSystem))
         })
         
         app.listen(port, () => {
-        return console.log(`Express is listening at http://localhost:${port}`)
+            return console.log(`Express is listening at http://localhost:${port}`)
         })
 
         break
