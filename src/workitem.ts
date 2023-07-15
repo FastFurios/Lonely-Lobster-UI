@@ -111,10 +111,10 @@ export enum ElapsedTimeMode {
     firstEntryToNow          // clock.time minus timestamp of first entry found in workitem list
 }
 
-export interface StatsEventForFinishingAProcessStep {
+export interface StatsEventForExitingAProcessStep {
     wi:           WorkItem,
     vc:           ValueChain,
-    psLeft:       ProcessStep,        
+    psExited:       ProcessStep,        
     psEntered:    WorkItemBasketHolder,
     finishedTime: Timestamp,
     elapsedTime:  TimeUnit,
@@ -179,9 +179,9 @@ export class WorkItem {
         this.extendedInfos = new WorkItemExtendedInfos(this)         
     }
 
-    public statsEventsForFinishingAProcessSteps(fromTime: Timestamp = 0, toTime: Timestamp = clock.time): StatsEventForFinishingAProcessStep[]  {
+    public statisticsEventsHistory(fromTime: Timestamp = 0, toTime: Timestamp = clock.time): StatsEventForExitingAProcessStep[]  { // lists all events btw. from and to timestamp when the workitem exited a process step 
 //      console.log("workitem.statsEventsForFinishingAProcessSteps(fromTime: " + fromTime + ", toTime: " + toTime +")")
-        const statEvents: StatsEventForFinishingAProcessStep[] = []
+        const statEvents: StatsEventForExitingAProcessStep[] = []
 
         const moveToLogEntries = this.log
                                 .filter(le => le.logEntryType == "movedTo")
@@ -198,7 +198,7 @@ export class WorkItem {
                 {
                     wi:                          this,
                     vc:                          this.valueChain,
-                    psLeft:                      <ProcessStep>le.workItemBasketHolder,
+                    psExited:                    <ProcessStep>le.workItemBasketHolder,
                     psEntered:                   lastMovedToEvent.workItemBasketHolder,           
                     finishedTime:                lastMovedToEvent.timestamp,
                     elapsedTime:                 lastMovedToEvent.timestamp - le.timestamp,

@@ -103,7 +103,7 @@ switch(process.argv[InputArgs.Mode]) {
         })
         
         app.get('/statistics', (req, res) => {
-            res.send(systemStatistics(lonelyLobsterSystem))
+            res.send(systemStatistics(lonelyLobsterSystem, 0, 10000))
         })
         
         app.listen(port, () => {

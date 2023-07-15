@@ -8,15 +8,10 @@ import { reshuffle } from './helpers.js'
 import { Value, ValueChain } from './valuechain.js'
 import { ProcessStep } from './workitembasketholder.js'
 import { Worker, AssignmentSet } from './worker.js'
-import { WorkOrder, ElapsedTimeMode, StatsEventForFinishingAProcessStep } from "./workitem.js"
+import { WorkOrder, ElapsedTimeMode, StatsEventForExitingAProcessStep, WorkItem } from "./workitem.js"
 import { WorkItemBasketHolder } from './workitembasketholder.js'
 import { I_SystemStatistics, I_ValueChainStatistics, I_ProcessStepStatistics, I_WorkItemStatistics, ProcessStepId, ValueChainId } from './io_api_definitions.js'
 import { min } from 'rxjs'
-
-
-// tbd
-let statEvents: StatsEventForFinishingAProcessStep[]
-
 
 export class LonelyLobsterSystem {
     public workOrderInFlow:  WorkOrder[] = []
@@ -47,8 +42,7 @@ export class LonelyLobsterSystem {
         this.showLine()
 
         // #### to be deleted ######
-        const wiId = 2
-        if (clock.time == 18) { 
+        if (clock.time == 39 || clock.time == 9 || clock.time == 5) { 
         /*
             console.log("\n>> WORKITEM LOG" + outputBasket.workItemBasket[wiId].stringified())
             outputBasket.workItemBasket[wiId].log.filter(le => le.logEntryType == "movedTo").forEach(le => console.log(">> " + le.stringified()))
@@ -58,10 +52,11 @@ export class LonelyLobsterSystem {
             statEvents = this.valueChains.flatMap(vc => vc.processSteps.flatMap(ps => ps.stats(0, 100)))
             statEvents = statEvents.concat(outputBasket.stats(0,100))
         */
+            const stats = systemStatistics(lonelyLobsterSystem, 0, now)
             console.log(">> systemStats(lonelyLobsterSystem).outputBasket=")
-            console.log(systemStatistics(lonelyLobsterSystem).outputBasket)
+            console.log(stats.outputBasket)
             console.log(">> systemStats(lonelyLobsterSystem).valueChains=")
-            systemStatistics(lonelyLobsterSystem).valueChains.forEach(vc => {
+            stats.valueChains.forEach(vc => {
                 console.log(vc.id)
                 console.log(vc.stats.vc)
                 vc.stats.pss.forEach(ps => {
@@ -101,83 +96,107 @@ export class LonelyLobsterSystem {
 //    STATISTICS
 //----------------------------------------------------------------------
 
-export function systemStatistics(sys: LonelyLobsterSystem): I_SystemStatistics {
+export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, toTime: Timestamp): I_SystemStatistics {
 
-    interface elapsedTimeWithValueAdd {
-        valueAdd:       Value,
+    interface ElapsedTimeWithValueAdd {
+        wi:             WorkItem
+        valueAdd:       Value
         elapsedTime:    Timestamp
     }
 
-    function workItemStatistics(elapsedTimesWithValueAdd: elapsedTimeWithValueAdd[]): I_WorkItemStatistics {
+    function workItemStatistics(elapsedTimesWithValueAdd: ElapsedTimeWithValueAdd[], interval: TimeUnit): I_WorkItemStatistics {
         const elapsedTimes: TimeUnit[] = elapsedTimesWithValueAdd.flatMap(el => el.elapsedTime)
+        const hasCalculatedStats = elapsedTimes.length > 0
         return {
-            hasCalculatedStats: true,
+            hasCalculatedStats: hasCalculatedStats,
             throughput: {
-                itemsPerTimeUnit: elapsedTimesWithValueAdd.length,
-                valuePerTimeUnit: elapsedTimesWithValueAdd.map(el => el.valueAdd).reduce((va1, va2) => va1 + va2, 0)
+                itemsPerTimeUnit: elapsedTimesWithValueAdd.length / interval,
+                valuePerTimeUnit: elapsedTimesWithValueAdd.map(el => el.valueAdd).reduce((va1, va2) => va1 + va2, 0) / interval
             },
             cycleTime: {
-                min: Math.min.apply(elapsedTimes),
-                avg: elapsedTimes.reduce((a, b) => a + b, 0) / elapsedTimes.length,
-                max: Math.max.apply(elapsedTimes)
+                min: hasCalculatedStats ? elapsedTimes.reduce((a, b) => a < b ? a : b) : -1,
+                avg: hasCalculatedStats ? elapsedTimes.reduce((a, b) => a + b) / elapsedTimes.length : -1,
+                max: hasCalculatedStats ? elapsedTimes.reduce((a, b) => a > b ? a : b) : -1
             }
         } 
     }
 
-    function obStatistics(ses: StatsEventForFinishingAProcessStep[]): I_WorkItemStatistics {
+    function obStatistics(ses: StatsEventForExitingAProcessStep[], interval: TimeUnit): I_WorkItemStatistics {
         const sesOfOb = ses.filter(se => se.psEntered == outputBasket)
-        const elapsedTimesWithValueAdd = sesOfOb.map(se => { return { 
-            valueAdd:    se.vc.totalValueAdd,
-            elapsedTime: se.finishedTime - se.injectionIntoValueChainTime 
-        }})
-        return workItemStatistics(elapsedTimesWithValueAdd)
+        const elapsedTimesWithValueAdd: ElapsedTimeWithValueAdd[] = sesOfOb.map(se => { 
+            return { 
+                wi:          se.wi,
+                valueAdd:    se.vc.totalValueAdd,
+                elapsedTime: se.finishedTime - se.injectionIntoValueChainTime 
+            }
+        })
+        /* tbd */ //elapsedTimesWithValueAdd.forEach(et => console.log("OB: wi=" + et.wi.id + "/" + et.wi.tag[0] + ": va= " + et.valueAdd + ", et= " + et.elapsedTime))
+        return workItemStatistics(elapsedTimesWithValueAdd, interval)
     }
 
-    function psStatistics(ses: StatsEventForFinishingAProcessStep[], vc: ValueChain, ps: ProcessStep): I_ProcessStepStatistics {
-        const elapsedTimesWithValueAdd = ses.filter(se => se.vc == vc && se.psLeft == ps)
-                                        .map(se => { return {
-                                            valueAdd:    se.vc.totalValueAdd,
-                                            elapsedTime: se.finishedTime
-                                        }})
+    function psStatistics(ses: StatsEventForExitingAProcessStep[], vc: ValueChain, ps: ProcessStep, interval: TimeUnit): I_ProcessStepStatistics {
+//        console.log("psStatistics(vc=" + vc.id + ", ps=" + ps.id + ").ses.length=" + ses.length)                                
+
+        const elapsedTimesWithValueAddOfVcPs: ElapsedTimeWithValueAdd[] = ses.filter(se => se.vc == vc && se.psExited == ps)
+                                                .map(se => { return {
+                                                    wi:          se.wi,
+                                                    valueAdd:    se.vc.totalValueAdd,
+                                                    elapsedTime: se.elapsedTime
+                                                }})
+//        console.log(".elapsedTimesWithValueAdd=")                                
+//        console.log(elapsedTimesWithValueAdd)                                
         return {
             id: ps.id,
-            stats: workItemStatistics(elapsedTimesWithValueAdd)
+            stats: workItemStatistics(elapsedTimesWithValueAddOfVcPs, interval)
         }
     }
 
-    function vcStatistics(ses: StatsEventForFinishingAProcessStep[], vc: ValueChain): I_ValueChainStatistics {
-        function vcOverallStatistics(elapsedTimes: Timestamp[]): I_WorkItemStatistics {
-            const elapsedTimesWithValueAdd = ses.filter(se => se.vc == vc && se.psEntered == outputBasket)
+    function vcStatistics(ses: StatsEventForExitingAProcessStep[], vc: ValueChain, interval: TimeUnit): I_ValueChainStatistics {
+    /*
+        function vcOverallStatistics(ses: StatsEventForExitingAProcessStep[], vc: ValueChain): I_WorkItemStatistics {
+            const elapsedTimesWithValueAdd: ElapsedTimeWithValueAdd[] = ses.filter(se => se.vc == vc && se.psEntered == outputBasket)
                                             .map(se => { return {
+                                                wi:          se.wi,
                                                 valueAdd:    se.vc.totalValueAdd,
                                                 elapsedTime: se.elapsedTime
                                             }})
             return workItemStatistics(elapsedTimesWithValueAdd)
         }
+    */    
         const sesOfVc = ses.filter(se => se.vc == vc && se.psEntered == outputBasket)
-        const elapsedTimesWithValueAdd = sesOfVc.map(se => { return {
+        const elapsedTimesWithValueAddOfVc: ElapsedTimeWithValueAdd[] = sesOfVc.map(se => { 
+            return {
+                wi:          se.wi,
                 valueAdd:    se.vc.totalValueAdd,
                 elapsedTime: se.finishedTime - se.injectionIntoValueChainTime
-            }})
+            }
+        })
+        //elapsedTimesWithValueAdd.forEach(el => console.log("va=" + el.valueAdd + ", et=" + el.elapsedTime))
+
         return {
             id: vc.id,
             stats: {
-                vc:     workItemStatistics(elapsedTimesWithValueAdd),
-                pss:    vc.processSteps.map(ps => psStatistics(sesOfVc, vc, ps))
+                vc:     workItemStatistics(elapsedTimesWithValueAddOfVc, interval),
+                pss:    vc.processSteps.map(ps => psStatistics(ses, vc, ps, interval))
             }
         }
     }
 
-    statEvents = sys.valueChains.flatMap(vc => vc.processSteps.flatMap(ps => ps.stats(0, 100)))
-                    .concat(outputBasket.stats(0,100))
+    const interval:TimeUnit = toTime - fromTime + 1
+    const statEvents: StatsEventForExitingAProcessStep[] = sys.valueChains.flatMap(vc => vc.processSteps.flatMap(ps => ps.stats(fromTime, toTime)))
+                                                          .concat(outputBasket.stats(fromTime, toTime))
+
+    /* tbd */ //console.log("statEvents =")                                                          
+    /* tbd */ //statEvents.forEach(se => console.log(clock.time + ": " + se.wi.id + "/" + se.wi.tag[0] + " vc/ps=" + se.vc.id + " " + se.psExited.id + "=>" + se.psEntered.id + " \t\tinj= " + se.injectionIntoValueChainTime + " fin= " +  se.finishedTime + " elap= " + se.elapsedTime))                       
+
     return {
-        outputBasket: obStatistics(statEvents),
-        valueChains:  sys.valueChains.map(vc => vcStatistics(statEvents, vc))
+        outputBasket: obStatistics(statEvents, interval),
+        valueChains:  sys.valueChains.map(vc => vcStatistics(statEvents, vc, interval))
     } 
 }
 
 function obStatsAsString(rollingWindowSize: TimeUnit = clock.time): string {
-    const stats: I_WorkItemStatistics = systemStatistics(lonelyLobsterSystem).outputBasket
+    const stats: I_WorkItemStatistics = systemStatistics(lonelyLobsterSystem, clock.time - rollingWindowSize, clock.time).outputBasket
     return `    ${stats.cycleTime.min.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.avg.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.max.toFixed(1).padStart(4, ' ')}     ${stats.throughput.itemsPerTimeUnit.toFixed(1).padStart(4, ' ')}   ${stats.throughput.valuePerTimeUnit.toFixed(1).padStart(4, ' ')}`
 
 }
