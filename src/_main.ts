@@ -97,13 +97,15 @@ switch(process.argv[InputArgs.Mode]) {
             })
 
         app.post('/iterate', (req, res) => {
-            console.log("_main: app.post \"iterate\" : received request=")
-            console.log(req.body)
+//          console.log("_main: app.post \"iterate\" : received request=")
+//          console.log(req.body)
             res.send(nextSystemState(lonelyLobsterSystem, req.body))
         })
         
         app.get('/statistics', (req, res) => {
-            res.send(systemStatistics(lonelyLobsterSystem, 0, 10000))
+            console.log("_main: app.post \"statistics\" : received get request")
+            res.send(systemStatistics(lonelyLobsterSystem, clock.time - 10 < 0 ? 0 : clock.time - 10, clock.time))
+            console.log("_main: app.post \"statistics\" : sent response")
         })
         
         app.listen(port, () => {

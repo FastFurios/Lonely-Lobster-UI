@@ -8,10 +8,8 @@ import { reshuffle } from './helpers.js'
 import { Value, ValueChain } from './valuechain.js'
 import { ProcessStep } from './workitembasketholder.js'
 import { Worker, AssignmentSet } from './worker.js'
-import { WorkOrder, ElapsedTimeMode, StatsEventForExitingAProcessStep, WorkItem } from "./workitem.js"
-import { WorkItemBasketHolder } from './workitembasketholder.js'
+import { WorkOrder, StatsEventForExitingAProcessStep, WorkItem } from "./workitem.js"
 import { I_SystemStatistics, I_ValueChainStatistics, I_ProcessStepStatistics, I_WorkItemStatistics, ProcessStepId, ValueChainId } from './io_api_definitions.js'
-import { min } from 'rxjs'
 
 export class LonelyLobsterSystem {
     public workOrderInFlow:  WorkOrder[] = []
@@ -52,6 +50,7 @@ export class LonelyLobsterSystem {
             statEvents = this.valueChains.flatMap(vc => vc.processSteps.flatMap(ps => ps.stats(0, 100)))
             statEvents = statEvents.concat(outputBasket.stats(0,100))
         */
+       /*
             const stats = systemStatistics(lonelyLobsterSystem, 0, now)
             console.log(">> systemStats(lonelyLobsterSystem).outputBasket=")
             console.log(stats.outputBasket)
@@ -65,6 +64,7 @@ export class LonelyLobsterSystem {
                 })
             })
             //statEvents.forEach(se => console.log(">> wi=" + se.wi.id + "/" + se.wi.tag[0] + ", vc=" + se.vc.id + ", ps=" + se.ps.id + ", it=" + se.injectionIntoValueChainTime + ", ft=" + se.finishedTime  + ", et=" + se.elapsedTime))
+        */
         }
         //this.valueChains.forEach(vc => vc.processSteps.forEach(ps => console.log(ps.stats(0, 100))))
         // #########################
@@ -114,9 +114,9 @@ export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, 
                 valuePerTimeUnit: elapsedTimesWithValueAdd.map(el => el.valueAdd).reduce((va1, va2) => va1 + va2, 0) / interval
             },
             cycleTime: {
-                min: hasCalculatedStats ? elapsedTimes.reduce((a, b) => a < b ? a : b) : -1,
-                avg: hasCalculatedStats ? elapsedTimes.reduce((a, b) => a + b) / elapsedTimes.length : -1,
-                max: hasCalculatedStats ? elapsedTimes.reduce((a, b) => a > b ? a : b) : -1
+                min: hasCalculatedStats ? elapsedTimes.reduce((a, b) => a < b ? a : b)               : undefined,
+                avg: hasCalculatedStats ? elapsedTimes.reduce((a, b) => a + b) / elapsedTimes.length : undefined,
+                max: hasCalculatedStats ? elapsedTimes.reduce((a, b) => a > b ? a : b)               : undefined
             }
         } 
     }
@@ -197,6 +197,6 @@ export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, 
 
 function obStatsAsString(rollingWindowSize: TimeUnit = clock.time): string {
     const stats: I_WorkItemStatistics = systemStatistics(lonelyLobsterSystem, clock.time - rollingWindowSize, clock.time).outputBasket
-    return `    ${stats.cycleTime.min.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.avg.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.max.toFixed(1).padStart(4, ' ')}     ${stats.throughput.itemsPerTimeUnit.toFixed(1).padStart(4, ' ')}   ${stats.throughput.valuePerTimeUnit.toFixed(1).padStart(4, ' ')}`
+    return `    ${stats.cycleTime.min?.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.avg?.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.max?.toFixed(1).padStart(4, ' ')}     ${stats.throughput.itemsPerTimeUnit?.toFixed(1).padStart(4, ' ')}   ${stats.throughput.valuePerTimeUnit?.toFixed(1).padStart(4, ' ')}`
 
 }

@@ -89,14 +89,14 @@ export interface I_SystemState {
 // response to statistics request
 
 interface WorkItemStatsCycleTime {
-    min: number,
-    avg: number,
-    max: number
+    min: number | undefined,
+    avg: number | undefined,
+    max: number | undefined
 }
 
 interface WorkItemStatsThroughput {
-    itemsPerTimeUnit:    number,
-    valuePerTimeUnit:    number
+    itemsPerTimeUnit:    number | undefined,
+    valuePerTimeUnit:    number | undefined
 }
 
 export interface I_WorkItemStatistics {

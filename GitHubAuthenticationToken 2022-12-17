@@ -8,6 +8,8 @@ git push https://github.com/FastFurios/Angular-Book-Monkey.git
 git push https://github.com/FastFurios/Angular-Testbed.git
 
 
+http://localhost:4200/
+
 
 Sometimes also:
 git push origin main
