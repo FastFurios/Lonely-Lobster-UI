@@ -1,8 +1,10 @@
 import { Component, OnInit, OnChanges, Input, SimpleChanges } from '@angular/core'
-import { I_ValueChain, ProcessStepId, PsWorkerUtilization, PsWithWorkersWithUtil, VcWithWorkersUtil, WorkerWithUtilization } from '../shared/io_api_definitions'
+import { I_ValueChain, ProcessStepId, PsWorkerUtilization, PsWithWorkersWithUtil, VcExtended, WorkerWithUtilization, I_ValueChainStatistics, I_WorkItemStatistics } from '../shared/io_api_definitions'
 import { ColorMapperService, RgbColor } from '../shared/color-mapper.service'
 import { WorkorderFeederService, VcFeederParms } from '../shared/workorder-feeder.service'
 import { UiBoxSize, UiVcBoxLeftMargin} from '../shared/ui-boxes-definitions';
+import { I_FlowStats } from '../shared/flow-stats-definitions';
+import { ThisReceiver } from '@angular/compiler';
 
 
 @Component({
@@ -11,13 +13,15 @@ import { UiBoxSize, UiVcBoxLeftMargin} from '../shared/ui-boxes-definitions';
   styleUrls: ['./value-chain.component.css']
 })
 export class ValueChainComponent implements OnInit, OnChanges {
-  @Input() vcWu:      VcWithWorkersUtil  
+  @Input() vcExtended:      VcExtended
   @Input() vcBoxSize: UiBoxSize
   feedParms:          VcFeederParms // = { avgInjectionThroughput: 0, injectProbability: 0 }
   
-  pssWithWorkersWithUtil: PsWithWorkersWithUtil[]
-  
+  workitemStats:    I_WorkItemStatistics | undefined
+  pssExtended: PsWithWorkersWithUtil[]
+  vcFlowStats:        I_FlowStats
   valueChainColor:    RgbColor
+
 
   constructor(private cms: ColorMapperService,
               private wof: WorkorderFeederService) { }
@@ -27,37 +31,44 @@ export class ValueChainComponent implements OnInit, OnChanges {
 //  console.log(this.vcBoxSize)
 
     //console.log("ValueChainComponent "+this.vc.id + ": ngOnInit()")
-    this.valueChainColor = this.cms.colorOfObject(["value-chain", this.vcWu.vc.id])
+    this.valueChainColor = this.cms.colorOfObject(["value-chain", this.vcExtended.vc.id])
     this.calcSizeOfProcessStepBox()  
 
-    const fp = this.wof.getParms(this.vcWu.vc.id)
+    const fp = this.wof.getParms(this.vcExtended.vc.id)
 //  console.log("ValueChainComponent: fp=")
 //  console.log(fp)
    
     this.feedParms = fp ?  fp : { avgInjectionThroughput: 1, injectProbability: 1 }
-    this.wof.setParms(this.vcWu.vc.id, this.feedParms.avgInjectionThroughput, this.feedParms.injectProbability)
+    this.wof.setParms(this.vcExtended.vc.id, this.feedParms.avgInjectionThroughput, this.feedParms.injectProbability)
   }
 
   ngOnChanges(/*changes: SimpleChanges*/): void {
-
-    this.pssWithWorkersWithUtil = this.vcWu.vc.processSteps
+    this.workitemStats = this.vcExtended.flowStats?.stats?.vc
+//    console.log("ValueChainComponent.ngOnChanges(): workitemStats=")
+//    console.log(this.workitemStats)
+    this.pssExtended = this.vcExtended.vc.processSteps
                                   .map(ps => { return {
                                     ps: ps,
                                     wosUtil: this.workersWithUtilOfProcessStep(ps.id)
                                   }})
-
-    //console.log("ValueChainComponent "+this.vc.id + ": ngOnChanges(): simple change=")
-    //console.log(changes)
+/*
+  
+    if (this.vcFlowStats) {
+      this.vcFlowStats.tpv = Math.round(this.vcStats.stats.vc.throughput.valuePerTimeUnit * 10) / 10
+      this.vcFlowStats.tpi = Math.round(this.vcStats.stats.vc.throughput.itemsPerTimeUnit * 10) / 10
+      this.vcFlowStats.ct  = Math.round(this.vcStats.stats.vc.cycleTime.avg               * 10) / 10
+    }
+*/
     this.calcSizeOfProcessStepBox()
 
     if (!this.feedParms) return
-    if (this.feedParms!.avgInjectionThroughput > 0 && this.feedParms!.injectProbability > 0) this.wof.setParms(this.vcWu.vc.id, this.feedParms!.avgInjectionThroughput, this.feedParms!.injectProbability)
+    if (this.feedParms!.avgInjectionThroughput > 0 && this.feedParms!.injectProbability > 0) this.wof.setParms(this.vcExtended.vc.id, this.feedParms!.avgInjectionThroughput, this.feedParms!.injectProbability)
   }
   
   feedParmsInputHandler(e: Event) {
     //console.log("ValueChainComponent.feedParmsInputHandler(e): this.feedParms=")
     //console.log(this.feedParms)
-    this.wof.setParms(this.vcWu.vc.id, this.feedParms!.avgInjectionThroughput, this.feedParms!.injectProbability)
+    this.wof.setParms(this.vcExtended.vc.id, this.feedParms!.avgInjectionThroughput, this.feedParms!.injectProbability)
   }
 
   // ----- (re-)sizing of childs' UI boxes  -------------
@@ -65,13 +76,13 @@ export class ValueChainComponent implements OnInit, OnChanges {
 
   private calcSizeOfProcessStepBox(): void {
     this.psBoxSize = { 
-      width:  Math.round((this.vcBoxSize.width - UiVcBoxLeftMargin) / this.vcWu.vc.processSteps.length),
+      width:  Math.round((this.vcBoxSize.width - UiVcBoxLeftMargin) / this.vcExtended.vc.processSteps.length),
       height: this.vcBoxSize.height
     }
   }
 
   private workersWithUtilOfProcessStep(ps: ProcessStepId): WorkerWithUtilization[] {
-    const aux: WorkerWithUtilization[] = this.vcWu.wosUtil.filter((woUtil: PsWorkerUtilization) => woUtil.assignedProcessSteps.some(_ps => _ps == ps))
+    const aux: WorkerWithUtilization[] = this.vcExtended.wosUtil.filter((woUtil: PsWorkerUtilization) => woUtil.assignedProcessSteps.some(_ps => _ps == ps))
                                         .map((woUtil: PsWorkerUtilization) => { return { worker:               woUtil.worker, 
                                                                 utilization:          woUtil.utilization }})
 

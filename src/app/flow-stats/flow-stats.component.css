@@ -1,10 +1,14 @@
+/*
+https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+*/
+
 .flow-stats {
     box-sizing: border-box;
-    padding-left: 2px;
     display: flex;
     flex-direction: row;
-/*    flex-wrap: wrap; */
+    flex-wrap: wrap;
     align-items: flex-end;
+    font-size: small; 
   /*  border-style: solid;
     border-color: blue; */
   }
@@ -12,6 +16,6 @@
   .flow-stat {
     display: flex;
     flex-direction: row;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-left: 2px;
+    padding-right: 2px;
   }

@@ -1,29 +1,29 @@
 <div class="flow-stats">
-    <div class="flow-stat">
+    <div class="flow-stat" [style]="'color: blue'">
         <div *ngIf="displayVerbose">
-            <h5>CT =</h5>
+            <div>CT = </div>
         </div>
         <div>
-            <h5>10.8</h5>
+            <div>{{ flowStatsDisplay.ct }}</div>
         </div>
     </div>
 
-    <div class="flow-stat">
+    <div class="flow-stat" [style]="'color: red'">
         <div *ngIf="displayVerbose">
-            <h5>TPI =</h5>
+            <div>TPI = </div>
         </div>
         <div>
-            <h5>3.2</h5>
+            <div>{{ flowStatsDisplay.tpi }}</div>
         </div>
     </div>
 
     <div *ngIf="showTpv" >
-        <div class="flow-stat">
+        <div class="flow-stat" [style]="'color: green'">
             <div *ngIf="displayVerbose">
-                <h5>TPV =</h5>
+                <div>TPV = </div>
             </div>
             <div>
-                <h5>13.5</h5>
+                <div>{{ flowStatsDisplay.tpv }}</div>
             </div>
         </div>
     </div>

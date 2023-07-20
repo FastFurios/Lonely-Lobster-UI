@@ -1,5 +1,5 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
-import { I_ProcessStep, I_WorkItem, PsWithWorkersWithUtil } from '../shared/io_api_definitions'
+import { I_ProcessStep, I_WorkItem, PsWithWorkersWithUtil, I_ProcessStepStatistics } from '../shared/io_api_definitions'
 //import { RgbColor } from '../shared/color-mapper.service'
 import { ColorMapperService } from '../shared/color-mapper.service'
 import { UiBoxSize, UiPsHeaderHeight, UiInvWidthOfPsWidth, UiInventoryBoxHeightShrink, UiWorkerNameHeight} from '../shared/ui-boxes-definitions';
@@ -12,6 +12,7 @@ import { UiBoxSize, UiPsHeaderHeight, UiInvWidthOfPsWidth, UiInventoryBoxHeightS
 })
 export class ProcessStepComponent implements OnInit, OnChanges {
   @Input() psWu:      PsWithWorkersWithUtil
+  @Input() vcStats:   I_ProcessStepStatistics
   @Input() psBoxSize: UiBoxSize
   wis:                I_WorkItem[]
 
