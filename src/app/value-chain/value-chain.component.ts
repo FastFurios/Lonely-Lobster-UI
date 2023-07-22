@@ -1,5 +1,5 @@
 import { Component, OnInit, OnChanges, Input, SimpleChanges } from '@angular/core'
-import { I_ValueChain, ProcessStepId, PsWorkerUtilization, PsWithWorkersWithUtil, VcExtended, WorkerWithUtilization, I_ValueChainStatistics, I_WorkItemStatistics } from '../shared/io_api_definitions'
+import { I_ValueChain, ProcessStepId, PsWorkerUtilization, PsExtended, VcExtended, I_ProcessStepStatistics, WorkerWithUtilization, I_ValueChainStatistics, I_WorkItemStatistics } from '../shared/io_api_definitions'
 import { ColorMapperService, RgbColor } from '../shared/color-mapper.service'
 import { WorkorderFeederService, VcFeederParms } from '../shared/workorder-feeder.service'
 import { UiBoxSize, UiVcBoxLeftMargin} from '../shared/ui-boxes-definitions';
@@ -15,10 +15,10 @@ import { ThisReceiver } from '@angular/compiler';
 export class ValueChainComponent implements OnInit, OnChanges {
   @Input() vcExtended:      VcExtended
   @Input() vcBoxSize: UiBoxSize
-  feedParms:          VcFeederParms // = { avgInjectionThroughput: 0, injectProbability: 0 }
+  feedParms:          VcFeederParms // = { avgInjectionThroughput: 0.2, injectProbability: 1 }
   
-  workitemStats:    I_WorkItemStatistics | undefined
-  pssExtended: PsWithWorkersWithUtil[]
+  workitemStats:      I_WorkItemStatistics | undefined
+  pssExtended:        PsExtended[]
   vcFlowStats:        I_FlowStats
   valueChainColor:    RgbColor
 
@@ -49,7 +49,8 @@ export class ValueChainComponent implements OnInit, OnChanges {
     this.pssExtended = this.vcExtended.vc.processSteps
                                   .map(ps => { return {
                                     ps: ps,
-                                    wosUtil: this.workersWithUtilOfProcessStep(ps.id)
+                                    wosUtil: this.workersWithUtilOfProcessStep(ps.id),
+                                    flowStats:this.flowStatsOfProcessStep(ps.id)
                                   }})
 /*
   
@@ -70,6 +71,12 @@ export class ValueChainComponent implements OnInit, OnChanges {
     //console.log(this.feedParms)
     this.wof.setParms(this.vcExtended.vc.id, this.feedParms!.avgInjectionThroughput, this.feedParms!.injectProbability)
   }
+
+  private flowStatsOfProcessStep(psId: ProcessStepId): I_ProcessStepStatistics | undefined {
+    const aux = this.vcExtended.flowStats?.stats.pss.find(psFlowStats => psFlowStats.id == psId)
+    return aux
+  }
+
 
   // ----- (re-)sizing of childs' UI boxes  -------------
   psBoxSize:          UiBoxSize // = { width: 0, height: 0 }

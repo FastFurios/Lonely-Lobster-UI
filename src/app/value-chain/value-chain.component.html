@@ -25,8 +25,8 @@
             <app-flow-arrow  [flowRate]="value"></app-flow-arrow>
         </div>
 -->
-    <div *ngFor="let psWu of pssExtended">
-            <app-process-step [psWu]="psWu" [psBoxSize]="psBoxSize"></app-process-step>
+    <div *ngFor="let psExtended of pssExtended">
+            <app-process-step [psExtended]="psExtended" [psBoxSize]="psBoxSize"></app-process-step>
     </div>
 </div>
 <!--

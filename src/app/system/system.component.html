@@ -33,16 +33,18 @@
         <div>
             <app-workers-stats [wosStats]="systemState.workersState" ></app-workers-stats>
         </div>
-        <div>
-            <button type="button" class="submitButton" (click)="fetchStatisticsHandler()">
-                Show stats
+<!--
+        <ng-container *ngIf="statsAreUpToDate"; else #statsAreUpToDate>
+            <button type="button" class="submitButtonDisabled" (click)="fetchStatisticsHandler()">
+                Update Stats
             </button>
-        </div>
-        <div *ngIf="systemStatistics">
-            <p> Cycle-time: {{ systemStatistics.outputBasket.cycleTime.avg }} </p>
-            <p> Throughput items: {{ systemStatistics.outputBasket.throughput.itemsPerTimeUnit }} </p>
-            
-        </div>
+        </ng-container>
+        <ng-template #statsAreUpToDate>
+            <button type="button" class="submitButton" (click)="fetchStatisticsHandler()">
+                Update Stats
+            </button>
+        </ng-template>
+-->        
     </div>
 
 
@@ -67,7 +69,11 @@
 
 
             <div class="outputBasket" [style]="'width:' + obBoxSize.width + 'px; ' ">
-                    <app-output-basket [ob]="systemState.outputBasket" [obBoxSize]="obBoxSize"></app-output-basket>
+<!--
+                <app-output-basket [obExtended]="obExtended" [obBoxSize]="obBoxSize"></app-output-basket>
+-->
+                <app-output-basket [obExtended]="obExtended" [obBoxSize]="obBoxSize"></app-output-basket>
+
             </div>
 
         </div>
@@ -78,7 +84,7 @@
 
 <ng-template #loading>
     <div class="ui active dimmer">
-        <div class="ui large text loader">System state loading ... </div>
+        <div class="ui large text loader">Select system configuration file ... </div>
     </div>
 </ng-template>
 <br/>

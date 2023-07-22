@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnChanges } from '@angular/core';
-import { I_OutputBasket, I_WorkItem } from '../shared/io_api_definitions';
+import { I_OutputBasket, I_WorkItem, ObExtended } from '../shared/io_api_definitions';
 import { ColorMapperService } from '../shared/color-mapper.service'
 import { UiBoxSize, UiObHeaderHeight} from '../shared/ui-boxes-definitions';
 
@@ -11,7 +11,8 @@ import { UiBoxSize, UiObHeaderHeight} from '../shared/ui-boxes-definitions';
   styleUrls: ['./output-basket.component.css']
 })
 export class OutputBasketComponent implements OnInit, OnChanges {
-  @Input() ob: I_OutputBasket
+  @Input() ob: I_OutputBasket // tbd
+  @Input() obExtended: ObExtended
   @Input() obBoxSize: UiBoxSize
   wis: I_WorkItem[]
 //psInventory: PsInventory
@@ -36,7 +37,7 @@ export class OutputBasketComponent implements OnInit, OnChanges {
 
   ngOnChanges(): void {
     //console.log("OutputBasketComponent.ngOnChanges")
-    this.wis = this.ob.workItems
+    this.wis = this.obExtended.ob.workItems
               .map(wi =>  { 
                             return  { 
                                       ...wi,

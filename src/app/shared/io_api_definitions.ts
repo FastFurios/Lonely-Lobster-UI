@@ -29,15 +29,23 @@ export type PsWorkerUtilization = WorkerWithUtilization & {
 }
   
 export interface VcExtended {
-    vc:         I_ValueChain,
+    vc:         I_ValueChain
     wosUtil:    PsWorkerUtilization[]
     flowStats?: I_ValueChainStatistics
 }  
 
+export interface ObExtended {
+    ob: I_OutputBasket
+    flowStats?: I_WorkItemStatistics
+}
 
-export interface PsWithWorkersWithUtil {
-    ps:         I_ProcessStep,
+
+
+
+export interface PsExtended {
+    ps:         I_ProcessStep
     wosUtil:    WorkerWithUtilization[]
+    flowStats?: I_ProcessStepStatistics
 }  
 
 
