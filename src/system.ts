@@ -98,20 +98,20 @@ export class LonelyLobsterSystem {
 
 export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, toTime: Timestamp): I_SystemStatistics {
 
-    interface ElapsedTimeWithValueAdd {
+    interface WiElapTimeValAdd {
         wi:             WorkItem
         valueAdd:       Value
         elapsedTime:    Timestamp
     }
 
-    function workItemStatistics(elapsedTimesWithValueAdd: ElapsedTimeWithValueAdd[], interval: TimeUnit): I_WorkItemStatistics {
-        const elapsedTimes: TimeUnit[] = elapsedTimesWithValueAdd.flatMap(el => el.elapsedTime)
+    function workItemStatistics(wiElapTimeValAdd: WiElapTimeValAdd[], interval: TimeUnit): I_WorkItemStatistics {
+        const elapsedTimes: TimeUnit[] = wiElapTimeValAdd.flatMap(el => el.elapsedTime)
         const hasCalculatedStats = elapsedTimes.length > 0
         return {
             hasCalculatedStats: hasCalculatedStats,
             throughput: {
-                itemsPerTimeUnit: elapsedTimesWithValueAdd.length / interval,
-                valuePerTimeUnit: elapsedTimesWithValueAdd.map(el => el.valueAdd).reduce((va1, va2) => va1 + va2, 0) / interval
+                itemsPerTimeUnit: wiElapTimeValAdd.length / interval,
+                valuePerTimeUnit: wiElapTimeValAdd.map(el => el.valueAdd).reduce((va1, va2) => va1 + va2, 0) / interval
             },
             cycleTime: {
                 min: hasCalculatedStats ? elapsedTimes.reduce((a, b) => a < b ? a : b)               : undefined,
@@ -123,7 +123,7 @@ export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, 
 
     function obStatistics(ses: StatsEventForExitingAProcessStep[], interval: TimeUnit): I_WorkItemStatistics {
         const sesOfOb = ses.filter(se => se.psEntered == outputBasket)
-        const elapsedTimesWithValueAdd: ElapsedTimeWithValueAdd[] = sesOfOb.map(se => { 
+        const elapsedTimesWithValueAdd: WiElapTimeValAdd[] = sesOfOb.map(se => { 
             return { 
                 wi:          se.wi,
                 valueAdd:    se.vc.totalValueAdd,
@@ -137,7 +137,7 @@ export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, 
     function psStatistics(ses: StatsEventForExitingAProcessStep[], vc: ValueChain, ps: ProcessStep, interval: TimeUnit): I_ProcessStepStatistics {
 //        console.log("psStatistics(vc=" + vc.id + ", ps=" + ps.id + ").ses.length=" + ses.length)                                
 
-        const elapsedTimesWithValueAddOfVcPs: ElapsedTimeWithValueAdd[] = ses.filter(se => se.vc == vc && se.psExited == ps)
+        const elapsedTimesWithValueAddOfVcPs: WiElapTimeValAdd[] = ses.filter(se => se.vc == vc && se.psExited == ps)
                                                 .map(se => { return {
                                                     wi:          se.wi,
                                                     valueAdd:    se.vc.totalValueAdd,
@@ -164,7 +164,7 @@ export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, 
         }
     */    
         const sesOfVc = ses.filter(se => se.vc == vc && se.psEntered == outputBasket)
-        const elapsedTimesWithValueAddOfVc: ElapsedTimeWithValueAdd[] = sesOfVc.map(se => { 
+        const elapsedTimesWithValueAddOfVc: WiElapTimeValAdd[] = sesOfVc.map(se => { 
             return {
                 wi:          se.wi,
                 valueAdd:    se.vc.totalValueAdd,
@@ -182,12 +182,12 @@ export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, 
         }
     }
 
-    const interval:TimeUnit = toTime - fromTime + 1
+    const interval:TimeUnit = toTime - fromTime
     const statEvents: StatsEventForExitingAProcessStep[] = sys.valueChains.flatMap(vc => vc.processSteps.flatMap(ps => ps.stats(fromTime, toTime)))
                                                           .concat(outputBasket.stats(fromTime, toTime))
 
-    /* tbd */ //console.log("statEvents =")                                                          
-    /* tbd */ //statEvents.forEach(se => console.log(clock.time + ": " + se.wi.id + "/" + se.wi.tag[0] + " vc/ps=" + se.vc.id + " " + se.psExited.id + "=>" + se.psEntered.id + " \t\tinj= " + se.injectionIntoValueChainTime + " fin= " +  se.finishedTime + " elap= " + se.elapsedTime))                       
+    /* tbd */ console.log("statEvents =")                                                          
+    /* tbd */ statEvents.forEach(se => console.log(clock.time + ": " + se.wi.id + "/" + se.wi.tag[0] + " vc/ps=" + se.vc.id + " " + se.psExited.id + "=>" + se.psEntered.id + " \t\tinj= " + se.injectionIntoValueChainTime + " fin= " +  se.finishedTime + " elap= " + se.elapsedTime))                       
 
     return {
         outputBasket: obStatistics(statEvents, interval),
@@ -197,6 +197,6 @@ export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, 
 
 function obStatsAsString(rollingWindowSize: TimeUnit = clock.time): string {
     const stats: I_WorkItemStatistics = systemStatistics(lonelyLobsterSystem, clock.time - rollingWindowSize, clock.time).outputBasket
-    return `    ${stats.cycleTime.min?.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.avg?.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.max?.toFixed(1).padStart(4, ' ')}     ${stats.throughput.itemsPerTimeUnit?.toFixed(1).padStart(4, ' ')}   ${stats.throughput.valuePerTimeUnit?.toFixed(1).padStart(4, ' ')}`
-
+//  return `    ${stats.cycleTime.min?.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.avg?.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.max?.toFixed(1).padStart(4, ' ')}     ${stats.throughput.itemsPerTimeUnit?.toFixed(1).padStart(4, ' ')}   ${stats.throughput.valuePerTimeUnit?.toFixed(1).padStart(4, ' ')}`
+    return "- tbd: intentionally left empty -"
 }

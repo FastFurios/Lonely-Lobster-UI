@@ -9,6 +9,9 @@ git push https://github.com/FastFurios/Angular-Testbed.git
 
 
 http://localhost:4200/
+$ ng serve &
+
+$ node target/_main.js --api &
 
 
 Sometimes also:

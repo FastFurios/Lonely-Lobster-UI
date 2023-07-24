@@ -180,7 +180,7 @@ export class WorkItem {
     }
 
     public statisticsEventsHistory(fromTime: Timestamp = 0, toTime: Timestamp = clock.time): StatsEventForExitingAProcessStep[]  { // lists all events btw. from and to timestamp when the workitem exited a process step 
-//      console.log("workitem.statsEventsForFinishingAProcessSteps(fromTime: " + fromTime + ", toTime: " + toTime +")")
+        console.log("workitem.statsEventsForFinishingAProcessSteps(fromTime: " + fromTime + ", toTime: " + toTime +") for wi = " + this.id)
         const statEvents: StatsEventForExitingAProcessStep[] = []
 
         const moveToLogEntries = this.log
@@ -190,10 +190,23 @@ export class WorkItem {
 //      console.log(moveToLogEntries)
         let firstMovedToEvent = <LogEntryWorkItem>moveToLogEntries[0]
         let lastMovedToEvent  = <LogEntryWorkItem>moveToLogEntries.pop()
+        if (lastMovedToEvent.timestamp <= fromTime) return []
 
 //      console.log("workitem.statsEventsForFinishingAProcessSteps().lastMovedToEvent=")
 //      console.log(lastMovedToEvent)
         for (let le of moveToLogEntries.reverse()) {
+/*
+            const aux =                 {
+                wi:                          this,
+                vc:                          this.valueChain,
+                psExited:                    <ProcessStep>le.workItemBasketHolder,
+                psEntered:                   lastMovedToEvent.workItemBasketHolder,           
+                finishedTime:                lastMovedToEvent.timestamp,
+                elapsedTime:                 lastMovedToEvent.timestamp - le.timestamp,
+                injectionIntoValueChainTime: firstMovedToEvent.timestamp
+            }
+            if (clock.time > 20 && this.id == 0) console.log("workitem.statitsicsEventsHistory().for-loop: going to append to statEvents = { wi=" + this.id + ", " + aux.psExited.id + "=>" + aux.psEntered.id + ", finTime=" + aux.finishedTime)
+*/
             statEvents.push(
                 {
                     wi:                          this,
