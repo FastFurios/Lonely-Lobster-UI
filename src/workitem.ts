@@ -218,7 +218,7 @@ export class WorkItem {
                     injectionIntoValueChainTime: firstMovedToEvent.timestamp
                 }
             )           
-            if (le.timestamp < fromTime) break
+            if (le.timestamp <= fromTime) break
             lastMovedToEvent = le
         }
         return statEvents

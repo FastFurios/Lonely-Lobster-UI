@@ -123,7 +123,7 @@ export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, 
 
     function obStatistics(ses: StatsEventForExitingAProcessStep[], interval: TimeUnit): I_WorkItemStatistics {
         const sesOfOb = ses.filter(se => se.psEntered == outputBasket)
-        const elapsedTimesWithValueAdd: WiElapTimeValAdd[] = sesOfOb.map(se => { 
+        const wiElapTimeValAdd: WiElapTimeValAdd[] = sesOfOb.map(se => { 
             return { 
                 wi:          se.wi,
                 valueAdd:    se.vc.totalValueAdd,
@@ -131,13 +131,13 @@ export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, 
             }
         })
         /* tbd */ //elapsedTimesWithValueAdd.forEach(et => console.log("OB: wi=" + et.wi.id + "/" + et.wi.tag[0] + ": va= " + et.valueAdd + ", et= " + et.elapsedTime))
-        return workItemStatistics(elapsedTimesWithValueAdd, interval)
+        return workItemStatistics(wiElapTimeValAdd, interval)
     }
 
     function psStatistics(ses: StatsEventForExitingAProcessStep[], vc: ValueChain, ps: ProcessStep, interval: TimeUnit): I_ProcessStepStatistics {
 //        console.log("psStatistics(vc=" + vc.id + ", ps=" + ps.id + ").ses.length=" + ses.length)                                
 
-        const elapsedTimesWithValueAddOfVcPs: WiElapTimeValAdd[] = ses.filter(se => se.vc == vc && se.psExited == ps)
+        const wiElapTimeValAddOfVcPs: WiElapTimeValAdd[] = ses.filter(se => se.vc == vc && se.psExited == ps)
                                                 .map(se => { return {
                                                     wi:          se.wi,
                                                     valueAdd:    se.vc.totalValueAdd,
@@ -147,7 +147,7 @@ export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, 
 //        console.log(elapsedTimesWithValueAdd)                                
         return {
             id: ps.id,
-            stats: workItemStatistics(elapsedTimesWithValueAddOfVcPs, interval)
+            stats: workItemStatistics(wiElapTimeValAddOfVcPs, interval)
         }
     }
 
@@ -164,7 +164,7 @@ export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, 
         }
     */    
         const sesOfVc = ses.filter(se => se.vc == vc && se.psEntered == outputBasket)
-        const elapsedTimesWithValueAddOfVc: WiElapTimeValAdd[] = sesOfVc.map(se => { 
+        const wiElapTimeValAddOfVc: WiElapTimeValAdd[] = sesOfVc.map(se => { 
             return {
                 wi:          se.wi,
                 valueAdd:    se.vc.totalValueAdd,
@@ -176,7 +176,7 @@ export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, 
         return {
             id: vc.id,
             stats: {
-                vc:     workItemStatistics(elapsedTimesWithValueAddOfVc, interval),
+                vc:     workItemStatistics(wiElapTimeValAddOfVc, interval),
                 pss:    vc.processSteps.map(ps => psStatistics(ses, vc, ps, interval))
             }
         }

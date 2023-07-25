@@ -103,7 +103,8 @@ switch(process.argv[InputArgs.Mode]) {
         })
         
         app.get('/statistics', (req, res) => {
-            console.log("_main: app.post \"statistics\" : received get request")
+            console.log("_main: app.post \"statistics\" : received get request. fromTime= " + (clock.time - 10 < 0 ? 0 : clock.time - 10) + " > toTime= " + clock.time)
+
             res.send(systemStatistics(lonelyLobsterSystem, clock.time - 10 < 0 ? 0 : clock.time - 10, clock.time))
             console.log("_main: app.post \"statistics\" : sent response")
         })
