@@ -35,7 +35,7 @@ export class InventoryColumnComponent implements OnInit {
   }
 
   private calcHeightOfInventoryColumn(): void {
-    const wisShow = this.psInventoryColumn.wis.slice(0, Math.floor(this.inventoryColumnBoxSize.height / 15))
+    const wisShow = this.psInventoryColumn.wis.slice(0, Math.floor(this.inventoryColumnBoxSize.height / (1 + 15 + 1) /* = wi box with margin top and bottom */) - 1)
     const excessWisNum = this.psInventoryColumn.wis.length - wisShow.length
 
     this.psInventoryColumnShow = {

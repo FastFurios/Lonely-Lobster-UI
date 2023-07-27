@@ -42,14 +42,10 @@ export class InventoryComponent implements OnInit {
     this.inventoryColumnBoxSize = { 
       width:  UiInventoryColWidth, 
       height: this.inventoryBoxSize.height }
-    this.numColsShown = Math.round((this.inventoryBoxSize.width - 20) / UiInventoryColWidth)
+    this.numColsShown = Math.round((this.inventoryBoxSize.width - (1 + 15 + 1) /* = wi box with margin left and right */) / UiInventoryColWidth)
     this.psInventoryShow = {
       cols:            this.psInventory.slice(0, this.numColsShown),
       excessColsWiNum: this.psInventory.length <= this.numColsShown ? 0 : this.psInventory.slice(this.numColsShown).map(col => col.wis.length).reduce((a, b) => a + b)    // /*slice(5).*/flatMap(col => col.wis).length
     }
-    //console.log("InventoryComponent.calcSizesOfInventoryColumn(): psInventoryShow=")
-    //console.log(this.psInventoryShow)
-    //console.log("InventoryComponent.calcSizesOfInventoryColumn(): inventoryBoxSize=")
-    //console.log(this.inventoryBoxSize)
   }
 }
