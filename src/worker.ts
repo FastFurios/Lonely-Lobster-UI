@@ -10,7 +10,6 @@ import { ValueChain } from './valuechain.js'
 import { WorkItem, WiExtInfoElem, WiExtInfoTuple, WorkItemExtendedInfos } from './workitem.js'
 import { ProcessStep } from './workitembasketholder.js'
 import { LonelyLobsterSystem } from './system';
-import { workerData } from 'worker_threads'
 
 
 //----------------------------------------------------------------------
@@ -51,20 +50,6 @@ export class AssignmentSet {
     public addAssignment(as: Assignment) {
         this.assignments.push(as)
     }
-
-/*
-    public removeAssignment(assignment: Assignment) {
-        this.assignments = this.assignments.filter(as => as != assignment)  
-    }
-
-    public stringify(): string {
-        let s: string = `t=${clock.time} Assignment set "${this.id}":\n`
-        for (let as of this.assignments) {
-            s += `wo=${as.worker.id} vc=${as.valueChainProcessStep.valueChain.id} ps=${as.valueChainProcessStep.processStep.id}\n` 
-        }
-        return s 
-    }
-*/
 }
 
 //----------------------------------------------------------------------
@@ -75,13 +60,12 @@ interface ValueChainProcessStep {
     valueChain:  ValueChain,
     processStep: ProcessStep
 }
+
 type WorkerName = string
 type WorkerStats = {
     assignments: ValueChainProcessStep[],  
     utilization: number // in percent, i.e. 55 is 55%
 }
-
-
 
 export class Worker {
     log:    LogEntryWorker[] = []
@@ -117,7 +101,7 @@ export class Worker {
         const wi: WorkItem = selectNextWorkItemBySortVector(workableWorkItemsAtHand, this.sortVectorSequence)
 
         if(debugShowOptions.workerChoices) console.log(`=> ${this.id} picked: ${wi.id}|${wi.tag[0]}`)
-
+        console.log("worker.worked wi= " + wi.id + "  worker= " + this.id )
         wi.logWorkedOn(this)
         this.logWorked()
     }
@@ -131,22 +115,4 @@ export class Worker {
                                                      processStep: a.valueChainProcessStep.processStep }
                                             })
     }
-
-/*
-    public show(asSet: AssignmentSet): string {
-        let s = `t=${clock.time} wo=${this.id}: workitems at hand:\n`
-        for (let wi of this.workItemsAtHand(asSet)) {
-            s += wi.stringify()
-        }
-        return s
-    }
-
-    public stringifyLog(): string {
-        let s: string = `t=${clock.time} Worker Log:\n`
-        for (let le of this.log) {
-            s += `\t${le.stringified()}\n` 
-        }
-        return s 
-    } 
-*/
 }

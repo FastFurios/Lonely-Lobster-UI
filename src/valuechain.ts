@@ -3,7 +3,7 @@
 //----------------------------------------------------------------------
 import { outputBasket } from './_main.js'
 import { WorkItem } from './workitem.js'
-import { WorkItemBasketHolder, ProcessStep } from './workitembasketholder.js'
+import { WorkItemBasketHolder, ProcessStep, Effort } from './workitembasketholder.js'
 
 type ValueChainId   = string
 export type Value   = number // measured in Worker Time Units
@@ -43,6 +43,11 @@ export class ValueChain {
             ps.workItemBasket                   
                 .filter(wi => wi.finishedAtCurrentProcessStep())                    // filter the workitems ready to be moved on
                 .forEach(wi => this.moveWorkItemToNextWorkItemBasketHolder(wi)))    // move these workitems on
+
+
+    public accumulatedEffortMade(): Effort {
+        return this.processSteps.map(ps => ps.accumulatedEffortMade()).reduce((ef1, ef2) => ef1 + ef2)
+    } 
 
     public stringifiedHeader(): string {
         const stringifyColumnHeader = (wibh: ProcessStep): string => `_${this.id}.${wibh.id}${"_".repeat(wibh.barLen)}`.substring(0, wibh.barLen)

@@ -53,15 +53,7 @@ export interface I_ValueChain {
     processSteps:                   I_ProcessStep[]
 }
 
-/*
-export interface I_EndProduct {
-    id:                             WorkItemId
-    tag:                            WorkItemTag
-    accumulatedEffortInValueChain:  number
-    valueOfValueChain:              Value
-    elapsedTimeInValueChain:        number
-}
-*/
+
 export interface I_OutputBasket {
 //  workItems:                      I_EndProduct[]
     workItems:                      I_WorkItem[]
@@ -74,7 +66,6 @@ export interface I_ValueChainProcessStep {
 export interface I_WorkerState {
     worker:                         WorkerName
     utilization:                    number
-//  assignmentsInfo:                string
     assignments:                    I_ValueChainProcessStep[]
 }
 
@@ -108,6 +99,7 @@ export interface I_WorkItemStatistics {
 export interface I_ProcessStepStatistics {
     id: string
     stats: I_WorkItemStatistics
+//  accumulatedEffort: Effort
 } 
 
 export interface I_ValueChainStatistics {
@@ -121,4 +113,5 @@ export interface I_ValueChainStatistics {
 export interface I_SystemStatistics {
     outputBasket: I_WorkItemStatistics
     valueChains:  I_ValueChainStatistics[]
+    workingCapital: Effort
 }

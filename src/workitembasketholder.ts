@@ -23,6 +23,12 @@ export abstract class WorkItemBasketHolder {
     public stats(fromTime: Timestamp, toTime: Timestamp): StatsEventForExitingAProcessStep[] {
         return this.workItemBasket.flatMap(wi => wi.statisticsEventsHistory(fromTime, toTime))
     }
+
+    public accumulatedEffortMade(): Effort {
+        console.log("workitemholder.accumulatedEffort() of ProcessStep=" + this.id + " is:")
+        this.workItemBasket.forEach(wi => console.log("  wi.id= " + wi.id + " accum.Effort= " + wi.accumulatedEffort()))
+        return this.workItemBasket.map(wi => wi.accumulatedEffort()).reduce((ef1, ef2) => ef1 + ef2, 0 )
+    }
  
     public abstract stringified(): string
 

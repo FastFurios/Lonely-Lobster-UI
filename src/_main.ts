@@ -88,8 +88,8 @@ switch(process.argv[InputArgs.Mode]) {
 //3.7.23  let clockTime = 0
 
         app.post('/initialize', (req, res) => {
-                console.log("_main: app.post \"initialize\" : received request=")
-                console.log(req.body)
+//              console.log("_main: app.post \"initialize\" : received request=")
+//              console.log(req.body)
                 clock.setTo(0)
                 lonelyLobsterSystem = systemCreatedFromConfigJson(req.body)
                 outputBasket.emptyBasket()
@@ -103,10 +103,10 @@ switch(process.argv[InputArgs.Mode]) {
         })
         
         app.get('/statistics', (req, res) => {
-            console.log("_main: app.post \"statistics\" : received get request. fromTime= " + (clock.time - 10 < 0 ? 0 : clock.time - 10) + " > toTime= " + clock.time)
+            //console.log("_main: app.post \"statistics\" : received get request. fromTime= " + (clock.time - 10 < 0 ? 0 : clock.time - 10) + " > toTime= " + clock.time)
 
             res.send(systemStatistics(lonelyLobsterSystem, clock.time - 10 < 0 ? 0 : clock.time - 10, clock.time))
-            console.log("_main: app.post \"statistics\" : sent response")
+            //console.log("_main: app.post \"statistics\" : sent response")
         })
         
         app.listen(port, () => {

@@ -38,37 +38,6 @@ export class LonelyLobsterSystem {
 
         // show valuechains line for current time
         this.showLine()
-
-        // #### to be deleted ######
-        if (clock.time == 39 || clock.time == 9 || clock.time == 5) { 
-        /*
-            console.log("\n>> WORKITEM LOG" + outputBasket.workItemBasket[wiId].stringified())
-            outputBasket.workItemBasket[wiId].log.filter(le => le.logEntryType == "movedTo").forEach(le => console.log(">> " + le.stringified()))
-            outputBasket.workItemBasket[wiId].statsEventsForFinishingAProcessSteps().forEach(se => {
-                console.log(">> t=" + se.finishedTime  + ", vc=" + se.vc.id + ", ps=" + se.ps.id + ", et=" + se.elapsedTime)
-            })
-            statEvents = this.valueChains.flatMap(vc => vc.processSteps.flatMap(ps => ps.stats(0, 100)))
-            statEvents = statEvents.concat(outputBasket.stats(0,100))
-        */
-       /*
-            const stats = systemStatistics(lonelyLobsterSystem, 0, now)
-            console.log(">> systemStats(lonelyLobsterSystem).outputBasket=")
-            console.log(stats.outputBasket)
-            console.log(">> systemStats(lonelyLobsterSystem).valueChains=")
-            stats.valueChains.forEach(vc => {
-                console.log(vc.id)
-                console.log(vc.stats.vc)
-                vc.stats.pss.forEach(ps => {
-                    console.log(ps.id)
-                    console.log(ps.stats)
-                })
-            })
-            //statEvents.forEach(se => console.log(">> wi=" + se.wi.id + "/" + se.wi.tag[0] + ", vc=" + se.vc.id + ", ps=" + se.ps.id + ", it=" + se.injectionIntoValueChainTime + ", ft=" + se.finishedTime  + ", et=" + se.elapsedTime))
-        */
-        }
-        //this.valueChains.forEach(vc => vc.processSteps.forEach(ps => console.log(ps.stats(0, 100))))
-        // #########################
-
     }
 
     private headerForValueChains = ():string => "_t_||" + this.valueChains.map(vc => vc.stringifiedHeader()).reduce((a, b) => a + "| |" + b) +"| "
@@ -181,22 +150,28 @@ export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, 
             }
         }
     }
-
+    console.log("\n\nsystem.systemStistics() -- clock.time= " + clock.time + " ----------------------")
     const interval:TimeUnit = toTime - fromTime
     const statEvents: StatsEventForExitingAProcessStep[] = sys.valueChains.flatMap(vc => vc.processSteps.flatMap(ps => ps.stats(fromTime, toTime)))
                                                           .concat(outputBasket.stats(fromTime, toTime))
 
-    /* tbd */ console.log("statEvents =")                                                          
-    /* tbd */ statEvents.forEach(se => console.log(clock.time + ": " + se.wi.id + "/" + se.wi.tag[0] + " vc/ps=" + se.vc.id + " " + se.psExited.id + "=>" + se.psEntered.id + " \t\tinj= " + se.injectionIntoValueChainTime + " fin= " +  se.finishedTime + " elap= " + se.elapsedTime))                       
+    /* tbd */ //console.log("statEvents =")                                                          
+    /* tbd */ //statEvents.forEach(se => console.log(clock.time + ": " + se.wi.id + "/" + se.wi.tag[0] + " vc/ps=" + se.vc.id + " " + se.psExited.id + "=>" + se.psEntered.id + " \t\tinj= " + se.injectionIntoValueChainTime + " fin= " +  se.finishedTime + " elap= " + se.elapsedTime))                       
+
+    console.log("system.systemStatistics() List of wis with excerted efforts:")
+    sys.valueChains.forEach(vc => vc.processSteps
+                   .forEach(ps => ps.workItemBasket
+                   .forEach(wi => console.log("   wi.id= " + wi.id + " accum.effort=" + wi.accumulatedEffort()))))
 
     return {
         outputBasket: obStatistics(statEvents, interval),
-        valueChains:  sys.valueChains.map(vc => vcStatistics(statEvents, vc, interval))
+        valueChains:  sys.valueChains.map(vc => vcStatistics(statEvents, vc, interval)),
+        workingCapital: sys.valueChains.map(vc => vc.accumulatedEffortMade()).reduce((ef1, ef2) => ef1 + ef2)
     } 
 }
 
 function obStatsAsString(rollingWindowSize: TimeUnit = clock.time): string {
     const stats: I_WorkItemStatistics = systemStatistics(lonelyLobsterSystem, clock.time - rollingWindowSize, clock.time).outputBasket
-//  return `    ${stats.cycleTime.min?.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.avg?.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.max?.toFixed(1).padStart(4, ' ')}     ${stats.throughput.itemsPerTimeUnit?.toFixed(1).padStart(4, ' ')}   ${stats.throughput.valuePerTimeUnit?.toFixed(1).padStart(4, ' ')}`
-    return "- tbd: intentionally left empty -"
+    return `    ${stats.cycleTime.min?.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.avg?.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.max?.toFixed(1).padStart(4, ' ')}     ${stats.throughput.itemsPerTimeUnit?.toFixed(1).padStart(4, ' ')}   ${stats.throughput.valuePerTimeUnit?.toFixed(1).padStart(4, ' ')}`
+//  return "- tbd: intentionally left empty -"
 }

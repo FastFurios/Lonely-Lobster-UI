@@ -41,7 +41,8 @@ function split<T>(a: T[], splitIndex: number): I_SplitArray<T>  {
 }
 
 // ------------------------------------------------------------
-//  sort rows and select top row of a table i.e. of an array of arrays (tuples) 
+//  sort rows and select top row of a table i.e. of an array of arrays (tuples); 
+//  if no sortVector provided, choose a row by random
 // ------------------------------------------------------------
 
 export enum SelectionCriterion {
