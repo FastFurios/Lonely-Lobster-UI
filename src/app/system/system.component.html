@@ -33,6 +33,11 @@
         <div>
             <app-workers-stats [wosStats]="systemState.workersState" ></app-workers-stats>
         </div>
+        <div>
+            Bound working capital: {{ systemStatistics.workingCapital}}
+            <br/>
+            
+        </div>
 <!--
         <ng-container *ngIf="statsAreUpToDate"; else #statsAreUpToDate>
             <button type="button" class="submitButtonDisabled" (click)="fetchStatisticsHandler()">

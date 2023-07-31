@@ -141,6 +141,7 @@ export interface I_WorkItemStatistics {
 export interface I_ProcessStepStatistics {
     id: string
     stats: I_WorkItemStatistics
+//  accumulatedEffort: Effort
 } 
 
 export interface I_ValueChainStatistics {
@@ -154,4 +155,5 @@ export interface I_ValueChainStatistics {
 export interface I_SystemStatistics {
     outputBasket: I_WorkItemStatistics
     valueChains:  I_ValueChainStatistics[]
+    workingCapital: Effort
 }
