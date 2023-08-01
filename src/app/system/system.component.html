@@ -36,7 +36,11 @@
         <div>
             Bound working capital: {{ systemStatistics.workingCapital}}
             <br/>
-            
+            Output #workitems: {{ systemStatistics.outputBasket.inventory.numWis}}
+            <br/>
+            Output net value: {{ systemStatistics.outputBasket.inventory.valueWisNet}}
+            <br/>
+            Output degrated value: {{ systemStatistics.outputBasket.inventory.valueWisDegratedOverTime}}
         </div>
 <!--
         <ng-container *ngIf="statsAreUpToDate"; else #statsAreUpToDate>

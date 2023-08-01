@@ -152,8 +152,29 @@ export interface I_ValueChainStatistics {
     }
 } 
 
+/*
 export interface I_SystemStatistics {
     outputBasket: I_WorkItemStatistics
     valueChains:  I_ValueChainStatistics[]
     workingCapital: Effort
 }
+*/
+
+export interface I_InventoryStatistics {
+    wibhId:          string // ## special type instead?
+    numWis:         number
+    valueWisNet:    Value
+    valueWisDegratedOverTime: Value
+}
+
+export interface I_OutputBasketStatistics {
+    flow: I_WorkItemStatistics
+    inventory: I_InventoryStatistics
+}
+
+export interface I_SystemStatistics {
+    outputBasket: I_OutputBasketStatistics
+    valueChains:  I_ValueChainStatistics[]
+    workingCapital: Effort
+}
+

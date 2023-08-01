@@ -87,7 +87,7 @@ export class SystemComponent implements OnInit, OnChanges {
   private updateObExtended() {
     this.obExtended = {
       ob:         this.systemState.outputBasket,
-      flowStats:  this.systemStatistics ? this.systemStatistics.outputBasket : undefined
+      flowStats:  this.systemStatistics ? this.systemStatistics.outputBasket.flow : undefined
     }
 
   }
