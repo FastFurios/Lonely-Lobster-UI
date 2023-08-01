@@ -8,7 +8,7 @@ import { reshuffle } from './helpers.js'
 import { Value, ValueChain } from './valuechain.js'
 import { ProcessStep } from './workitembasketholder.js'
 import { Worker, AssignmentSet } from './worker.js'
-import { WorkOrder, StatsEventForExitingAProcessStep, WorkItem } from "./workitem.js"
+import { WorkOrder, StatsEventForExitingAProcessStep, WorkItem, ElapsedTimeMode } from "./workitem.js"
 import { I_SystemStatistics, I_ValueChainStatistics, I_ProcessStepStatistics, I_WorkItemStatistics, ProcessStepId, ValueChainId } from './io_api_definitions.js'
 
 export class LonelyLobsterSystem {
@@ -164,14 +164,17 @@ export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, 
                    .forEach(wi => console.log("   wi.id= " + wi.id + " accum.effort=" + wi.accumulatedEffort()))))
 
     return {
-        outputBasket: obStatistics(statEvents, interval),
+        outputBasket: {
+            flow: obStatistics(statEvents, interval),
+            inventory: outputBasket.inventoryStats(ElapsedTimeMode.firstEntryToNow)
+        },
         valueChains:  sys.valueChains.map(vc => vcStatistics(statEvents, vc, interval)),
         workingCapital: sys.valueChains.map(vc => vc.accumulatedEffortMade()).reduce((ef1, ef2) => ef1 + ef2)
     } 
 }
 
 function obStatsAsString(rollingWindowSize: TimeUnit = clock.time): string {
-    const stats: I_WorkItemStatistics = systemStatistics(lonelyLobsterSystem, clock.time - rollingWindowSize, clock.time).outputBasket
+    const stats: I_WorkItemStatistics = systemStatistics(lonelyLobsterSystem, clock.time - rollingWindowSize, clock.time).outputBasket.flow
     return `    ${stats.cycleTime.min?.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.avg?.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.max?.toFixed(1).padStart(4, ' ')}     ${stats.throughput.itemsPerTimeUnit?.toFixed(1).padStart(4, ' ')}   ${stats.throughput.valuePerTimeUnit?.toFixed(1).padStart(4, ' ')}`
 //  return "- tbd: intentionally left empty -"
 }

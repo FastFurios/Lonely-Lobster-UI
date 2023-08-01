@@ -2,6 +2,9 @@
 // ## Lonely Lobster API definitions 
 // ######################################################################
 
+import { isNumber } from "util"
+import { ValueChain } from "./valuechain"
+
 // to-do: share these definitions as project references wth backend and frontend
 // see: https://wallis.dev/blog/typescript-project-references
 
@@ -110,8 +113,21 @@ export interface I_ValueChainStatistics {
     }
 } 
 
+export interface I_InventoryStatistics {
+    wibhId:          string // ## special type instead?
+    numWis:         number
+    valueWisNet:    Value
+    valueWisDegratedOverTime: Value
+}
+
+export interface I_OutputBasketStatistics {
+    flow: I_WorkItemStatistics
+    inventory: I_InventoryStatistics
+}
+
 export interface I_SystemStatistics {
-    outputBasket: I_WorkItemStatistics
+    outputBasket: I_OutputBasketStatistics
     valueChains:  I_ValueChainStatistics[]
     workingCapital: Effort
 }
+

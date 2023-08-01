@@ -5,7 +5,8 @@
 import { clock } from './_main.js'
 import { Timestamp } from './clock.js'
 import { ValueChain } from './valuechain.js'
-import { WorkItem, StatsEventForExitingAProcessStep } from './workitem.js'
+import { WorkItem, ElapsedTimeMode, StatsEventForExitingAProcessStep } from './workitem.js'
+import { I_InventoryStatistics } from './io_api_definitions.js'
 
 export type Effort    = number // measured in Worker Time Units
 
@@ -20,7 +21,7 @@ export abstract class WorkItemBasketHolder {
         workItem.logMovedTo(this)
     }
 
-    public stats(fromTime: Timestamp, toTime: Timestamp): StatsEventForExitingAProcessStep[] {
+    public stats(fromTime: Timestamp, toTime: Timestamp): StatsEventForExitingAProcessStep[] {  // ## rename to "flowStats(...)"
         return this.workItemBasket.flatMap(wi => wi.statisticsEventsHistory(fromTime, toTime))
     }
 
@@ -30,6 +31,15 @@ export abstract class WorkItemBasketHolder {
         return this.workItemBasket.map(wi => wi.accumulatedEffort()).reduce((ef1, ef2) => ef1 + ef2, 0 )
     }
  
+    public inventoryStats(mode: ElapsedTimeMode): I_InventoryStatistics {  // works for process steps and outputBasket
+        return {
+            wibhId: this.id,
+            numWis: this.workItemBasket.length,
+            valueWisNet: this.workItemBasket.map(wi => wi.log[0].valueChain.totalValueAdd).reduce((v1, v2) => v1 + v2, 0),  // works for process steps and also the outputBasket
+            valueWisDegratedOverTime: 0 // ## calculate degrated values depending on elapsedTime and sum'em up
+        }
+    }
+
     public abstract stringified(): string
 
     public stringifiedBar = (): string => { 
