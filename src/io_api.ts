@@ -68,6 +68,7 @@ export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRe
         return {
           id:                 vc.id,
           totalValueAdd:      vc.totalValueAdd,
+          injectionThroughput:vc.injectionThroughput ? vc.injectionThroughput : 1,
           processSteps:       vc.processSteps.map(ps => i_processStep(ps))
         }
       }

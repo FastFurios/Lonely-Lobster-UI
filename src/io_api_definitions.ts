@@ -53,6 +53,7 @@ export interface I_ProcessStep {
 export interface I_ValueChain {
     id:                             ValueChainId
     totalValueAdd:                  Value
+    injectionThroughput:            number
     processSteps:                   I_ProcessStep[]
 }
 

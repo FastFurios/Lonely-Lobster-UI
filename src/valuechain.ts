@@ -12,7 +12,8 @@ export class ValueChain {
     public processSteps: ProcessStep[] = []
 
     constructor(public id:              ValueChainId,
-                public totalValueAdd:   Value) {
+                public totalValueAdd:   Value,
+                public injectionThroughput?: number) {
     }
 
     //private appendProcessStep(ps: ProcessStep): void {

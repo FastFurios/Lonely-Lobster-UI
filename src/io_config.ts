@@ -48,12 +48,13 @@ export function systemCreatedFromConfigJson(paj: any) : LonelyLobsterSystem {
     } 
     interface I_value_chain {
         value_chain_id: string
-        value_add:      number
+        value_add:      number,
+        injectionThroughput?: number,
         process_steps:  I_process_step[]  
     }
 
     const newProcessStep         = (psj:  I_process_step, vc: ValueChain)   : ProcessStep   => new ProcessStep(psj.process_step_id, vc, psj.norm_effort, psj.bar_length)
-    const newEmptyValueChain     = (vcj:  I_value_chain)                    : ValueChain    => new ValueChain(vcj.value_chain_id, vcj.value_add)
+    const newEmptyValueChain     = (vcj:  I_value_chain)                    : ValueChain    => new ValueChain(vcj.value_chain_id, vcj.value_add, vcj.injectionThroughput)
     const addProcStepsToValChain = (pssj: I_process_step[], vc: ValueChain) : void          => pssj.forEach(psj => vc.processSteps.push(newProcessStep(psj, vc))) 
     const filledValueChain       = (vcj:  I_value_chain)                    : ValueChain    => {
         const newVc: ValueChain = newEmptyValueChain(vcj)
