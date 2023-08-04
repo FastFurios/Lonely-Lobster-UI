@@ -52,8 +52,8 @@ export class SystemComponent implements OnInit, OnChanges {
 
 //  console.log("SystemComponent.nextIterationSubscriber(): this.vcsExtended=")                          
 //  console.log(this.vcsExtended)  
-    console.log("SystemComponent.nextIterationSubscriber(): this.obExtended=")                          
-    console.log(this.obExtended)  
+    //console.log("SystemComponent.nextIterationSubscriber(): this.obExtended=")                          
+    //console.log(this.obExtended)  
 
     this.numIterationsToGo--
     if (this.numIterationsToGo > 0)
@@ -106,8 +106,8 @@ export class SystemComponent implements OnInit, OnChanges {
 
   private flowStatsOfValueChain(vcId: ValueChainId): I_ValueChainStatistics | undefined {
     const aux = this.systemStatistics?.valueChains.find(vcFlowStats => vcFlowStats.id == vcId)
-    console.log("SystemComponent.flowStatsOfValueChain(" + vcId + ")")
-    console.log(aux)
+    //console.log("SystemComponent.flowStatsOfValueChain(" + vcId + ")")
+    //console.log(aux)
     
     return aux
   }
@@ -193,8 +193,8 @@ export class SystemComponent implements OnInit, OnChanges {
       this.updateObExtended()
       this.statsAreUpToDate = true
 
-      console.log("received system statistics response= ")
-      console.log(this.systemStatistics)
+      //console.log("received system statistics response= ")
+      //console.log(this.systemStatistics)
     })
   }
 

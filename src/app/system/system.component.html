@@ -33,14 +33,14 @@
         <div>
             <app-workers-stats [wosStats]="systemState.workersState" ></app-workers-stats>
         </div>
-        <div>
-            Bound working capital: {{ systemStatistics.workingCapital}}
+        <div *ngIf="systemStatistics">
+            Bound working capital: {{ systemStatistics.workingCapital }}
             <br/>
-            Output #workitems: {{ systemStatistics.outputBasket.inventory.numWis}}
+            Output #workitems: {{ systemStatistics.outputBasket.inventory.numWis }}
             <br/>
-            Output net value: {{ systemStatistics.outputBasket.inventory.valueWisNet}}
+            Output net value: {{ systemStatistics.outputBasket.inventory.valueWisNet }}
             <br/>
-            Output degrated value: {{ systemStatistics.outputBasket.inventory.valueWisDegratedOverTime}}
+            Output degrated value: {{ systemStatistics.outputBasket.inventory.valueWisDegratedOverTime }}
         </div>
 <!--
         <ng-container *ngIf="statsAreUpToDate"; else #statsAreUpToDate>

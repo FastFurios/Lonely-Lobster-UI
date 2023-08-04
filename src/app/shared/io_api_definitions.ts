@@ -83,18 +83,10 @@ export interface I_ProcessStep {
 export interface I_ValueChain {
     id:                             ValueChainId
     totalValueAdd:                  Value
+    injectionThroughput:            number
     processSteps:                   I_ProcessStep[]
 }
 
-/*
-export interface I_EndProduct {
-    id:                             WorkItemId
-    tag:                            WorkItemTag
-    accumulatedEffortInValueChain:  number
-    valueOfValueChain:              Value
-    elapsedTimeInValueChain:        number
-}
-*/
 export interface I_OutputBasket {
 //  workItems:                      I_EndProduct[]
     workItems:                      I_WorkItem[]

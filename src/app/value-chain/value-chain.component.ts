@@ -15,7 +15,7 @@ import { ThisReceiver } from '@angular/compiler';
 export class ValueChainComponent implements OnInit, OnChanges {
   @Input() vcExtended:      VcExtended
   @Input() vcBoxSize: UiBoxSize
-  feedParms:          VcFeederParms // = { avgInjectionThroughput: 0.2, injectProbability: 1 }
+  feedParms:          VcFeederParms | undefined = undefined // { avgInjectionThroughput: 0, injectProbability: 0 }
   
   workitemStats:      I_WorkItemStatistics | undefined
   pssExtended:        PsExtended[]
@@ -27,24 +27,38 @@ export class ValueChainComponent implements OnInit, OnChanges {
               private wof: WorkorderFeederService) { }
  
   ngOnInit(): void {
-//  console.log("ValueChainComponent: ngOnInit() this.vcBoxSize=")
+    //console.log("ValueChainComponent "+this.vc.id + ": ngOnInit()")
+
+    if (this.feedParms) {
+      //console.log("ValueChainComponent: ngOnInit(): setting wof to { avgInjectionThroughput: " + this.feedParms.avgInjectionThroughput + ", injectProbability:      1 }")
+      this.wof.setParms(this.vcExtended.vc.id, this.feedParms.avgInjectionThroughput, this.feedParms.injectProbability)
+    }
+    else {
+      this.feedParms = this.wof.getParms(this.vcExtended.vc.id)
+      if (!this.feedParms) {
+        //console.log("ValueChainComponent: ngOnInit(): setting this.feedparms AND wof to { avgInjectionThroughput: " + this.vcExtended.vc.injectionThroughput + ", injectProbability:      1 }")
+        this.wof.setParms(this.vcExtended.vc.id, this.vcExtended.vc.injectionThroughput, 1)
+        this.feedParms = { 
+          avgInjectionThroughput: this.vcExtended.vc.injectionThroughput, 
+          injectProbability:      1 
+        }
+      }
+    }
+
+//  console.log("ValueChainComponent: fp=")
+//  console.log(fp)
+
 //  console.log(this.vcBoxSize)
 
-    //console.log("ValueChainComponent "+this.vc.id + ": ngOnInit()")
+//  console.log("ValueChainComponent: ngOnInit() this.vcBoxSize=")
     this.valueChainColor = this.cms.colorOfObject(["value-chain", this.vcExtended.vc.id])
     this.calcSizeOfProcessStepBox()  
 
-    const fp = this.wof.getParms(this.vcExtended.vc.id)
-//  console.log("ValueChainComponent: fp=")
-//  console.log(fp)
-   
-    this.feedParms = fp ?  fp : { avgInjectionThroughput: 1, injectProbability: 1 }
-    this.wof.setParms(this.vcExtended.vc.id, this.feedParms.avgInjectionThroughput, this.feedParms.injectProbability)
   }
 
   ngOnChanges(/*changes: SimpleChanges*/): void {
     this.workitemStats = this.vcExtended.flowStats?.stats?.vc
-//    console.log("ValueChainComponent.ngOnChanges(): workitemStats=")
+    //console.log("ValueChainComponent.ngOnChanges(): workitemStats=")
 //    console.log(this.workitemStats)
     this.pssExtended = this.vcExtended.vc.processSteps
                                   .map(ps => { return {
@@ -61,9 +75,10 @@ export class ValueChainComponent implements OnInit, OnChanges {
     }
 */
     this.calcSizeOfProcessStepBox()
-
+/*
     if (!this.feedParms) return
     if (this.feedParms!.avgInjectionThroughput > 0 && this.feedParms!.injectProbability > 0) this.wof.setParms(this.vcExtended.vc.id, this.feedParms!.avgInjectionThroughput, this.feedParms!.injectProbability)
+*/
   }
   
   feedParmsInputHandler(e: Event) {

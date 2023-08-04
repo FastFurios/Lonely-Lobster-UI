@@ -24,15 +24,13 @@ export class WorkorderFeederService {
         this.initialize()
     }
 
-
-
     wofAsString = () =>  Array.from(this.vcFeederTimeUnitMap.entries())
         .map(e => e[0] + ": aggrWos=" + e[1].aggregatedWorkOrders
                         + " thruput=" + e[1].parms.avgInjectionThroughput
                     + " prob=" + e[1].parms.injectProbability
                     )
 
-    public setParms(vcId: ValueChainId, avgInjThroughput: number, injProb: number): void {
+    public setParms(vcId: ValueChainId, avgInjThroughput: number, injProb: number): void {   // ## destructuring instead of the 2 parms being passed as separate arguments
         //console.log("WorkorderFeeder: setParms(" + vcId + ", " + avgInjThroughput + ", " + injProb)
         //console.log("WorkorderFeeder: setParms: vcFeederTimeUnitMap=")
         if (avgInjThroughput == undefined || injProb == undefined) return
