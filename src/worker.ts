@@ -101,7 +101,7 @@ export class Worker {
         const wi: WorkItem = selectNextWorkItemBySortVector(workableWorkItemsAtHand, this.sortVectorSequence)
 
         if(debugShowOptions.workerChoices) console.log(`=> ${this.id} picked: ${wi.id}|${wi.tag[0]}`)
-        console.log("worker.worked wi= " + wi.id + "  worker= " + this.id )
+        //console.log("worker.worked wi= " + wi.id + "  worker= " + this.id )
         wi.logWorkedOn(this)
         this.logWorked()
     }

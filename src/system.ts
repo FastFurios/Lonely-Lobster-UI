@@ -150,7 +150,7 @@ export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, 
             }
         }
     }
-    console.log("\n\nsystem.systemStistics() -- clock.time= " + clock.time + " ----------------------")
+    //console.log("\n\nsystem.systemStistics() -- clock.time= " + clock.time + " ----------------------")
     const interval:TimeUnit = toTime - fromTime
     const statEvents: StatsEventForExitingAProcessStep[] = sys.valueChains.flatMap(vc => vc.processSteps.flatMap(ps => ps.stats(fromTime, toTime)))
                                                           .concat(outputBasket.stats(fromTime, toTime))
@@ -158,10 +158,10 @@ export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, 
     /* tbd */ //console.log("statEvents =")                                                          
     /* tbd */ //statEvents.forEach(se => console.log(clock.time + ": " + se.wi.id + "/" + se.wi.tag[0] + " vc/ps=" + se.vc.id + " " + se.psExited.id + "=>" + se.psEntered.id + " \t\tinj= " + se.injectionIntoValueChainTime + " fin= " +  se.finishedTime + " elap= " + se.elapsedTime))                       
 
-    console.log("system.systemStatistics() List of wis with excerted efforts:")
-    sys.valueChains.forEach(vc => vc.processSteps
-                   .forEach(ps => ps.workItemBasket
-                   .forEach(wi => console.log("   wi.id= " + wi.id + " accum.effort=" + wi.accumulatedEffort()))))
+    //console.log("system.systemStatistics() List of wis with excerted efforts:")
+    //sys.valueChains.forEach(vc => vc.processSteps
+    //               .forEach(ps => ps.workItemBasket
+    //               .forEach(wi => console.log("   wi.id= " + wi.id + " accum.effort=" + wi.accumulatedEffort()))))
 
     return {
         outputBasket: {

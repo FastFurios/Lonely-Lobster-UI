@@ -26,8 +26,8 @@ export abstract class WorkItemBasketHolder {
     }
 
     public accumulatedEffortMade(): Effort {
-        console.log("workitemholder.accumulatedEffort() of ProcessStep=" + this.id + " is:")
-        this.workItemBasket.forEach(wi => console.log("  wi.id= " + wi.id + " accum.Effort= " + wi.accumulatedEffort()))
+        //console.log("workitemholder.accumulatedEffort() of ProcessStep=" + this.id + " is:")
+        //this.workItemBasket.forEach(wi => console.log("  wi.id= " + wi.id + " accum.Effort= " + wi.accumulatedEffort()))
         return this.workItemBasket.map(wi => wi.accumulatedEffort()).reduce((ef1, ef2) => ef1 + ef2, 0 )
     }
  

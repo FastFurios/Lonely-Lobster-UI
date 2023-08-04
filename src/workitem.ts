@@ -152,7 +152,7 @@ export class WorkItem {
                                                                                  : this.log.filter(le => le.workItemBasketHolder == workItemBasketHolder)
         if (logInScope.length == 0) return -1                                                                         
         
-        const maxTime   = mode == ElapsedTimeMode.firstEntryToNow ? clock.time : Math.max(logInScope[logInScope.length - 1].timestamp)  // ## Math.max?! WTF 
+        const maxTime   = mode == ElapsedTimeMode.firstEntryToNow ? clock.time : Math.max(logInScope[logInScope.length - 1].timestamp)  // ## Math.max of a single?! WTF 
         const minTime   = logInScope[0].timestamp
         const deltaTime = maxTime - minTime
 
