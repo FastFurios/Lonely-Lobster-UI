@@ -150,13 +150,21 @@ export interface I_SystemStatistics {
     valueChains:  I_ValueChainStatistics[]
     workingCapital: Effort
 }
-*/
 
 export interface I_InventoryStatistics {
     wibhId:          string // ## special type instead?
     numWis:         number
     valueWisNet:    Value
     valueWisDegratedOverTime: Value
+}
+*/
+
+export interface I_InventoryStatistics {
+    numWis: number,
+    normCycleTime: number
+    elapsedTime: number
+    netValueAdd: number
+    discountedValueAdd: number
 }
 
 export interface I_OutputBasketStatistics {
