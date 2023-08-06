@@ -41,8 +41,10 @@
             Output net value: {{ systemStatistics.outputBasket.inventory.netValueAdd }}
             <br/>
             Output degrated value: {{ systemStatistics.outputBasket.inventory.discountedValueAdd }}
-        </div>
+            <br/>
+            Output degrated contribution: {{ systemStatistics.outputBasket.inventory.discountedValueAdd - systemStatistics.outputBasket.inventory.normCycleTime }}
     </div>
+</div>
 
 
     <div>
