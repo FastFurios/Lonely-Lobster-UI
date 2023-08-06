@@ -13,7 +13,8 @@ export class ValueChain {
 
     constructor(public id:              ValueChainId,
                 public totalValueAdd:   Value,
-                public injectionThroughput?: number) {
+                public injectionThroughput?: number,
+                public value_degration_per_time_unit?: number) {
     }
 
     //private appendProcessStep(ps: ProcessStep): void {

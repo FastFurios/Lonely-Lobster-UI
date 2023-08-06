@@ -166,7 +166,7 @@ export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, 
     return {
         outputBasket: {
             flow: obStatistics(statEvents, interval),
-            inventory: outputBasket.inventoryStats(ElapsedTimeMode.firstEntryToNow)
+            inventory: outputBasket.inventoryStats(ElapsedTimeMode.firstToLastEntryFound)
         },
         valueChains:  sys.valueChains.map(vc => vcStatistics(statEvents, vc, interval)),
         workingCapital: sys.valueChains.map(vc => vc.accumulatedEffortMade()).reduce((ef1, ef2) => ef1 + ef2)

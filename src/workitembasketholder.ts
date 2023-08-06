@@ -6,6 +6,7 @@ import { clock } from './_main.js'
 import { Timestamp } from './clock.js'
 import { ValueChain } from './valuechain.js'
 import { WorkItem, ElapsedTimeMode, StatsEventForExitingAProcessStep } from './workitem.js'
+import { discounted, expired } from './helpers.js'
 import { I_InventoryStatistics } from './io_api_definitions.js'
 
 export type Effort    = number // measured in Worker Time Units
@@ -32,12 +33,40 @@ export abstract class WorkItemBasketHolder {
     }
  
     public inventoryStats(mode: ElapsedTimeMode): I_InventoryStatistics {  // works for process steps and outputBasket
-        return {
-            wibhId: this.id,
-            numWis: this.workItemBasket.length,
-            valueWisNet: this.workItemBasket.map(wi => wi.log[0].valueChain.totalValueAdd).reduce((v1, v2) => v1 + v2, 0),  // works for process steps and also the outputBasket
-            valueWisDegratedOverTime: 0 // ## calculate degrated values depending on elapsedTime and sum'em up
+        //type TimeValueOf = (value: Value, time: TimeUnit) => number
+        const timeValueOf = expired.bind(null, 3)
+        //const timeValueOf = discounted.bind(null, 0.1)
+        
+        const invWisStats: I_InventoryStatistics[] = []
+
+        for (let wi of this.workItemBasket) {
+            const normCycleTime         = wi.log[0].valueChain.processSteps.map(ps => ps.normEffort).reduce((e1, e2) => e1 + e2)
+            const elapsedTime           = wi.elapsedTime(mode)
+            const netValueAdd           = wi.log[0].valueChain.totalValueAdd
+            const discountedValueAdd    = timeValueOf(netValueAdd, elapsedTime - normCycleTime)
+            invWisStats.push(
+                {
+                    numWis:             1,
+                    normCycleTime:      normCycleTime,
+                    elapsedTime:        elapsedTime,
+                    netValueAdd:        netValueAdd,
+                    discountedValueAdd: discountedValueAdd 
+                })
         }
+        return invWisStats.reduce((iws1, iws2) => { return {
+            numWis:             iws1.numWis             + iws2.numWis,
+            normCycleTime:      iws1.normCycleTime      + iws2.normCycleTime,
+            elapsedTime:        iws1.elapsedTime        + iws2.elapsedTime,
+            netValueAdd:        iws1.netValueAdd        + iws2.netValueAdd,
+            discountedValueAdd: iws1.discountedValueAdd + iws2.discountedValueAdd
+        }}, 
+        {
+            numWis:             0,
+            normCycleTime:      0,
+            elapsedTime:        0,
+            netValueAdd:        0,
+            discountedValueAdd: 0 
+        })
     }
 
     public abstract stringified(): string
