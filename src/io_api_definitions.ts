@@ -124,7 +124,7 @@ export interface I_InventoryStatistics {
 */
 export interface I_InventoryStatistics {
     numWis: number,
-    normCycleTime: number
+    normEffort: number
     elapsedTime: number
     netValueAdd: number
     discountedValueAdd: number

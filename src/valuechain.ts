@@ -1,12 +1,31 @@
-//----------------------------------------------------------------------
-//    VALUE CHAIN 
-//----------------------------------------------------------------------
 import { outputBasket } from './_main.js'
+import { TimeUnit } from './clock.js'
 import { WorkItem } from './workitem.js'
 import { WorkItemBasketHolder, ProcessStep, Effort } from './workitembasketholder.js'
 
 type ValueChainId   = string
 export type Value   = number // measured in Worker Time Units
+
+
+// ------------------------------------------------------------
+// discounting financial value
+// ------------------------------------------------------------
+
+export type TimeValuationFct = (value: Value, time: TimeUnit) => Value
+
+export function discounted(discRate: number, value: Value, time: TimeUnit): Value {
+    return time < 1 ? value : discounted(discRate, value * (1 - discRate), time - 1)
+}
+export function expired(expiryTime: TimeUnit, value: Value, time: TimeUnit): number {
+    return time < expiryTime ? value : 0
+}
+export function net(value: Value, time: TimeUnit): Value {
+    return value
+}
+
+//----------------------------------------------------------------------
+//    VALUE CHAIN 
+//----------------------------------------------------------------------
 
 export class ValueChain {
     public processSteps: ProcessStep[] = []
@@ -14,7 +33,8 @@ export class ValueChain {
     constructor(public id:              ValueChainId,
                 public totalValueAdd:   Value,
                 public injectionThroughput?: number,
-                public value_degration_per_time_unit?: number) {
+                public value_degration?: TimeValuationFct) {
+        if (!value_degration) value_degration = net
     }
 
     //private appendProcessStep(ps: ProcessStep): void {

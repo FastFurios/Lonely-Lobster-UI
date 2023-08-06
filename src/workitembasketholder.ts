@@ -4,12 +4,17 @@
 
 import { clock } from './_main.js'
 import { Timestamp } from './clock.js'
-import { ValueChain } from './valuechain.js'
+import { ValueChain, TimeValuationFct } from './valuechain.js'
 import { WorkItem, ElapsedTimeMode, StatsEventForExitingAProcessStep } from './workitem.js'
-import { discounted, expired } from './helpers.js'
 import { I_InventoryStatistics } from './io_api_definitions.js'
 
 export type Effort    = number // measured in Worker Time Units
+
+
+
+// ------------------------------------------------------------
+// WORKITEM BASKET HOLDER
+// ------------------------------------------------------------
 
 export abstract class WorkItemBasketHolder {
     public workItemBasket: WorkItem[] = []
@@ -34,20 +39,20 @@ export abstract class WorkItemBasketHolder {
  
     public inventoryStats(mode: ElapsedTimeMode): I_InventoryStatistics {  // works for process steps and outputBasket
         //type TimeValueOf = (value: Value, time: TimeUnit) => number
-        const timeValueOf = expired.bind(null, 3)
+        //const timeValueOf = expired.bind(null, 3)
         //const timeValueOf = discounted.bind(null, 0.1)
         
         const invWisStats: I_InventoryStatistics[] = []
 
         for (let wi of this.workItemBasket) {
-            const normCycleTime         = wi.log[0].valueChain.processSteps.map(ps => ps.normEffort).reduce((e1, e2) => e1 + e2)
+            const normEffort            = wi.log[0].valueChain.processSteps.map(ps => ps.normEffort).reduce((e1, e2) => e1 + e2)  // == minimum cycle time thru value chain
             const elapsedTime           = wi.elapsedTime(mode)
             const netValueAdd           = wi.log[0].valueChain.totalValueAdd
-            const discountedValueAdd    = timeValueOf(netValueAdd, elapsedTime - normCycleTime)
+            const discountedValueAdd    = wi.log[0].valueChain.value_degration!(netValueAdd, elapsedTime - normEffort)
             invWisStats.push(
                 {
                     numWis:             1,
-                    normCycleTime:      normCycleTime,
+                    normEffort:         normEffort,
                     elapsedTime:        elapsedTime,
                     netValueAdd:        netValueAdd,
                     discountedValueAdd: discountedValueAdd 
@@ -55,14 +60,14 @@ export abstract class WorkItemBasketHolder {
         }
         return invWisStats.reduce((iws1, iws2) => { return {
             numWis:             iws1.numWis             + iws2.numWis,
-            normCycleTime:      iws1.normCycleTime      + iws2.normCycleTime,
+            normEffort:         iws1.normEffort      + iws2.normEffort,
             elapsedTime:        iws1.elapsedTime        + iws2.elapsedTime,
             netValueAdd:        iws1.netValueAdd        + iws2.netValueAdd,
             discountedValueAdd: iws1.discountedValueAdd + iws2.discountedValueAdd
         }}, 
         {
             numWis:             0,
-            normCycleTime:      0,
+            normEffort:      0,
             elapsedTime:        0,
             netValueAdd:        0,
             discountedValueAdd: 0 

@@ -67,22 +67,3 @@ export function topElemAfterSort(arrArr: WiExtInfoTuple[], sortVector: SortVecto
     return topElemAfterSort(arrArrTops, sortVector.slice(1))
 }
 
-// ------------------------------------------------------------
-// discounting financial value
-// ------------------------------------------------------------
-
-import { Value } from './valuechain.js'
-import { TimeUnit } from './clock.js'
-
-/*
-export function discount(value: Value, discountFactor: number, duration: TimeUnit): Value {
-    return duration < 1 ? value : discount(value * (1 - discountFactor), discountFactor, duration - 1)
-}
-*/
-export function discounted(discRate: number, value: Value, time: TimeUnit): Value {
-    return time < 1 ? value : discounted(discRate, value * (1 - discRate), time - 1)
-}
-export function expired(expiryTime: TimeUnit, value: Value, time: TimeUnit): number {
-    return time < expiryTime ? value : 0
-}
-
