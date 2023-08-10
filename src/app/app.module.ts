@@ -20,6 +20,7 @@ import { TestParentComponent } from './test-parent/test-parent.component';
 import { TestChildComponent } from './test-child/test-child.component';
 import { WorkerStrainComponent } from './worker-strain/worker-strain.component';
 import { FlowStatsComponent } from './flow-stats/flow-stats.component';
+import { SystemStatsComponent } from './system-stats/system-stats.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { FlowStatsComponent } from './flow-stats/flow-stats.component';
     TestParentComponent,
     TestChildComponent,
     WorkerStrainComponent,
-    FlowStatsComponent
+    FlowStatsComponent,
+    SystemStatsComponent
   ],
   imports: [
     BrowserModule,

@@ -161,15 +161,20 @@ export interface I_InventoryStatistics {
 
 export interface I_InventoryStatistics {
     numWis: number,
-    normCycleTime: number
+    normEffort: number
     elapsedTime: number
     netValueAdd: number
     discountedValueAdd: number
 }
 
+export type I_InventoryStatisticsOverall = I_InventoryStatistics & {
+    avgElapsedTime: number
+    roci: number
+}
+
 export interface I_OutputBasketStatistics {
     flow: I_WorkItemStatistics
-    inventory: I_InventoryStatistics
+    inventory: I_InventoryStatisticsOverall
 }
 
 export interface I_SystemStatistics {

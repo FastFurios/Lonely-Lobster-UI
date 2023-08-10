@@ -1,0 +1,27 @@
+<div class="system-stats-row-of-columns">
+    <div class="system-stats-column">
+        <div class="system-stat">
+            <div class="system-stat-name"> Working Capital: </div> 
+            <div class="system-stat-value"> {{ systemStatistics.workingCapital }} </div>
+        </div>
+        <div class="system-stat">
+            <div class="system-stat-name"> #End Products: </div> 
+            <div class="system-stat-value"> {{ prettifiedStats.numWis }} </div>
+        </div>
+        <div class="system-stat">
+            <div class="system-stat-name"> Avg.ElapsedTime: </div> 
+            <div class="system-stat-value"> {{ systemStatistics.outputBasket.inventory.avgElapsedTime }} </div>
+        </div>
+    </div>
+    <div class="system-stats">
+        <div class="system-stat">
+            <div class="system-stat-name"> Disc.Contr.Margin: </div> 
+            <div class="system-stat-value"> {{ prettifiedStats.discountedContributionMargin }} </div>
+        </div>
+        <div class="system-stat">
+            <div class="system-stat-name"> ROCE: </div> 
+            <div class="system-stat-value"> {{ systemStatistics.outputBasket.inventory.roci }} </div>
+        </div>
+
+    </div>
+</div>
