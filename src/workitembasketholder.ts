@@ -6,7 +6,7 @@ import { clock } from './_main.js'
 import { Timestamp } from './clock.js'
 import { ValueChain, TimeValuationFct } from './valuechain.js'
 import { WorkItem, ElapsedTimeMode, StatsEventForExitingAProcessStep } from './workitem.js'
-import { I_InventoryStatistics } from './io_api_definitions.js'
+import { I_InventoryStatistics, I_InventoryStatisticsOverall } from './io_api_definitions.js'
 
 export type Effort    = number // measured in Worker Time Units
 
@@ -37,7 +37,7 @@ export abstract class WorkItemBasketHolder {
         return this.workItemBasket.map(wi => wi.accumulatedEffort()).reduce((ef1, ef2) => ef1 + ef2, 0 )
     }
  
-    public inventoryStats(mode: ElapsedTimeMode): I_InventoryStatistics {  // works for process steps and outputBasket
+    public inventoryStats(mode: ElapsedTimeMode): I_InventoryStatisticsOverall {  // works for process steps and outputBasket
         //type TimeValueOf = (value: Value, time: TimeUnit) => number
         //const timeValueOf = expired.bind(null, 3)
         //const timeValueOf = discounted.bind(null, 0.1)
@@ -58,7 +58,7 @@ export abstract class WorkItemBasketHolder {
                     discountedValueAdd: discountedValueAdd 
                 })
         }
-        return invWisStats.reduce((iws1, iws2) => { return {
+        const wiBasedStats = invWisStats.reduce((iws1, iws2) => { return {
             numWis:             iws1.numWis             + iws2.numWis,
             normEffort:         iws1.normEffort      + iws2.normEffort,
             elapsedTime:        iws1.elapsedTime        + iws2.elapsedTime,
@@ -70,8 +70,13 @@ export abstract class WorkItemBasketHolder {
             normEffort:      0,
             elapsedTime:        0,
             netValueAdd:        0,
-            discountedValueAdd: 0 
+            discountedValueAdd: 0
         })
+        return {
+            ...wiBasedStats,
+            avgElapsedTime: wiBasedStats.elapsedTime / (invWisStats.length > 0 ? invWisStats.length: 1),  
+            roci:           wiBasedStats.discountedValueAdd / (wiBasedStats.normEffort * clock.time)
+        }
     }
 
     public abstract stringified(): string
