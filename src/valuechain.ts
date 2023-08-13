@@ -1,5 +1,5 @@
 import { outputBasket } from './_main.js'
-import { TimeUnit } from './clock.js'
+import { TimeUnit, Timestamp } from './clock.js'
 import { WorkItem } from './workitem.js'
 import { WorkItemBasketHolder, ProcessStep, Effort } from './workitembasketholder.js'
 
@@ -34,7 +34,7 @@ export class ValueChain {
                 public totalValueAdd:   Value,
                 public injectionThroughput?: number,
                 public value_degration?: TimeValuationFct) {
-        if (!value_degration) value_degration = net
+        if (!value_degration) value_degration = net 
     }
 
     //private appendProcessStep(ps: ProcessStep): void {
@@ -67,8 +67,8 @@ export class ValueChain {
                 .forEach(wi => this.moveWorkItemToNextWorkItemBasketHolder(wi)))    // move these workitems on
 
 
-    public accumulatedEffortMade(): Effort {
-        return this.processSteps.map(ps => ps.accumulatedEffortMade()).reduce((ef1, ef2) => ef1 + ef2)
+    public accumulatedEffortMade(until: Timestamp): Effort {
+        return this.processSteps.map(ps => ps.accumulatedEffortMade(until)).reduce((ef1, ef2) => ef1 + ef2)
     } 
 
     public stringifiedHeader(): string {

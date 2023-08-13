@@ -4,9 +4,9 @@
 
 import { clock } from './_main.js'
 import { Timestamp } from './clock.js'
-import { ValueChain, TimeValuationFct } from './valuechain.js'
+import { ValueChain } from './valuechain.js'
 import { WorkItem, ElapsedTimeMode, StatsEventForExitingAProcessStep } from './workitem.js'
-import { I_InventoryStatistics, I_InventoryStatisticsOverall } from './io_api_definitions.js'
+import { I_EndProductStatistics, I_EndProductMoreStatistics } from './io_api_definitions.js'
 
 export type Effort    = number // measured in Worker Time Units
 
@@ -27,59 +27,17 @@ export abstract class WorkItemBasketHolder {
         workItem.logMovedTo(this)
     }
 
-    public stats(fromTime: Timestamp, toTime: Timestamp): StatsEventForExitingAProcessStep[] {  // ## rename to "flowStats(...)"
+    public flowStats(fromTime: Timestamp, toTime: Timestamp): StatsEventForExitingAProcessStep[] {  // ## rename to "flowStats(...)"
         return this.workItemBasket.flatMap(wi => wi.statisticsEventsHistory(fromTime, toTime))
     }
 
-    public accumulatedEffortMade(): Effort {
+    public accumulatedEffortMade(until: Timestamp): Effort {
         //console.log("workitemholder.accumulatedEffort() of ProcessStep=" + this.id + " is:")
         //this.workItemBasket.forEach(wi => console.log("  wi.id= " + wi.id + " accum.Effort= " + wi.accumulatedEffort()))
-        return this.workItemBasket.map(wi => wi.accumulatedEffort()).reduce((ef1, ef2) => ef1 + ef2, 0 )
+        return this.workItemBasket.map(wi => wi.accumulatedEffort(until)).reduce((ef1, ef2) => ef1 + ef2, 0 )
     }
  
-    public inventoryStats(mode: ElapsedTimeMode): I_InventoryStatisticsOverall {  // works for process steps and outputBasket
-        //type TimeValueOf = (value: Value, time: TimeUnit) => number
-        //const timeValueOf = expired.bind(null, 3)
-        //const timeValueOf = discounted.bind(null, 0.1)
-        
-        const invWisStats: I_InventoryStatistics[] = []
-
-        for (let wi of this.workItemBasket) {
-            const normEffort            = wi.log[0].valueChain.processSteps.map(ps => ps.normEffort).reduce((e1, e2) => e1 + e2)  // == minimum cycle time thru value chain
-            const elapsedTime           = wi.elapsedTime(mode)
-            const netValueAdd           = wi.log[0].valueChain.totalValueAdd
-            const discountedValueAdd    = wi.log[0].valueChain.value_degration!(netValueAdd, elapsedTime - normEffort)
-            invWisStats.push(
-                {
-                    numWis:             1,
-                    normEffort:         normEffort,
-                    elapsedTime:        elapsedTime,
-                    netValueAdd:        netValueAdd,
-                    discountedValueAdd: discountedValueAdd 
-                })
-        }
-        const wiBasedStats = invWisStats.reduce((iws1, iws2) => { return {
-            numWis:             iws1.numWis             + iws2.numWis,
-            normEffort:         iws1.normEffort      + iws2.normEffort,
-            elapsedTime:        iws1.elapsedTime        + iws2.elapsedTime,
-            netValueAdd:        iws1.netValueAdd        + iws2.netValueAdd,
-            discountedValueAdd: iws1.discountedValueAdd + iws2.discountedValueAdd
-        }}, 
-        {
-            numWis:             0,
-            normEffort:      0,
-            elapsedTime:        0,
-            netValueAdd:        0,
-            discountedValueAdd: 0
-        })
-        return {
-            ...wiBasedStats,
-            avgElapsedTime: wiBasedStats.elapsedTime / (invWisStats.length > 0 ? invWisStats.length: 1),  
-            roci:           wiBasedStats.discountedValueAdd / (wiBasedStats.normEffort * clock.time)
-        }
-    }
-
-    public abstract stringified(): string
+        public abstract stringified(): string
 
     public stringifiedBar = (): string => { 
         const strOfBskLen = this.workItemBasket.length.toString()
@@ -132,6 +90,65 @@ export class OutputBasket extends WorkItemBasketHolder {
 
     public emptyBasket(): void {
         this.workItemBasket = []
+    }
+
+
+    private statsOfArrivedWorkitemsBetween(fromTime: Timestamp, toTime: Timestamp): I_EndProductStatistics {
+        const invWisStats: I_EndProductStatistics[] = []
+        const wisArrived = this.workItemBasket.filter(wi => wi.hasMovedToOutputBasketBetween(fromTime, toTime))  //  all workitems that have transitioned into output basket after fromTime and up to toTime
+
+        const emptyWorkItemInInventoryStatistics = {
+            numWis:             0,
+            normEffort:         0,
+            elapsedTime:        0,
+            netValueAdd:        0,
+            discountedValueAdd: 0
+        }
+
+        if (wisArrived.length < 1) return emptyWorkItemInInventoryStatistics
+
+        for (let wi of wisArrived) {  // process all workitems that have transitioned into output basket after fromTime and up to toTime
+            const normEffort            = wi.log[0].valueChain.processSteps.map(ps => ps.normEffort).reduce((e1, e2) => e1 + e2)  // == minimum cycle time thru value chain
+            const minCycleTime          = normEffort    
+            const elapsedTime           = wi.elapsedTime(ElapsedTimeMode.firstToLastEntryFound)
+            const netValueAdd           = wi.log[0].valueChain.totalValueAdd
+            const discountedValueAdd    = wi.log[0].valueChain.value_degration!(netValueAdd, elapsedTime - minCycleTime)
+            invWisStats.push(
+                {
+                    numWis:             1,
+                    normEffort:         normEffort,
+                    elapsedTime:        elapsedTime,
+                    netValueAdd:        netValueAdd,
+                    discountedValueAdd: discountedValueAdd 
+                })
+        }
+        const wiBasedStats = invWisStats.reduce(
+            (iws1, iws2) => { return {
+                numWis:             iws1.numWis             + iws2.numWis,
+                normEffort:         iws1.normEffort         + iws2.normEffort,  
+                elapsedTime:        iws1.elapsedTime        + iws2.elapsedTime,
+                netValueAdd:        iws1.netValueAdd        + iws2.netValueAdd,
+                discountedValueAdd: iws1.discountedValueAdd + iws2.discountedValueAdd }}, 
+            emptyWorkItemInInventoryStatistics)
+
+        return wiBasedStats
+    }
+    
+
+    public endProductMoreStatistics(fromTime: Timestamp, toTime: Timestamp): I_EndProductMoreStatistics {
+        //type TimeValueOf = (value: Value, time: TimeUnit) => number
+        //const timeValueOf = expired.bind(null, 3)
+        //const timeValueOf = discounted.bind(null, 0.1)
+        
+        // --- calculating figures for end products in the output basket ---
+
+        const wiBasedStats = this.statsOfArrivedWorkitemsBetween(fromTime, toTime)
+        
+        return {
+            ...wiBasedStats,
+            avgElapsedTime: wiBasedStats.elapsedTime / (wiBasedStats.numWis > 0 ? wiBasedStats.numWis : 1),  
+//            roce:           wiBasedStats.discountedValueAdd / avgWorking  // ### have to calculate the avg. working capital between fromTime and toTime 
+        }
     }
 
     public stringified  = () => `t=${clock.time} ${this.id}:\n` + this.stringifyBasketItems()

@@ -161,23 +161,34 @@ export class WorkItem {
 
     public timeOfLastLogEntry = (): Timestamp => this.log[this.log.length - 1].timestamp
 
-    public accumulatedEffort = (workItemBasketHolder?: WorkItemBasketHolder): Effort =>
+    public accumulatedEffort = (until: Timestamp, workItemBasketHolder?: WorkItemBasketHolder): Effort =>
         (workItemBasketHolder == undefined ? this.log 
                                            : this.log.filter(le => le.workItemBasketHolder == workItemBasketHolder))
+        .filter(le => le.timestamp <= until)
         .filter(le => le.logEntryType == LogEntryType.workItemWorkedOn).length
 
     public hasBeenWorkedOnAtCurrentTime = (timestamp: Timestamp, ps?: ProcessStep): boolean  => // ## "ps?: ProcessStep" delete?
         this.log.filter(le => (le.timestamp == timestamp && le.logEntryType == LogEntryType.workItemWorkedOn)).length > 0
     
     public workedOnAtCurrentProcessStep = (): boolean => 
-        this.accumulatedEffort(<ProcessStep>this.currentProcessStep) > 0
+        this.accumulatedEffort(clock.time, <ProcessStep>this.currentProcessStep) > 0
 
     public finishedAtCurrentProcessStep = (): boolean => 
-        this.accumulatedEffort(<ProcessStep>this.currentProcessStep) >= (<ProcessStep>this.currentProcessStep).normEffort
+        this.accumulatedEffort(clock.time, <ProcessStep>this.currentProcessStep) >= (<ProcessStep>this.currentProcessStep).normEffort
 
     public updateExtendedInfos(): void {
         this.extendedInfos = new WorkItemExtendedInfos(this)         
     }
+
+    public wasInValueChainAt(t: Timestamp): boolean {
+        return this.log[0].timestamp <= t && this.timeOfLastLogEntry() > t
+    }
+
+    public hasMovedToOutputBasketBetween(fromTime: Timestamp, toTime: Timestamp) {
+        const lastLogEntry = this.log[this.log.length - 1]
+        return lastLogEntry.timestamp > fromTime && lastLogEntry.timestamp <= toTime
+    }
+
 
     public statisticsEventsHistory(fromTime: Timestamp = 0, toTime: Timestamp = clock.time): StatsEventForExitingAProcessStep[]  { // lists all events btw. from and to timestamp when the workitem exited a process step 
 //      console.log("workitem.statsEventsForFinishingAProcessSteps(fromTime: " + fromTime + ", toTime: " + toTime +") for wi = " + this.id)
@@ -224,7 +235,7 @@ export class WorkItem {
         return statEvents
     }
 
-    public stringified = (): string => `\tt=${clock.time} wi=${this.id} ps=${this.currentProcessStep.id} vc=${this.valueChain.id} et=${this.elapsedTime(ElapsedTimeMode.firstToLastEntryFound)} ae=${this.accumulatedEffort(this.currentProcessStep)} ${this.finishedAtCurrentProcessStep() ? "done" : ""}\n`
+    public stringified = (): string => `\tt=${clock.time} wi=${this.id} ps=${this.currentProcessStep.id} vc=${this.valueChain.id} et=${this.elapsedTime(ElapsedTimeMode.firstToLastEntryFound)} ae=${this.accumulatedEffort(clock.time, this.currentProcessStep)} ${this.finishedAtCurrentProcessStep() ? "done" : ""}\n`
 }
 
 //----------------------------------------------------------------------
@@ -259,9 +270,9 @@ export class WorkItemExtendedInfos {
     public workOrderExtendedInfos: WiExtInfoTuple
 
     constructor(public wi: WorkItem) {
-        let accumulatedEffortInProcessStep   = wi.accumulatedEffort(wi.currentProcessStep)
+        let accumulatedEffortInProcessStep   = wi.accumulatedEffort(clock.time, wi.currentProcessStep)
         let remainingEffortInProcessStep     = (<ProcessStep>wi.currentProcessStep).normEffort - accumulatedEffortInProcessStep
-        let accumulatedEffortInValueChain    = wi.accumulatedEffort()
+        let accumulatedEffortInValueChain    = wi.accumulatedEffort(clock.time, )
         let remainingEffortInValueChain      = wi.valueChain.processSteps.map(ps => (<ProcessStep>ps).normEffort).reduce((a, b) => a + b) - accumulatedEffortInValueChain
 
         let visitedProcessSteps              = (<ProcessStep>wi.currentProcessStep).valueChain.processSteps.indexOf(<ProcessStep>wi.currentProcessStep) + 1

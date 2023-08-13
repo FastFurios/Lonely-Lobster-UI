@@ -123,6 +123,17 @@ export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRe
                       { time:          iterReq.time!,
                         newWorkOrders: iterReq.newWorkOrders } ))
 
+    console.log("io.api: nextSystemState()")
+    sys.valueChains.forEach(vc => vc.processSteps
+                    .forEach(ps =>ps.workItemBasket
+                      .forEach(wi => wi.log
+//                      .filter(le => true /*le.logEntryType == LogEntryType.workItemMovedTo*/)
+                        .forEach(le => console.log("\ttime= " + clock.time + "vc= " + vc.id + ", ps= " + ps.id + ", wi= " + wi.id + "/" + wi.tag[0] + ", le= " + le.logEntryType)
+                        )
+                      )
+                    )
+    )
+    
     return i_systemState(sys)
 }
 

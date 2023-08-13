@@ -63,7 +63,7 @@ switch(process.argv[InputArgs.Mode]) {
         processWorkOrderFile(process.argv[InputArgs.WorkOrders], lonelyLobsterSystem)
 
         console.log("OutputBasket stats=")
-        console.log(outputBasket.stats)
+        console.log(outputBasket.flowStats)
 
         break;
     } 
