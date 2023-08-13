@@ -64,7 +64,7 @@ export class SystemComponent implements OnInit, OnChanges {
   }
 
   public nextIterationStates(): void {
-    this.systemState$ = this.wiInvSrv.nextSystemStateOnInput(this.wof.iterationRequest4AllVcs())
+    this.systemState$ = this.wiInvSrv.nextSystemStateOnInput(this.wof.iterationRequestForAllVcs())
     this.systemState$.subscribe(systemState => this.nextIterationSubscriber(systemState))
   }
 

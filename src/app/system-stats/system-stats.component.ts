@@ -1,16 +1,16 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { I_InventoryStatistics, I_SystemStatistics } from '../shared/io_api_definitions';
+import { I_SystemStatistics } from '../shared/io_api_definitions';
 
 type NicelyRounded = string 
 
 interface ObInventoryStatisticsDisplay {
     numWis: number
-    workingCapital: number
-    avgElapsedTime: string
     netValueAdd: number
     discountedValueAdd: NicelyRounded
     discountedContributionMargin: NicelyRounded
-    roci: string
+    avgElapsedTime: NicelyRounded
+    avgWorkingCapital: NicelyRounded
+    roce: string
 } 
 
 @Component({
@@ -22,12 +22,9 @@ export class SystemStatsComponent implements OnInit {
   @Input() systemStatistics: I_SystemStatistics
   prettifiedStats: ObInventoryStatisticsDisplay
 
-
   constructor() { }
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void { }
 
   ngOnChanges() {
       if (this.systemStatistics) this.prettifyStats()
@@ -51,13 +48,13 @@ export class SystemStatsComponent implements OnInit {
         return left + "." + right.padEnd(2 - right.length, "0")  
     }
     this.prettifiedStats = {
-        numWis:                       this.systemStatistics.outputBasket.inventory.numWis,
-        workingCapital:               this.systemStatistics.outputBasket.inventory.normEffort,
-        avgElapsedTime:               nicelyRounded(this.systemStatistics.outputBasket.inventory.avgElapsedTime),
-        netValueAdd:                  this.systemStatistics.outputBasket.inventory.netValueAdd,
-        discountedValueAdd:           nicelyRounded(this.systemStatistics.outputBasket.inventory.discountedValueAdd),
-        discountedContributionMargin: nicelyRounded(this.systemStatistics.outputBasket.inventory.discountedValueAdd - this.systemStatistics.outputBasket.inventory.normEffort),
-        roci:                         nicelyRounded(this.systemStatistics.outputBasket.inventory.roci * 100) + "%"
+        numWis:                       this.systemStatistics.outputBasket.economics.numWis,
+        netValueAdd:                  this.systemStatistics.outputBasket.economics.netValueAdd,
+        discountedValueAdd:           nicelyRounded(this.systemStatistics.outputBasket.economics.discountedValueAdd),
+        discountedContributionMargin: nicelyRounded(this.systemStatistics.outputBasket.economics.discountedValueAdd - this.systemStatistics.outputBasket.economics.normEffort),
+        avgElapsedTime:               nicelyRounded(this.systemStatistics.outputBasket.economics.avgElapsedTime),
+        avgWorkingCapital:            nicelyRounded(this.systemStatistics.outputBasket.economics.avgWorkingCapital),
+        roce:                         nicelyRounded(this.systemStatistics.outputBasket.economics.roce * 100)
     }
   }
 

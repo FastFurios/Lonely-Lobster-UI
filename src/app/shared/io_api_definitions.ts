@@ -114,14 +114,14 @@ export interface I_SystemState {
 // response to statistics request
 
 interface WorkItemStatsCycleTime {
-    min: number,
-    avg: number,
-    max: number
+    min: number | undefined,
+    avg: number | undefined,
+    max: number | undefined
 }
 
 interface WorkItemStatsThroughput {
-    itemsPerTimeUnit:    number,
-    valuePerTimeUnit:    number
+    itemsPerTimeUnit:    number | undefined,
+    valuePerTimeUnit:    number | undefined
 }
 
 export interface I_WorkItemStatistics {
@@ -131,9 +131,8 @@ export interface I_WorkItemStatistics {
 }
 
 export interface I_ProcessStepStatistics {
-    id: string
-    stats: I_WorkItemStatistics
-//  accumulatedEffort: Effort
+    id:     ProcessStepId
+    stats:  I_WorkItemStatistics
 } 
 
 export interface I_ValueChainStatistics {
@@ -144,42 +143,30 @@ export interface I_ValueChainStatistics {
     }
 } 
 
-/*
-export interface I_SystemStatistics {
-    outputBasket: I_WorkItemStatistics
-    valueChains:  I_ValueChainStatistics[]
-    workingCapital: Effort
-}
-
-export interface I_InventoryStatistics {
-    wibhId:          string // ## special type instead?
-    numWis:         number
-    valueWisNet:    Value
-    valueWisDegratedOverTime: Value
-}
-*/
-
-export interface I_InventoryStatistics {
-    numWis: number,
-    normEffort: number
-    elapsedTime: number
-    netValueAdd: number
+export interface I_EndProductStatistics {
+    numWis:             number,
+    normEffort:         number
+    elapsedTime:        number
+    netValueAdd:        number
     discountedValueAdd: number
 }
 
-export type I_InventoryStatisticsOverall = I_InventoryStatistics & {
+export type I_EndProductMoreStatistics = I_EndProductStatistics & {
     avgElapsedTime: number
-    roci: number
+}
+
+export type I_Economics = I_EndProductMoreStatistics & {
+    avgWorkingCapital:  Value 
+    roce:               Value
 }
 
 export interface I_OutputBasketStatistics {
-    flow: I_WorkItemStatistics
-    inventory: I_InventoryStatisticsOverall
+    flow:        I_WorkItemStatistics
+    economics:   I_Economics
 }
 
 export interface I_SystemStatistics {
-    outputBasket: I_OutputBasketStatistics
     valueChains:  I_ValueChainStatistics[]
-    workingCapital: Effort
+    outputBasket: I_OutputBasketStatistics
 }
 

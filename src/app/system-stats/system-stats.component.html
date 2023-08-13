@@ -2,7 +2,7 @@
     <div class="system-stats-column">
         <div class="system-stat">
             <div class="system-stat-name"> Working Capital: </div> 
-            <div class="system-stat-value"> {{ systemStatistics.workingCapital }} </div>
+            <div class="system-stat-value"> {{ prettifiedStats.avgWorkingCapital }} </div>
         </div>
         <div class="system-stat">
             <div class="system-stat-name"> #End Products: </div> 
@@ -10,7 +10,7 @@
         </div>
         <div class="system-stat">
             <div class="system-stat-name"> Avg.ElapsedTime: </div> 
-            <div class="system-stat-value"> {{ systemStatistics.outputBasket.inventory.avgElapsedTime }} </div>
+            <div class="system-stat-value"> {{ prettifiedStats.avgElapsedTime }} </div>
         </div>
     </div>
     <div class="system-stats">
@@ -20,7 +20,7 @@
         </div>
         <div class="system-stat">
             <div class="system-stat-name"> ROCE: </div> 
-            <div class="system-stat-value"> {{ systemStatistics.outputBasket.inventory.roci }} </div>
+            <div class="system-stat-value"> {{ prettifiedStats.roce }} </div>
         </div>
 
     </div>

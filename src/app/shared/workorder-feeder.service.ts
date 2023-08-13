@@ -24,6 +24,7 @@ export class WorkorderFeederService {
         this.initialize()
     }
 
+    // tb deleted
     wofAsString = () =>  Array.from(this.vcFeederTimeUnitMap.entries())
         .map(e => e[0] + ": aggrWos=" + e[1].aggregatedWorkOrders
                         + " thruput=" + e[1].parms.avgInjectionThroughput
@@ -65,7 +66,7 @@ export class WorkorderFeederService {
 
 
 
-    public iterationRequest4AllVcs(): I_IterationRequest {
+    public iterationRequestForAllVcs(): I_IterationRequest {
         const iterationRequest: I_IterationRequest = { 
             time:           ++this.timeNow,
             newWorkOrders:  [] 
@@ -96,7 +97,7 @@ export class WorkorderFeederService {
     }
 
     initialize(): void {
-        this.timeNow = 0
+        this.timeNow = -1
         this.vcFeederTimeUnitMap = new Map<ValueChainId, VcFeederParmsAndState>()
     }
 
