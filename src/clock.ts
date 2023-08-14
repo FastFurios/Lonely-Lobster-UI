@@ -22,10 +22,9 @@ export class Clock {
         return 
     } 
 
-/*
     tick(): Timestamp {
         this.time += timeUnit
         return this.time            
     }
-*/
+
 }

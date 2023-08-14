@@ -4,7 +4,7 @@
         {
             "value_chain_id"    : "Blue",
             "value_add"         : 9,
-            "injection_throughput": 0.5,
+            "injection_throughput": 1,
             "value_degration"   :  { "function": "discounted", "argument": 0.0} ,
             "process_steps"     : [
                 {

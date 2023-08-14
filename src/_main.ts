@@ -25,7 +25,7 @@ export var debugShowOptions: DebugShowOptions = debugShowOptionsDefaults
 
 
 // create a clock (it will be 'ticked' by the read rows of the workflow file)
-export const clock = new Clock()
+export const clock = new Clock(-1)
 
 // create the sink of all fully processed workitems
 export const outputBasket = new OutputBasket()
@@ -90,15 +90,17 @@ switch(process.argv[InputArgs.Mode]) {
         app.post('/initialize', (req, res) => {
 //              console.log("_main: app.post \"initialize\" : received request=")
 //              console.log(req.body)
-                clock.setTo(0)
                 lonelyLobsterSystem = systemCreatedFromConfigJson(req.body)
                 outputBasket.emptyBasket()
+
+                clock.setTo(0) // iterations start with timestamp=0
                 res.send(nextSystemState(lonelyLobsterSystem, emptyIterationRequest(lonelyLobsterSystem)))
             })
 
         app.post('/iterate', (req, res) => {
 //          console.log("_main: app.post \"iterate\" : received request=")
 //          console.log(req.body)
+            clock.tick()
             res.send(nextSystemState(lonelyLobsterSystem, req.body))
         })
         

@@ -35,6 +35,9 @@ export class LonelyLobsterSystem {
         this.workers = reshuffle(this.workers) // avoid that work is assigned to workers always in the same worker sequence  
         this.workers.forEach(wo => wo.work(this.assignmentSet))
  
+        // update workitem extended statistical infos after workers have done their work 
+        this.valueChains.forEach(vc => vc.processSteps.forEach(ps => ps.workItemBasket.forEach(wi => wi.updateExtendedInfos())))
+
         // update workers stats after having worked
         this.workers.forEach(wo => wo.utilization(this))
 

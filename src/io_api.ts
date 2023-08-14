@@ -35,7 +35,7 @@ export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRe
         //    console.log("io_api//workOrderList/iterReq =")
         //    console.log(iterReq)
             return iterReq.newWorkOrders.flatMap(nwo => duplicate<WorkOrder>(
-                                                    { timestamp:    iterReq.time!, 
+                                                    { timestamp:    clock.time, // iterReq.time!, 
                                                       valueChain:   sys.valueChains.find(vc => vc.id == nwo.valueChainId.trim())! },
                                                     nwo.numWorkOrders ))
     }
@@ -118,9 +118,9 @@ export function nextSystemState(sys: LonelyLobsterSystem, iterReq: I_IterationRe
 //  console.log(iterReq)
 
     sys.doNextIteration(
-        iterReq.time!, 
+        clock.time, 
         workOrderList(sys, 
-                      { time:          iterReq.time!,
+                      { time:          clock.time,
                         newWorkOrders: iterReq.newWorkOrders } ))
 
     console.log("io.api: nextSystemState()")
