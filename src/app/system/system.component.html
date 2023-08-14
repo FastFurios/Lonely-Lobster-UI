@@ -12,7 +12,11 @@
         <div>
             <div><strong>Lonely Lobster</strong></div>
             <div> System: "<strong>{{ systemState.id }}</strong>"</div>
-            <div> Time:   {{ systemState.time }} </div>
+<!--
+            <div *ngIf="systemState.time">Time: {{ systemState.time }} </div>
+-->
+            <div>Time: {{ systemState.time }} </div>
+
             <label for="numIterations"># iterations per click:</label>
             <input  type="number" 
                     class="inputFormNumber" 

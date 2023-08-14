@@ -68,7 +68,7 @@ export class WorkorderFeederService {
 
     public iterationRequestForAllVcs(): I_IterationRequest {
         const iterationRequest: I_IterationRequest = { 
-            time:           ++this.timeNow,
+            time:           this.timeNow++,
             newWorkOrders:  [] 
         } 
 
