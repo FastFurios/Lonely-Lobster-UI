@@ -107,7 +107,7 @@ export class Worker {
     }
 
     public utilization(sys: LonelyLobsterSystem): void {
-        this.stats.utilization = this.log.length / (clock.time - clock.startTime + 1) * 100 
+        this.stats.utilization = this.log.length / (clock.time - clock.firstIteration) * 100 
 //      console.log("Calculating utilization for " + this.id + " from elapsed time = " + (clock.time - clock.startTime + 1) + " and worklog.length= " + this.log.length)
         this.stats.assignments = sys.assignmentSet.assignments
                                 .filter(a => a.worker.id == this.id)

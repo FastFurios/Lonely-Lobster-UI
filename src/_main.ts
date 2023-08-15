@@ -93,7 +93,7 @@ switch(process.argv[InputArgs.Mode]) {
                 lonelyLobsterSystem = systemCreatedFromConfigJson(req.body)
                 outputBasket.emptyBasket()
 
-                clock.setTo(0) // iterations start with timestamp=0
+                clock.setTo(0) // 0 = setup system and first empty iteration to produce systemState for the front end; 1 = first real iteration triggered by user
                 res.send(nextSystemState(lonelyLobsterSystem, emptyIterationRequest(lonelyLobsterSystem)))
             })
 
