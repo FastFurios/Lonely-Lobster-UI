@@ -1,7 +1,7 @@
-<div class="system-stats-row-of-columns">
+<div class="system-stats-row-of-columns" [style]="textColor">
     <div class="system-stats-column">
         <div class="system-stat">
-            <div class="system-stat-name"> Working Capital: </div> 
+            <div class="system-stat-name"> Avg. Working Capital: </div> 
             <div class="system-stat-value"> {{ prettifiedStats.avgWorkingCapital }} </div>
         </div>
         <div class="system-stat">
@@ -9,7 +9,7 @@
             <div class="system-stat-value"> {{ prettifiedStats.numWis }} </div>
         </div>
         <div class="system-stat">
-            <div class="system-stat-name"> Avg.ElapsedTime: </div> 
+            <div class="system-stat-name"> Avg.Elapsed Time: </div> 
             <div class="system-stat-value"> {{ prettifiedStats.avgElapsedTime }} </div>
         </div>
     </div>
@@ -20,7 +20,11 @@
         </div>
         <div class="system-stat">
             <div class="system-stat-name"> ROCE: </div> 
-            <div class="system-stat-value"> {{ prettifiedStats.roce }} </div>
+            <div class="system-stat-value"> {{ prettifiedStats.roce }}% </div>
+        </div>
+        <div class="system-stat">
+            <div class="system-stat-name"> Timestamp of Stats: </div> 
+            <div class="system-stat-value"> {{ prettifiedStats.timestamp }} </div>
         </div>
 
     </div>

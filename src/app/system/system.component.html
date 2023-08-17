@@ -37,8 +37,11 @@
         <div>
             <app-workers-stats [wosStats]="systemState.workersState" ></app-workers-stats>
         </div>
+<!--
         <div *ngIf="systemStatistics">
-            <app-system-stats [systemStatistics]="systemStatistics"></app-system-stats>
+-->
+        <div>
+                <app-system-stats [systemStatistics]="systemStatistics" [systemTime]="systemState.time"></app-system-stats>
 <!--
             Bound working capital: {{ systemStatistics.workingCapital }}
             <br/>

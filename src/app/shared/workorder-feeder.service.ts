@@ -97,7 +97,7 @@ export class WorkorderFeederService {
     }
 
     initialize(): void {
-        this.timeNow = -1
+//        this.timeNow = -1
         this.vcFeederTimeUnitMap = new Map<ValueChainId, VcFeederParmsAndState>()
     }
 

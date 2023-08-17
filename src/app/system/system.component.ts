@@ -55,6 +55,7 @@ export class SystemComponent implements OnInit, OnChanges {
     //console.log("SystemComponent.nextIterationSubscriber(): this.obExtended=")                          
     //console.log(this.obExtended)  
 
+    if (this.systemState.time == 0) /* just initializing */ return
     this.numIterationsToGo--
     if (this.numIterationsToGo > 0)
       this.nextIterationStates()
@@ -183,7 +184,7 @@ export class SystemComponent implements OnInit, OnChanges {
       this.systemState$.subscribe(systemState => this.nextIterationSubscriber(systemState))
       this.systemState$.subscribe(systemState => { this.numValueChains = systemState.valueChains.length; this.calcSizeOfUiBoxes() })
   }
-
+  
   private fetchSystemStatistics() {
 //  console.log("systemComponent.fetchSystemStatistics()")
     this.systemStatistics$ = this.wiInvSrv.currentSystemStatistics()

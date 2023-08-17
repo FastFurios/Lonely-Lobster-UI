@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { I_SystemStatistics } from '../shared/io_api_definitions';
+import { I_SystemStatistics, TimeStamp } from '../shared/io_api_definitions';
 
 type NicelyRounded = string 
 
 interface ObInventoryStatisticsDisplay {
+    timestamp: TimeStamp
     numWis: number
     netValueAdd: number
     discountedValueAdd: NicelyRounded
@@ -13,6 +14,12 @@ interface ObInventoryStatisticsDisplay {
     roce: string
 } 
 
+const enum TextColors {
+  fresh = "color: black",
+  stale = "color: grey"
+}
+
+
 @Component({
   selector: 'app-system-stats',
   templateUrl: './system-stats.component.html',
@@ -20,14 +27,18 @@ interface ObInventoryStatisticsDisplay {
 })
 export class SystemStatsComponent implements OnInit {
   @Input() systemStatistics: I_SystemStatistics
+  @Input() systemTime: TimeStamp
   prettifiedStats: ObInventoryStatisticsDisplay
+
+  textColor: string = TextColors.stale
 
   constructor() { }
 
   ngOnInit(): void { }
 
   ngOnChanges() {
-      if (this.systemStatistics) this.prettifyStats()
+      this.prettifyStats()
+      this.textColor = this.systemStatistics?.timestamp < this.systemTime ?  TextColors.stale : TextColors.fresh
   }
 
   public prettifyStats(): void {
@@ -47,15 +58,29 @@ export class SystemStatsComponent implements OnInit {
         }
         return left + "." + right.padEnd(2 - right.length, "0")  
     }
-    this.prettifiedStats = {
-        numWis:                       this.systemStatistics.outputBasket.economics.numWis,
-        netValueAdd:                  this.systemStatistics.outputBasket.economics.netValueAdd,
-        discountedValueAdd:           nicelyRounded(this.systemStatistics.outputBasket.economics.discountedValueAdd),
-        discountedContributionMargin: nicelyRounded(this.systemStatistics.outputBasket.economics.discountedValueAdd - this.systemStatistics.outputBasket.economics.normEffort),
-        avgElapsedTime:               nicelyRounded(this.systemStatistics.outputBasket.economics.avgElapsedTime),
-        avgWorkingCapital:            nicelyRounded(this.systemStatistics.outputBasket.economics.avgWorkingCapital),
-        roce:                         nicelyRounded(this.systemStatistics.outputBasket.economics.roce * 100)
-    }
+
+    this.prettifiedStats = 
+      !this.systemStatistics ? 
+        {
+          timestamp:                    0,
+          numWis:                       0,
+          netValueAdd:                  0,
+          discountedValueAdd:           "0",
+          discountedContributionMargin: "0",
+          avgElapsedTime:               "0",
+          avgWorkingCapital:            "0",
+          roce:                         "0"
+        }
+        : {
+          timestamp:                    this.systemStatistics.timestamp,
+          numWis:                       this.systemStatistics.outputBasket.economics.numWis,
+          netValueAdd:                  this.systemStatistics.outputBasket.economics.netValueAdd,
+          discountedValueAdd:           nicelyRounded(this.systemStatistics.outputBasket.economics.discountedValueAdd),
+          discountedContributionMargin: nicelyRounded(this.systemStatistics.outputBasket.economics.discountedValueAdd - this.systemStatistics.outputBasket.economics.normEffort),
+          avgElapsedTime:               nicelyRounded(this.systemStatistics.outputBasket.economics.avgElapsedTime),
+          avgWorkingCapital:            nicelyRounded(this.systemStatistics.outputBasket.economics.avgWorkingCapital),
+          roce:                         nicelyRounded(this.systemStatistics.outputBasket.economics.roce * 100)
+      }
   }
 
 
