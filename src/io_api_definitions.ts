@@ -15,7 +15,7 @@ export type ProcessStepId  = string
 type WorkItemId     = number
 type WorkItemTag    = [string, string]
 type WorkerName     = string
-type TimeStamp      = number
+export type TimeStamp      = number
 type RgbColor       = [number, number, number]
 
 
@@ -136,6 +136,7 @@ export interface I_OutputBasketStatistics {
 }
 
 export interface I_SystemStatistics {
+    timestamp:    TimeStamp
     valueChains:  I_ValueChainStatistics[]
     outputBasket: I_OutputBasketStatistics
 }

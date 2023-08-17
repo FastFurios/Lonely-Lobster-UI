@@ -11,7 +11,7 @@ import { Worker, AssignmentSet } from './worker.js'
 import { WorkOrder, StatsEventForExitingAProcessStep, WorkItem, ElapsedTimeMode } from "./workitem.js"
 import { I_SystemStatistics, I_ValueChainStatistics, I_ProcessStepStatistics, I_WorkItemStatistics, I_EndProductMoreStatistics, I_Economics, ProcessStepId, ValueChainId } from './io_api_definitions.js'
 import { LogEntryType } from './logging.js'
-import { range } from 'rxjs'
+import { from, range } from 'rxjs'
 
 export class LonelyLobsterSystem {
     public workOrderInFlow:  WorkOrder[] = []
@@ -52,7 +52,7 @@ export class LonelyLobsterSystem {
     private showLine = () => console.log(clock.time.toString().padStart(3, ' ') + "||" 
                                        + this.valueChains.map(vc => vc.stringifiedRow()).reduce((a, b) => a + "| |" + b) + "| " 
                                        + outputBasket.workItemBasket.length.toString().padStart(6, " ") + " " 
-                                       + obStatsAsString(5))
+                                       + obStatsAsString())
 
     public showFooter = () => { 
         console.log(this.headerForValueChains()
@@ -71,7 +71,8 @@ export class LonelyLobsterSystem {
 //----------------------------------------------------------------------
 
 function workingCapitalAt(t:Timestamp): Value {
-    return lonelyLobsterSystem
+
+    const x = lonelyLobsterSystem
         .valueChains
             .flatMap(vc => vc.processSteps
                 .flatMap(ps => ps.workItemBasket))
@@ -79,6 +80,9 @@ function workingCapitalAt(t:Timestamp): Value {
         .filter(wi => wi.wasInValueChainAt(t))
         .map(wi => wi.accumulatedEffort(t))
         .reduce((a, b) => a + b, 0)
+
+    //console.log("time=" + clock.time + ": system.workingCapitalAt(" + t + ") = " + x)            
+    return x
 }
 
 export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, toTime: Timestamp): I_SystemStatistics {
@@ -168,20 +172,27 @@ export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, 
     }
 
     function avgWorkingCapitalBetween(fromTime: Timestamp, toTime: Timestamp): Value {
-        let interval: TimeUnit = toTime - fromTime
+        //console.log("system.avgWorkingCapital(fromTime=" + fromTime +", toTime=" + toTime +")")
+        const interval: TimeUnit = toTime - fromTime + 1
         let accumulatedWorkingCapital = 0
-        for (let t = fromTime + 1; t <= toTime; t++) {
+        for (let t = fromTime; t <= toTime; t++) {
             accumulatedWorkingCapital += workingCapitalAt(t)
         }
         return accumulatedWorkingCapital / interval
     }
+
+    function avgDiscountedValueAdd(endProductMoreStatistics: I_EndProductMoreStatistics, fromTime: Timestamp, toTime: Timestamp): Value {
+        const interval: TimeUnit = toTime - fromTime + 1
+        return (endProductMoreStatistics.discountedValueAdd - endProductMoreStatistics.normEffort) / interval
+    }
     
+    // -------------- main body of the function ----------------------------------------------------------------------------------------------
     //console.log("\n\nsystem.systemStistics() -- clock.time= " + clock.time + " ----------------------")
-    const interval:TimeUnit = toTime - fromTime
+    const interval:TimeUnit = toTime - fromTime + 1
     const statEvents: StatsEventForExitingAProcessStep[] = sys.valueChains.flatMap(vc => vc.processSteps.flatMap(ps => ps.flowStats(fromTime, toTime)))
                                                           .concat(outputBasket.flowStats(fromTime, toTime))
-    console.log("system.systemStatistics(): ")
-    statEvents.forEach(se => se.wi.log.filter(le => le.logEntryType == LogEntryType.workItemMovedTo).forEach(le => console.log("...workitem worked-on: "+ le.workItem.id + " at " + le.timestamp)))
+    //console.log("system.systemStatistics(): ")
+    //statEvents.forEach(se => se.wi.log.filter(le => le.logEntryType == LogEntryType.workItemMovedTo).forEach(le => console.log("...workitem worked-on: "+ le.workItem.id + " at " + le.timestamp)))
 
     /* tbd */ //console.log("statEvents =")                                                          
     /* tbd */ //statEvents.forEach(se => console.log(clock.time + ": " + se.wi.id + "/" + se.wi.tag[0] + " vc/ps=" + se.vc.id + " " + se.psExited.id + "=>" + se.psEntered.id + " \t\tinj= " + se.injectionIntoValueChainTime + " fin= " +  se.finishedTime + " elap= " + se.elapsedTime))                       
@@ -192,27 +203,31 @@ export function systemStatistics(sys: LonelyLobsterSystem, fromTime: Timestamp, 
     //               .forEach(wi => console.log("   wi.id= " + wi.id + " accum.effort=" + wi.accumulatedEffort()))))
 
     const endProductMoreStatistics: I_EndProductMoreStatistics = outputBasket.endProductMoreStatistics(fromTime, toTime)
+    //console.log("system.systemStatistics(sys, fromTime=" + fromTime +", toTime=" + toTime +")")
     const avgWorkingCapital = avgWorkingCapitalBetween(fromTime, toTime)
+    const avgDiscValueAdd   = avgDiscountedValueAdd(endProductMoreStatistics, fromTime, toTime)
 
-    console.log("system.systemStatistics(): ")
-    console.log("...endProductMoreStatistics.numWis: " + endProductMoreStatistics.numWis)
-    console.log("...endProductMoreStatistics.discountedValueAdd: " + endProductMoreStatistics.discountedValueAdd)
-    console.log("...economics.avgWorkingCapital: " + avgWorkingCapital)
+    //console.log("system.systemStatistics(): ")
+    //console.log("...endProductMoreStatistics.numWis: " + endProductMoreStatistics.numWis)
+    //console.log("...endProductMoreStatistics.discountedValueAdd: " + endProductMoreStatistics.discountedValueAdd)
+    //console.log("...economics.avgWorkingCapital: " + avgWorkingCapital)
 
     return {
+        timestamp:          clock.time,
         valueChains:        sys.valueChains.map(vc => vcStatistics(statEvents, vc, interval)),
         outputBasket: {
             flow:           obStatistics(statEvents, interval),
             economics:   {
                 ...endProductMoreStatistics,
                 avgWorkingCapital: avgWorkingCapital,
-                roce:              endProductMoreStatistics.discountedValueAdd / avgWorkingCapital
+                roce:              avgDiscValueAdd / avgWorkingCapital
             }
         }
     } 
 }
 
 function obStatsAsString(rollingWindowSize: TimeUnit = clock.time): string {
+//  return"system.obStatsAsString() - left empty"
     const stats: I_WorkItemStatistics = systemStatistics(lonelyLobsterSystem, clock.time - rollingWindowSize, clock.time).outputBasket.flow
     return `    ${stats.cycleTime.min?.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.avg?.toFixed(1).padStart(4, ' ')}  ${stats.cycleTime.max?.toFixed(1).padStart(4, ' ')}     ${stats.throughput.itemsPerTimeUnit?.toFixed(1).padStart(4, ' ')}   ${stats.throughput.valuePerTimeUnit?.toFixed(1).padStart(4, ' ')}`
 //  return "- tbd: intentionally left empty -"
