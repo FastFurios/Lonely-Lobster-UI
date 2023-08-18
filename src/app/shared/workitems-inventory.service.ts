@@ -54,7 +54,7 @@ export class WorkitemsInventoryService {
   }
   
   currentSystemStatistics(): Observable<I_SystemStatistics> {
-      return this.http.get<I_SystemStatistics>("http://localhost:3000/statistics/"/*, {responseType: "json"}*/)
+      return this.http.get<I_SystemStatistics>("http://localhost:3000/statistics?fromTime=5&toTime=10", /*, {responseType: "json"}*/)
               .pipe(
                 catchError((error: HttpErrorResponse) =>this.errorHandler(error))
               )

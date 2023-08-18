@@ -8,6 +8,7 @@
 
 .submitButton {
     background-color: orangered;
+    color: white;
     height: 30px;
     box-sizing: border-box;
     border-radius: 5px;

@@ -1,7 +1,7 @@
 <!--
 <ng-container *ngIf="systemState$ | async as systemState; else loading">
 -->    
-<input type="file" required (change)="onFileSelected($event)"/> System ID is: {{systemId}}
+<input type="file" class="submitButton" required (change)="onFileSelected($event)"/>
 
 
 <ng-container *ngIf="systemState; else loading">
