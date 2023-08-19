@@ -1,3 +1,10 @@
+<label for="interval">Interval:</label>
+<input type="number" class="inputFormNumber" id="interval" name="interval" min="0" step="5"
+    required
+    [(ngModel)]="interval"
+    (change)="statsIntervalInputHandler($event)">
+<label for="interval">0 = from beginning; >0 = size of trailing interval</label>
+
 <div class="system-stats-row-of-columns" [style]="textColor">
     <div class="system-stats-column">
         <div class="system-stat">

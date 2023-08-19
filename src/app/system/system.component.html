@@ -41,18 +41,7 @@
         <div *ngIf="systemStatistics">
 -->
         <div>
-                <app-system-stats [systemStatistics]="systemStatistics" [systemTime]="systemState.time"></app-system-stats>
-<!--
-            Bound working capital: {{ systemStatistics.workingCapital }}
-            <br/>
-            Output #workitems: {{ systemStatistics.outputBasket.inventory.numWis  }}
-            <br/>
-            Output net value: {{ systemStatistics.outputBasket.inventory.netValueAdd }}
-            <br/>
-            Output degrated value: {{ systemStatistics.outputBasket.inventory.discountedValueAdd }}
-            <br/>
-            Output degrated contribution: {{ systemStatistics.outputBasket.inventory.discountedValueAdd - systemStatistics.outputBasket.inventory.normCycleTime }}
--->
+            <app-system-stats [systemStatistics]="systemStatistics" [systemTime]="systemState.time" (intervalEventEmitter)="changedStatsIntervalHandler($event)"></app-system-stats>
         </div>
 </div>
 

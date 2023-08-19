@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from "rxjs"
 import { catchError } from "rxjs/operators"
 
-import { I_IterationRequest, I_SystemState, I_SystemStatistics } from './io_api_definitions'
+import { I_IterationRequest, I_SystemState, I_SystemStatistics, TimeUnit } from './io_api_definitions'
 
 
 
@@ -34,8 +34,8 @@ export class WorkitemsInventoryService {
 */
   
   systemStateOnInitialization(systemParmsAsJson: any): Observable<I_SystemState> {
-//  console.log("WorkItemInventoryService: systemStateOnInitialization(...): systemParmsAsJson=")
-//  console.log(systemParmsAsJson)
+//console.log("WorkItemInventoryService: systemStateOnInitialization(...): systemParmsAsJson=")
+//console.log(systemParmsAsJson)
     return this.http.post<I_SystemState>("http://localhost:3000/initialize/", systemParmsAsJson /*, {responseType: "json"}*/)
         .pipe(
           catchError((error: HttpErrorResponse) =>this.errorHandler(error))
@@ -53,8 +53,9 @@ export class WorkitemsInventoryService {
         
   }
   
-  currentSystemStatistics(): Observable<I_SystemStatistics> {
-      return this.http.get<I_SystemStatistics>("http://localhost:3000/statistics?fromTime=5&toTime=10", /*, {responseType: "json"}*/)
+  currentSystemStatistics(interval: TimeUnit): Observable<I_SystemStatistics> {
+//  console.log("WorkItemInventoryService: currentSystemStatistics(...): interval=" + interval)
+    return this.http.get<I_SystemStatistics>("http://localhost:3000/statistics?interval=" + interval.toString(), /*, {responseType: "json"}*/)
               .pipe(
                 catchError((error: HttpErrorResponse) =>this.errorHandler(error))
               )

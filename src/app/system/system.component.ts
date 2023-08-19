@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, HostListener } from '@angular/core';
 import { Observable } from "rxjs"
 import { WorkitemsInventoryService } from '../shared/workitems-inventory.service'
-import { I_SystemState, I_SystemStatistics, I_ValueChainStatistics, ObExtended, PsWorkerUtilization, ValueChainId, VcExtended } from '../shared/io_api_definitions'
+import { TimeUnit, I_SystemState, I_SystemStatistics, I_ValueChainStatistics, ObExtended, PsWorkerUtilization, ValueChainId, VcExtended } from '../shared/io_api_definitions'
 import { WorkorderFeederService } from '../shared/workorder-feeder.service';
 import { UiBoxSize, UiBoxMarginToWindow, UiSystemHeaderHeight, UiWorkerStatsHeight } from '../shared/ui-boxes-definitions';
 
@@ -22,6 +22,7 @@ export class SystemComponent implements OnInit, OnChanges {
   vcsExtended:        VcExtended[] 
   obExtended:         ObExtended
   statsAreUpToDate:   boolean = false
+  statsInterval:      TimeUnit = 10 
   
   numValueChains:     number
 
@@ -113,7 +114,7 @@ export class SystemComponent implements OnInit, OnChanges {
     return aux
   }
   // ---------------------------------------------------------------------------------------
-  // <button> handlers
+  // <button> and other handlers
   // ---------------------------------------------------------------------------------------
 
   public nextIterationHandler() {
@@ -131,6 +132,13 @@ export class SystemComponent implements OnInit, OnChanges {
   }
 
   public fetchStatisticsHandler() {
+    this.fetchSystemStatistics()
+  }
+
+  public changedStatsIntervalHandler(interval: TimeUnit) {
+//  console.log("SystemComponent.changedStatsIntervalHandler(" + interval + ")")
+    this.statsInterval = interval
+    this.statsAreUpToDate = false
     this.fetchSystemStatistics()
   }
 
@@ -178,6 +186,7 @@ export class SystemComponent implements OnInit, OnChanges {
   }
 
   private setOrResetSystem() {
+//    console.log("systemComponent.setOrResetSystem()")
       this.numIterationsToGo = 0
       this.wof.initialize()
       this.systemState$ = this.wiInvSrv.systemStateOnInitialization(this.objFromJsonFile)
@@ -187,7 +196,7 @@ export class SystemComponent implements OnInit, OnChanges {
   
   private fetchSystemStatistics() {
 //  console.log("systemComponent.fetchSystemStatistics()")
-    this.systemStatistics$ = this.wiInvSrv.currentSystemStatistics()
+    this.systemStatistics$ = this.wiInvSrv.currentSystemStatistics(this.statsInterval)
     this.systemStatistics$.subscribe(systemStatistics => {
       this.systemStatistics = systemStatistics
       this.updateVcsExtended()

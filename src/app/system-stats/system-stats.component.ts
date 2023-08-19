@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { I_SystemStatistics, TimeStamp } from '../shared/io_api_definitions';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core'
+import { I_SystemStatistics, TimeStamp, TimeUnit } from '../shared/io_api_definitions'
 
 type NicelyRounded = string 
 
@@ -18,7 +18,7 @@ const enum TextColors {
   fresh = "color: black",
   stale = "color: grey"
 }
-
+const defaultInterval: TimeUnit = 10  // 0 = Interval begins at time = 0; >0 = trailing time window size  
 
 @Component({
   selector: 'app-system-stats',
@@ -28,9 +28,11 @@ const enum TextColors {
 export class SystemStatsComponent implements OnInit {
   @Input() systemStatistics: I_SystemStatistics
   @Input() systemTime: TimeStamp
+  @Output() intervalEventEmitter = new EventEmitter<TimeUnit>()
   prettifiedStats: ObInventoryStatisticsDisplay
 
   textColor: string = TextColors.stale
+  interval = defaultInterval 
 
   constructor() { }
 
@@ -39,6 +41,11 @@ export class SystemStatsComponent implements OnInit {
   ngOnChanges() {
       this.prettifyStats()
       this.textColor = this.systemStatistics?.timestamp < this.systemTime ?  TextColors.stale : TextColors.fresh
+  }
+
+  statsIntervalInputHandler(e: Event) {
+//  console.log("SystemStatsComponent.statsIntervalInputHandler(e)")
+    this.intervalEventEmitter.emit(this.interval)
   }
 
   public prettifyStats(): void {

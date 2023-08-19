@@ -31,7 +31,7 @@ export class InventoryWorkitemComponent implements OnInit {
 //  console.log("InventoryWorkitemComponent.darkenedByEffort: this.wi.rgbColor is defined? " + (this.wi.rgbColor != undefined))
     const darkeningRange: number = Math.min(...this.wi.rgbColor)
     const darkeningStep: number  = this.wi.accumulatedEffort / this.wi.maxEffort * darkeningRange
-    console.log("inventoryWorkitem= " + this.wi.id + ", darkenedByEffort(): wi.accumulatedEffort= " + this.wi.accumulatedEffort + ", darkeningStep= " + darkeningStep)
+//  console.log("inventoryWorkitem= " + this.wi.id + ", darkenedByEffort(): wi.accumulatedEffort= " + this.wi.accumulatedEffort + ", darkeningStep= " + darkeningStep)
     return <RgbColor>this.wi.rgbColor.map(ch => Math.round(ch - darkeningStep))
   }
 

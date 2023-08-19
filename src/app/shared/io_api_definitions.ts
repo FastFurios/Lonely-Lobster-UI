@@ -13,6 +13,7 @@ type WorkItemId     = number
 type WorkItemTag    = [string, string]
 export type WorkerName     = string
 export type TimeStamp      = number
+export type TimeUnit       = number
 export type RgbColor       = [number, number, number]
 
 export type WorkerWithUtilization = {
