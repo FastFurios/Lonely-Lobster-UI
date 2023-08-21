@@ -1,6 +1,6 @@
 <div class="process-step" [style]="'height:' + psBoxSize.height + 'px'">
     <div class="process-step-header" [style]="'height:' + uiPsHeaderHeight + 'px; width:' + inventoryBoxSize.width + 'px'">
-        <h3>{{ psExtended.ps.id }} </h3>-<h5>NE={{psExtended.ps.normEffort}}</h5> 
+        <h3>{{ psExtended.ps.id }} </h3> <h5>NE={{psExtended.ps.normEffort}}</h5> 
         <app-flow-stats [workitemStats]="psExtended.flowStats?.stats" [displayVerbose]="true" [showTpv]="false"></app-flow-stats>
     </div>
     <div class="process-step-inv-and-arrow" [style]="'height:' + inventoryBoxSize.height + 'px; width:' + psBoxSize.width + 'px'">

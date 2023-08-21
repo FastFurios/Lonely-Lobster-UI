@@ -6,8 +6,10 @@ https://css-tricks.com/snippets/css/a-guide-to-flexbox/
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap:wrap;
     align-items: flex-end;
+    
+
 /*    font-size: small; 
 */
 /*  border-style: solid;
@@ -19,4 +21,8 @@ https://css-tricks.com/snippets/css/a-guide-to-flexbox/
     flex-direction: row;
     padding-left: 2px;
     padding-right: 2px;
+/*
+    border: solid;
+    border-color: red;
+*/
   }

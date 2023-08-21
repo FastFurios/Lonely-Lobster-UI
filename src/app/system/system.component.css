@@ -46,3 +46,7 @@
   .file-input {
     display: none;
   }
+
+  .iterations-selector {
+    font-size: small;
+  }

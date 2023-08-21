@@ -1,29 +1,29 @@
 <div class="flow-stats">
     <div class="flow-stat" [style]="'color: blue'">
         <div *ngIf="displayVerbose">
-            <h4>CT:</h4>
+            <span>CT:</span>
         </div>
         <div>
-            <h4>{{ flowStatsDisplay.ct }}</h4>
+            <span>{{ flowStatsDisplay.ct }}</span>
         </div>
     </div>
 
     <div class="flow-stat" [style]="'color: red'">
         <div *ngIf="displayVerbose">
-            <h4>TPI:</h4>
+            <span>TPI:</span>
         </div>
         <div>
-            <h4>{{ flowStatsDisplay.tpi }}</h4>
+            <span>{{ flowStatsDisplay.tpi }}</span>
         </div>
     </div>
 
     <div *ngIf="showTpv" >
         <div class="flow-stat" [style]="'color: green'">
             <div *ngIf="displayVerbose">
-                <h4>TPV:</h4>
+                <span>TPV:</span>
             </div>
             <div>
-                <h4>{{ flowStatsDisplay.tpv }}</h4>
+                <span>{{ flowStatsDisplay.tpv }}</span>
             </div>
         </div>
     </div>
