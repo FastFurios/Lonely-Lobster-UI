@@ -1,6 +1,3 @@
-<!--
-<ng-container *ngIf="systemState$ | async as systemState; else loading">
--->    
 <input type="file" class="submitButton" required (change)="onFileSelected($event)"/>
 
 
@@ -12,12 +9,9 @@
         <div>
             <div><strong>Lonely Lobster</strong></div>
             <div> System: "<strong>{{ systemState.id }}</strong>"</div>
-<!--
-            <div *ngIf="systemState.time">Time: {{ systemState.time }} </div>
--->
             <div>Time: {{ systemState.time }} </div>
 
-            <label for="numIteration" class="iterations-selector">#iterations per click:</label>
+            <label for="numIteration" class="iterations-selector">#iterations:</label>
             <input  type="number" 
                     class="inputFormNumber" 
                     min="1"
@@ -37,19 +31,11 @@
         <div>
             <app-workers-stats [wosStats]="systemState.workersState" ></app-workers-stats>
         </div>
-<!--
-        <div *ngIf="systemStatistics">
--->
         <div>
             <app-system-stats [systemStatistics]="systemStatistics" [systemTime]="systemState.time" (intervalEventEmitter)="changedStatsIntervalHandler($event)"></app-system-stats>
         </div>
-</div>
-
-
+    </div>
     <div>
-<!--
-        <div class="valueChainsAndOutputBasket" [style]="'height:1000px'" >
--->
         <div class="valueChainsAndOutputBasket" [style]="'height:' +  vcsBoxSize.height  + 'px'" >
 
             <div class="valueChains" [style]="'width:' + vcsBoxSize.width + 'px; height:' + vcsBoxSize.height + 'px' ">
@@ -57,21 +43,11 @@
                 <div *ngFor="let vcExtended of vcsExtended">
                     <app-value-chain [vcExtended]="vcExtended" [vcBoxSize]="vcBoxSize"></app-value-chain>
                 </div>
-
-<!--
-                <div>
-                    vcs h={{ vcsBoxSize.height }} w={{ vcsBoxSize.width }}
-                </div>
--->
             </div>
 
 
             <div class="outputBasket" [style]="'width:' + obBoxSize.width + 'px; ' ">
-<!--
                 <app-output-basket [obExtended]="obExtended" [obBoxSize]="obBoxSize"></app-output-basket>
--->
-                <app-output-basket [obExtended]="obExtended" [obBoxSize]="obBoxSize"></app-output-basket>
-
             </div>
 
         </div>
@@ -85,28 +61,3 @@
         <div class="ui large text loader">Select system configuration file ... </div>
     </div>
 </ng-template>
-<br/>
-<br/>
-
-<!--
-<img [src]="filename" alt="file not found" height="100">
-<input type="file" class="file-input"
-       (change)="onFileSelected($event)" #fileUpload>
-
-<div class="file-upload">
-
-   {{fileName || "No file uploaded yet."}}
-
-    <button mat-mini-fab color="primary" class="upload-btn"
-      (click)="fileUpload.click()">
-        <div>attach_file</div>
-    </button>
-</div>
-<br/>
-<br/>
-<p># value-chains = {{ this.numValueChains }}
-<p>vcsBoxSize = w: {{ this.vcsBoxSize.width }}, h: {{ this.vcsBoxSize.height }}
-<p>vcBoxSize = w: {{ this.vcBoxSize.width }}, h: {{ this.vcBoxSize.height }}
-
-<p>obBoxSize = w: {{ this.obBoxSize.width }}, h: {{ this.obBoxSize.height }}
--->

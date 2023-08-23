@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, OnChanges } from '@angular/core';
 import { I_OutputBasket, I_WorkItem, ObExtended } from '../shared/io_api_definitions';
 import { ColorMapperService } from '../shared/color-mapper.service'
-import { UiBoxSize, UiObHeaderHeight} from '../shared/ui-boxes-definitions';
+import { UiBoxSize, UiObHeaderHeight, UiInventoryBoxHeightShrink, UiPsHeaderHeight, UiWorkerNameHeight} from '../shared/ui-boxes-definitions';
 
 
 
@@ -54,7 +54,9 @@ export class OutputBasketComponent implements OnInit, OnChanges {
   private calcSizeOfInventoryBox(): void {
     this.inventoryBoxSize = { 
       width:  this.obBoxSize.width,
-      height: this.obBoxSize.height - UiObHeaderHeight
+//    height: this.obBoxSize.height - UiObHeaderHeight
+      height: this.obBoxSize.height * UiInventoryBoxHeightShrink - UiPsHeaderHeight - UiWorkerNameHeight
+
     }
     //console.log("OutputBasketComponent.calcSizeOfProcessStepBox(): inventoryBox Size h=" + this.inventoryBoxSize.height)
   }

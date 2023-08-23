@@ -232,7 +232,7 @@ export class SystemComponent implements OnInit, OnChanges {
     }
     this.obBoxSize = { 
       width:  window.innerWidth - this.vcBoxSize.width - UiBoxMarginToWindow,
-      height: this.vcsBoxSize.height -20
+      height: this.vcsBoxSize.height
     }
   }
 }
