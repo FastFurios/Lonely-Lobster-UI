@@ -6,7 +6,7 @@ export type UiBoxSize = {
 // unit is "px" pixel
 export const UiBoxMarginToWindow  = 20   
 export const UiSystemHeaderHeight = 100  
-export const UiWorkerStatsHeight  = 200  
+export const UiWorkerStatsHeight  = 50  
 export const UiWorkerNameHeight   = 25  
 export const UiPsHeaderHeight     = 25
 export const UiObHeaderHeight     = UiPsHeaderHeight   

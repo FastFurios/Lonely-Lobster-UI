@@ -11,10 +11,10 @@ https://css-tricks.com/snippets/css/a-guide-to-flexbox/
     
 
 /*    font-size: small; 
+    border-style: solid;
+    border-color: blue; 
 */
-/*  border-style: solid;
-    border-color: blue; */
-  }
+}
   
   .flow-stat {
     display: flex;

@@ -28,8 +28,11 @@
     flex-direction: row;
     justify-content: space-between;
     box-sizing: border-box; 
-/*    border-style:solid;
-    border-color: purple; */
+    align-items: center;
+/*
+    border-style:solid;
+    border-color: purple;
+    */
   }
 
 
