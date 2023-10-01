@@ -37,7 +37,7 @@ export class WorkitemsInventoryService {
 //console.log("WorkItemInventoryService: systemStateOnInitialization(...): ")
     console.log("WorkItemInventoryService: systemStateOnInitialization(...): systemParmsAsJson=")
     console.log(systemParmsAsJson)
-    return this.http.post<I_SystemState>("http://localhost:3000/initialize/", systemParmsAsJson /*, {responseType: "json"}*/)
+    return this.http.post<I_SystemState>("http://localhost:3000/initialize/", systemParmsAsJson, { withCredentials: true } /*, {responseType: "json"}*/)
         .pipe(
           catchError((error: HttpErrorResponse) =>this.errorHandler(error))
         )
@@ -47,7 +47,7 @@ export class WorkitemsInventoryService {
   nextSystemStateOnInput(iterationRequest: I_IterationRequest): Observable<I_SystemState> {
 //  console.log("WorkItemInventoryService: nextSystemStateOnInput(...): iterationRequest=")
 //  console.log(iterationRequest)
-      return this.http.post<I_SystemState>("http://localhost:3000/iterate/", iterationRequest /*, {responseType: "json"}*/)
+      return this.http.post<I_SystemState>("http://localhost:3000/iterate/", iterationRequest, { withCredentials: true } /*, {responseType: "json"}*/)
           .pipe(
             catchError((error: HttpErrorResponse) =>this.errorHandler(error))
           )
@@ -56,7 +56,7 @@ export class WorkitemsInventoryService {
   
   currentSystemStatistics(interval: TimeUnit): Observable<I_SystemStatistics> {
 //  console.log("WorkItemInventoryService: currentSystemStatistics(...): interval=" + interval)
-    return this.http.get<I_SystemStatistics>("http://localhost:3000/statistics?interval=" + interval.toString(), /*, {responseType: "json"}*/)
+    return this.http.get<I_SystemStatistics>("http://localhost:3000/statistics?interval=" + interval.toString(), { withCredentials: true } /*, {responseType: "json"}*/)
               .pipe(
                 catchError((error: HttpErrorResponse) =>this.errorHandler(error))
               )
