@@ -1,5 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs'
+import { Observable, throwError } from "rxjs"
+//import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError } from "rxjs/operators"
+
+
+interface SessionBackendResponse {
+  message: string
+}
+
 
 @Component({
   selector: 'app-test-parent',
@@ -15,8 +24,13 @@ export class TestParentComponent implements OnInit {
     counters: [-1, -1, -1]
   }
 
+  getTextFromMySessionRequest$: Observable<SessionBackendResponse> 
+  addTextToMySessionRequest$: Observable<SessionBackendResponse>
+  textInMyBackendSession:  string = "- none yet -"
+  textToAdd: string
 
-  constructor() {
+
+  constructor(private http: HttpClient) {
     //this.counter = 0 
     this.complexObject.counters[0] = 0
   }
@@ -39,6 +53,46 @@ export class TestParentComponent implements OnInit {
     //this.counter = childCounter
     this.complexObject.counters[0] = childCounter
   }
+
+
+
+// --- communicating with a session enabled backend -----
+
+private errorHandler(error: HttpErrorResponse): Observable<any> {
+  console.error("errorHandler(): Fehler aufgetreten!" + error.message + error.ok)
+  return throwError(() => "error" /*new Error()*/)
+}
+
+
+getFromBackend() {
+      console.log("getFromBackend...")
+      this.getTextFromMySessionRequest$ = this.http.get<SessionBackendResponse>(
+                "http://localhost:8080/test", /*, {responseType: "json"}*/
+                { withCredentials: true }
+                ).pipe(
+                  catchError((error: HttpErrorResponse) =>this.errorHandler(error))
+                )
+      this.getTextFromMySessionRequest$.subscribe((response: SessionBackendResponse) => {
+        console.log("subscriber to getTextFromMySessionRequest$: message received= " + response.message)
+        this.textInMyBackendSession = response.message
+      })                            
+}
+
+postToBackend() {
+  console.log("postToBackend(" + this.textToAdd + ")...")
+  this.addTextToMySessionRequest$ = this.http.post<SessionBackendResponse>(
+                "http://localhost:8080/test", 
+                { textToAdd : this.textToAdd}, /*, {responseType: "json"}*/
+                { withCredentials: true }
+            ).pipe(
+                catchError((error: HttpErrorResponse) =>this.errorHandler(error))
+            )
+  this.addTextToMySessionRequest$.subscribe((response: SessionBackendResponse) => {
+    console.log("subscriber to addTextToMySessionRequest$: message received= " + response.message)
+  })                            
+}
+
+
 
 
 // --- reading local files ---  

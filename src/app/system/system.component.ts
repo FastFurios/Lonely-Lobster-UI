@@ -46,6 +46,8 @@ export class SystemComponent implements OnInit, OnChanges {
 
   private nextIterationSubscriber(systemState: I_SystemState) {
     this.systemState = systemState 
+    console.log("SystemComponent.nextIterationSubscriber(): this.systemState = ")                          
+    console.log(this.systemState)                          
     this.calcSizeOfUiBoxes()
     // add to valuechains data also the corresponding workers with their process step asignments and utilization plus the flow statistics  
     this.updateVcsExtended()
@@ -56,7 +58,10 @@ export class SystemComponent implements OnInit, OnChanges {
     //console.log("SystemComponent.nextIterationSubscriber(): this.obExtended=")                          
     //console.log(this.obExtended)  
 
-    if (this.systemState.time == 0) /* just initializing */ return
+    if (this.systemState.time == 0) {
+      console.log("nextIterationSubscriber(): this.systemState.time = " + this.systemState.time + "; I am returning...")
+      /* just initializing */ return
+    }
     this.numIterationsToGo--
     if (this.numIterationsToGo > 0)
       this.nextIterationStates()
@@ -186,12 +191,16 @@ export class SystemComponent implements OnInit, OnChanges {
   }
 
   private setOrResetSystem() {
-//    console.log("systemComponent.setOrResetSystem()")
+      console.log("systemComponent.setOrResetSystem()")
       this.numIterationsToGo = 0
       this.wof.initialize()
       this.systemState$ = this.wiInvSrv.systemStateOnInitialization(this.objFromJsonFile)
-      this.systemState$.subscribe(systemState => this.nextIterationSubscriber(systemState))
-      this.systemState$.subscribe(systemState => { this.numValueChains = systemState.valueChains.length; this.calcSizeOfUiBoxes() })
+      this.systemState$.subscribe(systemState => {
+        this.numValueChains = systemState.valueChains.length
+        this.nextIterationSubscriber(systemState) 
+        this.calcSizeOfUiBoxes() 
+      })
+      //this.systemState$.subscribe(systemState => { this.numValueChains = systemState.valueChains.length; this.calcSizeOfUiBoxes() })
   }
   
   private fetchSystemStatistics() {

@@ -34,8 +34,9 @@ export class WorkitemsInventoryService {
 */
   
   systemStateOnInitialization(systemParmsAsJson: any): Observable<I_SystemState> {
-//console.log("WorkItemInventoryService: systemStateOnInitialization(...): systemParmsAsJson=")
-//console.log(systemParmsAsJson)
+//console.log("WorkItemInventoryService: systemStateOnInitialization(...): ")
+    console.log("WorkItemInventoryService: systemStateOnInitialization(...): systemParmsAsJson=")
+    console.log(systemParmsAsJson)
     return this.http.post<I_SystemState>("http://localhost:3000/initialize/", systemParmsAsJson /*, {responseType: "json"}*/)
         .pipe(
           catchError((error: HttpErrorResponse) =>this.errorHandler(error))

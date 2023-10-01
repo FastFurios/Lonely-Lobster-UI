@@ -1,5 +1,23 @@
 <h3>-------- test-parent -------- </h3>
 
+<h5>-------- Sessions -------- </h5>
+
+<input type="text" id="textToAdd" placeholder="put some text here..."
+  [(ngModel)]="textToAdd"
+  (change)="postToBackend()">
+  <p>Press enter to submit</p>
+<br/>
+<br/>
+
+<button type="button" class="ui mini button"
+  (click)="getFromBackend()">
+  Get text stored in the backend
+</button>
+<h5>Backend response:</h5>
+<p> {{ textInMyBackendSession }}</p>
+<br/>
+
+
 <h5>-------- Selecting and reading files -------- </h5>
 
 <input type="file" required 
