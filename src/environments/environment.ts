@@ -3,8 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  API_URL: "http://localhost:3000/"
 };
+// https://stackoverflow.com/questions/47426721/angular-cli-change-rest-api-url-on-build
+
 
 /*
  * For easier debugging in development mode, you can import the following file
