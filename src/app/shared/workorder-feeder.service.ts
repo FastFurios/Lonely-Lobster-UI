@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core'
 import { I_IterationRequest, ValueChainId } from './io_api_definitions'
-import { Timestamp } from 'rx';
 
 export type VcFeederParms = {  // for each time unit
   avgInjectionThroughput: number, // any number e.g. 1, 0.5, 2.1, ...
@@ -17,23 +16,22 @@ type VcFeederParmsAndState = {
 })
 export class WorkorderFeederService {
 
-    /* private */ vcFeederTimeUnitMap: Map<ValueChainId, VcFeederParmsAndState>
-    /* private */ timeNow: number
+    private vcFeederTimeUnitMap:    Map<ValueChainId, VcFeederParmsAndState>
+    private timeNow:                number
 
     constructor() {
         this.initialize()
     }
 
     // tb deleted
+/*
     wofAsString = () =>  Array.from(this.vcFeederTimeUnitMap.entries())
         .map(e => e[0] + ": aggrWos=" + e[1].aggregatedWorkOrders
                         + " thruput=" + e[1].parms.avgInjectionThroughput
                     + " prob=" + e[1].parms.injectProbability
                     )
-
-    public setParms(vcId: ValueChainId, avgInjThroughput: number, injProb: number): void {   // ## destructuring instead of the 2 parms being passed as separate arguments
-        //console.log("WorkorderFeeder: setParms(" + vcId + ", " + avgInjThroughput + ", " + injProb)
-        //console.log("WorkorderFeeder: setParms: vcFeederTimeUnitMap=")
+*/
+    public setParms(vcId: ValueChainId, avgInjThroughput: number, injProb: number): void {
         if (avgInjThroughput == undefined || injProb == undefined) return
         const aggrWos: number = this.vcFeederTimeUnitMap.has(vcId) 
                                 ? this.vcFeederTimeUnitMap.get(vcId)!.aggregatedWorkOrders
@@ -47,34 +45,17 @@ export class WorkorderFeederService {
                     injectProbability:      injProb
                 }    
             })
-
-//      console.log(this.wofAsString())
-
-
     }
 
     public getParms(vcId: ValueChainId): VcFeederParms | undefined {
-//        console.log("WorkorderFeeder: getParms: vcFeederTimeUnitMap=")
-//        console.log(this.wofAsString())
-//        console.log("WorkorderFeeder: getParms: vcFeederTimeUnitMap.has(" + vcId + ")=" + this.vcFeederTimeUnitMap.has(vcId))
-
-        const r = this.vcFeederTimeUnitMap.has(vcId) ? this.vcFeederTimeUnitMap.get(vcId)!.parms : undefined
- //       console.log("WorkorderFeederService: WorkorderFeederService("+vcId+") = ")
- //       console.log(r)
-        return r
+        return this.vcFeederTimeUnitMap.has(vcId) ? this.vcFeederTimeUnitMap.get(vcId)!.parms : undefined
     }
-
-
 
     public iterationRequestForAllVcs(): I_IterationRequest {
         const iterationRequest: I_IterationRequest = { 
             time:           this.timeNow++,
             newWorkOrders:  [] 
         } 
-
-//      console.log("workorder-feeder service: iterationRequest4AllVcs(): before VCs filled: iterationRequest=")
-//        console.log(iterationRequest)
-
         for (const [vcId, vcFeederParmsAndState] of this.vcFeederTimeUnitMap.entries()) {
             vcFeederParmsAndState.aggregatedWorkOrders += vcFeederParmsAndState.parms.avgInjectionThroughput 
 
@@ -90,15 +71,10 @@ export class WorkorderFeederService {
                 numWorkOrders: injectWosNum
             })
         }
-         
-  //    console.log("workorder-feeder service: iterationRequest4AllVcs(): iterationRequest=")
-  //    console.log(iterationRequest)
         return iterationRequest
     }
 
-    initialize(): void {
-//        this.timeNow = -1
+    public initialize(): void {
         this.vcFeederTimeUnitMap = new Map<ValueChainId, VcFeederParmsAndState>()
     }
-
 }

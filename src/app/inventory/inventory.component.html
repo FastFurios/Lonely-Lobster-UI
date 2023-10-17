@@ -1,6 +1,3 @@
-<!--
-<div class="inventory" [style]="'width:' + inventoryBoxSize.width + 'px; height:' + inventoryBoxSize.height  + 'px;'">
--->
 <div class="inventory" [style]="'width:' + inventoryBoxSize.width + 'px; height:' + inventoryBoxSize.height  + 'px;'">
     <div  *ngFor="let col of psInventoryShow.cols">
         <app-inventory-column [psInventoryColumn]="col" [isListOfEndProducts]="isListOfEndProducts" [inventoryColumnBoxSize]="inventoryColumnBoxSize"></app-inventory-column>
@@ -11,14 +8,3 @@
         </div>
     </div>
 </div>
-
-<!--
-<div>
-    inv: h={{ inventoryBoxSize.height }}
-    w={{ inventoryBoxSize.width }}
-</div>
-<div>
-    invCol: h={{ inventoryColumnBoxSize.height }}
-    w={{ inventoryColumnBoxSize.width }}
-</div>
--->

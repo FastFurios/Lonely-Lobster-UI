@@ -8,21 +8,11 @@ https://css-tricks.com/snippets/css/a-guide-to-flexbox/
     flex-direction: row;
     flex-wrap:wrap;
     align-items: flex-end;
-    
-
-/*    font-size: small; 
-    border-style: solid;
-    border-color: blue; 
-*/
 }
-  
-  .flow-stat {
+
+.flow-stat {
     display: flex;
     flex-direction: row;
     padding-left: 2px;
     padding-right: 2px;
-/*
-    border: solid;
-    border-color: red;
-*/
-  }
+}

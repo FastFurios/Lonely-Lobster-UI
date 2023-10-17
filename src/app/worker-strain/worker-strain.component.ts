@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core'
 import { WorkerWithUtilization } from '../shared/io_api_definitions'
 
 @Component({

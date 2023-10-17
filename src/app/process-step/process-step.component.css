@@ -7,9 +7,7 @@
     font-family: Arial, Helvetica, sans-serif;
     font-size: x-small; 
     text-align: center;
-/*    border-style:solid;
-    border-color: red; */ 
-  }
+}
 
   .process-step-inv-and-arrow {
     display: flex;
@@ -19,8 +17,6 @@
     font-family: Arial, Helvetica, sans-serif;
     font-size: x-small; 
     text-align: center;
-    /*border-style:solid;
-    border-color: green;*/ 
   }
 
   .process-step-header {
@@ -29,21 +25,13 @@
     justify-content: space-between;
     box-sizing: border-box; 
     align-items: center;
-/*
-    border-style:solid;
-    border-color: purple;
-    */
   }
-
-
 
 .process-step-workers {
   display: flex;
   flex-direction: row;
   box-sizing: border-box;
-/*  border-style:solid;
-  border-color: purple; */
-font-family: Arial, Helvetica, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: x-small; 
   text-align: center;
 }
@@ -53,11 +41,11 @@ font-family: Arial, Helvetica, sans-serif;
 }
 
 .util-medium {
-  background-color: green
+  background-color: yellow
 }
 
 .util-high {
-  background-color: yellow
+  background-color: orange
 }
 
 .util-extreme {

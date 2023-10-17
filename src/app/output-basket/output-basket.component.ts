@@ -1,9 +1,7 @@
-import { Component, Input, OnInit, OnChanges } from '@angular/core';
-import { I_OutputBasket, I_WorkItem, ObExtended } from '../shared/io_api_definitions';
+import { Component, Input, OnInit, OnChanges } from '@angular/core'
+import { I_OutputBasket, I_WorkItem, ObExtended } from '../shared/io_api_definitions'
 import { ColorMapperService } from '../shared/color-mapper.service'
-import { UiBoxSize, UiObHeaderHeight, UiInventoryBoxHeightShrink, UiPsHeaderHeight, UiWorkerNameHeight} from '../shared/ui-boxes-definitions';
-
-
+import { UiBoxSize, UiObHeaderHeight, UiInventoryBoxHeightShrink, UiPsHeaderHeight, UiWorkerNameHeight} from '../shared/ui-boxes-definitions'
 
 @Component({
   selector: 'app-output-basket',
@@ -11,32 +9,16 @@ import { UiBoxSize, UiObHeaderHeight, UiInventoryBoxHeightShrink, UiPsHeaderHeig
   styleUrls: ['./output-basket.component.css']
 })
 export class OutputBasketComponent implements OnInit, OnChanges {
-  @Input() ob: I_OutputBasket // tbd
-  @Input() obExtended: ObExtended
-  @Input() obBoxSize: UiBoxSize
-  wis: I_WorkItem[]
-//psInventory: PsInventory
-//psInventoryShow: PsInventoryShow
+  @Input() ob:          I_OutputBasket // tbd
+  @Input() obExtended:  ObExtended
+  @Input() obBoxSize:   UiBoxSize
+  wis:                  I_WorkItem[]
 
   constructor(private cms: ColorMapperService) { }
 
-  ngOnInit(): void {
-    //console.log("OutputBasketComponent.ngOnInit")
-
-    //console.log("OutputBasketComponent.ngOnInit obBoxSize w/h=" + this.obBoxSize.width + " / " + this.obBoxSize.height)
-/*    this.wis = this.ob.workItems
-              .map(wi =>  { 
-                            return  { 
-                                      ...wi,
-                                      rgbColor: this.cms.colorOfObject(["value-chain", wi.valueChainId])
-                                    }
-                          })
-
-                        */  
-    }
+  ngOnInit(): void { }
 
   ngOnChanges(): void {
-    //console.log("OutputBasketComponent.ngOnChanges")
     this.wis = this.obExtended.ob.workItems
               .map(wi =>  { 
                             return  { 
@@ -48,16 +30,13 @@ export class OutputBasketComponent implements OnInit, OnChanges {
   }
  
   // ----- (re-)sizing of childs' UI boxes  -------------
-  inventoryBoxSize:          UiBoxSize // = { width: 0, height: 0 }
+  inventoryBoxSize: UiBoxSize
   uiObHeaderHeight = UiObHeaderHeight
 
   private calcSizeOfInventoryBox(): void {
     this.inventoryBoxSize = { 
       width:  this.obBoxSize.width,
-//    height: this.obBoxSize.height - UiObHeaderHeight
       height: this.obBoxSize.height * UiInventoryBoxHeightShrink - UiPsHeaderHeight - UiWorkerNameHeight
-
     }
-    //console.log("OutputBasketComponent.calcSizeOfProcessStepBox(): inventoryBox Size h=" + this.inventoryBoxSize.height)
   }
 }

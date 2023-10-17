@@ -1,14 +1,14 @@
 .worker {
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    border-style: solid;
-    border-width:thick;
-    border-color: white;
-    padding: 3px;
-    align-items: flex-start;
-    background-color: cornsilk;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: x-small; 
-    text-align: center;
-  }
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  border-style: solid;
+  border-width:thick;
+  border-color: white;
+  padding: 3px;
+  align-items: flex-start;
+  background-color: cornsilk;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: x-small; 
+  text-align: center;
+}

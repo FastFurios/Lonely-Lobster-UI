@@ -1,5 +1,5 @@
-import { Component, OnInit, OnChanges, Input } from '@angular/core';
-import { I_WorkerState } from '../shared/io_api_definitions';
+import { Component, OnInit, OnChanges, Input } from '@angular/core'
+import { I_WorkerState } from '../shared/io_api_definitions'
 
 @Component({
   selector: 'app-workers-stats',
@@ -10,8 +10,7 @@ export class WorkersStatsComponent implements OnInit, OnChanges {
   @Input() wosStats: I_WorkerState[]
   constructor() { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
   ngOnChanges(): void {
     this.wosStats = this.wosStats.sort((a, b) => a.worker < b.worker ? -1 : 1)

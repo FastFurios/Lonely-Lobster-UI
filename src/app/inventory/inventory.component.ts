@@ -1,10 +1,7 @@
-import { Component, OnInit, OnChanges, Input } from '@angular/core'
+import { Component, OnInit, Input } from '@angular/core'
 import { I_WorkItem } from '../shared/io_api_definitions'
 import { PsInventory, PsInventoryShow, workitemsAsPsInventory } from '../shared/inventory-layout'
-import { UiBoxSize, UiInventoryColWidth, UiInventoryBoxHeightShrink} from '../shared/ui-boxes-definitions';
-
-
-// --- Component Class ----------------------------------------------
+import { UiBoxSize, UiInventoryColWidth } from '../shared/ui-boxes-definitions'
 
 @Component({
   selector: 'app-inventory',
@@ -12,20 +9,16 @@ import { UiBoxSize, UiInventoryColWidth, UiInventoryBoxHeightShrink} from '../sh
   styleUrls: ['./inventory.component.css']
 })
 export class InventoryComponent implements OnInit {
-  @Input() wis: I_WorkItem[]
+  @Input() wis:                 I_WorkItem[]
   @Input() isListOfEndProducts: boolean
-  @Input() inventoryBoxSize: UiBoxSize
-  psInventory: PsInventory
-  psInventoryShow: PsInventoryShow
-  numColsShown: number
-  //width: number = 100
+  @Input() inventoryBoxSize:    UiBoxSize
+  psInventory:                  PsInventory
+  psInventoryShow:              PsInventoryShow
+  numColsShown:                 number
   
   constructor() { }
 
-  ngOnInit(): void { 
-//    console.log("InventoryComponent.ngOnInit() this.inventoryBoxSize=")
-//    console.log(this.inventoryBoxSize)
-  }
+  ngOnInit(): void { }
 
   ngOnChanges(): void {
     this.psInventory = workitemsAsPsInventory(this.wis, this.isListOfEndProducts)
@@ -33,12 +26,11 @@ export class InventoryComponent implements OnInit {
   }
 
   // ----- (re-)sizing of childs' UI boxes  -------------
-
   inventoryColumnBoxSize: UiBoxSize
 
   private calcSizesOfInventoryColumn(): void {
     if (!this.psInventory) return
-//    this.inventoryBoxSize.height *= UiInventoryBoxHeightShrink
+
     this.inventoryColumnBoxSize = { 
       width:  UiInventoryColWidth, 
       height: this.inventoryBoxSize.height }

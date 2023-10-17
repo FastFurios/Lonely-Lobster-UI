@@ -1,6 +1,5 @@
-import { Component, OnInit, OnChanges, SimpleChanges, ViewChild, ElementRef, AfterViewInit, Input } from '@angular/core';
-import { UiBoxSize} from '../shared/ui-boxes-definitions';
-
+import { Component, OnInit, OnChanges, SimpleChanges, ViewChild, ElementRef, AfterViewInit, Input } from '@angular/core'
+import { UiBoxSize} from '../shared/ui-boxes-definitions'
 
 @Component({
   selector: 'app-flow-arrow',
@@ -8,11 +7,10 @@ import { UiBoxSize} from '../shared/ui-boxes-definitions';
   styleUrls: ['./flow-arrow.component.css']
 })
 export class FlowArrowComponent implements OnInit, OnChanges, AfterViewInit {
-  @ViewChild('myCanvas') canvas: ElementRef<HTMLCanvasElement>
-  ctx: CanvasRenderingContext2D
-  
   @Input() flowRate: number
   @Input() flowArrowBoxSize: UiBoxSize
+  @ViewChild('myCanvas') canvas: ElementRef<HTMLCanvasElement>
+  ctx: CanvasRenderingContext2D
   viewIsUp: boolean = false
 
   constructor() { }

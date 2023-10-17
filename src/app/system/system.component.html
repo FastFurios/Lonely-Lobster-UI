@@ -1,6 +1,5 @@
 <input type="file" class="submitButton" required (change)="onFileSelected($event)"/>
 
-
 <ng-container *ngIf="systemState; else loading">
     
     <div class="headerRow">
@@ -18,10 +17,10 @@
                     id="numIteration" 
                     [(ngModel)] = "numIterationsToExecute">
 
-            <button type="button" class="submitButton" (click)="nextIterationHandler()">
+            <button type="button" class="submitButton" (click)="runIterationsHandler()">
                 Run
             </button>
-            <button type="button" class="submitButton" (click)="stopIterationHandler()">
+            <button type="button" class="submitButton" (click)="stopIterationsHandler()">
                 Stop
             </button>
             <button type="button" class="submitButton" (click)="resetSystemHandler()">
@@ -32,7 +31,7 @@
             <app-workers-stats [wosStats]="systemState.workersState" ></app-workers-stats>
         </div>
         <div>
-            <app-system-stats [systemStatistics]="systemStatistics" [systemTime]="systemState.time" (intervalEventEmitter)="changedStatsIntervalHandler($event)"></app-system-stats>
+            <app-system-stats [systemStatistics]="systemStatistics" [systemTime]="systemState.time" [statsAreUpToDate]="statsAreUpToDate" (intervalEventEmitter)="changedStatsIntervalHandler($event)"></app-system-stats>
         </div>
     </div>
     <div>

@@ -1,9 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { I_FlowStats } from '../shared/flow-stats-definitions';
+import { Component, Input, OnInit } from '@angular/core'
 import { I_WorkItemStatistics } from '../shared/io_api_definitions'
 
-
-export interface I_FlowStatsDisplay {
+interface I_FlowStatsDisplay {
   tpv: string,  // throughput measured in value
   tpi: string,  // throughput measured in #items
   ct:  string   // cycle time
@@ -15,19 +13,17 @@ export interface I_FlowStatsDisplay {
   styleUrls: ['./flow-stats.component.css']
 })
 export class FlowStatsComponent implements OnInit {
-  @Input() workitemStats?:  I_WorkItemStatistics
+  @Input() workitemStats?: I_WorkItemStatistics
   @Input() displayVerbose: boolean
   @Input() showTpv:        boolean
   @Input() vertical:       boolean
-  flowStatsDisplay: I_FlowStatsDisplay
+  flowStatsDisplay:        I_FlowStatsDisplay
 
   constructor() { }
 
   ngOnInit(): void { }
 
   ngOnChanges(): void { 
-//  console.log("FlowStatsComponent.ngOnChanges().workItemStats=")
-//    console.log(this.workitemStats)
     if (this.workitemStats)  
       this.flowStatsDisplay = { 
         ct:  this.workitemStats.cycleTime.avg ? (Math.round(this.workitemStats.cycleTime.avg * 10 ) / 10).toString() : "-",
@@ -40,8 +36,5 @@ export class FlowStatsComponent implements OnInit {
         tpi: "-",
         tpv: "-"
       }
-//    console.log("FlowStatsComponent.ngOnChanges().flowStatsDisplay=")
-//    console.log(this.flowStatsDisplay)
   }
-
 }

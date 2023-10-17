@@ -1,9 +1,7 @@
-import { Component, OnInit, OnChanges, Input } from '@angular/core';
-import { I_ProcessStep, I_WorkItem, PsExtended, I_ProcessStepStatistics } from '../shared/io_api_definitions'
-//import { RgbColor } from '../shared/color-mapper.service'
+import { Component, OnInit, OnChanges, Input } from '@angular/core'
+import { I_WorkItem, PsExtended, I_ProcessStepStatistics } from '../shared/io_api_definitions'
 import { ColorMapperService } from '../shared/color-mapper.service'
-import { UiBoxSize, UiPsHeaderHeight, UiInvWidthOfPsWidth, UiInventoryBoxHeightShrink, UiWorkerNameHeight} from '../shared/ui-boxes-definitions';
-
+import { UiBoxSize, UiPsHeaderHeight, UiInvWidthOfPsWidth, UiInventoryBoxHeightShrink, UiWorkerNameHeight} from '../shared/ui-boxes-definitions'
 
 @Component({
   selector: 'app-process-step',
@@ -12,9 +10,9 @@ import { UiBoxSize, UiPsHeaderHeight, UiInvWidthOfPsWidth, UiInventoryBoxHeightS
 })
 export class ProcessStepComponent implements OnInit, OnChanges {
   @Input() psExtended: PsExtended
-  @Input() vcStats:   I_ProcessStepStatistics
-  @Input() psBoxSize: UiBoxSize
-  wis:                I_WorkItem[]
+  @Input() vcStats:    I_ProcessStepStatistics
+  @Input() psBoxSize:  UiBoxSize
+  wis:                 I_WorkItem[]
 
   constructor(private cms: ColorMapperService) { }
 
@@ -30,17 +28,12 @@ export class ProcessStepComponent implements OnInit, OnChanges {
 
   ngOnChanges(): void {
     this.psExtended.wosUtil.sort((w1, w2) => w1.worker < w2.worker ? -1 : 1 )
-//    console.log("ProcessStepComponent.ngOnChanges(): psWu=")
-//    console.log(this.psWu)
-    //console.log("ProcessStepComponent:psBoxSize changed")
     this.calcSizeOfUiBoxes()
   }
 
-
   // ----- (re-)sizing of childs' UI boxes  -------------
-
-  inventoryBoxSize: UiBoxSize
-  flowArrowBoxSize: UiBoxSize
+  inventoryBoxSize:   UiBoxSize
+  flowArrowBoxSize:   UiBoxSize
   uiPsHeaderHeight    = UiPsHeaderHeight
   uiWorkerNameHeight  = UiWorkerNameHeight
 
@@ -54,5 +47,4 @@ export class ProcessStepComponent implements OnInit, OnChanges {
       height: this.inventoryBoxSize.height
     }
   }
-
 }

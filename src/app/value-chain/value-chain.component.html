@@ -13,28 +13,8 @@
             (change)="feedParmsInputHandler($event)">
         <app-flow-stats [workitemStats]="workitemStats" [displayVerbose]="true" [showTpv]="true"></app-flow-stats>
     </div>
-<!--
-    <div>
-        h={{ vcBoxSize.height }}
-        w={{ vcBoxSize.width }}
-    </div>
--->
-<!--
-        <ngx-slider [(value)]="value" [options]="options" (valueChange)="onSliderChange()"></ngx-slider>
-        <div>
-            <app-flow-arrow  [flowRate]="value"></app-flow-arrow>
-        </div>
--->
     <div *ngFor="let psExtended of pssExtended">
             <app-process-step [psExtended]="psExtended" [psBoxSize]="psBoxSize"></app-process-step>
     </div>
 </div>
-<!--
-<br/>
-
-<p>VC box width =  {{ vcBoxSize.width}} </p>00
-<p>VC box heigth = {{ vcBoxSize.height}} </p>
-<p>Injection throughput of Work Orders {{ feedParms.avgInjectionThroughput }} </p>
-<p>Injection probabilty of Work Orders {{ feedParms.injectProbability }} </p>
--->
 

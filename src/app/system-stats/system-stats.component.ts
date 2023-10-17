@@ -1,17 +1,17 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core'
-import { I_SystemStatistics, TimeStamp, TimeUnit } from '../shared/io_api_definitions'
+import { I_SystemStatistics, Timestamp, TimeUnit } from '../shared/io_api_definitions'
 
 type NicelyRounded = string 
 
 interface ObInventoryStatisticsDisplay {
-    timestamp: TimeStamp
-    numWis: number
-    netValueAdd: number
-    discountedValueAdd: NicelyRounded
+    timestamp:                    Timestamp
+    numWis:                       number
+    netValueAdd:                  number
+    discountedValueAdd:           NicelyRounded
     discountedContributionMargin: NicelyRounded
-    avgElapsedTime: NicelyRounded
-    avgWorkingCapital: NicelyRounded
-    roce: string
+    avgElapsedTime:               NicelyRounded
+    avgWorkingCapital:            NicelyRounded
+    roce:                         NicelyRounded
 } 
 
 const enum TextColors {
@@ -26,25 +26,24 @@ const defaultInterval: TimeUnit = 10  // 0 = Interval begins at time = 0; >0 = t
   styleUrls: ['./system-stats.component.css']
 })
 export class SystemStatsComponent implements OnInit {
-  @Input() systemStatistics: I_SystemStatistics
-  @Input() systemTime: TimeStamp
+  @Input() systemStatistics:       I_SystemStatistics
+  @Input() systemTime:             Timestamp
+  @Input() statsAreUpToDate:       boolean
   @Output() intervalEventEmitter = new EventEmitter<TimeUnit>()
-  prettifiedStats: ObInventoryStatisticsDisplay
-
-  textColor: string = TextColors.stale
-  interval = defaultInterval 
-
+  prettifiedStats:                 ObInventoryStatisticsDisplay
+  interval                       = defaultInterval 
+  textColor                      = TextColors.stale
+  
   constructor() { }
 
   ngOnInit(): void { }
 
   ngOnChanges() {
       this.prettifyStats()
-      this.textColor = this.systemStatistics?.timestamp < this.systemTime ?  TextColors.stale : TextColors.fresh
+      this.textColor = this.statsAreUpToDate ? TextColors.fresh : TextColors.stale
   }
 
   statsIntervalInputHandler(e: Event) {
-//  console.log("SystemStatsComponent.statsIntervalInputHandler(e)")
     this.intervalEventEmitter.emit(this.interval)
   }
 
