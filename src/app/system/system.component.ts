@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, HostListener } from '@angular/core'
 import { Observable } from "rxjs"
-import { WorkitemsInventoryService } from '../shared/workitems-inventory.service'
+import { BackendApiService } from '../shared/backend-api.service'
 import { TimeUnit, I_SystemState, I_SystemStatistics, I_ValueChainStatistics, ObExtended, PsWorkerUtilization, ValueChainId, VcExtended } from "../shared/io_api_definitions"
 import { WorkorderFeederService } from '../shared/workorder-feeder.service'
 import { UiBoxSize, UiBoxMarginToWindow, UiSystemHeaderHeight, UiWorkerStatsHeight } from '../shared/ui-boxes-definitions'
@@ -23,8 +23,8 @@ export class SystemComponent implements OnInit, OnChanges {
   numIterationsToExecute: number   = 1
   numIterationsToGo:      number
   
-  constructor( private wiInvSrv: WorkitemsInventoryService,
-               private wof:      WorkorderFeederService   ) { }
+  constructor( private bas: BackendApiService,
+               private wof: WorkorderFeederService ) { }
 
   ngOnInit(): void {
     this.calcSizeOfUiBoxes()
@@ -56,7 +56,7 @@ export class SystemComponent implements OnInit, OnChanges {
   }
 
   public iterateNextStates(): void {
-    this.systemState$ = this.wiInvSrv.nextSystemStateOnInput(this.wof.iterationRequestForAllVcs())
+    this.systemState$ = this.bas.nextSystemStateOnInput(this.wof.iterationRequestForAllVcs())
     this.systemState$.subscribe(systemState => this.processIteration(systemState))
   }
 
@@ -172,7 +172,7 @@ export class SystemComponent implements OnInit, OnChanges {
   private setOrResetSystem() {
       this.numIterationsToGo = 0
       this.wof.initialize()
-      this.systemState$ = this.wiInvSrv.systemStateOnInitialization(this.objFromJsonFile)
+      this.systemState$ = this.bas.systemStateOnInitialization(this.objFromJsonFile)
       this.systemState$.subscribe(systemState => {
         this.numValueChains = systemState.valueChains.length
         this.processIteration(systemState) 
@@ -181,7 +181,7 @@ export class SystemComponent implements OnInit, OnChanges {
   }
   
   private fetchSystemStatistics() {
-    this.systemStatistics$ = this.wiInvSrv.currentSystemStatistics(this.statsInterval)
+    this.systemStatistics$ = this.bas.currentSystemStatistics(this.statsInterval)
     this.systemStatistics$.subscribe(systemStatistics => {
       this.systemStatistics = systemStatistics
       this.updateVcsExtended()

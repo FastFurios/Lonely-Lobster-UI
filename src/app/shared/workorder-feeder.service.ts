@@ -23,14 +23,6 @@ export class WorkorderFeederService {
         this.initialize()
     }
 
-    // tb deleted
-/*
-    wofAsString = () =>  Array.from(this.vcFeederTimeUnitMap.entries())
-        .map(e => e[0] + ": aggrWos=" + e[1].aggregatedWorkOrders
-                        + " thruput=" + e[1].parms.avgInjectionThroughput
-                    + " prob=" + e[1].parms.injectProbability
-                    )
-*/
     public setParms(vcId: ValueChainId, avgInjThroughput: number, injProb: number): void {
         if (avgInjThroughput == undefined || injProb == undefined) return
         const aggrWos: number = this.vcFeederTimeUnitMap.has(vcId) 

@@ -1,16 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 
-import { WorkitemsInventoryService } from './workitems-inventory.service';
+import { BackendApiService } from './backend-api.service';
 
 describe('WorkitemsInventoryService', () => {
-  let service: WorkitemsInventoryService;
+  let service: BackendApiService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(WorkitemsInventoryService);
+    service = TestBed.inject(BackendApiService);
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
-});
+}); 

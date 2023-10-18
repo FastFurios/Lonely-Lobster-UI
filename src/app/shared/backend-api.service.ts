@@ -10,8 +10,8 @@ import { I_IterationRequest, I_SystemState, I_SystemStatistics, TimeUnit } from 
 @Injectable({
   providedIn: 'root'
 })
-export class WorkitemsInventoryService {
-  private API_URL= environment.API_URL;
+export class BackendApiService {
+  private API_URL = environment.API_URL
 
   constructor(private http: HttpClient) { }
 
@@ -21,7 +21,7 @@ export class WorkitemsInventoryService {
   }
 
   public systemStateOnInitialization(systemParmsAsJson: any): Observable<I_SystemState> {
-    return this.http.post<I_SystemState>(this.API_URL +"initialize/", systemParmsAsJson, { withCredentials: true } /*, {responseType: "json"}*/)
+    return this.http.post<I_SystemState>(this.API_URL + "initialize/", systemParmsAsJson, { withCredentials: true } /*, {responseType: "json"}*/)
         .pipe(
           catchError((error: HttpErrorResponse) =>this.errorHandler(error))
         )
@@ -32,7 +32,6 @@ export class WorkitemsInventoryService {
           .pipe(
             catchError((error: HttpErrorResponse) =>this.errorHandler(error))
           )
-        
   }
   
   public currentSystemStatistics(interval: TimeUnit): Observable<I_SystemStatistics> {
