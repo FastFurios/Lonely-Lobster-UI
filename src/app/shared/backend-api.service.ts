@@ -16,28 +16,29 @@ export class BackendApiService {
   constructor(private http: HttpClient) { }
 
   private errorHandler(error: HttpErrorResponse): Observable<any> {
-    console.error("errorHandler(): Fehler aufgetreten!" + error.message + error.ok)
-    return throwError(() => "error" /*new Error()*/)
+    console.error("errorHandler(): Fehler aufgetreten! message= " + error.message + ", code=" + error.ok)
+    console.error(error)
+    return throwError(() => error.message /*new Error()*/)
   }
 
   public systemStateOnInitialization(systemParmsAsJson: any): Observable<I_SystemState> {
     return this.http.post<I_SystemState>(this.API_URL + "initialize/", systemParmsAsJson, { withCredentials: true } /*, {responseType: "json"}*/)
-        .pipe(
-          catchError((error: HttpErrorResponse) =>this.errorHandler(error))
-        )
+/*      .pipe(
+          catchError((error: HttpErrorResponse) => this.errorHandler(error))
+        )*/
   }
 
   public nextSystemStateOnInput(iterationRequest: I_IterationRequest): Observable<I_SystemState> {
       return this.http.post<I_SystemState>(this.API_URL + "iterate/", iterationRequest, { withCredentials: true } /*, {responseType: "json"}*/)
           .pipe(
-            catchError((error: HttpErrorResponse) =>this.errorHandler(error))
+            catchError((error: HttpErrorResponse) => this.errorHandler(error))
           )
   }
   
   public currentSystemStatistics(interval: TimeUnit): Observable<I_SystemStatistics> {
     return this.http.get<I_SystemStatistics>(this.API_URL + "statistics?interval=" + interval.toString(), { withCredentials: true } /*, {responseType: "json"}*/)
         .pipe(
-          catchError((error: HttpErrorResponse) =>this.errorHandler(error))
+          catchError((error: HttpErrorResponse) => this.errorHandler(error))
         )
   }
 }

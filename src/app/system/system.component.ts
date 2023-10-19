@@ -1,5 +1,5 @@
 import { Component, OnInit, OnChanges, HostListener } from '@angular/core'
-import { Observable } from "rxjs"
+import { Observable, catchError, throwError } from "rxjs"
 import { BackendApiService } from '../shared/backend-api.service'
 import { TimeUnit, I_SystemState, I_SystemStatistics, I_ValueChainStatistics, ObExtended, PsWorkerUtilization, ValueChainId, VcExtended } from "../shared/io_api_definitions"
 import { WorkorderFeederService } from '../shared/workorder-feeder.service'
@@ -22,6 +22,7 @@ export class SystemComponent implements OnInit, OnChanges {
   numValueChains:         number
   numIterationsToExecute: number   = 1
   numIterationsToGo:      number
+  backendErrorMessage:    string   = ""
   
   constructor( private bas: BackendApiService,
                private wof: WorkorderFeederService ) { }
@@ -172,11 +173,17 @@ export class SystemComponent implements OnInit, OnChanges {
   private setOrResetSystem() {
       this.numIterationsToGo = 0
       this.wof.initialize()
-      this.systemState$ = this.bas.systemStateOnInitialization(this.objFromJsonFile)
+      this.systemState$ = this.bas.systemStateOnInitialization(this.objFromJsonFile).pipe(
+        catchError((err: any) => {
+          this.backendErrorMessage = "*** ERROR: " + err.error.message
+          return throwError(() => new Error("*** ERROR: " + err.error.message))
+        })
+      )
       this.systemState$.subscribe(systemState => {
         this.numValueChains = systemState.valueChains.length
         this.processIteration(systemState) 
         this.calcSizeOfUiBoxes() 
+        this.backendErrorMessage = ""
       })
   }
   

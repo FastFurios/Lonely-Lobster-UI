@@ -1,5 +1,7 @@
-<input type="file" class="submitButton" required (change)="onFileSelected($event)"/>
-
+<div class="configLoading">
+    <input type="file" class="submitButton" required (change)="onFileSelected($event)"/>
+    <div class="errorMessage">{{ backendErrorMessage }}</div>
+</div>
 <ng-container *ngIf="systemState; else loading">
     
     <div class="headerRow">

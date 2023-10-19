@@ -1,3 +1,9 @@
+.errorMessage {
+    padding: 2px;
+    color: red;
+    font-weight: bold;
+    height: 30px;
+}
 
 .inputFormNumber {
     width: 40px;
@@ -24,8 +30,6 @@
     border-style: outset;
     border-color: darkgrey
 }
-
-
 
 .tooltip {
     position: relative;

@@ -1,3 +1,17 @@
+.configLoading {
+  display: flex;
+  flex-direction: row; 
+  align-items: left;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: medium; 
+  text-align: left;
+}
+
+.errorMessage {
+  text-emphasis-color: red;
+}
+
+
 .headerRow {
   display: flex;
   flex-direction: row; 
