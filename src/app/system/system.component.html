@@ -19,7 +19,7 @@
                     id="numIteration" 
                     [(ngModel)] = "numIterationsToExecute">
 
-            <button type="button" class="submitButton" (click)="runIterationsHandler()">
+            <button type="button" class="submitButton" (click)="runIterationsHandler()" (keyup.enter)="runIterationsHandler()">
                 Run
             </button>
             <button type="button" class="submitButton" (click)="stopIterationsHandler()">
