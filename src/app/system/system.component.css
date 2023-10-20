@@ -7,11 +7,6 @@
   text-align: left;
 }
 
-.errorMessage {
-  text-emphasis-color: red;
-}
-
-
 .headerRow {
   display: flex;
   flex-direction: row; 
