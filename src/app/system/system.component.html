@@ -2,7 +2,7 @@
     <input type="file" class="submitButton" required (change)="onFileSelected($event)"/>
     <div class="errorMessage">{{ backendErrorMessage }}</div>
 </div>
-<ng-container *ngIf="systemState; else loading">
+<ng-container *ngIf="showSystemState; else loading">
     
     <div class="headerRow">
         <img src="../../../assets/LonelyLobster.jfif" alt="Lonely Lobster" height="100">

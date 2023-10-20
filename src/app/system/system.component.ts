@@ -23,6 +23,7 @@ export class SystemComponent implements OnInit, OnChanges {
   numIterationsToExecute: number   = 1
   numIterationsToGo:      number
   backendErrorMessage:    string   = ""
+  showSystemState:        boolean  = false
   
   constructor( private bas: BackendApiService,
                private wof: WorkorderFeederService ) { }
@@ -176,6 +177,7 @@ export class SystemComponent implements OnInit, OnChanges {
       this.systemState$ = this.bas.systemStateOnInitialization(this.objFromJsonFile).pipe(
         catchError((err: any) => {
           this.backendErrorMessage = "*** ERROR: " + err.error.message
+          this.showSystemState = false
           return throwError(() => new Error("*** ERROR: " + err.error.message))
         })
       )
@@ -185,6 +187,7 @@ export class SystemComponent implements OnInit, OnChanges {
         this.calcSizeOfUiBoxes() 
         this.backendErrorMessage = ""
       })
+      this.showSystemState = true
   }
   
   private fetchSystemStatistics() {
