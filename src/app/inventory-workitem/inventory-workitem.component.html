@@ -1,2 +1,9 @@
 
-<div class="workitem" [style]="'background-color:' + rgbColorString"> {{ wi.id }} </div>
+<div class="workitem" [style]="'background-color:' + rgbColorString"> 
+    {{ wi.id }} 
+    <span class="workitemdetails">
+        #{{ wi.id }}:<br/>
+        accum. effort:{{ wi.accumulatedEffort }}<br/>
+        elapsed time:{{ wi.elapsedTime }}
+    </span>
+</div>

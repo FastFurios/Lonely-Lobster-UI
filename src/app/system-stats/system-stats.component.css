@@ -25,7 +25,6 @@
     font-size: small; 
   }
 
-
 .system-stat-name {
     text-align: left;
 }
@@ -39,12 +38,12 @@
   font-size: small;
 }
 
-
-
 .tooltip {
   position: relative;
   display: inline-block;
+/*
   border-bottom: 1px dotted black;
+*/
 }
 
 .tooltip .tooltiptext {
@@ -77,5 +76,5 @@
 
 .tooltip:hover .tooltiptext {
   visibility: visible;
-  opacity: 0.5;
+  opacity: 0.8;
 }
