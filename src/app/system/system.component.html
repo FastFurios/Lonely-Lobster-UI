@@ -8,7 +8,15 @@
         <img src="../../../assets/LonelyLobster.jfif" alt="Lonely Lobster" height="100">
  
         <div>
-            <div><strong>Lonely Lobster</strong></div>
+            <div>
+                <div class="app-title">
+                    <div>Lonely Lobster</div>
+                    <div class=version>
+                        <div class="version">backend: v{{ systemState.version  }}</div>
+                        <div class="version">frontend: v{{ version  }}</div>
+                    </div>
+                </div>
+            </div>
             <div> System: "<strong>{{ systemState.id }}</strong>"</div>
             <div>Time: {{ systemState.time }} </div>
 

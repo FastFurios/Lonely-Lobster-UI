@@ -4,6 +4,7 @@ import { BackendApiService } from '../shared/backend-api.service'
 import { TimeUnit, I_SystemState, I_SystemStatistics, I_ValueChainStatistics, ObExtended, PsWorkerUtilization, ValueChainId, VcExtended } from "../shared/io_api_definitions"
 import { WorkorderFeederService } from '../shared/workorder-feeder.service'
 import { UiBoxSize, UiBoxMarginToWindow, UiSystemHeaderHeight, UiWorkerStatsHeight } from '../shared/ui-boxes-definitions'
+import { environment } from '../../environments/environment.prod'
 
 @Component({
   selector: 'app-system',
@@ -24,6 +25,7 @@ export class SystemComponent implements OnInit, OnChanges {
   numIterationsToGo:      number
   backendErrorMessage:    string   = ""
   showSystemState:        boolean  = false
+  version                          = environment.version
   
   constructor( private bas: BackendApiService,
                private wof: WorkorderFeederService ) { }

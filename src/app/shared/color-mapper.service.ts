@@ -18,13 +18,13 @@ class ObjectTypeAndIdToCssColorMap<KObj, KId, V> extends Map<[KObj, KId], V> {
     }
 }
 
-
 const cssColorList: CssColorList = [ 
   [255, 200, 200],  // faint red
   [200, 255, 200],  // faint green 
-  [200, 200, 255]   // faint blue
+  [200, 200, 255],  // faint blue
+  [215, 145, 215],  // faint purple
+  [215, 195, 215]   // faint gold
 ]
-
 
 @Injectable({
   providedIn: 'root'
