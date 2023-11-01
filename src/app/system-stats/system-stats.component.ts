@@ -18,7 +18,7 @@ const enum TextColors {
   fresh = "color: black",
   stale = "color: grey"
 }
-const defaultInterval: TimeUnit = 10  // 0 = Interval begins at time = 0; >0 = trailing time window size  
+const defaultInterval: TimeUnit = 0  // 0 = Interval begins at time = 0; >0 = trailing time window size  
 
 @Component({
   selector: 'app-system-stats',
@@ -29,9 +29,9 @@ export class SystemStatsComponent implements OnInit {
   @Input() systemStatistics:       I_SystemStatistics
   @Input() systemTime:             Timestamp
   @Input() statsAreUpToDate:       boolean
+  @Input() interval:               TimeUnit               
   @Output() intervalEventEmitter = new EventEmitter<TimeUnit>()
   prettifiedStats:                 ObInventoryStatisticsDisplay
-  interval                       = defaultInterval 
   textColor                      = TextColors.stale
   
   constructor() { }

@@ -41,7 +41,7 @@
             <app-workers-stats [wosStats]="systemState.workersState" ></app-workers-stats>
         </div>
         <div>
-            <app-system-stats [systemStatistics]="systemStatistics" [systemTime]="systemState.time" [statsAreUpToDate]="statsAreUpToDate" (intervalEventEmitter)="changedStatsIntervalHandler($event)"></app-system-stats>
+            <app-system-stats [systemStatistics]="systemStatistics" [systemTime]="systemState.time" [statsAreUpToDate]="statsAreUpToDate" [interval]="statsInterval" (intervalEventEmitter)="changedStatsIntervalHandler($event)"></app-system-stats>
         </div>
     </div>
     <div>

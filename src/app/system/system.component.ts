@@ -19,7 +19,7 @@ export class SystemComponent implements OnInit, OnChanges {
   vcsExtended:            VcExtended[] 
   obExtended:             ObExtended
   statsAreUpToDate:       boolean  = false
-  statsInterval:          TimeUnit = 10 
+  statsInterval:          TimeUnit = 0 // from t=1 to now 
   numValueChains:         number
   numIterationsToExecute: number   = 1
   numIterationsToGo:      number
@@ -60,6 +60,7 @@ export class SystemComponent implements OnInit, OnChanges {
   }
 
   public iterateNextStates(): void {
+    this.statsAreUpToDate = false
     this.systemState$ = this.bas.nextSystemStateOnInput(this.wof.iterationRequestForAllVcs())
     this.systemState$.subscribe(systemState => this.processIteration(systemState))
   }
@@ -109,7 +110,6 @@ export class SystemComponent implements OnInit, OnChanges {
   public runIterationsHandler() {
     this.numIterationsToGo = this.numIterationsToExecute
     this.iterateNextStates()
-    this.statsAreUpToDate = false
   }
   
   public stopIterationsHandler() {
@@ -126,7 +126,6 @@ export class SystemComponent implements OnInit, OnChanges {
 
   public changedStatsIntervalHandler(interval: TimeUnit) {
     this.statsInterval = interval
-    this.statsAreUpToDate = false
     this.fetchSystemStatistics()
   }
 
