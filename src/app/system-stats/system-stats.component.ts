@@ -62,7 +62,7 @@ export class SystemStatsComponent implements OnInit {
             left  = roundedTo2decs.split(".")[0]
             right = roundedTo2decs.split(".")[1]
         }
-        return left + "." + right.padEnd(2 - right.length, "0")  
+        return left + "." + right.padEnd(2 /*- right.length*/, "0")  
     }
 
     this.prettifiedStats = 
