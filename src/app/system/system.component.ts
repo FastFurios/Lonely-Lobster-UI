@@ -170,11 +170,13 @@ export class SystemComponent implements OnInit, OnChanges {
       this.objFromJsonFile = JSON.parse(fileContent) 
       this.systemId = this.objFromJsonFile.system_id
       this.setOrResetSystem()
+      this.wof.initialize()
+
   }
 
   private setOrResetSystem() {
       this.numIterationsToGo = 0
-      this.wof.initialize()
+//    this.wof.initialize()  // no reset for manually changed feeder parameter
       this.systemState$ = this.bas.systemStateOnInitialization(this.objFromJsonFile).pipe(
         catchError((err: any) => {
           this.backendErrorMessage = "*** ERROR: " + err.error.message
