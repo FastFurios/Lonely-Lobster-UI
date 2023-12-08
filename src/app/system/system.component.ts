@@ -5,6 +5,8 @@ import { TimeUnit, I_SystemState, I_SystemStatistics, I_ValueChainStatistics, Ob
 import { WorkorderFeederService } from '../shared/workorder-feeder.service'
 import { UiBoxSize, UiBoxMarginToWindow, UiSystemHeaderHeight, UiWorkerStatsHeight } from '../shared/ui-boxes-definitions'
 import { environment } from '../../environments/environment.prod'
+import { ColorMapperService } from '../shared/color-mapper.service'
+import { cssColorListVc } from '../shared/inventory-layout'
 
 @Component({
   selector: 'app-system',
@@ -28,10 +30,13 @@ export class SystemComponent implements OnInit, OnChanges {
   version                          = environment.version
   
   constructor( private bas: BackendApiService,
-               private wof: WorkorderFeederService ) { }
+               private wof: WorkorderFeederService,
+               private cms: ColorMapperService ) { }
 
   ngOnInit(): void {
     this.calcSizeOfUiBoxes()
+    this.cms.addCategory("valuechain", cssColorListVc)
+    this.cms.showAllAssignedColors()
   }
  
   ngOnChanges(): void {

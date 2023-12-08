@@ -1,5 +1,14 @@
 // helper functions to build a proper PsInventory from a list of workitems and their stats  
 import { ValueChainId, Effort, Value, RgbColor, I_WorkItem } from "./io_api_definitions"
+import { CssColorList } from "./color-mapper.service"
+
+export const cssColorListVc: CssColorList = [ 
+  [255, 200, 200],  // faint red
+  [200, 255, 200],  // faint green 
+  [200, 200, 255],  // faint blue
+  [215, 145, 215],  // faint purple
+  [215, 195, 215]   // faint gold
+]
 
 export type PsInventoryWi = {
     id:                number,

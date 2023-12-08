@@ -18,7 +18,7 @@ export class ValueChainComponent implements OnInit, OnChanges {
   workitemStats:        I_WorkItemStatistics | undefined
   pssExtended:          PsExtended[]
   vcFlowStats:          I_FlowStats
-  valueChainColor:      RgbColor
+  valueChainColor:      RgbColor | undefined
 
   constructor(private cms: ColorMapperService,
               private wof: WorkorderFeederService) { }
@@ -37,7 +37,10 @@ export class ValueChainComponent implements OnInit, OnChanges {
         }
       }
     }
-    this.valueChainColor = this.cms.colorOfObject(["value-chain", this.vcExtended.vc.id])
+    this.valueChainColor = this.cms.colorOfObject("valuechain", this.vcExtended.vc.id)
+//    this.cms.showAllAssignedColors()
+
+    //console.log("ValueChainComponent: ngOnInit(): this.valueChainColor = " + this.cms.colorOfObject("value-chain", this.vcExtended.vc.id))
     this.calcSizeOfProcessStepBox()  
   }
 

@@ -23,7 +23,7 @@ export class OutputBasketComponent implements OnInit, OnChanges {
               .map(wi =>  { 
                             return  { 
                                       ...wi,
-                                      rgbColor: this.cms.colorOfObject(["value-chain", wi.valueChainId])
+                                      rgbColor: this.cms.colorOfObject("valuechain", wi.valueChainId)
                                     }
                           })
     this.calcSizeOfInventoryBox()
