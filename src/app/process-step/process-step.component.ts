@@ -20,7 +20,7 @@ export class ProcessStepComponent implements OnInit, OnChanges {
     this.wis = this.psExtended.ps.workItems.map(wi =>  { 
       return  { 
                 ...wi,
-                rgbColor: this.cms.colorOfObject("valuechain", wi.valueChainId)
+                rgbColor: this.cms.colorOfObject("value-chain", wi.valueChainId)
               }
     })
     this.calcSizeOfUiBoxes()

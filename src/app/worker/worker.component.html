@@ -4,5 +4,7 @@
     <div *ngFor="let woAss of woStats.assignments">
          {{ woAss.valueChain }}.{{ woAss.processStep }} 
     </div>
-
+    <div class="strategyWeights" [style]="'width: 150px'" *ngFor="let woWeigthColorSest of woWeigthColorSests">
+        <div class="strategyWeightProportional" [style]="'flex-grow:' + woWeigthColorSest.weight + '; background-color:' + woWeigthColorSest.color">.</div>
+    </div>
 </div>

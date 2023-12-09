@@ -12,3 +12,15 @@
   font-size: x-small; 
   text-align: center;
 }
+
+
+.strategyWeights {
+  display: flex;
+  flex-direction: row;
+}
+
+.strategyWeightProportional {
+  flex-shrink: 1;
+  flex-basis: auto;
+}
+

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, Input, SimpleChanges } from '@angular/core'
+import { Component, OnInit, OnChanges, Input } from '@angular/core'
 import { ProcessStepId, PsWorkerUtilization, PsExtended, VcExtended, I_ProcessStepStatistics, WorkerWithUtilization, I_WorkItemStatistics } from '../shared/io_api_definitions'
 import { ColorMapperService, RgbColor } from '../shared/color-mapper.service'
 import { WorkorderFeederService, VcFeederParms } from '../shared/workorder-feeder.service'
@@ -37,10 +37,7 @@ export class ValueChainComponent implements OnInit, OnChanges {
         }
       }
     }
-    this.valueChainColor = this.cms.colorOfObject("valuechain", this.vcExtended.vc.id)
-//    this.cms.showAllAssignedColors()
-
-    //console.log("ValueChainComponent: ngOnInit(): this.valueChainColor = " + this.cms.colorOfObject("value-chain", this.vcExtended.vc.id))
+    this.valueChainColor = this.cms.colorOfObject("value-chain", this.vcExtended.vc.id)
     this.calcSizeOfProcessStepBox()  
   }
 
@@ -78,7 +75,7 @@ export class ValueChainComponent implements OnInit, OnChanges {
   private workersWithUtilOfProcessStep(ps: ProcessStepId): WorkerWithUtilization[] {
     return this.vcExtended.wosUtil.filter((woUtil: PsWorkerUtilization) => woUtil.assignedProcessSteps.some(_ps => _ps == ps))
                                         .map((woUtil: PsWorkerUtilization) => { 
-                                          return  { worker:               woUtil.worker, 
-                                                    utilization:          woUtil.utilization }})
+                                          return  { worker:                     woUtil.worker, 
+                                                    utilization:                woUtil.utilization}})
   }
 }

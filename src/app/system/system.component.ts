@@ -35,7 +35,7 @@ export class SystemComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.calcSizeOfUiBoxes()
-    this.cms.addCategory("valuechain", cssColorListVc)
+    this.cms.addCategory("value-chain", cssColorListVc)
     this.cms.showAllAssignedColors()
   }
  
@@ -49,6 +49,7 @@ export class SystemComponent implements OnInit, OnChanges {
 
   private processIteration(systemState: I_SystemState) {
     this.systemState = systemState 
+    //console.log("system-processIteration(): this.systemState = "); console.log(this.systemState)
     this.calcSizeOfUiBoxes()
     this.updateVcsExtended()
     this.updateObExtended()  
@@ -99,9 +100,10 @@ export class SystemComponent implements OnInit, OnChanges {
 
   private workersUtilOfValueChain(vcId: ValueChainId): PsWorkerUtilization[] {
     return this.systemState.workersState.filter(woSt => woSt.assignments.some(vcPs => vcPs.valueChain == vcId))
-                                        .map(woSt => { return { worker:               woSt.worker, 
-                                                                utilization:          woSt.utilization,
-                                                                assignedProcessSteps: woSt.assignments.map(vcPs => vcPs.processStep)}})
+                                        .map(woSt => { return { worker:                     woSt.worker, 
+                                                                utilization:                woSt.utilization,
+                                                                assignedProcessSteps:       woSt.assignments.map(vcPs => vcPs.processStep),
+                                                                selectionStrategiesWeights: woSt.weightedSelectionStrategies}})
   }
 
   private flowStatsOfValueChain(vcId: ValueChainId): I_ValueChainStatistics | undefined {

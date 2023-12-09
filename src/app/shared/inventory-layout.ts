@@ -2,13 +2,27 @@
 import { ValueChainId, Effort, Value, RgbColor, I_WorkItem } from "./io_api_definitions"
 import { CssColorList } from "./color-mapper.service"
 
-export const cssColorListVc: CssColorList = [ 
+export const cssColorListVc: CssColorList = [   // coloring workitems in a value chain
   [255, 200, 200],  // faint red
   [200, 255, 200],  // faint green 
   [200, 200, 255],  // faint blue
   [215, 145, 215],  // faint purple
   [215, 195, 215]   // faint gold
 ]
+
+export const cssColorListSest: CssColorList = [  // coloring workitem selection strategies of a worker
+  [255,   0,   0],  // red
+  [  0, 255,   0],  // green 
+  [  0,   0, 255],  // blue
+  [128,   0, 128],  // purple
+  [255, 165,   0],  // orange
+  [255, 255,   0]   // yellow
+]
+
+export function rgbColorToCssString(rgbColor: RgbColor): string {
+  return `rgb(${rgbColor[0]}, ${rgbColor[1]}, ${rgbColor[2]})`
+}
+
 
 export type PsInventoryWi = {
     id:                number,
