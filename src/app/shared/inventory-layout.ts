@@ -19,10 +19,13 @@ export const cssColorListSest: CssColorList = [  // coloring workitem selection 
   [255, 255,   0]   // yellow
 ]
 
+export function textColorAgainstBackground(bgColor: RgbColor): RgbColor {
+  return bgColor[0] * 1.1 + bgColor[1] + bgColor[2] * 1.1 > 255 ? [255, 255, 255] : [0, 0, 0]   
+} 
+
 export function rgbColorToCssString(rgbColor: RgbColor): string {
   return `rgb(${rgbColor[0]}, ${rgbColor[1]}, ${rgbColor[2]})`
 }
-
 
 export type PsInventoryWi = {
     id:                number,

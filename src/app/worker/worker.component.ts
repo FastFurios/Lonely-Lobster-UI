@@ -4,7 +4,7 @@ import { ColorMapperService } from '../shared/color-mapper.service'
 import { rgbColorToCssString } from '../shared/inventory-layout'
 
 type WeightedColoredSelectionStrategy = I_WeightedSelectionStrategy & {
-  color: string // string with css color codes 
+  backgroundColor: string // string with css color codes 
 }
 
 @Component({
@@ -29,7 +29,8 @@ export class WorkerComponent implements OnChanges {
     this.woWeigthColorSests   = this.woStats.weightedSelectionStrategies.map(wsest => { 
       return {
         ...wsest,
-        color: rgbColorToCssString(this.cms.colorOfObject("selection-strategy", wsest.id)!)
+        backgroundColor: rgbColorToCssString(this.cms.colorOfObject("selection-strategy", wsest.id)!)
       }})  
+      //console.log("Worker: ngOnChanges(): thiswoWeigthColorSests = " + this.woStats.worker + ": " + this.woWeigthColorSests.map(wcs => `${wcs.id}: ${wcs.color}, ${wcs.weight}`))
   }
 }

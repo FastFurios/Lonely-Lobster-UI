@@ -17,10 +17,16 @@
 .strategyWeights {
   display: flex;
   flex-direction: row;
+  width: 70px;
 }
 
 .strategyWeightProportional {
   flex-shrink: 1;
   flex-basis: auto;
+}
+
+.colorLegend {
+  display: flex;
+  flex-direction: column;
 }
 

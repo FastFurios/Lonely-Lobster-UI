@@ -36,7 +36,6 @@ export class SystemComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.calcSizeOfUiBoxes()
     this.cms.addCategory("value-chain", cssColorListVc)
-    this.cms.showAllAssignedColors()
   }
  
   ngOnChanges(): void {
@@ -178,15 +177,13 @@ export class SystemComponent implements OnInit, OnChanges {
       this.systemId = this.objFromJsonFile.system_id
       this.setOrResetSystem()
       this.wof.initialize()
-
   }
 
   private setOrResetSystem() {
       this.numIterationsToGo = 0
-//    this.wof.initialize()  // no reset for manually changed feeder parameter
       this.systemState$ = this.bas.systemStateOnInitialization(this.objFromJsonFile).pipe(
         catchError((err: any) => {
-          this.backendErrorMessage = "*** ERROR: " + err.error.message
+          this.backendErrorMessage = "*** ERROR: could not reach backend" // + err.error.message
           this.showSystemState = false
           return throwError(() => new Error("*** ERROR: " + err.error.message))
         })

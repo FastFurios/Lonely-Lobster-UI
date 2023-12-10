@@ -19,8 +19,10 @@ class ColorDispenser {
   }
 }
 
-class ObjectColorMap extends Map<ColoringCategory, RgbColor> {
-  constructor(private colDisp: ColorDispenser) { super() }
+export class ObjectColorMap extends Map<ColoringCategory, RgbColor> {
+  constructor(private colDisp: ColorDispenser) { 
+    super() 
+  }
 
   public color(id: ObjectId): RgbColor {
     let color = this.get(id)
@@ -47,9 +49,7 @@ export class ColorMapperService extends Map<ColoringCategory, ObjectColorMap> {
     return this.get(cat)?.color(obj)
   }
 
-  public showAllAssignedColors(): void {
-    for(let e of this) {
-      e.forEach((cat, _, ocm) => console.log(cat + ", ocm=" + ocm.forEach((id, col) => id + ": " + col)))
-    }
+  public allAssignedColors(cat: ColoringCategory): ObjectColorMap | undefined {
+    return this.get(cat)
   }
 }
