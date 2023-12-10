@@ -20,7 +20,7 @@ export const cssColorListSest: CssColorList = [  // coloring workitem selection 
 ]
 
 export function textColorAgainstBackground(bgColor: RgbColor): RgbColor {
-  return bgColor[0] * 1.1 + bgColor[1] + bgColor[2] * 1.1 > 255 ? [255, 255, 255] : [0, 0, 0]   
+  return bgColor[0] + bgColor[1] * 1.2 + bgColor[2] < 300 ? [255, 255, 255] : [0, 0, 0]   
 } 
 
 export function rgbColorToCssString(rgbColor: RgbColor): string {
