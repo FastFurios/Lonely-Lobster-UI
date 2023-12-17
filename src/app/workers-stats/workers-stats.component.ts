@@ -1,7 +1,6 @@
-import { Component, AfterViewInit, OnChanges, Input } from '@angular/core'
+import { Component, AfterContentChecked, OnChanges, Input } from '@angular/core'
 import { I_WorkerState } from '../shared/io_api_definitions'
-import { ColorMapperService, ObjectColorMap } from '../shared/color-mapper.service'
-import { cssColorListSest } from '../shared/inventory-layout'
+import { ColorMapperService } from '../shared/color-mapper.service'
 import { rgbColorToCssString, textColorAgainstBackground } from '../shared/inventory-layout'
 
 type ColorLegendItem = {
@@ -15,31 +14,37 @@ type ColorLegendItem = {
   templateUrl: './workers-stats.component.html',
   styleUrls: ['./workers-stats.component.css']
 })
-export class WorkersStatsComponent implements AfterViewInit, OnChanges {
-  @Input() wosStats: I_WorkerState[]
-  colorLegend: ColorLegendItem[] = []
+export class WorkersStatsComponent implements AfterContentChecked, OnChanges {
+  @Input() wosStats:      I_WorkerState[]
+  colorLegend:            ColorLegendItem[] = []
 
-  constructor(private cms: ColorMapperService) { 
-    cms.addCategory("selection-strategy", cssColorListSest)
+  constructor(private cms: ColorMapperService) { }
+  ngAfterContentChecked(): void { 
+    if (this.cms.get("selection-strategy")?.changed()) this.fillColorLegend()
   }
 
-  ngAfterViewInit(): void {
+  ngOnChanges(): void {
+    this.wosStats = this.wosStats.sort((a, b) => a.worker < b.worker ? -1 : 1)
+    if (this.cms.get("selection-strategy")?.changed()) this.fillColorLegend()
+  }
+
+  private fillColorLegend(): void {
     const objColMap = this.cms.allAssignedColors("selection-strategy")
     if (!objColMap) {
+      console.log("WorkerStats: fillColorLegend(): objColMap is undefined")
       return
     }
-    console.log("WorkerStats: ngOnInit(): objColMap.size = " + objColMap.size)
+    this.colorLegend = []
     for (let e of objColMap.entries()) {
       this.colorLegend.push({ 
         id:               e[0], 
         backgroundColor:  rgbColorToCssString(e[1]),
         textColor:        rgbColorToCssString(textColorAgainstBackground(e[1]))
       } )  
-
     }
   }
 
-  ngOnChanges(): void {
-    this.wosStats = this.wosStats.sort((a, b) => a.worker < b.worker ? -1 : 1)
-  }
+
+
+
 }

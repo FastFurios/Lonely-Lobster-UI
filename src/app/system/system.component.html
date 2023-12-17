@@ -38,7 +38,7 @@
             </button>
         </div>    
         <div>
-            <app-workers-stats [wosStats]="systemState.workersState" ></app-workers-stats>
+            <app-workers-stats [wosStats]="systemState.workersState"></app-workers-stats>
         </div>
         <div>
             <app-system-stats [systemStatistics]="systemStatistics" [systemTime]="systemState.time" [statsAreUpToDate]="statsAreUpToDate" [interval]="statsInterval" (intervalEventEmitter)="changedStatsIntervalHandler($event)"></app-system-stats>

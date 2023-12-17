@@ -24,11 +24,20 @@ export class ObjectColorMap extends Map<ColoringCategory, RgbColor> {
     super() 
   }
 
+  private changeAndResetChangeIndicatorState: boolean = true
+
+  public changed(): boolean {
+    let aux = this.changeAndResetChangeIndicatorState
+    this.changeAndResetChangeIndicatorState = false
+    return aux
+  }
+
   public color(id: ObjectId): RgbColor {
     let color = this.get(id)
     if (!color) {
       color = this.colDisp.nextColor
       this.set(id, color)
+      this.changeAndResetChangeIndicatorState = true
     }
     return color
   }
@@ -51,5 +60,10 @@ export class ColorMapperService extends Map<ColoringCategory, ObjectColorMap> {
 
   public allAssignedColors(cat: ColoringCategory): ObjectColorMap | undefined {
     return this.get(cat)
+  }
+
+  public changed(cat: ColoringCategory): boolean {
+    if (this.get(cat)) return this.get(cat)!.changed()
+    return false
   }
 }

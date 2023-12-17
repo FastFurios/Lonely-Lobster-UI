@@ -21,9 +21,9 @@ export class WorkerComponent implements OnChanges {
 
   ngOnChanges(): void {
     this.woUtil = {
-        worker:                       this.woStats.worker,
-        utilization:                  this.woStats.utilization
-      } 
+        worker:      this.woStats.worker,
+        utilization: this.woStats.utilization
+    } 
     this.woStats.worker       = this.woStats.worker.padEnd(20).substring(0, 10)
     this.woStats.utilization  = Math.round(this.woStats.utilization)
     this.woWeigthColorSests   = this.woStats.weightedSelectionStrategies.map(wsest => { 
@@ -31,6 +31,5 @@ export class WorkerComponent implements OnChanges {
         ...wsest,
         backgroundColor: rgbColorToCssString(this.cms.colorOfObject("selection-strategy", wsest.id)!)
       }})  
-      //console.log("Worker: ngOnChanges(): thiswoWeigthColorSests = " + this.woStats.worker + ": " + this.woWeigthColorSests.map(wcs => `${wcs.id}: ${wcs.color}, ${wcs.weight}`))
   }
 }

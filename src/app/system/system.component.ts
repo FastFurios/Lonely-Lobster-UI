@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, HostListener } from '@angular/core'
+import { Component, OnChanges, HostListener } from '@angular/core'
 import { Observable, catchError, throwError } from "rxjs"
 import { BackendApiService } from '../shared/backend-api.service'
 import { TimeUnit, I_SystemState, I_SystemStatistics, I_ValueChainStatistics, ObExtended, PsWorkerUtilization, ValueChainId, VcExtended } from "../shared/io_api_definitions"
@@ -6,38 +6,33 @@ import { WorkorderFeederService } from '../shared/workorder-feeder.service'
 import { UiBoxSize, UiBoxMarginToWindow, UiSystemHeaderHeight, UiWorkerStatsHeight } from '../shared/ui-boxes-definitions'
 import { environment } from '../../environments/environment.prod'
 import { ColorMapperService } from '../shared/color-mapper.service'
-import { cssColorListVc } from '../shared/inventory-layout'
+import { cssColorListVc, cssColorListSest } from '../shared/inventory-layout'
 
 @Component({
   selector: 'app-system',
   templateUrl: './system.component.html',
   styleUrls: ['./system.component.css']
 })
-export class SystemComponent implements OnInit, OnChanges {
-  systemState$:           Observable<I_SystemState> 
-  systemState:            I_SystemState
-  systemStatistics$:      Observable<I_SystemStatistics>
-  systemStatistics:       I_SystemStatistics
-  vcsExtended:            VcExtended[] 
-  obExtended:             ObExtended
-  statsAreUpToDate:       boolean  = false
-  statsInterval:          TimeUnit = 0 // from t=1 to now 
-  numValueChains:         number
-  numIterationsToExecute: number   = 1
-  numIterationsToGo:      number
-  backendErrorMessage:    string   = ""
-  showSystemState:        boolean  = false
-  version                          = environment.version
+export class SystemComponent implements OnChanges {
+  systemState$:             Observable<I_SystemState> 
+  systemState:              I_SystemState
+  systemStatistics$:        Observable<I_SystemStatistics>
+  systemStatistics:         I_SystemStatistics
+  vcsExtended:              VcExtended[] 
+  obExtended:               ObExtended
+  statsAreUpToDate:         boolean  = false
+  statsInterval:            TimeUnit = 0 // from t=1 to now 
+  numValueChains:           number
+  numIterationsToExecute:   number   = 1
+  numIterationsToGo:        number
+  backendErrorMessage:      string   = ""
+  showSystemState:          boolean  = false
+  version                            = environment.version
   
   constructor( private bas: BackendApiService,
                private wof: WorkorderFeederService,
                private cms: ColorMapperService ) { }
 
-  ngOnInit(): void {
-    this.calcSizeOfUiBoxes()
-    this.cms.addCategory("value-chain", cssColorListVc)
-  }
- 
   ngOnChanges(): void {
     this.calcSizeOfUiBoxes()
   }
@@ -175,15 +170,19 @@ export class SystemComponent implements OnInit, OnChanges {
   private parseAndInititalize(fileContent: string): void {
       this.objFromJsonFile = JSON.parse(fileContent) 
       this.systemId = this.objFromJsonFile.system_id
-      this.setOrResetSystem()
-      this.wof.initialize()
+      this.setOrResetSystem() // build the system
+      this.wof.initialize()   // initialize work order feeder  
+      // initialize color mapper:
+      this.cms.clear
+      this.cms.addCategory("value-chain",        cssColorListVc)
+      this.cms.addCategory("selection-strategy", cssColorListSest) 
   }
 
   private setOrResetSystem() {
       this.numIterationsToGo = 0
       this.systemState$ = this.bas.systemStateOnInitialization(this.objFromJsonFile).pipe(
         catchError((err: any) => {
-          this.backendErrorMessage = "*** ERROR: could not reach backend" // + err.error.message
+          this.backendErrorMessage = "*** ERROR: could not reach backend"
           this.showSystemState = false
           return throwError(() => new Error("*** ERROR: " + err.error.message))
         })
