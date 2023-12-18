@@ -1,4 +1,4 @@
-import { Component, OnChanges, Input } from '@angular/core'
+import { Component, OnChanges, Input, Output, EventEmitter } from '@angular/core'
 import { I_WorkerState, I_WeightedSelectionStrategy, WorkerWithUtilization } from '../shared/io_api_definitions'
 import { ColorMapperService } from '../shared/color-mapper.service'
 import { rgbColorToCssString } from '../shared/inventory-layout'
@@ -13,11 +13,21 @@ type WeightedColoredSelectionStrategy = I_WeightedSelectionStrategy & {
   styleUrls: ['./worker.component.css']
 })
 export class WorkerComponent implements OnChanges {
-  @Input() woStats:       I_WorkerState
+  @Input()  woStats:      I_WorkerState
+  @Output() signalGotColorsAssigned = new EventEmitter<string>()
   woUtil:                 WorkerWithUtilization
   woWeigthColorSests:     WeightedColoredSelectionStrategy[] 
 
   constructor(private cms: ColorMapperService) { }
+
+  ngOnInit(): void {
+    this.woWeigthColorSests   = this.woStats.weightedSelectionStrategies.map(wsest => { 
+      return {
+        ...wsest,
+        backgroundColor: rgbColorToCssString(this.cms.colorOfObject("selection-strategy", wsest.id)!)
+      }})  
+    this.signalGotColorsAssigned.emit(this.woStats.worker)
+  }
 
   ngOnChanges(): void {
     this.woUtil = {
@@ -26,10 +36,5 @@ export class WorkerComponent implements OnChanges {
     } 
     this.woStats.worker       = this.woStats.worker.padEnd(20).substring(0, 10)
     this.woStats.utilization  = Math.round(this.woStats.utilization)
-    this.woWeigthColorSests   = this.woStats.weightedSelectionStrategies.map(wsest => { 
-      return {
-        ...wsest,
-        backgroundColor: rgbColorToCssString(this.cms.colorOfObject("selection-strategy", wsest.id)!)
-      }})  
   }
 }

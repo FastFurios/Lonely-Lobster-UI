@@ -1,4 +1,4 @@
-import { Component, AfterContentChecked, OnChanges, Input } from '@angular/core'
+import { Component, OnChanges, Input } from '@angular/core'
 import { I_WorkerState } from '../shared/io_api_definitions'
 import { ColorMapperService } from '../shared/color-mapper.service'
 import { rgbColorToCssString, textColorAgainstBackground } from '../shared/inventory-layout'
@@ -14,18 +14,21 @@ type ColorLegendItem = {
   templateUrl: './workers-stats.component.html',
   styleUrls: ['./workers-stats.component.css']
 })
-export class WorkersStatsComponent implements AfterContentChecked, OnChanges {
-  @Input() wosStats:      I_WorkerState[]
-  colorLegend:            ColorLegendItem[] = []
+export class WorkersStatsComponent implements OnChanges {
+  @Input() wosStats:        I_WorkerState[]
+  colorLegend:              ColorLegendItem[] = []
+  numWorkerSignalsReceived: number = 0
 
   constructor(private cms: ColorMapperService) { }
-  ngAfterContentChecked(): void { 
-    if (this.cms.get("selection-strategy")?.changed()) this.fillColorLegend()
-  }
 
   ngOnChanges(): void {
-    this.wosStats = this.wosStats.sort((a, b) => a.worker < b.worker ? -1 : 1)
-    if (this.cms.get("selection-strategy")?.changed()) this.fillColorLegend()
+    this.wosStats = this.wosStats.sort((a, b) => a.worker < b.worker ? -1 : 1)  //sort workers by name asc
+  }
+
+  public workerGotColorsAssignedHandler(e: any): void {
+    this.numWorkerSignalsReceived++
+    if (this.numWorkerSignalsReceived >= this.wosStats.length)
+      this.fillColorLegend()
   }
 
   private fillColorLegend(): void {
@@ -43,8 +46,4 @@ export class WorkersStatsComponent implements AfterContentChecked, OnChanges {
       } )  
     }
   }
-
-
-
-
 }

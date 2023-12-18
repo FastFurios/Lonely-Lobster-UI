@@ -1,6 +1,6 @@
 <div class="workers-stats">
     <div *ngFor="let woStats of wosStats">
-        <app-worker [woStats]="woStats"></app-worker>
+        <app-worker [woStats]="woStats" (signalGotColorsAssigned)="workerGotColorsAssignedHandler($event)"></app-worker>
     </div>
     <div class="colorLegend">
         Strategies:

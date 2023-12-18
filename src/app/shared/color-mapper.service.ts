@@ -62,6 +62,13 @@ export class ColorMapperService extends Map<ColoringCategory, ObjectColorMap> {
     return this.get(cat)
   }
 
+  public allAssignedColorsAsArray(cat: ColoringCategory): [string, RgbColor][]  {
+    const arr: [string, RgbColor][] = []
+    if (!this.allAssignedColors(cat)) throw new Error("allAssignedColorsAsArray: this.allAssignedColors(" + cat + ") is undefined")
+    for (let e of this.allAssignedColors(cat)!) arr.push(e)
+    return arr
+  }
+
   public changed(cat: ColoringCategory): boolean {
     if (this.get(cat)) return this.get(cat)!.changed()
     return false

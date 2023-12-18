@@ -172,8 +172,7 @@ export class SystemComponent implements OnChanges {
       this.systemId = this.objFromJsonFile.system_id
       this.setOrResetSystem() // build the system
       this.wof.initialize()   // initialize work order feeder  
-      // initialize color mapper:
-      this.cms.clear
+      this.cms.clear  // initialize color mapper ...
       this.cms.addCategory("value-chain",        cssColorListVc)
       this.cms.addCategory("selection-strategy", cssColorListSest) 
   }
