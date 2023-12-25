@@ -27,8 +27,8 @@
                     id="numIteration" 
                     [(ngModel)] = "numIterationsToExecute">
 
-            <button type="button" class="submitButton" (click)="runIterationsHandler()" (keyup.enter)="runIterationsHandler()">
-                Run
+            <button type="button" class="submitButton" (click)="runResumeIterationsHandler()" (keyup.enter)="runResumeIterationsHandler()">
+                {{ runResumeButton }}
             </button>
             <button type="button" class="submitButton" (click)="stopIterationsHandler()">
                 Stop

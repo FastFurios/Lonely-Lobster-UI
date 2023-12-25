@@ -8,6 +8,11 @@ import { environment } from '../../environments/environment.prod'
 import { ColorMapperService } from '../shared/color-mapper.service'
 import { cssColorListVc, cssColorListSest } from '../shared/inventory-layout'
 
+enum RunResumeButton {
+  run    = "Run",
+  resume = "Resume"
+}
+
 @Component({
   selector: 'app-system',
   templateUrl: './system.component.html',
@@ -27,6 +32,9 @@ export class SystemComponent implements OnChanges {
   numIterationsToGo:        number
   backendErrorMessage:      string   = ""
   showSystemState:          boolean  = false
+  resumeRemainingIterations:number
+  runResumeButton                    = RunResumeButton.run
+
   version                            = environment.version
   
   constructor( private bas: BackendApiService,
@@ -108,17 +116,21 @@ export class SystemComponent implements OnChanges {
   // <button> and other handlers
   // ---------------------------------------------------------------------------------------
 
-  public runIterationsHandler() {
-    this.numIterationsToGo = this.numIterationsToExecute
+  public runResumeIterationsHandler() {
+    this.numIterationsToGo = this.runResumeButton == RunResumeButton.resume ? this.resumeRemainingIterations - 1 : this.numIterationsToExecute 
+    this.runResumeButton = RunResumeButton.run
     this.iterateNextStates()
   }
   
   public stopIterationsHandler() {
+    this.resumeRemainingIterations = Math.max(0, this.numIterationsToGo)
     this.numIterationsToGo = 0
+    this.runResumeButton = RunResumeButton.resume
   }
 
   public resetSystemHandler() {
     this.setOrResetSystem()
+    this.runResumeButton = RunResumeButton.run
   }
 
   public fetchStatisticsHandler() {
