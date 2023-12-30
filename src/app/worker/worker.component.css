@@ -24,9 +24,3 @@
   flex-shrink: 1;
   flex-basis: auto;
 }
-
-.colorLegend {
-  display: flex;
-  flex-direction: column;
-}
-

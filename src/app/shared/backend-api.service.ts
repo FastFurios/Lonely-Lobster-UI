@@ -3,7 +3,7 @@ import { environment } from '../../environments/environment'
 import { HttpClient, HttpErrorResponse } from '@angular/common/http'
 import { Observable, throwError } from "rxjs"
 import { catchError } from "rxjs/operators"
-import { I_IterationRequest, I_SystemState, I_SystemStatistics, TimeUnit } from './io_api_definitions'
+import { I_IterationRequest, I_SystemState, I_SystemStatistics, I_LearningStatsWorkers, TimeUnit } from './io_api_definitions'
 
 // --- service class --------------------
 
@@ -37,6 +37,14 @@ export class BackendApiService {
   
   public currentSystemStatistics(interval: TimeUnit): Observable<I_SystemStatistics> {
     return this.http.get<I_SystemStatistics>(this.API_URL + "statistics?interval=" + interval.toString(), { withCredentials: true } /*, {responseType: "json"}*/)
+        .pipe(
+          catchError((error: HttpErrorResponse) => this.errorHandler(error))
+        )
+  }
+
+  public learningStatistics(): Observable<I_LearningStatsWorkers> {
+    console.log("backend-api-service.learningStatitics()")
+    return this.http.get<I_LearningStatsWorkers>(this.API_URL + "learn-stats/", { withCredentials: true } /*, {responseType: "json"}*/)
         .pipe(
           catchError((error: HttpErrorResponse) => this.errorHandler(error))
         )

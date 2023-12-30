@@ -2,10 +2,5 @@
     <div *ngFor="let woStats of wosStats">
         <app-worker [woStats]="woStats" (signalGotColorsAssigned)="workerGotColorsAssignedHandler($event)"></app-worker>
     </div>
-    <div class="colorLegend">
-        Strategies:
-        <div *ngFor="let clitem of colorLegend">
-            <div [style]="'background-color:' + clitem.backgroundColor + '; color:' + clitem.textColor">{{clitem.id}}</div>
-        </div>
-    </div>
+    <app-color-legend *ngIf="showColorLegend" [colorCat]="'selection-strategy'"></app-color-legend>
 </div>

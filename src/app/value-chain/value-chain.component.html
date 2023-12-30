@@ -1,6 +1,7 @@
 <div class="value-chain" [style]="'height:' + vcBoxSize.height + 'px'">
     <div class="feeder-section">
         <h2> {{ vcExtended.vc.id }} </h2>
+        <h5>Value: {{ vcExtended.vc.totalValueAdd }}</h5> 
         <label for="throughput">Throughput:</label>
         <input type="number" class="inputFormNumber" id="throughput" name="throughput" min="0" step="0.1"
             required
@@ -13,6 +14,7 @@
             (change)="feedParmsInputHandler($event)">
         <app-flow-stats [workitemStats]="workitemStats" [displayVerbose]="true" [showTpv]="true"></app-flow-stats>
     </div>
+
     <div *ngFor="let psExtended of pssExtended">
             <app-process-step [psExtended]="psExtended" [psBoxSize]="psBoxSize"></app-process-step>
     </div>

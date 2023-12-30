@@ -6,6 +6,12 @@ export type ObjectType    = string
 export type ObjectId      = string
 export type ObjectIdToCssColorMap = Map<[ObjectType, ObjectId], RgbColor>  
 export type ColoringCategory = string
+export type ColorLegendItem = {
+  id:               string
+  backgroundColor:  string // CSS color string
+  textColor:        string // CSS color string
+}
+
 
 class ColorDispenser {
   private nextIndex: number = 0

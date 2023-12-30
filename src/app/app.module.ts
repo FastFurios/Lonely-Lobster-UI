@@ -3,7 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 
 
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
+import { RouterModule, Routes } from '@angular/router' // see https://www.samjulien.com/add-routing-existing-angular-project
 
 import { AppComponent } from './app.component';
 import { InventoryComponent } from './inventory/inventory.component';
@@ -21,6 +22,14 @@ import { TestChildComponent } from './test-child/test-child.component';
 import { WorkerStrainComponent } from './worker-strain/worker-strain.component';
 import { FlowStatsComponent } from './flow-stats/flow-stats.component';
 import { SystemStatsComponent } from './system-stats/system-stats.component';
+import { LearnStatsComponent } from './learn-stats/learn-stats.component';
+import { ColorLegendComponent } from './color-legend/color-legend.component';
+
+const routes: Routes = [
+  { path: 'simulate', component: SystemComponent },
+  { path: 'learn-stats', component: LearnStatsComponent },
+  { path: '', redirectTo: '/learn-stats', pathMatch: 'full'}
+]
 
 @NgModule({
   declarations: [
@@ -39,12 +48,16 @@ import { SystemStatsComponent } from './system-stats/system-stats.component';
     TestChildComponent,
     WorkerStrainComponent,
     FlowStatsComponent,
-    SystemStatsComponent
+    SystemStatsComponent,
+    LearnStatsComponent,
+    ColorLegendComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserModule, 
+    RouterModule.forRoot(routes)
   ],
   providers: [],
   bootstrap: [AppComponent]

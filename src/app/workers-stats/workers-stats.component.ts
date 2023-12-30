@@ -1,13 +1,6 @@
-import { Component, OnChanges, Input } from '@angular/core'
+import { Component, OnInit, OnChanges, Input } from '@angular/core'
 import { I_WorkerState } from '../shared/io_api_definitions'
-import { ColorMapperService } from '../shared/color-mapper.service'
-import { rgbColorToCssString, textColorAgainstBackground } from '../shared/inventory-layout'
-
-type ColorLegendItem = {
-  id:               string
-  backgroundColor:  string // CSS color string
-  textColor:        string // CSS color string
-}
+import { ColorMapperService, ColorLegendItem } from '../shared/color-mapper.service'
 
 @Component({
   selector: 'app-workers-stats',
@@ -17,33 +10,20 @@ type ColorLegendItem = {
 export class WorkersStatsComponent implements OnChanges {
   @Input() wosStats:        I_WorkerState[]
   colorLegend:              ColorLegendItem[] = []
-  numWorkerSignalsReceived: number = 0
+  numWorkerSignalsReceived: number            = 0
+  showColorLegend:          boolean           = false
 
   constructor(private cms: ColorMapperService) { }
 
+  ngOnInit(): void { }
+
   ngOnChanges(): void {
     this.wosStats = this.wosStats.sort((a, b) => a.worker < b.worker ? -1 : 1)  //sort workers by name asc
+    this.showColorLegend = false
   }
-
+  
   public workerGotColorsAssignedHandler(e: any): void {
     this.numWorkerSignalsReceived++
-    if (this.numWorkerSignalsReceived >= this.wosStats.length)
-      this.fillColorLegend()
-  }
-
-  private fillColorLegend(): void {
-    const objColMap = this.cms.allAssignedColors("selection-strategy")
-    if (!objColMap) {
-      console.log("WorkerStats: fillColorLegend(): objColMap is undefined")
-      return
-    }
-    this.colorLegend = []
-    for (let e of objColMap.entries()) {
-      this.colorLegend.push({ 
-        id:               e[0], 
-        backgroundColor:  rgbColorToCssString(e[1]),
-        textColor:        rgbColorToCssString(textColorAgainstBackground(e[1]))
-      } )  
-    }
+    this.showColorLegend = this.numWorkerSignalsReceived >= this.wosStats.length
   }
 }

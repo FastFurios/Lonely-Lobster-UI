@@ -1,0 +1,19 @@
+<h1>Learning Statistics</h1>
+<app-color-legend *ngIf="showColorLegend" [colorCat]="'selection-strategy'"></app-color-legend>
+<div class="workers-stats"> 
+    <div *ngFor="let coloredLearnStatsWorker of coloredLearnStatsWorkers">
+        <div class="worker-header">{{ coloredLearnStatsWorker.worker }}</div>
+        <div>
+            <ng-container *ngFor="let colWeightedSestsAtTimestamp of coloredLearnStatsWorker.series">
+                <div class="timestamp-stats">
+                    <div class="timestamp">{{ colWeightedSestsAtTimestamp.timestamp }}</div>
+                    <div class="strategyWeights">
+                        <ng-container *ngFor="let colSestNamesWithWeight of colWeightedSestsAtTimestamp.coloredSelectionStrategiesNamesWithWeights">
+                            <div class="strategyWeightProportional" [style]="'flex-grow:' + colSestNamesWithWeight.weight + '; background-color:' + colSestNamesWithWeight.backgroundColor + '; color:' + colSestNamesWithWeight.backgroundColor">.</div>
+                        </ng-container>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

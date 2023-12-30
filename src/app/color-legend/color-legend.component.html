@@ -1,0 +1,7 @@
+<div class="colorLegend">
+    Strategies:
+    <div *ngFor="let clitem of colorLegend">
+        <div [style]="'background-color:' + clitem.backgroundColor + '; color:' + clitem.textColor">{{clitem.id}}</div>
+    </div>
+</div>
+
