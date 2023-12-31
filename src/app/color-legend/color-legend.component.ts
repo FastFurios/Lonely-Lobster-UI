@@ -8,6 +8,7 @@ import { rgbColorToCssString, textColorAgainstBackground } from '../shared/inven
   styleUrls: ['./color-legend.component.css']
 })
 export class ColorLegendComponent implements OnInit {
+  @Input() reload:    boolean
   @Input() colorCat:  ColoringCategory
   colorLegend:        ColorLegendItem[]
   
@@ -15,6 +16,10 @@ export class ColorLegendComponent implements OnInit {
 
   ngOnInit(): void { 
     this.fillColorLegend() 
+  }
+
+  ngOnChanges(): void {
+    if (this.reload) this.fillColorLegend()
   }
 
   private fillColorLegend(): void {

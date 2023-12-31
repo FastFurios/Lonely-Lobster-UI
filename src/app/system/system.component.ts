@@ -32,7 +32,7 @@ export class SystemComponent implements OnChanges {
   numIterationsToGo:        number
   backendErrorMessage:      string   = ""
   showSystemState:          boolean  = false
-  //learnStatsUptodate:       boolean  = true
+  reloadLearnStatsLegend:   boolean  = false
   resumeRemainingIterations:number
   runResumeButton                    = RunResumeButton.run
 
@@ -205,6 +205,7 @@ export class SystemComponent implements OnChanges {
         this.processIteration(systemState) 
         this.calcSizeOfUiBoxes() 
         this.backendErrorMessage = ""
+        this.signalLearnStatsLegendToReload()
       })
       this.showSystemState = true
   }
@@ -217,6 +218,18 @@ export class SystemComponent implements OnChanges {
       this.updateObExtended()
       this.statsAreUpToDate = true
     })
+  }
+
+  // ---------------------------------------------------------------------------------------
+  // additional UI handling  
+  // ---------------------------------------------------------------------------------------
+  
+  private signalLearnStatsLegendToReload(): void {
+    this.reloadLearnStatsLegend = true
+    console.log("System.signalLearnStatsLegendToReload")
+    setTimeout(() => { 
+      console.log("System.signalLearnStatsLegendToReload setTimeout() this.reloadLearnStatsLegend = false")
+      this.reloadLearnStatsLegend = false }, 1000)  // ping the child component "LearnStats" that it should reload its color legend  
   }
 
   // ---------------------------------------------------------------------------------------
