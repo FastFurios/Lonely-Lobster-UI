@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 
 
 import { HttpClientModule } from '@angular/common/http';
-import { RouterModule, Routes } from '@angular/router' // see https://www.samjulien.com/add-routing-existing-angular-project
+//import { RouterModule, Routes } from '@angular/router' // see https://www.samjulien.com/add-routing-existing-angular-project
 
 import { AppComponent } from './app.component';
 import { InventoryComponent } from './inventory/inventory.component';
@@ -25,11 +25,13 @@ import { SystemStatsComponent } from './system-stats/system-stats.component';
 import { LearnStatsComponent } from './learn-stats/learn-stats.component';
 import { ColorLegendComponent } from './color-legend/color-legend.component';
 
+/*
 const routes: Routes = [
   { path: 'simulate', component: SystemComponent },
   { path: 'learn-stats', component: LearnStatsComponent },
-  { path: '', redirectTo: '/learn-stats', pathMatch: 'full'}
+  { path: '', redirectTo: '/simulate', pathMatch: 'full'}
 ]
+*/
 
 @NgModule({
   declarations: [
@@ -57,7 +59,7 @@ const routes: Routes = [
     FormsModule,
     HttpClientModule,
     BrowserModule, 
-    RouterModule.forRoot(routes)
+//  RouterModule.forRoot(routes)
   ],
   providers: [],
   bootstrap: [AppComponent]

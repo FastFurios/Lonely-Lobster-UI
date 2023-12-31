@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Observable, catchError, throwError } from "rxjs"
 import { BackendApiService } from '../shared/backend-api.service'
 import { I_LearningStatsWorkers, I_WeightedSelectionStrategy, Timestamp, WorkerName } from '../shared/io_api_definitions'
@@ -27,20 +27,30 @@ export type ColoredLearningStatsWorkers = ColoredLearningStatsWorker[]
   styleUrls: ['./learn-stats.component.css']
 })
 export class LearnStatsComponent implements OnInit {
-  learnStatsWorkers$:        Observable<I_LearningStatsWorkers>
-  learnStatsWorkers:         I_LearningStatsWorkers
-  coloredLearnStatsWorkers:  ColoredLearningStatsWorkers
-  showColorLegend:          boolean = true
+  //@Input() learnStatsUptodate:  boolean
+  learnStatsWorkers$:           Observable<I_LearningStatsWorkers>
+  learnStatsWorkers:            I_LearningStatsWorkers
+  coloredLearnStatsWorkers:     ColoredLearningStatsWorkers
+  showColorLegend:              boolean = true
+  statsStaleNotification:       string
 
 
   constructor(private bas: BackendApiService,
               private cms: ColorMapperService) {}
 
-  ngOnInit(): void {
-    //console.log("learn-stats.ngOnInit")
+  ngOnInit(): void { }
+
+  /*
+  ngOnChanges(): void { 
+    this.statsStaleNotification = "- displayed statistics are " + (this.learnStatsUptodate ? "up-to-date" : "outdated") + " -"
+  }
+  */
+
+  public updateLearnStatsHandler(): void {
     this.learnStatsWorkers$ = this.bas.learningStatistics()
     this.learnStatsWorkers$.subscribe(learnStatsWorkers => {
       this.learnStatsWorkers = learnStatsWorkers
+      this.learnStatsWorkers = this.learnStatsWorkers.sort((a, b) => a.worker < b.worker ? -1 : 1)  //sort workers by name asc
       this.colorLearnStatsWorkers()
     })
   }

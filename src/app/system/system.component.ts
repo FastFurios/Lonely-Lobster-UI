@@ -32,6 +32,7 @@ export class SystemComponent implements OnChanges {
   numIterationsToGo:        number
   backendErrorMessage:      string   = ""
   showSystemState:          boolean  = false
+  //learnStatsUptodate:       boolean  = true
   resumeRemainingIterations:number
   runResumeButton                    = RunResumeButton.run
 
@@ -119,6 +120,7 @@ export class SystemComponent implements OnChanges {
   public runResumeIterationsHandler() {
     this.numIterationsToGo = this.runResumeButton == RunResumeButton.resume ? this.resumeRemainingIterations - 1 : this.numIterationsToExecute 
     this.runResumeButton = RunResumeButton.run
+    //this.learnStatsUptodate = false
     this.iterateNextStates()
   }
   

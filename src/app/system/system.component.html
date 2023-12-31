@@ -12,7 +12,7 @@
                 <div class="app-title">
                     <div>Lonely Lobster</div>
                     <div class=version>
-                        <div class="version">backend: v{{ systemState.version  }}</div>
+                        <div class="version">backend: v{{ systemState.version }}</div>
                         <div class="version">frontend: v{{ version  }}</div>
                     </div>
                 </div>
@@ -46,23 +46,20 @@
     </div>
     <div>
         <div class="valueChainsAndOutputBasket" [style]="'height:' +  vcsBoxSize.height  + 'px'" >
-
             <div class="valueChains" [style]="'width:' + vcsBoxSize.width + 'px; height:' + vcsBoxSize.height + 'px' ">
-
                 <div *ngFor="let vcExtended of vcsExtended">
                     <app-value-chain [vcExtended]="vcExtended" [vcBoxSize]="vcBoxSize"></app-value-chain>
                 </div>
             </div>
-
-
             <div class="outputBasket" [style]="'width:' + obBoxSize.width + 'px; ' ">
                 <app-output-basket [obExtended]="obExtended" [obBoxSize]="obBoxSize"></app-output-basket>
             </div>
-
         </div>
- 
     </div>
-
+    <!--
+    <app-learn-stats [learnStatsUptodate]="learnStatsUptodate"></app-learn-stats>
+    -->
+    <app-learn-stats></app-learn-stats>
 </ng-container>
 
 <ng-template #loading>

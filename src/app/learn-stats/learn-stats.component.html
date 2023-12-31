@@ -1,6 +1,12 @@
-<h1>Learning Statistics</h1>
-<app-color-legend *ngIf="showColorLegend" [colorCat]="'selection-strategy'"></app-color-legend>
+<br/>
 <div class="workers-stats"> 
+    <button type="button" class="submitButton" (click)="updateLearnStatsHandler()">
+        Update Learning Statistics
+    </button>
+<!--    <div class="stats-stale">{{statsStaleNotification}}</div> -->
+</div>
+<div class="workers-stats"> 
+    <app-color-legend *ngIf="showColorLegend" [colorCat]="'selection-strategy'"></app-color-legend>
     <div *ngFor="let coloredLearnStatsWorker of coloredLearnStatsWorkers">
         <div class="worker-header">{{ coloredLearnStatsWorker.worker }}</div>
         <div>
