@@ -14,6 +14,7 @@ import { Injection } from "../shared/io_api_definitions"
 export class ValueChainComponent implements OnInit, OnChanges {
   @Input() vcExtended:  VcExtended
   @Input() vcBoxSize:   UiBoxSize
+  @Input() invVisible:  boolean
   feedParms:            Injection | undefined = undefined
   
   workitemStats:        I_WorkItemStatistics | undefined

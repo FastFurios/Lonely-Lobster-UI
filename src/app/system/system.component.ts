@@ -33,6 +33,7 @@ export class SystemComponent implements OnChanges {
   backendErrorMessage:      string   = ""
   showSystemState:          boolean  = false
   reloadLearnStatsLegend:   boolean  = false
+  invVisible:               boolean  = true
   resumeRemainingIterations:number
   runResumeButton                    = RunResumeButton.run
 

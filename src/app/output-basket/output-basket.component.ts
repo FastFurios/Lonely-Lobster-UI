@@ -12,6 +12,7 @@ export class OutputBasketComponent implements OnInit, OnChanges {
   @Input() ob:          I_OutputBasket // tbd
   @Input() obExtended:  ObExtended
   @Input() obBoxSize:   UiBoxSize
+  @Input() invVisible:  boolean
   wis:                  I_WorkItem[]
 
   constructor(private cms: ColorMapperService) { }

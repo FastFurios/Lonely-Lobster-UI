@@ -12,6 +12,7 @@ export class ProcessStepComponent implements OnInit, OnChanges {
   @Input() psExtended: PsExtended
   @Input() vcStats:    I_ProcessStepStatistics
   @Input() psBoxSize:  UiBoxSize
+  @Input() invVisible: boolean
   wis:                 I_WorkItem[]
 
   constructor(private cms: ColorMapperService) { }
@@ -29,6 +30,7 @@ export class ProcessStepComponent implements OnInit, OnChanges {
   ngOnChanges(): void {
     this.psExtended.wosUtil.sort((w1, w2) => w1.worker < w2.worker ? -1 : 1 )
     this.calcSizeOfUiBoxes()
+    console.log("processStep.ngOnChanges(): this.invVisible = " + this.invVisible)
   }
 
   // ----- (re-)sizing of childs' UI boxes  -------------

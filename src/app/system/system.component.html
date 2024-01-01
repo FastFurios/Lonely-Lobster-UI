@@ -19,7 +19,6 @@
             </div>
             <div> System: "<strong>{{ systemState.id }}</strong>"</div>
             <div>Time: {{ systemState.time }} </div>
-
             <label for="numIteration" class="iterations-selector">#iterations:</label>
             <input  type="number" 
                     class="inputFormNumber" 
@@ -43,16 +42,23 @@
         <div>
             <app-system-stats [systemStatistics]="systemStatistics" [systemTime]="systemState.time" [statsAreUpToDate]="statsAreUpToDate" [interval]="statsInterval" (intervalEventEmitter)="changedStatsIntervalHandler($event)"></app-system-stats>
         </div>
-    </div>
+        <div class="switch-label">
+            Show inventories: 
+            <label class="switch">
+                <input type="checkbox" [(ngModel)]="invVisible">
+                <span class="slider round"></span>
+            </label>
+        </div>
+</div>
     <div>
         <div class="valueChainsAndOutputBasket" [style]="'height:' +  vcsBoxSize.height  + 'px'" >
             <div class="valueChains" [style]="'width:' + vcsBoxSize.width + 'px; height:' + vcsBoxSize.height + 'px' ">
                 <div *ngFor="let vcExtended of vcsExtended">
-                    <app-value-chain [vcExtended]="vcExtended" [vcBoxSize]="vcBoxSize"></app-value-chain>
+                    <app-value-chain [vcExtended]="vcExtended" [vcBoxSize]="vcBoxSize" [invVisible]="invVisible"></app-value-chain>
                 </div>
             </div>
             <div class="outputBasket" [style]="'width:' + obBoxSize.width + 'px; ' ">
-                <app-output-basket [obExtended]="obExtended" [obBoxSize]="obBoxSize"></app-output-basket>
+                <app-output-basket [obExtended]="obExtended" [obBoxSize]="obBoxSize" [invVisible]="invVisible"></app-output-basket>
             </div>
         </div>
     </div>

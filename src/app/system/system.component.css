@@ -63,3 +63,7 @@
     color: grey;
     text-align: left;
   }
+
+  .switch-label {
+    font-size: small;
+  } 
