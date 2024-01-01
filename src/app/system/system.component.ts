@@ -195,7 +195,7 @@ export class SystemComponent implements OnChanges {
       this.numIterationsToGo = 0
       this.systemState$ = this.bas.systemStateOnInitialization(this.objFromJsonFile).pipe(
         catchError((err: any) => {
-          this.backendErrorMessage = "*** ERROR: could not reach backend"
+          this.backendErrorMessage = "*** ERROR: could not reach backend or error in the backend"
           this.showSystemState = false
           return throwError(() => new Error("*** ERROR: " + err.error.message))
         })

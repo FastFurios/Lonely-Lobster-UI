@@ -1,9 +1,10 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core'
 import { ProcessStepId, PsWorkerUtilization, PsExtended, VcExtended, I_ProcessStepStatistics, WorkerWithUtilization, I_WorkItemStatistics } from '../shared/io_api_definitions'
 import { ColorMapperService, RgbColor } from '../shared/color-mapper.service'
-import { WorkorderFeederService, VcFeederParms } from '../shared/workorder-feeder.service'
+import { WorkorderFeederService  } from '../shared/workorder-feeder.service'
 import { UiBoxSize, UiVcBoxLeftMargin} from '../shared/ui-boxes-definitions'
 import { I_FlowStats } from '../shared/flow-stats-definitions'
+import { Injection } from "../shared/io_api_definitions"
 
 @Component({
   selector: 'app-value-chain',
@@ -13,7 +14,7 @@ import { I_FlowStats } from '../shared/flow-stats-definitions'
 export class ValueChainComponent implements OnInit, OnChanges {
   @Input() vcExtended:  VcExtended
   @Input() vcBoxSize:   UiBoxSize
-  feedParms:            VcFeederParms | undefined = undefined // { avgInjectionThroughput: 0, injectProbability: 0 }
+  feedParms:            Injection | undefined = undefined
   
   workitemStats:        I_WorkItemStatistics | undefined
   pssExtended:          PsExtended[]
@@ -25,16 +26,13 @@ export class ValueChainComponent implements OnInit, OnChanges {
  
   ngOnInit(): void {
     if (this.feedParms) {
-      this.wof.setParms(this.vcExtended.vc.id, this.feedParms.avgInjectionThroughput, this.feedParms.injectProbability)
+      this.wof.setParms(this.vcExtended.vc.id, this.feedParms)
     }
     else {
       this.feedParms = this.wof.getParms(this.vcExtended.vc.id)
       if (!this.feedParms) {
-        this.wof.setParms(this.vcExtended.vc.id, this.vcExtended.vc.injectionThroughput, 1)
-        this.feedParms = { 
-          avgInjectionThroughput: this.vcExtended.vc.injectionThroughput, 
-          injectProbability:      1 
-        }
+        this.wof.setParms(this.vcExtended.vc.id, this.vcExtended.vc.injection)
+        this.feedParms = this.vcExtended.vc.injection
       }
     }
     this.valueChainColor = this.cms.colorOfObject("value-chain", this.vcExtended.vc.id)
@@ -53,7 +51,7 @@ export class ValueChainComponent implements OnInit, OnChanges {
   }
   
   feedParmsInputHandler(e: Event) {
-    this.wof.setParms(this.vcExtended.vc.id, this.feedParms!.avgInjectionThroughput, this.feedParms!.injectProbability)
+    this.wof.setParms(this.vcExtended.vc.id, this.feedParms!)
   }
 
   private flowStatsOfProcessStep(psId: ProcessStepId): I_ProcessStepStatistics | undefined {
