@@ -4,15 +4,15 @@
     width: 15px;
   }
   
-  .inventory-column-empty {
-    width: 15px;
-    border: 1px ridge solid-white;
-  }
+.inventory-column-empty {
+  width: 15px;
+  border: 1px ridge solid-white;
+}
+
+.excess-workitem-number-y {
+  color: red;
+  font-weight: bold;
+  border-bottom: 3px solid red;
+}
   
-  .excess-workitem-number-y {
-    color: red;
-    font-weight: bold;
-    border-bottom: 3px solid red;
-  }
-   
   
