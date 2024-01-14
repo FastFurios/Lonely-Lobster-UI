@@ -22,7 +22,7 @@ export class InventoryWorkitemComponent implements OnInit {
 
   private darkenedByEffort(): RgbColor {
     const darkeningRange: number = Math.min(...this.wi.rgbColor)
-    const darkeningStep:  number = this.wi.accumulatedEffort / this.wi.maxEffort * darkeningRange
+    const darkeningStep:  number = this.wi.maxEffort > 0 ? this.wi.accumulatedEffort / this.wi.maxEffort * darkeningRange : 0
     return <RgbColor>this.wi.rgbColor.map(ch => Math.round(ch - darkeningStep))
   }
 }

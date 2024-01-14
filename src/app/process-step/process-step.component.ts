@@ -14,7 +14,7 @@ export class ProcessStepComponent implements OnInit, OnChanges {
   @Input() psBoxSize:  UiBoxSize
   @Input() invVisible: boolean
   wis:                 I_WorkItem[]
-  wipLimitDisplay:          string
+  wipLimitDisplay:     string
 
   constructor(private cms: ColorMapperService) { }
 
@@ -25,7 +25,6 @@ export class ProcessStepComponent implements OnInit, OnChanges {
                 rgbColor: this.cms.colorOfObject("value-chain", wi.valueChainId)
               }
     })
-    this.assembleWipDisplay()
     this.calcSizeOfUiBoxes()
   }
 
