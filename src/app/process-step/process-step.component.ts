@@ -14,6 +14,7 @@ export class ProcessStepComponent implements OnInit, OnChanges {
   @Input() psBoxSize:  UiBoxSize
   @Input() invVisible: boolean
   wis:                 I_WorkItem[]
+  wipLimitDisplay:          string
 
   constructor(private cms: ColorMapperService) { }
 
@@ -24,14 +25,17 @@ export class ProcessStepComponent implements OnInit, OnChanges {
                 rgbColor: this.cms.colorOfObject("value-chain", wi.valueChainId)
               }
     })
+    this.assembleWipDisplay()
     this.calcSizeOfUiBoxes()
   }
 
   ngOnChanges(): void {
     this.psExtended.wosUtil.sort((w1, w2) => w1.worker < w2.worker ? -1 : 1 )
+    this.assembleWipDisplay()
     this.calcSizeOfUiBoxes()
-    console.log("processStep.ngOnChanges(): this.invVisible = " + this.invVisible)
   }
+
+  private assembleWipDisplay(): void { this.wipLimitDisplay = this.psExtended.ps.wipLimit ? " of max. " + this.psExtended.ps.wipLimit : "" }
 
   // ----- (re-)sizing of childs' UI boxes  -------------
   inventoryBoxSize:   UiBoxSize

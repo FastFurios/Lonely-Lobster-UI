@@ -227,7 +227,6 @@ export class SystemComponent implements OnChanges {
   
   private signalLearnStatsLegendToReload(): void {
     this.reloadLearnStatsLegend = true
-    console.log("System.signalLearnStatsLegendToReload")
     setTimeout(() => { 
       console.log("System.signalLearnStatsLegendToReload setTimeout() this.reloadLearnStatsLegend = false")
       this.reloadLearnStatsLegend = false }, 1000)  // ping the child component "LearnStats" that it should reload its color legend  
