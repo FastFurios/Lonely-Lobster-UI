@@ -11,8 +11,8 @@
 <div class="system-stats-row-of-columns" [style]="textColor">
     <div class="system-stats-column">
         <div class="system-stat">
-            <div class="system-stat-name"> Avg. Working Capital: </div> 
-            <div class="system-stat-value"> {{ prettifiedStats.avgWorkingCapital }} </div>
+            <div class="system-stat-name"> Timestamp of Stats: </div> 
+            <div class="system-stat-value"> {{ prettifiedStats.timestamp }} </div>
         </div>
         <div class="system-stat">
             <div class="system-stat-name"> #End Products: </div> 
@@ -25,17 +25,16 @@
     </div>
     <div class="system-stats">
         <div class="system-stat">
-            <div class="system-stat-name"> Disc.Contr.Margin: </div> 
-            <div class="system-stat-value"> {{ prettifiedStats.discountedContributionMargin }} </div>
+            <div class="system-stat-name"> Avg. Contribution Margin: </div> 
+            <div class="system-stat-value"> {{ prettifiedStats.avgContributionMargin }} </div>
         </div>
         <div class="system-stat">
-            <div class="system-stat-name"> ROCE: </div> 
-            <div class="system-stat-value"> {{ prettifiedStats.roce }}% </div>
+            <div class="system-stat-name"> ROCI var: </div> 
+            <div class="system-stat-value"> {{ prettifiedStats.rociVar }}% </div>
         </div>
         <div class="system-stat">
-            <div class="system-stat-name"> Timestamp of Stats: </div> 
-            <div class="system-stat-value"> {{ prettifiedStats.timestamp }} </div>
+            <div class="system-stat-name"> ROCI fix: </div> 
+            <div class="system-stat-value"> {{ prettifiedStats.rociFix }}% </div>
         </div>
-
     </div>
 </div>

@@ -8,10 +8,10 @@ interface ObInventoryStatisticsDisplay {
     numWis:                       number
     netValueAdd:                  number
     discountedValueAdd:           NicelyRounded
-    discountedContributionMargin: NicelyRounded
+    avgContributionMargin:        NicelyRounded
     avgElapsedTime:               NicelyRounded
-    avgWorkingCapital:            NicelyRounded
-    roce:                         NicelyRounded
+    rociVar:                      NicelyRounded
+    rociFix:                      NicelyRounded
 } 
 
 const enum TextColors {
@@ -72,20 +72,20 @@ export class SystemStatsComponent implements OnInit {
           numWis:                       0,
           netValueAdd:                  0,
           discountedValueAdd:           "0",
-          discountedContributionMargin: "0",
+          avgContributionMargin:        "0",
           avgElapsedTime:               "0",
-          avgWorkingCapital:            "0",
-          roce:                         "0"
+          rociVar:                      "0",
+          rociFix:                      "0"
         }
         : {
           timestamp:                    this.systemStatistics.timestamp,
           numWis:                       this.systemStatistics.outputBasket.economics.numWis,
           netValueAdd:                  this.systemStatistics.outputBasket.economics.netValueAdd,
           discountedValueAdd:           nicelyRounded(this.systemStatistics.outputBasket.economics.discountedValueAdd),
-          discountedContributionMargin: nicelyRounded(this.systemStatistics.outputBasket.economics.discountedValueAdd - this.systemStatistics.outputBasket.economics.normEffort),
+          avgContributionMargin:        nicelyRounded((this.systemStatistics.outputBasket.economics.discountedValueAdd - this.systemStatistics.outputBasket.economics.normEffort) / this.systemStatistics.outputBasket.economics.numWis),
           avgElapsedTime:               nicelyRounded(this.systemStatistics.outputBasket.economics.avgElapsedTime),
-          avgWorkingCapital:            nicelyRounded(this.systemStatistics.outputBasket.economics.avgWorkingCapital),
-          roce:                         nicelyRounded(this.systemStatistics.outputBasket.economics.roce * 100)
+          rociVar:                      nicelyRounded(this.systemStatistics.outputBasket.economics.rociVar * 100),
+          rociFix:                      nicelyRounded(this.systemStatistics.outputBasket.economics.rociFix * 100)
       }
   }
 
