@@ -10,8 +10,8 @@ interface ObInventoryStatisticsDisplay {
     discountedValueAdd:           NicelyRounded
     avgContributionMargin:        NicelyRounded
     avgElapsedTime:               NicelyRounded
-    rociVar:                      NicelyRounded
-    rociFix:                      NicelyRounded
+    roceVar:                      NicelyRounded
+    roceFix:                      NicelyRounded
 } 
 
 const enum TextColors {
@@ -66,27 +66,26 @@ export class SystemStatsComponent implements OnInit {
     }
 
     this.prettifiedStats = 
-      !this.systemStatistics ? 
-        {
-          timestamp:                    0,
-          numWis:                       0,
-          netValueAdd:                  0,
-          discountedValueAdd:           "0",
-          avgContributionMargin:        "0",
-          avgElapsedTime:               "0",
-          rociVar:                      "0",
-          rociFix:                      "0"
-        }
-        : {
-          timestamp:                    this.systemStatistics.timestamp,
-          numWis:                       this.systemStatistics.outputBasket.economics.numWis,
-          netValueAdd:                  this.systemStatistics.outputBasket.economics.netValueAdd,
-          discountedValueAdd:           nicelyRounded(this.systemStatistics.outputBasket.economics.discountedValueAdd),
-          avgContributionMargin:        nicelyRounded((this.systemStatistics.outputBasket.economics.discountedValueAdd - this.systemStatistics.outputBasket.economics.normEffort) / this.systemStatistics.outputBasket.economics.numWis),
-          avgElapsedTime:               nicelyRounded(this.systemStatistics.outputBasket.economics.avgElapsedTime),
-          rociVar:                      nicelyRounded(this.systemStatistics.outputBasket.economics.rociVar * 100),
-          rociFix:                      nicelyRounded(this.systemStatistics.outputBasket.economics.rociFix * 100)
-      }
+      this.systemStatistics ? {
+        timestamp:                    this.systemStatistics.timestamp,
+        numWis:                       this.systemStatistics.outputBasket.economics.numWis,
+        netValueAdd:                  this.systemStatistics.outputBasket.economics.netValueAdd,
+        discountedValueAdd:           nicelyRounded(this.systemStatistics.outputBasket.economics.discountedValueAdd),
+        avgContributionMargin:        nicelyRounded((this.systemStatistics.outputBasket.economics.discountedValueAdd - this.systemStatistics.outputBasket.economics.normEffort) / this.systemStatistics.outputBasket.economics.numWis),
+        avgElapsedTime:               nicelyRounded(this.systemStatistics.outputBasket.economics.avgElapsedTime),
+        roceVar:                      nicelyRounded(this.systemStatistics.outputBasket.economics.roceVar * 100),
+        roceFix:                      nicelyRounded(this.systemStatistics.outputBasket.economics.roceFix * 100)
+    } :
+    {
+        timestamp:                    0,
+        numWis:                       0,
+        netValueAdd:                  0,
+        discountedValueAdd:           "0",
+        avgContributionMargin:        "0",
+        avgElapsedTime:               "0",
+        roceVar:                      "0",
+        roceFix:                      "0"
+    }
   }
 
 
