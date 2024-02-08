@@ -7,26 +7,28 @@ import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angu
 })
 export class TestChildComponent implements OnInit {
 
-  @Input() childCounter: number
-  @Output() submitChildCounter = new EventEmitter<number>()
+  @Input() childCounter: { id: string, val: number }
+  //@Output() submitChildCounter = new EventEmitter<number>()
 
-  changeCount: number = 0
-  inputTextField: string =""
+//  changeCount: number = 0
+//  inputTextField: string =""
 
-  constructor() { }
+  constructor() {     
+    console.log("Test-Child: constructor()")
+  }
 
   ngOnInit(): void {
-    console.log("TestChildComponent.ngOnInit()")
+    console.log("Test-Child.ngOnInit(): id = " + this.childCounter.id)
   }
 
   ngOnChanges(): void {
-    console.log("TestChildComponent.ngOnChnages()")
+//  console.log("Test-Child.ngOnChanges(): id = " + this.childCounter.id)
   }
 
   clickHandler(): void {
-    this.childCounter++
+    this.childCounter.val++
   }
-
+/*
   numberInputHandler(e: Event) {
     console.log("TestChildComponent.numberInputHandler(e):" )
     //console.log(e)
@@ -41,7 +43,7 @@ export class TestChildComponent implements OnInit {
 
   submit() {
     console.log("TestChildComponent.submit()")
-    this.submitChildCounter.emit(this.childCounter)
+    this.submitChildCounter.emit(this.childCounter.val)
   }
-
+*/
 }

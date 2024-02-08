@@ -1,9 +1,16 @@
 import { Injectable } from '@angular/core'
-import { I_IterationRequest, ValueChainId, Injection } from './io_api_definitions'
+import { I_IterationRequest, ValueChainId, Injection, ProcessStepId, WipLimit, I_IterationRequestWithWipLimits } from './io_api_definitions'
+import { DoubleStringMap } from './helpers'
+
 
 type VcFeederParmsAndState = {
   aggregatedWorkOrders:   number, // being managed by ...
   parms:                  Injection
+}
+
+type PsVcWipLimitKey = {
+    vc: ValueChainId, 
+    ps: ProcessStepId
 }
 
 @Injectable({
@@ -12,13 +19,12 @@ type VcFeederParmsAndState = {
 export class WorkorderFeederService {
 
     private vcFeederTimeUnitMap:    Map<ValueChainId, VcFeederParmsAndState>
+    private psVcWipLimitMap:        DoubleStringMap<WipLimit>
     private timeNow:                number
 
-    constructor() {
-        this.initialize()
-    }
+    constructor() { }
 
-    public setParms(vcId: ValueChainId, inj: Injection): void {
+    public setInjectionParms(vcId: ValueChainId, inj: Injection): void {
         if (inj.throughput == undefined || inj.probability == undefined) return
         const aggrWos: number = this.vcFeederTimeUnitMap.has(vcId) 
                                 ? this.vcFeederTimeUnitMap.get(vcId)!.aggregatedWorkOrders
@@ -34,14 +40,21 @@ export class WorkorderFeederService {
             })
     }
 
-    public getParms(vcId: ValueChainId): Injection | undefined {
+    public getInjectionParms(vcId: ValueChainId): Injection | undefined {
         return this.vcFeederTimeUnitMap.has(vcId) ? this.vcFeederTimeUnitMap.get(vcId)!.parms : undefined
     }
 
-    public iterationRequestForAllVcs(): I_IterationRequest {
-        const iterationRequest: I_IterationRequest = { 
+    public setWipLimit(vcId: ValueChainId, psId: ProcessStepId, wipLimit: WipLimit) {
+        console.log(`Wof: setWipLimit(${vcId},${psId},${wipLimit})`)
+        this.psVcWipLimitMap.dsSet([vcId, psId], wipLimit)
+        console.log(`Wof: this.psVcWipLimitMap.size = ${this.psVcWipLimitMap.size})`)
+    }
+
+    public iterationRequestForAllVcs(): I_IterationRequestWithWipLimits {
+        const iterationRequest: I_IterationRequestWithWipLimits = { 
             time:           this.timeNow++,
-            newWorkOrders:  [] 
+            newWorkOrders:  [],
+            wipLimits:      []
         } 
         for (const [vcId, vcFeederParmsAndState] of this.vcFeederTimeUnitMap.entries()) {
             vcFeederParmsAndState.aggregatedWorkOrders += vcFeederParmsAndState.parms.throughput 
@@ -58,10 +71,17 @@ export class WorkorderFeederService {
                 numWorkOrders: injectWosNum
             })
         }
+
+        console.log("wof: iterationRequestForAllVcs() this.psVcWipLimitMap.entries().size = : " + this.psVcWipLimitMap.size)
+        for (const [psVcWipLimitKey0, psVcWipLimitKey1, wipLimit] of this.psVcWipLimitMap.dsEntries()) {
+            iterationRequest.wipLimits.push({vc: psVcWipLimitKey0, ps: psVcWipLimitKey1, wipLimit: wipLimit})
+        }
+           
         return iterationRequest
     }
 
     public initialize(): void {
         this.vcFeederTimeUnitMap = new Map<ValueChainId, VcFeederParmsAndState>()
+        this.psVcWipLimitMap     = new DoubleStringMap<WipLimit>()
     }
 }

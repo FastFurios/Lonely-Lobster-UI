@@ -4,10 +4,19 @@ import { Observable, throwError } from "rxjs"
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError } from "rxjs/operators"
 
-
+/*
 interface SessionBackendResponse {
   message: string
 }
+*/
+
+type CollElem = {id: string, val: number}
+type ComplexObject = {
+  someText: string,
+  someBoolean: boolean,
+  coll: CollElem[]
+}
+
 
 
 @Component({
@@ -18,56 +27,73 @@ interface SessionBackendResponse {
 export class TestParentComponent implements OnInit {
 
   //counter: number
-  complexObject = {
+  complexObject: ComplexObject = {
     someText: "I'm your father!",
     someBoolean: true,
-    counters: [-1, -1, -1]
+    coll: [
+      {id: "Zero", val: 0},
+      {id: "One", val: 1},
+      {id: "Two", val: 2}
+    ]
   }
 
+ /* sessions 
   getTextFromMySessionRequest$: Observable<SessionBackendResponse> 
   addTextToMySessionRequest$: Observable<SessionBackendResponse>
   textInMyBackendSession:  string = "- none yet -"
   textToAdd: string
-
+*/
 
   constructor(private http: HttpClient) {
+    console.log("Test-Parent: constructor()")
     //this.counter = 0 
-    this.complexObject.counters[0] = 0
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    console.log("Test-Parent: ngOnInit()")
+  }
 
 // --- communicating with childs ---  
 
   ngOnChanges(): void {
-    console.log("TestParentComponent.ngOnChnages()")
+//  console.log("Test-Parent: ngOnChanges()")
   }
 
 
-  clickHandler(): void {
+  clickHandler(elemId: string): void {
     //this.counter++
-    this.complexObject.counters[0]++
+    //this.complexObject.coll[elemId].val++ // works perfectly, no DOM manipulation when val is changed, as long the object reference to complexObject is unchanged 
+
+    // let's try to make the reference change evry time a value in the object is changed. This simulates e.g. a new data structure update received from the backend  
+    this.complexObject.coll = this.complexObject.coll.map(elem => elem.id == elemId ? { id: elem.id, val: elem.val + 1 } : elem)  // w/o any further preparations using "trackBy" in *ngFor, the childCounter object is re-created in the DOM
   }
 
+  public idOfChild(index: number, elem: CollElem): string {
+    console.log("Test-Parent: ifOfChild(" + elem.id + ") returns = " + elem.id)
+    return elem.id
+  }
+
+
+/*
   syncCounters(childCounter: number) {
     //this.counter = childCounter
-    this.complexObject.counters[0] = childCounter
-  }
 
+    this.complexObject.coll[0].val = childCounter
+  }
 
 
 // --- communicating with a session enabled backend -----
 
 private errorHandler(error: HttpErrorResponse): Observable<any> {
   console.error("errorHandler(): Fehler aufgetreten!" + error.message + error.ok)
-  return throwError(() => "error" /*new Error()*/)
+  return throwError(() => "error")
 }
 
 
 getFromBackend() {
       console.log("getFromBackend...")
       this.getTextFromMySessionRequest$ = this.http.get<SessionBackendResponse>(
-                "http://localhost:8080/test", /*, {responseType: "json"}*/
+                "http://localhost:8080/test", 
                 { withCredentials: true }
                 ).pipe(
                   catchError((error: HttpErrorResponse) =>this.errorHandler(error))
@@ -82,7 +108,7 @@ postToBackend() {
   console.log("postToBackend(" + this.textToAdd + ")...")
   this.addTextToMySessionRequest$ = this.http.post<SessionBackendResponse>(
                 "http://localhost:8080/test", 
-                { textToAdd : this.textToAdd}, /*, {responseType: "json"}*/
+                { textToAdd : this.textToAdd}, 
                 { withCredentials: true }
             ).pipe(
                 catchError((error: HttpErrorResponse) =>this.errorHandler(error))
@@ -103,7 +129,7 @@ postToBackend() {
 //  sysConfigJsonContent: string
   objFromJsonFile: any 
 
-  /* async */ onFileSelected(e: any) { 
+ onFileSelected(e: any) { 
     const file: File = e.target.files[0] 
     this.filename = file.name
     let fileContent: string
@@ -120,7 +146,7 @@ postToBackend() {
       }   
     } 
     finally {}
-*/
+
 
     // Observable way of doing it
     const obs$ = this.readFileContentObs(file)
@@ -194,6 +220,11 @@ postToBackend() {
   6. Dealing with <input> fields in the child's template: <input ... onchange="inputHandler($event)"> does not work: runtime error "inputHandler is not defined at HTMLInputyElement.onchange" 
   7. <input type="file" ...> lets you choose a file via Explorer. The file's content is then made available in the 
      event and can be read with a Reader Object.  
+
+  On changing @Inputs when is the constructor called, i.e. the old instance is dropped and a new is created, and when not 
+  8. When a fixed sub-component is embedded into the parents template w/o *ngFor, no constructor call in child, ngOnit only
+  9. However, when multiple childs are under the parent via *ngFor, the constructor is called every time, i.e. the child cannot hold state as it is dropped with every change in the @Input attribute        
+  10. when "trackBy:someFunction" is used with *ngFor and a method "someFunction" is defined in the component that returns a an id of the collection's child elements are returned, then Angular recognizes that no dropping and re-constructing of the child is required 
 
 
 

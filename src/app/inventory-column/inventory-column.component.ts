@@ -15,10 +15,13 @@ export class InventoryColumnComponent implements OnInit {
   @Input() inventoryColumnBoxSize:  UiBoxSize
   psInventoryColumnShow:            PsInventoryColumnShow
 
-  constructor() { }
+  constructor() { 
+    //console.log("Inventory-Column: constructor()")0
+  }
 
   ngOnInit(): void {
     this.calcHeightOfInventoryColumn()
+    //console.log("Inventory-Column: ngOnInit(): psInventoryColumn.wis.length = " + this.psInventoryColumn.wis.length)
   }
 
   ngOnChanges(): void {

@@ -16,13 +16,18 @@ export class InventoryComponent implements OnInit {
   psInventoryShow:              PsInventoryShow
   numColsShown:                 number
   
-  constructor() { }
+  constructor() {
+    //console.log("Inventory: constructor()")
+  }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { 
+    //console.log("Inventory: ngOnInit() psInventoryShow.cols.lengths = " + this.psInventoryShow.cols.length + "; wis.length = " + this.wis.length)
+  }
 
   ngOnChanges(): void {
     this.psInventory = workitemsAsPsInventory(this.wis, this.isListOfEndProducts)
     this.calcSizesOfInventoryColumn()
+    //console.log("Inventory: ngOnChanges() psInventoryShow.cols.lengths = " + this.psInventoryShow.cols.length + "; wis.length = " + this.wis.length)
   }
 
   // ----- (re-)sizing of childs' UI boxes  -------------

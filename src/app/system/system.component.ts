@@ -41,7 +41,8 @@ export class SystemComponent implements OnChanges {
   
   constructor( private bas: BackendApiService,
                private wof: WorkorderFeederService,
-               private cms: ColorMapperService ) { }
+               private cms: ColorMapperService ) { 
+  }
 
   ngOnChanges(): void {
     this.calcSizeOfUiBoxes()
@@ -53,7 +54,6 @@ export class SystemComponent implements OnChanges {
 
   private processIteration(systemState: I_SystemState) {
     this.systemState = systemState 
-    //console.log("system-processIteration(): this.systemState = "); console.log(this.systemState)
     this.calcSizeOfUiBoxes()
     this.updateVcsExtended()
     this.updateObExtended()  
@@ -228,9 +228,13 @@ export class SystemComponent implements OnChanges {
   private signalLearnStatsLegendToReload(): void {
     this.reloadLearnStatsLegend = true
     setTimeout(() => { 
-      console.log("System.signalLearnStatsLegendToReload setTimeout() this.reloadLearnStatsLegend = false")
       this.reloadLearnStatsLegend = false }, 1000)  // ping the child component "LearnStats" that it should reload its color legend  
   }
+
+  public identify(index: number, vcExt: VcExtended): ValueChainId { // https://stackoverflow.com/questions/42108217/how-to-use-trackby-with-ngfor // https://upmostly.com/angular/using-trackby-with-ngfor-loops-in-angular // https://angular.io/api/common/NgFor
+    //console.log("System: identify() returning vcExt.vc.id = " + vcExt.vc.id )
+    return vcExt.vc.id
+  } 
 
   // ---------------------------------------------------------------------------------------
   // (re-)sizing of childs' UI boxes  

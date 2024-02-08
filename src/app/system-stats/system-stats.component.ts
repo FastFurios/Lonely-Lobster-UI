@@ -10,6 +10,7 @@ interface ObInventoryStatisticsDisplay {
     discountedValueAdd:           NicelyRounded
     avgContributionMargin:        NicelyRounded
     avgElapsedTime:               NicelyRounded
+    avgWorkingCapital:            NicelyRounded
     roceVar:                      NicelyRounded
     roceFix:                      NicelyRounded
 } 
@@ -73,6 +74,7 @@ export class SystemStatsComponent implements OnInit {
         discountedValueAdd:           nicelyRounded(this.systemStatistics.outputBasket.economics.discountedValueAdd),
         avgContributionMargin:        nicelyRounded((this.systemStatistics.outputBasket.economics.discountedValueAdd - this.systemStatistics.outputBasket.economics.normEffort) / this.systemStatistics.outputBasket.economics.numWis),
         avgElapsedTime:               nicelyRounded(this.systemStatistics.outputBasket.economics.avgElapsedTime),
+        avgWorkingCapital:            nicelyRounded(this.systemStatistics.outputBasket.economics.avgWorkingCapital), 
         roceVar:                      nicelyRounded(this.systemStatistics.outputBasket.economics.roceVar * 100),
         roceFix:                      nicelyRounded(this.systemStatistics.outputBasket.economics.roceFix * 100)
     } :
@@ -83,6 +85,7 @@ export class SystemStatsComponent implements OnInit {
         discountedValueAdd:           "0",
         avgContributionMargin:        "0",
         avgElapsedTime:               "0",
+        avgWorkingCapital:            "0",
         roceVar:                      "0",
         roceFix:                      "0"
     }

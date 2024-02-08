@@ -1,15 +1,15 @@
-import { Component, OnInit, OnChanges, Input } from '@angular/core'
-import { ProcessStepId, PsWorkerUtilization, PsExtended, VcExtended, I_ProcessStepStatistics, WorkerWithUtilization, I_WorkItemStatistics } from '../shared/io_api_definitions'
+import { Component, OnInit, OnChanges, Input, ChangeDetectionStrategy, TrackByFunction } from '@angular/core'
+import { Injection, ProcessStepId, PsWorkerUtilization, PsExtended, VcExtended, I_ProcessStepStatistics, WorkerWithUtilization, I_WorkItemStatistics } from '../shared/io_api_definitions'
 import { ColorMapperService, RgbColor } from '../shared/color-mapper.service'
 import { WorkorderFeederService  } from '../shared/workorder-feeder.service'
 import { UiBoxSize, UiVcBoxLeftMargin} from '../shared/ui-boxes-definitions'
 import { I_FlowStats } from '../shared/flow-stats-definitions'
-import { Injection } from "../shared/io_api_definitions"
 
 @Component({
   selector: 'app-value-chain',
   templateUrl: './value-chain.component.html',
-  styleUrls: ['./value-chain.component.css']
+  styleUrls: ['./value-chain.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush  
 })
 export class ValueChainComponent implements OnInit, OnChanges {
   @Input() vcExtended:  VcExtended
@@ -23,16 +23,18 @@ export class ValueChainComponent implements OnInit, OnChanges {
   valueChainColor:      RgbColor | undefined
 
   constructor(private cms: ColorMapperService,
-              private wof: WorkorderFeederService) { }
+              private wof: WorkorderFeederService) { 
+    console.log("Value-Chain: constructor()")
+  }
  
   ngOnInit(): void {
     if (this.feedParms) {
-      this.wof.setParms(this.vcExtended.vc.id, this.feedParms)
+      this.wof.setInjectionParms(this.vcExtended.vc.id, this.feedParms)
     }
     else {
-      this.feedParms = this.wof.getParms(this.vcExtended.vc.id)
+      this.feedParms = this.wof.getInjectionParms(this.vcExtended.vc.id)
       if (!this.feedParms) {
-        this.wof.setParms(this.vcExtended.vc.id, this.vcExtended.vc.injection)
+        this.wof.setInjectionParms(this.vcExtended.vc.id, this.vcExtended.vc.injection)
         this.feedParms = this.vcExtended.vc.injection
       }
     }
@@ -45,6 +47,7 @@ export class ValueChainComponent implements OnInit, OnChanges {
     this.pssExtended = this.vcExtended.vc.processSteps
                                   .map(ps => { return {
                                     ps: ps,
+                                    vcId: this.vcExtended.vc.id,
                                     wosUtil: this.workersWithUtilOfProcessStep(ps.id),
                                     flowStats:this.flowStatsOfProcessStep(ps.id)
                                   }})
@@ -52,13 +55,18 @@ export class ValueChainComponent implements OnInit, OnChanges {
   }
   
   feedParmsInputHandler(e: Event) {
-    this.wof.setParms(this.vcExtended.vc.id, this.feedParms!)
+    this.wof.setInjectionParms(this.vcExtended.vc.id, this.feedParms!)
   }
 
   private flowStatsOfProcessStep(psId: ProcessStepId): I_ProcessStepStatistics | undefined {
     const aux = this.vcExtended.flowStats?.stats.pss.find(psFlowStats => psFlowStats.id == psId)
     return aux
   }
+
+  public identify(index: number, psExt: PsExtended): ProcessStepId { // https://stackoverflow.com/questions/42108217/how-to-use-trackby-with-ngfor // https://upmostly.com/angular/using-trackby-with-ngfor-loops-in-angular // https://angular.io/api/common/NgFor
+    //console.log("Value-Chain: identify() returning psExt.ps.id = " + psExt.ps.id )
+    return psExt.ps.id
+  } 
 
 
   // ----- (re-)sizing of childs' UI boxes  -------------

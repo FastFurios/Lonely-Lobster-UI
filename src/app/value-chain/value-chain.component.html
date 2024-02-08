@@ -15,7 +15,7 @@
         <app-flow-stats [workitemStats]="workitemStats" [displayVerbose]="true" [showTpv]="true"></app-flow-stats>
     </div>
 
-    <div *ngFor="let psExtended of pssExtended">
+    <div *ngFor="let psExtended of pssExtended; trackBy:identify">
             <app-process-step [psExtended]="psExtended" [psBoxSize]="psBoxSize" [invVisible]="invVisible"></app-process-step>
     </div>
 </div>
