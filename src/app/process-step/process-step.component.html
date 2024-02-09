@@ -6,7 +6,7 @@
             <input type="number" class="inputFormNumber" id="wipLimit" name="wipLimit" min="0" step="1"
                 required
                 [(ngModel)]="psExtended.ps.wipLimit"
-                (change)="wipLimitHandler(psExtended.ps.wipLimit)">
+                (change)="wipLimitHandler()">
         </label>
         <app-flow-stats [workitemStats]="psExtended.flowStats?.stats" [displayVerbose]="true" [showTpv]="false"></app-flow-stats>
     </div>

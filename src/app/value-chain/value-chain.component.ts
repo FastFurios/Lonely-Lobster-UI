@@ -24,7 +24,6 @@ export class ValueChainComponent implements OnInit, OnChanges {
 
   constructor(private cms: ColorMapperService,
               private wof: WorkorderFeederService) { 
-    console.log("Value-Chain: constructor()")
   }
  
   ngOnInit(): void {

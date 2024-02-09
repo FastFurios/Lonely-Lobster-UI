@@ -8,11 +8,6 @@ type VcFeederParmsAndState = {
   parms:                  Injection
 }
 
-type PsVcWipLimitKey = {
-    vc: ValueChainId, 
-    ps: ProcessStepId
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -45,9 +40,7 @@ export class WorkorderFeederService {
     }
 
     public setWipLimit(vcId: ValueChainId, psId: ProcessStepId, wipLimit: WipLimit) {
-        console.log(`Wof: setWipLimit(${vcId},${psId},${wipLimit})`)
         this.psVcWipLimitMap.dsSet([vcId, psId], wipLimit)
-        console.log(`Wof: this.psVcWipLimitMap.size = ${this.psVcWipLimitMap.size})`)
     }
 
     public iterationRequestForAllVcs(): I_IterationRequestWithWipLimits {
@@ -72,7 +65,6 @@ export class WorkorderFeederService {
             })
         }
 
-        console.log("wof: iterationRequestForAllVcs() this.psVcWipLimitMap.entries().size = : " + this.psVcWipLimitMap.size)
         for (const [psVcWipLimitKey0, psVcWipLimitKey1, wipLimit] of this.psVcWipLimitMap.dsEntries()) {
             iterationRequest.wipLimits.push({vc: psVcWipLimitKey0, ps: psVcWipLimitKey1, wipLimit: wipLimit})
         }

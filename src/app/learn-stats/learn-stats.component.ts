@@ -40,7 +40,6 @@ export class LearnStatsComponent implements OnInit {
   ngOnInit(): void { }
 
   public updateLearnStatsHandler(): void {
-    console.log("LearnStats.updateLearnStatsHandler()")
     this.learnStatsWorkers$ = this.bas.learningStatistics()
     this.learnStatsWorkers$.subscribe(learnStatsWorkers => {
       this.learnStatsWorkers = learnStatsWorkers
