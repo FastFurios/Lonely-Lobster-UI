@@ -67,3 +67,9 @@
   .switch-label {
     font-size: small;
   } 
+
+  .toggles-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }

@@ -34,6 +34,7 @@ export class SystemComponent implements OnChanges {
   showSystemState:          boolean  = false
   reloadLearnStatsLegend:   boolean  = false
   invVisible:               boolean  = true
+  iterateOneByOne:          boolean  = true
   resumeRemainingIterations:number
   runResumeButton                    = RunResumeButton.run
 
@@ -61,8 +62,9 @@ export class SystemComponent implements OnChanges {
     if (this.systemState.time == 0) {
       return /* just initializing */ 
     }
+
     this.numIterationsToGo--
-    if (this.numIterationsToGo > 0)
+    if (this.iterateOneByOne && this.numIterationsToGo > 0)
       this.iterateNextStates()
     else {
       this.fetchSystemStatistics()
@@ -71,7 +73,7 @@ export class SystemComponent implements OnChanges {
 
   public iterateNextStates(): void {
     this.statsAreUpToDate = false
-    this.systemState$ = this.bas.nextSystemStateOnInput(this.wof.iterationRequestForAllVcs())
+    this.systemState$ = this.bas.nextSystemStateOnInput(this.wof.iterationRequestForAllVcs(this.iterateOneByOne ? 1 : this.numIterationsToGo))
     this.systemState$.subscribe(systemState => this.processIteration(systemState))
   }
 

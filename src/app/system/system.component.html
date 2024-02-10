@@ -42,14 +42,23 @@
         <div>
             <app-system-stats [systemStatistics]="systemStatistics" [systemTime]="systemState.time" [statsAreUpToDate]="statsAreUpToDate" [interval]="statsInterval" (intervalEventEmitter)="changedStatsIntervalHandler($event)"></app-system-stats>
         </div>
-        <div class="switch-label">
-            Show inventories: 
-            <label class="switch">
-                <input type="checkbox" [(ngModel)]="invVisible">
-                <span class="slider round"></span>
-            </label>
+        <div class="toggles-column">
+            <div class="switch-label">
+                <label class="switch">
+                    <input type="checkbox" [(ngModel)]="iterateOneByOne">
+                    <span class="slider round"></span>
+                </label>
+                update view every iteration 
+            </div>
+            <div class="switch-label">
+                <label class="switch">
+                    <input type="checkbox" [(ngModel)]="invVisible">
+                    <span class="slider round"></span>
+                </label>
+                show inventories
+            </div>
         </div>
-</div>
+    </div>
     <div>
         <div class="valueChainsAndOutputBasket" [style]="'height:' +  vcsBoxSize.height  + 'px'" >
             <div class="valueChains" [style]="'width:' + vcsBoxSize.width + 'px; height:' + vcsBoxSize.height + 'px' ">

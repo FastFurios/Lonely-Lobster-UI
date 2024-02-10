@@ -43,9 +43,10 @@ export class WorkorderFeederService {
         this.psVcWipLimitMap.dsSet([vcId, psId], wipLimit)
     }
 
-    public iterationRequestForAllVcs(): I_IterationRequestWithWipLimits {
+    public iterationRequestForAllVcs(batchSize: number): I_IterationRequestWithWipLimits {
         const iterationRequest: I_IterationRequestWithWipLimits = { 
             time:           this.timeNow++,
+            batchSize:      batchSize,
             newWorkOrders:  [],
             wipLimits:      []
         } 
