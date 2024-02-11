@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { I_IterationRequest, ValueChainId, Injection, ProcessStepId, WipLimit } from './io_api_definitions'
+import { I_IterationRequest, I_IterationRequests, ValueChainId, Injection, ProcessStepId, WipLimit } from './io_api_definitions'
 import { DoubleStringMap } from './helpers'
 
 
@@ -43,10 +43,9 @@ export class WorkorderFeederService {
         this.psVcWipLimitMap.dsSet([vcId, psId], wipLimit)
     }
 
-    public iterationRequestForAllVcs(batchSize: number): I_IterationRequest {
+    public iterationRequestsForAllVcs(batchSize: number): I_IterationRequests {
         const iterationRequest: I_IterationRequest = { 
-            batchSize:      batchSize,
-            workOrderParmss:[],
+            vcsWorkOrders:  [],
             wipLimits:      []
         } 
         for (const [vcId, vcFeederParmsAndState] of this.vcFeederTimeUnitMap.entries()) {
@@ -59,9 +58,9 @@ export class WorkorderFeederService {
             }
             else injectWosNum = 0
 
-            iterationRequest.workOrderParmss.push({
+            iterationRequest.vcsWorkOrders.push({
                 valueChainId: vcId, 
-                parms: injectWosNum
+                numWorkOrders: injectWosNum
             })
         }
 
@@ -69,7 +68,7 @@ export class WorkorderFeederService {
             iterationRequest.wipLimits.push({vc: psVcWipLimitKey0, ps: psVcWipLimitKey1, wipLimit: wipLimit})
         }
            
-        return iterationRequest
+        return [iterationRequest]
     }
 
     public initialize(): void {

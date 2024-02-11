@@ -73,7 +73,7 @@ export class SystemComponent implements OnChanges {
 
   public iterateNextStates(): void {
     this.statsAreUpToDate = false
-    this.systemState$ = this.bas.nextSystemStateOnInput(this.wof.iterationRequestForAllVcs(this.iterateOneByOne ? 1 : this.numIterationsToGo))
+    this.systemState$ = this.bas.nextSystemStateOnInput(this.wof.iterationRequestsForAllVcs(this.iterateOneByOne ? 1 : this.numIterationsToGo))
     this.systemState$.subscribe(systemState => this.processIteration(systemState))
   }
 

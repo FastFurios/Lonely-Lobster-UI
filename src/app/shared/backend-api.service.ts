@@ -3,7 +3,7 @@ import { environment } from '../../environments/environment'
 import { HttpClient, HttpErrorResponse } from '@angular/common/http'
 import { Observable, throwError } from "rxjs"
 import { catchError } from "rxjs/operators"
-import { I_IterationRequest, I_SystemState, I_SystemStatistics, I_LearningStatsWorkers, TimeUnit } from './io_api_definitions'
+import { I_IterationRequests, I_SystemState, I_SystemStatistics, I_LearningStatsWorkers, TimeUnit } from './io_api_definitions'
 
 // --- service class --------------------
 
@@ -28,8 +28,8 @@ export class BackendApiService {
         )*/
   }
 
-  public nextSystemStateOnInput(iterationRequest: I_IterationRequest): Observable<I_SystemState> {
-      return this.http.post<I_SystemState>(this.API_URL + "iterate/", iterationRequest, { withCredentials: true } /*, {responseType: "json"}*/)
+  public nextSystemStateOnInput(iterationRequests: I_IterationRequests): Observable<I_SystemState> {
+      return this.http.post<I_SystemState>(this.API_URL + "iterate/", iterationRequests, { withCredentials: true } /*, {responseType: "json"}*/)
           .pipe(
             catchError((error: HttpErrorResponse) => this.errorHandler(error))
           )
