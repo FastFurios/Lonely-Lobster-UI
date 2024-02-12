@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { I_IterationRequest, I_IterationRequests, ValueChainId, Injection, ProcessStepId, WipLimit } from './io_api_definitions'
+import { I_IterationRequest, I_IterationRequests, ValueChainId, Injection, ProcessStepId, I_VcPsWipLimit,WipLimit } from './io_api_definitions'
 import { DoubleStringMap } from './helpers'
 
 
@@ -14,7 +14,7 @@ type VcFeederParmsAndState = {
 export class WorkorderFeederService {
 
     private vcFeederTimeUnitMap:    Map<ValueChainId, VcFeederParmsAndState>
-    private psVcWipLimitMap:        DoubleStringMap<WipLimit>
+    private vcPsWipLimitMap:        DoubleStringMap<WipLimit>
     private timeNow:                number
 
     constructor() { }
@@ -40,39 +40,46 @@ export class WorkorderFeederService {
     }
 
     public setWipLimit(vcId: ValueChainId, psId: ProcessStepId, wipLimit: WipLimit) {
-        this.psVcWipLimitMap.dsSet([vcId, psId], wipLimit)
+        this.vcPsWipLimitMap.dsSet([vcId, psId], wipLimit)
     }
 
     public iterationRequestsForAllVcs(batchSize: number): I_IterationRequests {
-        const iterationRequest: I_IterationRequest = { 
-            vcsWorkOrders:  [],
-            wipLimits:      []
-        } 
-        for (const [vcId, vcFeederParmsAndState] of this.vcFeederTimeUnitMap.entries()) {
-            vcFeederParmsAndState.aggregatedWorkOrders += vcFeederParmsAndState.parms.throughput 
+        const iterationRequests: I_IterationRequests = []
+        const constWipLimits: I_VcPsWipLimit[] = []
 
-            let injectWosNum: number
-            if (Math.random() < vcFeederParmsAndState.parms.probability) {
-                injectWosNum = Math.floor(vcFeederParmsAndState.aggregatedWorkOrders)
-                vcFeederParmsAndState.aggregatedWorkOrders -= injectWosNum
+        for (const [vcPsWipLimitKey0, vcPsWipLimitKey1, wipLimit] of this.vcPsWipLimitMap.dsEntries()) { // for all process-steps with a wip-limit
+            constWipLimits.push({vc: vcPsWipLimitKey0, ps: vcPsWipLimitKey1, wipLimit: wipLimit})
+        }
+
+        for (let i = 0; i < batchSize; i++) { // for all requests in the batch
+            const iterationRequest: I_IterationRequest = { 
+                vcsWorkOrders:  [],
+                wipLimits:      []
+            } 
+            for (const [vcId, vcFeederParmsAndState] of this.vcFeederTimeUnitMap.entries()) { // for all value-chains
+                vcFeederParmsAndState.aggregatedWorkOrders += vcFeederParmsAndState.parms.throughput 
+
+                let injectWosNum: number
+                if (Math.random() < vcFeederParmsAndState.parms.probability) {
+                    injectWosNum = Math.floor(vcFeederParmsAndState.aggregatedWorkOrders)
+                    vcFeederParmsAndState.aggregatedWorkOrders -= injectWosNum
+                }
+                else injectWosNum = 0
+
+                iterationRequest.vcsWorkOrders.push({
+                    valueChainId:  vcId, 
+                    numWorkOrders: injectWosNum
+                })
             }
-            else injectWosNum = 0
+            iterationRequest.wipLimits = constWipLimits
+            iterationRequests.push(iterationRequest)
+        }           
 
-            iterationRequest.vcsWorkOrders.push({
-                valueChainId: vcId, 
-                numWorkOrders: injectWosNum
-            })
-        }
-
-        for (const [psVcWipLimitKey0, psVcWipLimitKey1, wipLimit] of this.psVcWipLimitMap.dsEntries()) {
-            iterationRequest.wipLimits.push({vc: psVcWipLimitKey0, ps: psVcWipLimitKey1, wipLimit: wipLimit})
-        }
-           
-        return [iterationRequest]
+        return iterationRequests
     }
 
     public initialize(): void {
         this.vcFeederTimeUnitMap = new Map<ValueChainId, VcFeederParmsAndState>()
-        this.psVcWipLimitMap     = new DoubleStringMap<WipLimit>()
+        this.vcPsWipLimitMap     = new DoubleStringMap<WipLimit>()
     }
 }
