@@ -13,6 +13,8 @@ enum RunResumeButton {
   resume = "Resume"
 }
 
+const c_IterationRequestMaxSize = 100
+
 @Component({
   selector: 'app-system',
   templateUrl: './system.component.html',
@@ -63,8 +65,8 @@ export class SystemComponent implements OnChanges {
       return /* just initializing */ 
     }
 
-    this.numIterationsToGo--
-    if (this.iterateOneByOne && this.numIterationsToGo > 0)
+//  this.numIterationsToGo--
+    if (this.numIterationsToGo > 0)
       this.iterateNextStates()
     else {
       this.fetchSystemStatistics()
@@ -73,8 +75,14 @@ export class SystemComponent implements OnChanges {
 
   public iterateNextStates(): void {
     this.statsAreUpToDate = false
-    this.systemState$ = this.bas.nextSystemStateOnInput(this.wof.iterationRequestsForAllVcs(this.iterateOneByOne ? 1 : this.numIterationsToGo))
-    this.systemState$.subscribe(systemState => this.processIteration(systemState))
+    const miniBatchSize = this.iterateOneByOne ? 1 
+                                               : this.numIterationsToGo > c_IterationRequestMaxSize ? c_IterationRequestMaxSize 
+                                                                                                    : this.numIterationsToGo
+    this.systemState$ = this.bas.nextSystemStateOnInput(this.wof.iterationRequestsForAllVcs(miniBatchSize))
+    this.systemState$.subscribe(systemState => {
+      this.numIterationsToGo -= miniBatchSize
+      this.processIteration(systemState)
+    })
   }
 
   // ---------------------------------------------------------------------------------------
