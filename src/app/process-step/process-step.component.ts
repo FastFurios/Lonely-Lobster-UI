@@ -33,6 +33,7 @@ export class ProcessStepComponent implements OnInit, OnChanges {
                 rgbColor: this.cms.colorOfObject("value-chain", wi.valueChainId)
               }
     })
+    this.wof.setWipLimit(this.psExtended.vcId, this.psExtended.ps.id, this.psExtended.ps.wipLimit)
     this.calcSizeOfUiBoxes()
   }
 

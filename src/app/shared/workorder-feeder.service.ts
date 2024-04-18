@@ -43,7 +43,7 @@ export class WorkorderFeederService {
         this.vcPsWipLimitMap.dsSet([vcId, psId], wipLimit)
     }
 
-    public iterationRequestsForAllVcs(batchSize: number): I_IterationRequests {
+    public iterationRequestsForAllVcs(batchSize: number, optimizeWipLimits: boolean): I_IterationRequests {
         const iterationRequests: I_IterationRequests = []
         const constWipLimits: I_VcPsWipLimit[] = []
 
@@ -53,8 +53,9 @@ export class WorkorderFeederService {
 
         for (let i = 0; i < batchSize; i++) { // for all requests in the batch
             const iterationRequest: I_IterationRequest = { 
-                vcsWorkOrders:  [],
-                wipLimits:      []
+                vcsWorkOrders:      [],
+                wipLimits:          [],
+                optimizeWipLimits:  optimizeWipLimits
             } 
             for (const [vcId, vcFeederParmsAndState] of this.vcFeederTimeUnitMap.entries()) { // for all value-chains
                 vcFeederParmsAndState.aggregatedWorkOrders += vcFeederParmsAndState.parms.throughput 

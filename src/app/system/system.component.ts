@@ -37,6 +37,7 @@ export class SystemComponent implements OnChanges {
   reloadLearnStatsLegend:   boolean  = false
   invVisible:               boolean  = true
   iterateOneByOne:          boolean  = true
+  optimizeWipLimits:        boolean  = false 
   resumeRemainingIterations:number
   runResumeButton                    = RunResumeButton.run
 
@@ -78,7 +79,7 @@ export class SystemComponent implements OnChanges {
     const miniBatchSize = this.iterateOneByOne ? 1 
                                                : this.numIterationsToGo > c_IterationRequestMaxSize ? c_IterationRequestMaxSize 
                                                                                                     : this.numIterationsToGo
-    this.systemState$ = this.bas.nextSystemStateOnInput(this.wof.iterationRequestsForAllVcs(miniBatchSize))
+    this.systemState$ = this.bas.nextSystemStateOnInput(this.wof.iterationRequestsForAllVcs(miniBatchSize, this.optimizeWipLimits))
     this.systemState$.subscribe(systemState => {
       this.numIterationsToGo -= miniBatchSize
       this.processIteration(systemState)
