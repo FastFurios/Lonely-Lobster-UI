@@ -74,8 +74,8 @@ export class WorkorderFeederService {
             }
             iterationRequest.wipLimits = constWipLimits
             iterationRequests.push(iterationRequest)
+//          console.log("WOF: iterationRequest4AllVCs(): iterationRequest= " + iterationRequest.wipLimits.map(wl => wl.ps + "=" + wl.wipLimit))
         }           
-
         return iterationRequests
     }
 
