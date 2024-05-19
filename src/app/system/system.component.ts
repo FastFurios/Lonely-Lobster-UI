@@ -58,6 +58,10 @@ export class SystemComponent implements OnChanges {
 
   private processIteration(systemState: I_SystemState) {
     this.systemState = systemState 
+    console.log("systemState.isWipLimitOptimizationInBackendActive=" + systemState.isWipLimitOptimizationInBackendActive)
+    console.log("this.optimizeWipLimits=" + this.optimizeWipLimits)
+    console.log(systemState)
+    this.optimizeWipLimits = this.optimizeWipLimits && systemState.isWipLimitOptimizationInBackendActive
     this.calcSizeOfUiBoxes()
     this.updateVcsExtended()
     this.updateObExtended()  
