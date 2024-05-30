@@ -58,10 +58,11 @@ export class SystemComponent implements OnChanges {
 
   private processIteration(systemState: I_SystemState) {
     this.systemState = systemState 
-    console.log("systemState.isWipLimitOptimizationInBackendActive=" + systemState.isWipLimitOptimizationInBackendActive)
-    console.log("this.optimizeWipLimits=" + this.optimizeWipLimits)
-    console.log(systemState)
-    this.optimizeWipLimits = this.optimizeWipLimits && systemState.isWipLimitOptimizationInBackendActive
+    //console.log("systemState.isWipLimitOptimizationInBackendActive=" + systemState.isWipLimitOptimizationInBackendActive)
+    //console.log("this.optimizeWipLimits=" + this.optimizeWipLimits)
+    //console.log("systemState.turnWipLimitOptimizationOnInFrontend=" + systemState.turnWipLimitOptimizationOnInFrontend)
+    //console.log(systemState)
+    this.optimizeWipLimits = systemState.turnWipLimitOptimizationOnInFrontend || (this.optimizeWipLimits && systemState.isWipLimitOptimizationInBackendActive)
     this.calcSizeOfUiBoxes()
     this.updateVcsExtended()
     this.updateObExtended()  
@@ -209,6 +210,7 @@ export class SystemComponent implements OnChanges {
 
   private setOrResetSystem() {
       this.numIterationsToGo = 0
+//    this.wof.initialize()
       this.systemState$ = this.bas.systemStateOnInitialization(this.objFromJsonFile).pipe(
         catchError((err: any) => {
           this.backendErrorMessage = "*** ERROR: could not reach backend or error in the backend"

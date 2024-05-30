@@ -29,7 +29,8 @@ export class BackendApiService {
   }
 
   public nextSystemStateOnInput(iterationRequests: I_IterationRequests): Observable<I_SystemState> {
-      return this.http.post<I_SystemState>(this.API_URL + "iterate/", iterationRequests, { withCredentials: true } /*, {responseType: "json"}*/)
+    //console.log("bas.nextSystemStateOnInput: about to send: " + iterationRequests.flatMap(ir => ir.vcsWorkOrders.map(wo => `${wo.valueChainId}: ${wo.numWorkOrders}`)))
+    return this.http.post<I_SystemState>(this.API_URL + "iterate/", iterationRequests, { withCredentials: true } /*, {responseType: "json"}*/)
           .pipe(
             catchError((error: HttpErrorResponse) => this.errorHandler(error))
           )
