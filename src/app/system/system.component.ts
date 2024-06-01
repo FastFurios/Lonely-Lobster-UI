@@ -28,9 +28,9 @@ export class SystemComponent implements OnChanges {
   vcsExtended:              VcExtended[] 
   obExtended:               ObExtended
   statsAreUpToDate:         boolean  = false
-  statsInterval:            TimeUnit = 0 // from t=1 to now 
+  statsInterval:            TimeUnit // gets initialized by backend  //= 0 // from t=1 to now 
   numValueChains:           number
-  numIterationsToExecute:   number   = 1
+  numIterationsToExecute:   number   // gets initialized by backend  // = 1
   numIterationsToGo:        number
   backendErrorMessage:      string   = ""
   showSystemState:          boolean  = false
@@ -166,7 +166,7 @@ export class SystemComponent implements OnChanges {
   // ---------------------------------------------------------------------------------------
   
   filename:         string = ""
-  systemId:         string = "- empty -"
+  //systemId:         string = "- empty -"
   objFromJsonFile:  any 
 
   public onFileSelected(e: any) { 
@@ -200,7 +200,7 @@ export class SystemComponent implements OnChanges {
   
   private parseAndInititalize(fileContent: string): void {
       this.objFromJsonFile = JSON.parse(fileContent) 
-      this.systemId = this.objFromJsonFile.system_id
+      //this.systemId = this.objFromJsonFile.system_id
       this.setOrResetSystem() // build the system
       this.wof.initialize()   // initialize work order feeder  
       this.cms.clear()  // initialize color mapper ...
@@ -220,6 +220,9 @@ export class SystemComponent implements OnChanges {
       )
       this.systemState$.subscribe(systemState => {
         this.numValueChains = systemState.valueChains.length
+        console.log("system.setOrResetSystem(): systemState.frontendPresets=")
+        console.log(systemState.frontendPresets)
+        this.applyPresets(systemState)
         this.processIteration(systemState) 
         this.calcSizeOfUiBoxes() 
         this.backendErrorMessage = ""
@@ -252,6 +255,11 @@ export class SystemComponent implements OnChanges {
     //console.log("System: identify() returning vcExt.vc.id = " + vcExt.vc.id )
     return vcExt.vc.id
   } 
+
+  private applyPresets(systemState: I_SystemState): void {
+    this.numIterationsToExecute = systemState.frontendPresets.numIterationPerBatch
+    this.statsInterval          = systemState.frontendPresets.economicsStatsInterval
+  }
 
   // ---------------------------------------------------------------------------------------
   // (re-)sizing of childs' UI boxes  
