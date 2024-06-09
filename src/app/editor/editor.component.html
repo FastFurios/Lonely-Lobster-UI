@@ -1,31 +1,39 @@
 <p>editor works!</p>
-<form class="ui form"
-  [formGroup]="system"
-  (ngSubmit)="submitForm()">
+<form class="ui form" [formGroup]="system" (ngSubmit)="submitForm()">
 
   <label>System</label>
   <input formControlName="id">
  
   <label>Value Chain</label>
   <div class="fields" formArrayName="valueChains">
-      <div class="sixteen wide field" *ngFor="let valueChain of valueChains.controls; let valueChainIndex = index">
-          <div [formGroup]="valueChain">
-            VC: 
-            <input placeholder="Value chain" formControlName="id">
-            <input placeholder="value add"   formControlName="valueAdd">
+      <div class="sixteen wide field" *ngFor="let valueChain of valueChains.controls; let valueChainIndex = index" [formGroup]="valueChain">
+        VC: 
+        <input placeholder="Value chain" formControlName="id">
+        <input placeholder="value add"   formControlName="valueAdd">
 
-            <div class="sixteen wide field" *ngFor="let processStep of processSteps(valueChain).controls; let processStepIndex = index">
-                <div [formGroup]="processStep">
-                  __PS:
-                  <input placeholder="process step"  formControlName="id">
-                  <input placeholder="norm effort"   formControlName="normEffort">
-                </div>
-            </div>
-            <button type="button" class="ui mini button" (click)="addProcessStep(processSteps(valueChain))"> + Process Step </button>
+        <div class="sixteen wide field" *ngFor="let processStep of processSteps(valueChain).controls; let processStepIndex = index" [formGroup]="processStep">
+            __PS:
+            <input placeholder="process step"  formControlName="id">
+            <input placeholder="norm effort"   formControlName="normEffort">
         </div>
+        <button type="button" class="ui mini button" (click)="addProcessStep(processSteps(valueChain))"> + Process Step </button>
       </div>
       <button type="button" class="ui mini button" (click)="addValueChain()"> + Value Chain</button>
+  </div>
+
+  <label>Workers</label>
+  <div class="fields" formArrayName="workers">
+    <div class="sixteen wide field" *ngFor="let worker of workers.controls; let workerIndex = index" [formGroup]="worker">
+        <input placeholder="Name" formControlName="id">
+        <div class="sixteen wide field" *ngFor="let workerAssignment of workerAssignments(worker).controls; let workerAssignmentIndex = index" [formGroup]="workerAssignment">
+            __Assignment:
+            <input placeholder="value chain"  formControlName="valueChainId">
+            <input placeholder="process step"  formControlName="processStepId">
+        </div>
+      <button type="button" class="ui mini button" (click)="addWorkerAssignments(workerAssignments(worker))"> + Assignment </button>
     </div>
+    <button type="button" class="ui mini button" (click)="addWorker()"> + Worker</button>
+  </div>
 
   
   <button class="ui button" type="submit"

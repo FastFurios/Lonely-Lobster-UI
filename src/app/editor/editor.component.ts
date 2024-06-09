@@ -41,27 +41,30 @@ export class EditorComponent implements OnInit {
             verbose: [""]
         }),
         valueChains: this.fb.array([]),
-        workers:this.fb.array([ 
-            this.fb.group({
-                id: [""],
-                processStepsAssignments: this.fb.array([])
-          })
-      ])
+        workers:this.fb.array([])
     })
   }
 
-
+/*
   public valueChainsArray(values: string[]) {
     console.log("Value chain added")
     return this.fb.array(values)
   }
-
+*/
   get valueChains(): FormArray<FormGroup> {
     return this.system.get('valueChains') as FormArray
   }
 
   public processSteps(vc: FormGroup): FormArray<FormGroup> {
     return vc.get('processSteps') as FormArray
+  }
+
+  get workers(): FormArray<FormGroup> {
+    return this.system.get('workers') as FormArray
+  }
+
+  public workerAssignments(wo: FormGroup): FormArray<FormGroup> {
+    return wo.get('processStepAssignments') as FormArray
   }
 
   public addValueChain(): void {
@@ -87,6 +90,14 @@ export class EditorComponent implements OnInit {
       wipLimit: [""]
     }))
   }
+
+  public addWorker(): void {
+    this.workers.push(this.fb.group({
+      id: [""],
+      processStepAssignments: this.fb.array([])
+    }))
+  }
+
 
   public addWorkerAssignments(ass: FormArray) {
     ass.push(this.fb.group({
