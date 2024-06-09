@@ -17,20 +17,24 @@ export class EditorComponent implements OnInit {
     this.initForm()
   }
 
+  // ---------------------------------------------------------------------------------------
+  // setting up the static form elements
+  // ---------------------------------------------------------------------------------------
+
   private initForm(): void {
     if (this.system) return
 
     this.system = this.fb.group({
-        id:        ["", Validators.required],
-        frontendPresetParameters: this.fb.group({
-            numIterationsPerBatch: [""],
-            economicsStatsIntervall: [""]
-        }),
-        learnAndAdaptParms: this.fb.group({
-            observationPeriod: [""],
-            successMeasureFuntion: [""],
-            adjustmentFactor: [""],
-        }),
+      id:        ["", Validators.required],
+      frontendPresetParameters: this.fb.group({
+          numIterationsPerBatch: [""],
+          economicsStatsIntervall: [""]
+      }),
+      learnAndAdaptParms: this.fb.group({
+          observationPeriod: [""],
+          successMeasureFuntion: [""],
+          adjustmentFactor: [""],
+      }),
         wipLimitSearchParms: this.fb.group({
             initialTemperature: [""],
             degreesPerDownhillStepTolerance: [""],
@@ -51,6 +55,10 @@ export class EditorComponent implements OnInit {
     return this.fb.array(values)
   }
 */
+  // ---------------------------------------------------------------------------------------
+  // getting form elements
+  // ---------------------------------------------------------------------------------------
+
   get valueChains(): FormArray<FormGroup> {
     return this.system.get('valueChains') as FormArray
   }
@@ -66,6 +74,23 @@ export class EditorComponent implements OnInit {
   public workerAssignments(wo: FormGroup): FormArray<FormGroup> {
     return wo.get('processStepAssignments') as FormArray
   }
+
+  // ---------------------------------------------------------------------------------------
+  // getting form elements values
+  // ---------------------------------------------------------------------------------------
+ 
+  private processStepsOfValueChain(vc: FormGroup): string[] {
+    const vcId = vc.get("id")?.value
+    return (<FormArray<FormGroup>>vc.get("processSteps"))?.controls.map(ps => `${vcId}.${ps.get("id")?.value}`)
+  }
+
+  get valueChainsWithProcessSteps(): string[] {
+    return (<FormArray<FormGroup>>this.system.get("valueChains"))?.controls.flatMap(vc => this.processStepsOfValueChain(vc))
+  }
+
+  // ---------------------------------------------------------------------------------------
+  // adding dynamic form elements
+  // ---------------------------------------------------------------------------------------
 
   public addValueChain(): void {
     this.valueChains.push(this.fb.group({
@@ -106,8 +131,15 @@ export class EditorComponent implements OnInit {
     }))
   }
 
+  // ---------------------------------------------------------------------------------------
+  // submitting the form
+  // ---------------------------------------------------------------------------------------
+
+
   public submitForm() {
     console.log("Submitting form:")
+    console.log("valueChainsWithProcessSteps()= ")
+    console.log(this.valueChainsWithProcessSteps)
     const systemValues = this.system.value
     console.log(systemValues)
   }

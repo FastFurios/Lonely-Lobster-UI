@@ -27,10 +27,12 @@
         <input placeholder="Name" formControlName="id">
         <div class="sixteen wide field" *ngFor="let workerAssignment of workerAssignments(worker).controls; let workerAssignmentIndex = index" [formGroup]="workerAssignment">
             __Assignment:
-            <input placeholder="value chain"  formControlName="valueChainId">
-            <input placeholder="process step"  formControlName="processStepId">
+        <select id="option" name="option">            
+            <option *ngFor="let option of valueChainsWithProcessSteps" value="option">{{ option }}</option>
+        </select> 
+<!--        <input type="submit"> -->
         </div>
-      <button type="button" class="ui mini button" (click)="addWorkerAssignments(workerAssignments(worker))"> + Assignment </button>
+        <button type="button" class="ui mini button" (click)="addWorkerAssignments(workerAssignments(worker))"> + Assignment </button>
     </div>
     <button type="button" class="ui mini button" (click)="addWorker()"> + Worker</button>
   </div>
