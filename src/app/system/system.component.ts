@@ -162,7 +162,7 @@ export class SystemComponent implements OnChanges {
   }
 
   // ---------------------------------------------------------------------------------------
-  // read system config file  
+  // read and write system config file  
   // ---------------------------------------------------------------------------------------
   
   filename:         string = ""
@@ -193,6 +193,21 @@ export class SystemComponent implements OnChanges {
     })
   }
 
+  public onSaveFile(): void {
+//  let fileContent = "Hi there, I was just saved from the Angular app!"
+    let fileContent = {
+      name: "Gerold",
+      age: 56
+    }
+    const file = new Blob([JSON.stringify(fileContent)], { type: "application/json" })
+    const link = document.createElement("a")
+    link.href = URL.createObjectURL(file)
+    link.download = this.filename
+    console.log("system.onSaveFile(): saving to " + link.download)
+    link.click()
+    link.remove()
+  }
+
   // ---------------------------------------------------------------------------------------
   // initialize and reset system;
   // fetch statistics  
@@ -206,6 +221,8 @@ export class SystemComponent implements OnChanges {
       this.cms.clear()  // initialize color mapper ...
       this.cms.addCategory("value-chain",        cssColorListVc)
       this.cms.addCategory("selection-strategy", cssColorListSest) 
+      this.onSaveFile()  // ######################## tbd ###############
+
   }
 
   private setOrResetSystem() {
@@ -220,8 +237,8 @@ export class SystemComponent implements OnChanges {
       )
       this.systemState$.subscribe(systemState => {
         this.numValueChains = systemState.valueChains.length
-        console.log("system.setOrResetSystem(): systemState.frontendPresets=")
-        console.log(systemState.frontendPresets)
+        //console.log("system.setOrResetSystem(): systemState.frontendPresets=")
+        //console.log(systemState.frontendPresets)
         this.applyPresets(systemState)
         this.processIteration(systemState) 
         this.calcSizeOfUiBoxes() 

@@ -57,7 +57,7 @@ export class WorkorderFeederService {
                 wipLimits:          [],
                 optimizeWipLimits:  optimizeWipLimits
             } 
-            console.log("WOF: this.vcFeederTimeUnitMap.entries().size= " + this.vcFeederTimeUnitMap.size)
+            //console.log("WOF: this.vcFeederTimeUnitMap.entries().size= " + this.vcFeederTimeUnitMap.size)
             for (const [vcId, vcFeederParmsAndState] of this.vcFeederTimeUnitMap.entries()) { // for all value-chains
                 vcFeederParmsAndState.aggregatedWorkOrders += vcFeederParmsAndState.parms.throughput 
 
@@ -75,8 +75,8 @@ export class WorkorderFeederService {
             }
             iterationRequest.wipLimits = constWipLimits
             iterationRequests.push(iterationRequest)
-            console.log("WOF: iterationRequest4AllVCs(): iterationRequest WIP-limits= " + iterationRequest.wipLimits.map(wl => wl.ps + "=" + wl.wipLimit))
-            console.log("WOF: iterationRequest4AllVCs(): iterationRequest Work Orders= " + iterationRequest.vcsWorkOrders.map(wo => `${wo.valueChainId}: ${wo.numWorkOrders}`))
+            //console.log("WOF: iterationRequest4AllVCs(): iterationRequest WIP-limits= " + iterationRequest.wipLimits.map(wl => wl.ps + "=" + wl.wipLimit))
+            //console.log("WOF: iterationRequest4AllVCs(): iterationRequest Work Orders= " + iterationRequest.vcsWorkOrders.map(wo => `${wo.valueChainId}: ${wo.numWorkOrders}`))
         }           
         return iterationRequests
     }

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 import { HttpClientModule } from '@angular/common/http';
@@ -24,6 +24,7 @@ import { FlowStatsComponent } from './flow-stats/flow-stats.component';
 import { SystemStatsComponent } from './system-stats/system-stats.component';
 import { LearnStatsComponent } from './learn-stats/learn-stats.component';
 import { ColorLegendComponent } from './color-legend/color-legend.component';
+import { EditorComponent } from './editor/editor.component';
 
 /*
 const routes: Routes = [
@@ -52,13 +53,15 @@ const routes: Routes = [
     FlowStatsComponent,
     SystemStatsComponent,
     LearnStatsComponent,
-    ColorLegendComponent
+    ColorLegendComponent,
+    EditorComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
-    BrowserModule, 
+//  BrowserModule, 
 //  RouterModule.forRoot(routes)
   ],
   providers: [],

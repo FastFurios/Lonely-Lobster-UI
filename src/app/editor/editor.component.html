@@ -1,0 +1,35 @@
+<p>editor works!</p>
+<form class="ui form"
+  [formGroup]="system"
+  (ngSubmit)="submitForm()">
+
+  <label>System</label>
+  <input formControlName="id">
+ 
+  <label>Value Chain</label>
+  <div class="fields" formArrayName="valueChains">
+      <div class="sixteen wide field" *ngFor="let valueChain of valueChains.controls; let valueChainIndex = index">
+          <div [formGroup]="valueChain">
+            VC: 
+            <input placeholder="Value chain" formControlName="id">
+            <input placeholder="value add"   formControlName="valueAdd">
+
+            <div class="sixteen wide field" *ngFor="let processStep of processSteps(valueChain).controls; let processStepIndex = index">
+                <div [formGroup]="processStep">
+                  __PS:
+                  <input placeholder="process step"  formControlName="id">
+                  <input placeholder="norm effort"   formControlName="normEffort">
+                </div>
+            </div>
+            <button type="button" class="ui mini button" (click)="addProcessStep(processSteps(valueChain))"> + Process Step </button>
+        </div>
+      </div>
+      <button type="button" class="ui mini button" (click)="addValueChain()"> + Value Chain</button>
+    </div>
+
+  
+  <button class="ui button" type="submit"
+    [disabled]="system.invalid">
+    Speichern
+  </button>
+</form>

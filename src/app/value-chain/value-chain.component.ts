@@ -27,7 +27,7 @@ export class ValueChainComponent implements OnInit, OnChanges {
   }
  
   ngOnInit(): void {
-    console.log(`Value-Chain ${this.vcExtended.vc.id}: ngOnInit`)
+    //console.log(`Value-Chain ${this.vcExtended.vc.id}: ngOnInit`)
     if (this.feedParms) {
       this.wof.setInjectionParms(this.vcExtended.vc.id, this.feedParms)
     }
@@ -43,7 +43,7 @@ export class ValueChainComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
-    console.log(`Value-Chain ${this.vcExtended.vc.id}: ngOnChanges`)
+    //console.log(`Value-Chain ${this.vcExtended.vc.id}: ngOnChanges`)
     this.workitemStats = this.vcExtended.flowStats?.stats?.vc
     this.pssExtended = this.vcExtended.vc.processSteps
                                   .map(ps => { return {
