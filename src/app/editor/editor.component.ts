@@ -1,6 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
-import { Configuration  } from '../shared/config-definitions'
+import { ValueChainId, ProcessStepId, WorkerName } from '../shared/io_api_definitions'
+import {  } from '../shared/io_api_definitions'
+
+
+type ProcessStepWithItsValueChain = {
+  valueChainId: ValueChainId
+  processStepId:ProcessStepId 
+}
+
+type NumberedListEntryOfProcessStepsWithItsValueChain = {
+  entryId:                       number // primary key for a pair of valueChain and process step 
+  processStepWithItsValueChain:  ProcessStepWithItsValueChain
+}
+
+type NumberedListOfProcessStepsWithTheirValueChains = NumberedListEntryOfProcessStepsWithItsValueChain[]
+
+type WorkerProcessStepAssignment = { worker: WorkerName; vcPs: ProcessStepWithItsValueChain }
+type WorkersProcessStepAssignments = WorkerProcessStepAssignment[]
 
 
 @Component({
@@ -10,6 +27,8 @@ import { Configuration  } from '../shared/config-definitions'
 })
 export class EditorComponent implements OnInit {
   public system:      FormGroup
+  private workersProcessStepAssignments: WorkersProcessStepAssignments = []
+  selectedVcPs:       any
 
   constructor(private fb: FormBuilder) { }
 
@@ -79,14 +98,32 @@ export class EditorComponent implements OnInit {
   // getting form elements values
   // ---------------------------------------------------------------------------------------
  
-  private processStepsOfValueChain(vc: FormGroup): string[] {
+  private processStepsOfValueChain(vc: FormGroup): ProcessStepWithItsValueChain[] {
     const vcId = vc.get("id")?.value
-    return (<FormArray<FormGroup>>vc.get("processSteps"))?.controls.map(ps => `${vcId}.${ps.get("id")?.value}`)
+    return (<FormArray<FormGroup>>vc.get("processSteps"))?.controls.map(ps => {return {
+      valueChainId: vcId,
+      processStepId: ps.get("id")?.value
+    }})
   }
 
-  get valueChainsWithProcessSteps(): string[] {
+  private get processStepsOfValueChains(): ProcessStepWithItsValueChain[] {
     return (<FormArray<FormGroup>>this.system.get("valueChains"))?.controls.flatMap(vc => this.processStepsOfValueChain(vc))
   }
+
+  get valueChainsWithProcessSteps(): NumberedListOfProcessStepsWithTheirValueChains {
+    let vcWithPss: NumberedListOfProcessStepsWithTheirValueChains = []
+    let eId = 0
+    for (let vcPs of this.processStepsOfValueChains) {
+      vcWithPss.push({
+        entryId: eId,
+        processStepWithItsValueChain: vcPs   
+      })
+      eId++
+    }
+    return vcWithPss
+  }
+
+  selectedProcessStep: any
 
   // ---------------------------------------------------------------------------------------
   // adding dynamic form elements
@@ -132,9 +169,14 @@ export class EditorComponent implements OnInit {
   }
 
   // ---------------------------------------------------------------------------------------
-  // submitting the form
+  // handlers
   // ---------------------------------------------------------------------------------------
 
+
+  public selectedWorkerAssignmentHandler(e: any): void {
+    console.log("selectedWorkerAssignment(): e= ")
+    console.log(e)
+  }
 
   public submitForm() {
     console.log("Submitting form:")
