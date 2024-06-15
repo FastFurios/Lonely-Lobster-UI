@@ -68,63 +68,6 @@ export class EditorComponent implements OnInit {
     })
   }
 
-/*
-  public valueChainsArray(values: string[]) {
-    console.log("Value chain added")
-    return this.fb.array(values)
-  }
-*/
-  // ---------------------------------------------------------------------------------------
-  // getting form elements
-  // ---------------------------------------------------------------------------------------
-
-  get valueChains(): FormArray<FormGroup> {
-    return this.system.get('valueChains') as FormArray
-  }
-
-  public processSteps(vc: FormGroup): FormArray<FormGroup> {
-    return vc.get('processSteps') as FormArray
-  }
-
-  get workers(): FormArray<FormGroup> {
-    return this.system.get('workers') as FormArray
-  }
-
-  public workerAssignments(wo: FormGroup): FormArray<FormGroup> {
-    return wo.get('processStepAssignments') as FormArray
-  }
-
-  // ---------------------------------------------------------------------------------------
-  // getting form elements values
-  // ---------------------------------------------------------------------------------------
- 
-  private processStepsOfValueChain(vc: FormGroup): ProcessStepWithItsValueChain[] {
-    const vcId = vc.get("id")?.value
-    return (<FormArray<FormGroup>>vc.get("processSteps"))?.controls.map(ps => {return {
-      valueChainId: vcId,
-      processStepId: ps.get("id")?.value
-    }})
-  }
-
-  private get processStepsOfValueChains(): ProcessStepWithItsValueChain[] {
-    return (<FormArray<FormGroup>>this.system.get("valueChains"))?.controls.flatMap(vc => this.processStepsOfValueChain(vc))
-  }
-
-  get valueChainsWithProcessSteps(): NumberedListOfProcessStepsWithTheirValueChains {
-    let vcWithPss: NumberedListOfProcessStepsWithTheirValueChains = []
-    let eId = 0
-    for (let vcPs of this.processStepsOfValueChains) {
-      vcWithPss.push({
-        entryId: eId,
-        processStepWithItsValueChain: vcPs   
-      })
-      eId++
-    }
-    return vcWithPss
-  }
-
-  selectedProcessStep: any
-
   // ---------------------------------------------------------------------------------------
   // adding dynamic form elements
   // ---------------------------------------------------------------------------------------
@@ -156,16 +99,47 @@ export class EditorComponent implements OnInit {
   public addWorker(): void {
     this.workers.push(this.fb.group({
       id: [""],
-      processStepAssignments: this.fb.array([])
+      assignments: this.fb.array([])
     }))
   }
 
-
   public addWorkerAssignments(ass: FormArray) {
     ass.push(this.fb.group({
-      valueChainId: [""],
-      processStepId: [""]
+      vcIdpsId: [""]
     }))
+  }
+
+  // ---------------------------------------------------------------------------------------
+  // getting form elements
+  // ---------------------------------------------------------------------------------------
+
+  get valueChains(): FormArray<FormGroup> {
+    return this.system.get('valueChains') as FormArray
+  }
+
+  public processSteps(vc: FormGroup): FormArray<FormGroup> {
+    return vc.get('processSteps') as FormArray
+  }
+
+  get workers(): FormArray<FormGroup> {
+    return this.system.get('workers') as FormArray
+  }
+
+  public workerAssignments(wo: FormGroup): FormArray<FormGroup> {
+    return wo.get('assignments') as FormArray
+  }
+
+  // ---------------------------------------------------------------------------------------
+  // getting form elements values
+  // ---------------------------------------------------------------------------------------
+ 
+  private processStepsOfValueChain(vc: FormGroup): string[] {
+    const vcId = vc.get("id")?.value
+    return (<FormArray<FormGroup>>vc.get("processSteps"))?.controls.map(ps => vcId + "." + ps.get("id")?.value)
+  }
+
+  get processStepsOfValueChains(): string[] {
+    return (<FormArray<FormGroup>>this.system.get("valueChains"))?.controls.flatMap(vc => this.processStepsOfValueChain(vc))
   }
 
   // ---------------------------------------------------------------------------------------
@@ -176,12 +150,11 @@ export class EditorComponent implements OnInit {
   public selectedWorkerAssignmentHandler(e: any): void {
     console.log("selectedWorkerAssignment(): e= ")
     console.log(e)
+
   }
 
   public submitForm() {
     console.log("Submitting form:")
-    console.log("valueChainsWithProcessSteps()= ")
-    console.log(this.valueChainsWithProcessSteps)
     const systemValues = this.system.value
     console.log(systemValues)
   }

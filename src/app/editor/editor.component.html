@@ -2,8 +2,16 @@
 <form class="ui form" [formGroup]="system" (ngSubmit)="submitForm()">
 
   <label>System</label>
+<!--
   <input formControlName="id">
- 
+-->
+  <select formControlName="id">
+    <option default>Pick a System Name</option>
+    <option value="a"> Test1 </option>
+    <option value="b"> Test2 </option>
+    <option value="c"> Test3 </option>
+</select> 
+
   <label>Value Chain</label>
   <div class="fields" formArrayName="valueChains">
       <div class="sixteen wide field" *ngFor="let valueChain of valueChains.controls; let valueChainIndex = index" [formGroup]="valueChain">
@@ -23,27 +31,18 @@
 
   <label>Workers</label>
   <div class="fields" formArrayName="workers">
-    <div class="sixteen wide field" *ngFor="let worker of workers.controls; let workerIndex = index" [formGroup]="worker">
+    <div class="sixteen wide field" *ngFor="let worker of workers.controls; let workerIndex = index" [formGroup]="worker" [formGroup]="worker">
         <input placeholder="Name" formControlName="id">
-        <div class="sixteen wide field" *ngFor="let workerAssignment of workerAssignments(worker).controls; let workerAssignmentIndex = index">
-                __Assignment:
-                <select #valueChainsProcessSteps id="category" name="category" (ngModel)="selectedVcPs" [ngModelOptions]="{standalone: true}" (change)="selectedWorkerAssignmentHandler(valueChainsProcessSteps.value)">
-                    <option default>Pick a Process Step</option>
-                    <option *ngFor="let vcPs of valueChainsWithProcessSteps" [value]="vcPs.entryId">{{ vcPs.entryId + ": " + vcPs.processStepWithItsValueChain.valueChainId + '.' + vcPs.processStepWithItsValueChain.processStepId }}</option>
-<!--
-                    <option *ngFor="let vcPs of valueChainsWithProcessSteps" [value]="{ worker: worker.get('id')?.value, entryId: vcPs.entryId}">{{ vcPs.entryId + ": " + vcPs.processStepWithItsValueChain.valueChainId + '.' + vcPs.processStepWithItsValueChain.processStepId }}</option>
--->
+
+        <div class="sixteen wide field" *ngFor="let assignment of workerAssignments(worker).controls; let workerAssignmentIndex = index" [formGroup]="assignment">
+                __Assignment :
+                  <select formControlName="vcIdpsId"   (change)="selectedWorkerAssignmentHandler($event)">
+                      <option default>Pick a Process Step</option>
+                      <option *ngFor="let vcPs of processStepsOfValueChains" [value]="vcPs">
+                        {{ vcPs }}
+                      </option>
                   </select> 
-<!--
-        <input type="submit"> 
-
-https://stackoverflow.com/questions/68329468/angular-12-select-dropdown-option-based-on-the-value-in-template
--->
-
-
-
-
-        </div>
+            </div>
         <button type="button" class="ui mini button" (click)="addWorkerAssignments(workerAssignments(worker))"> + Assignment </button>
     </div>
     <button type="button" class="ui mini button" (click)="addWorker()"> + Worker</button>
