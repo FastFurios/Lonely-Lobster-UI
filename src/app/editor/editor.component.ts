@@ -129,6 +129,16 @@ export class EditorComponent implements OnInit {
     return wo.get('assignments') as FormArray
   }
 
+  public valueDegradation(vc: FormGroup): FormGroup {
+    return vc.get('valueDegradation') as FormGroup
+  }
+
+  public injection(vc: FormGroup): FormGroup {
+    return vc.get('injection') as FormGroup
+  }
+
+
+
   // ---------------------------------------------------------------------------------------
   // getting form elements values
   // ---------------------------------------------------------------------------------------

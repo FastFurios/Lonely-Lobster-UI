@@ -1,56 +1,84 @@
-<p>editor works!</p>
-<form class="ui form" [formGroup]="system" (ngSubmit)="submitForm()">
-
-  <label>System</label>
-<!--
-  <input formControlName="id">
--->
-  <select formControlName="id">
-    <option default>Pick a System Name</option>
-    <option value="a"> Test1 </option>
-    <option value="b"> Test2 </option>
-    <option value="c"> Test3 </option>
-</select> 
-
-  <label>Value Chain</label>
-  <div class="fields" formArrayName="valueChains">
-      <div class="sixteen wide field" *ngFor="let valueChain of valueChains.controls; let valueChainIndex = index" [formGroup]="valueChain">
-        VC: 
-        <input placeholder="Value chain" formControlName="id">
-        <input placeholder="value add"   formControlName="valueAdd">
-
-        <div class="sixteen wide field" *ngFor="let processStep of processSteps(valueChain).controls; let processStepIndex = index" [formGroup]="processStep">
-            __PS:
-            <input placeholder="process step"  formControlName="id">
-            <input placeholder="norm effort"   formControlName="normEffort">
-        </div>
-        <button type="button" class="ui mini button" (click)="addProcessStep(processSteps(valueChain))"> + Process Step </button>
-      </div>
-      <button type="button" class="ui mini button" (click)="addValueChain()"> + Value Chain</button>
-  </div>
-
-  <label>Workers</label>
-  <div class="fields" formArrayName="workers">
-    <div class="sixteen wide field" *ngFor="let worker of workers.controls; let workerIndex = index" [formGroup]="worker" [formGroup]="worker">
-        <input placeholder="Name" formControlName="id">
-
-        <div class="sixteen wide field" *ngFor="let assignment of workerAssignments(worker).controls; let workerAssignmentIndex = index" [formGroup]="assignment">
-                __Assignment :
-                  <select formControlName="vcIdpsId"   (change)="selectedWorkerAssignmentHandler($event)">
-                      <option default>Pick a Process Step</option>
-                      <option *ngFor="let vcPs of processStepsOfValueChains" [value]="vcPs">
-                        {{ vcPs }}
-                      </option>
-                  </select> 
-            </div>
-        <button type="button" class="ui mini button" (click)="addWorkerAssignments(workerAssignments(worker))"> + Assignment </button>
+<p>Lonely Lobster System Configuration Editor</p>
+<form [formGroup]="system" (ngSubmit)="submitForm()">
+    <div class="section">
+        <label>System</label>
+        <input formControlName="id">
+        <button class="ui button" type="submit"
+            [disabled]="system.invalid">
+            Speichern
+        </button>
     </div>
-    <button type="button" class="ui mini button" (click)="addWorker()"> + Worker</button>
+    <div >
+        <div class="section">
+            Parameters ...
+        </div>
+        <div class="section">
+            <div class="section">
+                <label>Value Chains</label>
+                <button type="button" class="ui mini button" (click)="addValueChain()"> + </button>
+            </div>
+            <div formArrayName="valueChains">
+                <div class="section" *ngFor="let valueChain of valueChains.controls" [formGroup]="valueChain">
+                    <div>
+                        <input placeholder="Value chain" formControlName="id">
+                    </div>
+                    <div class="flex-multi-columns"> 
+                        <div><label>Value-add:</label><input placeholder="number"   formControlName="valueAdd"></div>
+                        <div class="flex-multi-columns" [formGroup]="valueDegradation(valueChain)">
+                            <div>Value degradation</div> 
+                            <div>
+                                <div><label>Function:</label><input placeholder="function name"     formControlName="function"></div>
+                                <div><label>Argument:</label><input placeholder="function argument" formControlName="argument"></div>
+                            </div>
+                        </div>          
+                        <div class="flex-multi-columns" [formGroup]="injection(valueChain)">
+                          <div>Injection</div> 
+                          <div>
+                              <div><label>Throughput:</label><input placeholder="throughput"   formControlName="throughput"></div>
+                              <div><label>Probability:</label><input placeholder="probability" formControlName="probability"></div>
+                          </div>
+                      </div>          
+                  </div>          
+                    <div class="flex-multi-columns"> 
+                        <div>
+                            <div><label> Process Steps </label>  <button type="button" class="ui mini button" (click)="addProcessStep(processSteps(valueChain))"> + </button> </div>
+                            <div class="vertically-aligned-property-label">Norm Effort:</div>
+                            <div class="vertically-aligned-property-label">WIP Limit:</div>
+                        </div>
+                        <div *ngFor="let processStep of processSteps(valueChain).controls" [formGroup]="processStep">
+                            <div><input placeholder="name"  formControlName="id"></div>
+                            <div><input placeholder="> 0"   formControlName="normEffort"></div>
+                            <div><input placeholder="empty or >0"     formControlName="wipLimit"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section">
+                <label>Workers</label>
+                <button type="button" class="ui mini button" (click)="addWorker()"> + </button>
+            </div>
+            <div formArrayName="workers">
+                <div class="section" *ngFor="let worker of workers.controls" [formGroup]="worker">
+                    <div>
+                        <input placeholder="Worker Name" formControlName="id">
+                    </div>
+                    <div class="flex-multi-columns"> 
+                        <div>
+                            <div><label> Assignments </label>  <button type="button" class="ui mini button" (click)="addWorkerAssignments(workerAssignments(worker))"> + </button></div>
+                        </div>
+                        <div *ngFor="let assignment of workerAssignments(worker).controls" [formGroup]="assignment">
+                            <select formControlName="vcIdpsId"   (change)="selectedWorkerAssignmentHandler($event)">
+                                <option default>Pick a Process Step</option>
+                                <option *ngFor="let vcPs of processStepsOfValueChains" [value]="vcPs">
+                                  {{ vcPs }}
+                                </option>
+                            </select> 
+                        </div>
+                    </div>
+                </div>
+          </div>
+      </div>
   </div>
-
-  
-  <button class="ui button" type="submit"
-    [disabled]="system.invalid">
-    Speichern
-  </button>
 </form>

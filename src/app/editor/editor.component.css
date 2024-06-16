@@ -1,0 +1,29 @@
+.flex-multi-columns {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: small; 
+    text-align: left;
+}
+
+.section {
+    background-color: rgb(246, 234, 192);
+    border-style:solid;
+    border-color: rgb(255, 255, 255);
+}
+
+.section-padding {
+    background-color: rgb(246, 234, 192);
+    border-style:solid;
+    border-color: rgb(255, 255, 255);
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.vertically-aligned-property-label {
+    text-align: right;
+    padding-top: 2px;
+    padding-bottom: 3px;
+}
