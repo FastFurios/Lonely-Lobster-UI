@@ -60,9 +60,10 @@
                 <button type="button" class="ui mini button" (click)="addWorker()"> + </button>
             </div>
             <div formArrayName="workers">
-                <div class="section" *ngFor="let worker of workers.controls" [formGroup]="worker">
+                <div class="section" *ngFor="let worker of workers.controls; let i = index" [formGroup]="worker" >
                     <div>
                         <input placeholder="Worker Name" formControlName="id">
+                        <button type="button" class="ui mini button" (click)="deleteWorker(i)"> - </button>
                     </div>
                     <div class="flex-multi-columns"> 
                         <div>

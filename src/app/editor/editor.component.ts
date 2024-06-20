@@ -109,6 +109,11 @@ export class EditorComponent implements OnInit {
     }))
   }
 
+  public deleteWorker(i: number): void {
+    this.workers.removeAt(i)
+  }
+    
+
   // ---------------------------------------------------------------------------------------
   // getting form elements
   // ---------------------------------------------------------------------------------------
@@ -136,7 +141,6 @@ export class EditorComponent implements OnInit {
   public injection(vc: FormGroup): FormGroup {
     return vc.get('injection') as FormGroup
   }
-
 
 
   // ---------------------------------------------------------------------------------------
