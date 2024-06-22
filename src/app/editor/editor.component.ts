@@ -109,6 +109,14 @@ export class EditorComponent implements OnInit {
     }))
   }
 
+  public deleteValueChain(i: number): void {
+    this.valueChains.removeAt(i)
+  }
+    
+  public deleteProcessStep(vc: FormGroup, i: number): void {
+    this.processSteps(vc).removeAt(i)
+  }
+    
   public deleteWorker(i: number): void {
     this.workers.removeAt(i)
   }

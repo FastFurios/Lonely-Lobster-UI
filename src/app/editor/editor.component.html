@@ -18,9 +18,10 @@
                 <button type="button" class="ui mini button" (click)="addValueChain()"> + </button>
             </div>
             <div formArrayName="valueChains">
-                <div class="section" *ngFor="let valueChain of valueChains.controls" [formGroup]="valueChain">
+                <div class="section" *ngFor="let valueChain of valueChains.controls; let i = index" [formGroup]="valueChain">
                     <div>
                         <input placeholder="Value chain" formControlName="id">
+                        <button type="button" class="ui mini button" (click)="deleteValueChain(i)"> - </button>
                     </div>
                     <div class="flex-multi-columns"> 
                         <div><label>Value-add:</label><input placeholder="number"   formControlName="valueAdd"></div>
@@ -45,8 +46,9 @@
                             <div class="vertically-aligned-property-label">Norm Effort:</div>
                             <div class="vertically-aligned-property-label">WIP Limit:</div>
                         </div>
-                        <div *ngFor="let processStep of processSteps(valueChain).controls" [formGroup]="processStep">
-                            <div><input placeholder="name"  formControlName="id"></div>
+                        <div *ngFor="let processStep of processSteps(valueChain).controls; let i = index" [formGroup]="processStep">
+                            <button type="button" class="ui mini button" (click)="deleteProcessStep(valueChain, i)"> - </button>
+                            <div><input placeholder="name"  formControlName="id"></div> 
                             <div><input placeholder="> 0"   formControlName="normEffort"></div>
                             <div><input placeholder="empty or >0"     formControlName="wipLimit"></div>
                         </div>
