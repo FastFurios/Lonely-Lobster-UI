@@ -25,6 +25,7 @@ import { SystemStatsComponent } from './system-stats/system-stats.component';
 import { LearnStatsComponent } from './learn-stats/learn-stats.component';
 import { ColorLegendComponent } from './color-legend/color-legend.component';
 import { EditorComponent } from './editor/editor.component';
+import { EditorMessagesComponent } from './editor-messages/editor-messages.component';
 
 /*
 const routes: Routes = [
@@ -54,7 +55,8 @@ const routes: Routes = [
     SystemStatsComponent,
     LearnStatsComponent,
     ColorLegendComponent,
-    EditorComponent
+    EditorComponent,
+    EditorMessagesComponent
   ],
   imports: [
     BrowserModule,

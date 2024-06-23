@@ -8,9 +8,25 @@
             Speichern
         </button>
     </div>
-    <div >
+    <div>
         <div class="section">
-            Parameters ...
+            <div >Parameters</div> 
+            <div class="flex-multi-columns">    
+                <div [formGroup]="learnAndAdaptParms">
+                    <button type="button" class="ui mini button" (click)="addLearnAndAdaptParametersHandler()"> Worker learn & adapt </button>
+                    <div *ngIf="learnAndAdaptToggle"> 
+                        <label>observation Period</label>
+                        <input placeholder="Observation Period" formControlName="observationPeriod">
+                    </div>
+                </div>
+                <div [formGroup]="wipLimitSearchParms">
+                    <button type="button" class="ui mini button" (click)="addWipLimitsOptimizationParametersHandler()"> WIP limits optimization </button>
+                    <div *ngIf="  wipLimitOptimizeToggle"> 
+                        <label>Initial Temperature</label>
+                        <input placeholder="Initial Temperature" formControlName="initialTemperature">
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="section">
             <div class="section">
@@ -73,11 +89,14 @@
                         </div>
                         <div *ngFor="let assignment of workerAssignments(worker).controls" [formGroup]="assignment">
                             <select formControlName="vcIdpsId"   (change)="selectedWorkerAssignmentHandler($event)">
+<!--
                                 <option default>Pick a Process Step</option>
+-->
                                 <option *ngFor="let vcPs of processStepsOfValueChains" [value]="vcPs">
-                                  {{ vcPs }}
+                                  {{ vcPs }} 
                                 </option>
                             </select> 
+                            <button type="button" class="ui mini button" (click)="deleteAssignment(worker, i)"> - </button>
                         </div>
                     </div>
                 </div>

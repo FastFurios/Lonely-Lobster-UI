@@ -26,9 +26,11 @@ type WorkersProcessStepAssignments = WorkerProcessStepAssignment[]
   styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
-  public system:      FormGroup
-  private workersProcessStepAssignments: WorkersProcessStepAssignments = []
-  selectedVcPs:       any
+  public system:          FormGroup
+//private workersProcessStepAssignments: WorkersProcessStepAssignments = []
+  selectedVcPs:           any
+  learnAndAdaptToggle:    boolean = false
+  wipLimitOptimizeToggle: boolean = false
 
   constructor(private fb: FormBuilder) { }
 
@@ -54,14 +56,14 @@ export class EditorComponent implements OnInit {
           successMeasureFuntion: [""],
           adjustmentFactor: [""],
       }),
-        wipLimitSearchParms: this.fb.group({
-            initialTemperature: [""],
-            degreesPerDownhillStepTolerance: [""],
-            initialJumpDistance: [""],
-            measurementPeriod: [""],
-            wipLimitUpperBoundaryFactor: [""],
-            searchOnAtStart: [""],
-            verbose: [""]
+      wipLimitSearchParms: this.fb.group({
+          initialTemperature: [""],
+          degreesPerDownhillStepTolerance: [""],
+          initialJumpDistance: [""],
+          measurementPeriod: [""],
+          wipLimitUpperBoundaryFactor: [""],
+          searchOnAtStart: [""],
+          verbose: [""]
         }),
         valueChains: this.fb.array([]),
         workers:this.fb.array([])
@@ -121,10 +123,21 @@ export class EditorComponent implements OnInit {
     this.workers.removeAt(i)
   }
     
-
+  public deleteAssignment(wo: FormGroup, i: number): void {
+    this.workerAssignments(wo).removeAt(i)
+  }
+    
   // ---------------------------------------------------------------------------------------
   // getting form elements
   // ---------------------------------------------------------------------------------------
+
+  get learnAndAdaptParms(): FormGroup {
+    return this.system.get('learnAndAdaptParms') as FormGroup
+  }
+
+  get wipLimitSearchParms(): FormGroup {
+    return this.system.get('wipLimitSearchParms') as FormGroup
+  }
 
   get valueChains(): FormArray<FormGroup> {
     return this.system.get('valueChains') as FormArray
@@ -164,15 +177,34 @@ export class EditorComponent implements OnInit {
     return (<FormArray<FormGroup>>this.system.get("valueChains"))?.controls.flatMap(vc => this.processStepsOfValueChain(vc))
   }
 
+ /** 
+  private workerSelectedProcessSteps(wo: FormGroup): string[] {
+    const aux = (<FormArray<FormGroup>>wo.get("assignments"))?.controls.flatMap(( as => as.get("vcIdpsId")?.value))
+    console.log("workerSelectedProcessSteps(" + wo.get("id")?.value + ") = " + aux)
+    return aux
+  }
+
+  public notYetSelectedProcessStepsOfValueChains(wo: FormGroup): string[] {
+    return this.processStepsOfValueChains.filter(vcPs => !this.workerSelectedProcessSteps(wo).includes(vcPs))
+  }
+ */
   // ---------------------------------------------------------------------------------------
   // handlers
   // ---------------------------------------------------------------------------------------
 
-
   public selectedWorkerAssignmentHandler(e: any): void {
     console.log("selectedWorkerAssignment(): e= ")
     console.log(e)
+  }
 
+  public addLearnAndAdaptParametersHandler() {
+    console.log("addLearnAndAdaptParameters()")
+    this.learnAndAdaptToggle = !this.learnAndAdaptToggle
+  }
+
+  public addWipLimitsOptimizationParametersHandler() {
+    console.log("addWipLimitsOptimizationParameters()")
+    this.wipLimitOptimizeToggle = !this.wipLimitOptimizeToggle
   }
 
   public submitForm() {
