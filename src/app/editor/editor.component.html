@@ -2,7 +2,7 @@
 <form [formGroup]="system" (ngSubmit)="submitForm()">
     <div class="section">
         <label>System</label>
-        <input formControlName="id">
+        <input  type="text" formControlName="id">
         <button class="ui button" type="submit"
             [disabled]="system.invalid">
             Speichern
@@ -15,15 +15,43 @@
                 <div [formGroup]="learnAndAdaptParms">
                     <button type="button" class="ui mini button" (click)="addLearnAndAdaptParametersHandler()"> Worker learn & adapt </button>
                     <div *ngIf="learnAndAdaptToggle"> 
-                        <label>observation Period</label>
-                        <input placeholder="Observation Period" formControlName="observationPeriod">
+                        <div class="parameter-label-input">
+                            <label>Observation Period</label>
+                            <input type="number" placeholder="Observation Period" formControlName="observationPeriod">
+                        </div>
+                        <div class="parameter-label-input">
+                            <label>Success Measure Function</label>
+                            <input type="text" placeholder="Success Measure Function" formControlName="successMeasureFunction">
+                        </div>
+                        <div class="parameter-label-input">
+                            <label>Adjustment Factor</label>
+                            <input  type="number" placeholder="Adjustment Factor" formControlName="adjustmentFactor">
+                        </div>
                     </div>
                 </div>
                 <div [formGroup]="wipLimitSearchParms">
                     <button type="button" class="ui mini button" (click)="addWipLimitsOptimizationParametersHandler()"> WIP limits optimization </button>
                     <div *ngIf="  wipLimitOptimizeToggle"> 
-                        <label>Initial Temperature</label>
-                        <input placeholder="Initial Temperature" formControlName="initialTemperature">
+                        <div class="parameter-label-input">
+                            <label>Initial Temperature</label>
+                            <input type="number" placeholder="Initial Temperature" formControlName="initialTemperature">
+                        </div>
+                        <div class="parameter-label-input">
+                            <label>Degrees per Downhill Step Tolerance</label>
+                            <input type="number" placeholder="Degrees per Downhill Step Tolerance" formControlName="degreesPerDownhillStepTolerance">
+                        </div>
+                        <div class="parameter-label-input">
+                            <label>Initial Jump Distance</label>
+                            <input type="number" placeholder="Initial Jump Distance" formControlName="initialJumpDistance">
+                        </div>
+                        <div class="parameter-label-input">
+                            <label>Measurement Period</label>
+                            <input type="number" placeholder="Measurement Period" formControlName="measurementPeriod">
+                        </div>
+                        <div class="parameter-label-input">
+                            <label>WIP Limit Upper Boundary Factor</label>
+                            <input type="number" placeholder="WIP Limit Upper Boundary Factor" formControlName="wipLimitUpperBoundaryFactor">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -36,37 +64,40 @@
             <div formArrayName="valueChains">
                 <div class="section" *ngFor="let valueChain of valueChains.controls; let i = index" [formGroup]="valueChain">
                     <div>
-                        <input placeholder="Value chain" formControlName="id">
+                        <input  type="text" placeholder="Value chain" formControlName="id">
                         <button type="button" class="ui mini button" (click)="deleteValueChain(i)"> - </button>
+                        <app-editor-messages [control]="valueChain.get('id')!" controlName="id"></app-editor-messages>
                     </div>
                     <div class="flex-multi-columns"> 
-                        <div><label>Value-add:</label><input placeholder="number"   formControlName="valueAdd"></div>
+                        <div><label>Value-add:</label><input type="number" placeholder="number"   formControlName="valueAdd"></div>
                         <div class="flex-multi-columns" [formGroup]="valueDegradation(valueChain)">
                             <div>Value degradation</div> 
                             <div>
-                                <div><label>Function:</label><input placeholder="function name"     formControlName="function"></div>
-                                <div><label>Argument:</label><input placeholder="function argument" formControlName="argument"></div>
+                                <div><label>Function:</label><input type="text" placeholder="function name"     formControlName="function"></div>
+                                <div><label>Argument:</label><input type="number" placeholder="function argument" formControlName="argument"></div>
                             </div>
                         </div>          
                         <div class="flex-multi-columns" [formGroup]="injection(valueChain)">
                           <div>Injection</div> 
                           <div>
-                              <div><label>Throughput:</label><input placeholder="throughput"   formControlName="throughput"></div>
-                              <div><label>Probability:</label><input placeholder="probability" formControlName="probability"></div>
+                              <div><label>Throughput:</label><input type="number" placeholder="throughput"   formControlName="throughput"></div>
+                              <div><label>Probability:</label><input type="number" placeholder="probability" formControlName="probability"></div>
                           </div>
                       </div>          
                   </div>          
                     <div class="flex-multi-columns"> 
                         <div>
                             <div><label> Process Steps </label>  <button type="button" class="ui mini button" (click)="addProcessStep(processSteps(valueChain))"> + </button> </div>
+                            <div class="vertically-aligned-property-label">Id:</div>
                             <div class="vertically-aligned-property-label">Norm Effort:</div>
                             <div class="vertically-aligned-property-label">WIP Limit:</div>
                         </div>
                         <div *ngFor="let processStep of processSteps(valueChain).controls; let i = index" [formGroup]="processStep">
                             <button type="button" class="ui mini button" (click)="deleteProcessStep(valueChain, i)"> - </button>
-                            <div><input placeholder="name"  formControlName="id"></div> 
-                            <div><input placeholder="> 0"   formControlName="normEffort"></div>
-                            <div><input placeholder="empty or >0"     formControlName="wipLimit"></div>
+                            <div><input type="text" placeholder="name"  formControlName="id"></div> 
+                            <app-editor-messages [control]="processStep.get('id')!" controlName="id"></app-editor-messages>
+                            <div><input type="number" placeholder="> 0"   formControlName="normEffort"></div>
+                            <div><input type="number" placeholder="empty or >0"     formControlName="wipLimit"></div>
                         </div>
                     </div>
                 </div>
@@ -80,7 +111,7 @@
             <div formArrayName="workers">
                 <div class="section" *ngFor="let worker of workers.controls; let i = index" [formGroup]="worker" >
                     <div>
-                        <input placeholder="Worker Name" formControlName="id">
+                        <input type="text" placeholder="Worker Name" formControlName="id">
                         <button type="button" class="ui mini button" (click)="deleteWorker(i)"> - </button>
                     </div>
                     <div class="flex-multi-columns"> 

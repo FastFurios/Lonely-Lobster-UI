@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, FormControl, Validators, ValidationErrors } from '@angular/forms';
 import { ValueChainId, ProcessStepId, WorkerName } from '../shared/io_api_definitions'
 import {  } from '../shared/io_api_definitions'
 
@@ -18,7 +18,6 @@ type NumberedListOfProcessStepsWithTheirValueChains = NumberedListEntryOfProcess
 
 type WorkerProcessStepAssignment = { worker: WorkerName; vcPs: ProcessStepWithItsValueChain }
 type WorkersProcessStepAssignments = WorkerProcessStepAssignment[]
-
 
 @Component({
   selector: 'app-editor',
@@ -39,6 +38,14 @@ export class EditorComponent implements OnInit {
   }
 
   // ---------------------------------------------------------------------------------------
+  // validators
+  // ---------------------------------------------------------------------------------------
+
+  static vcPsNameFormatChecker(control: FormControl): ValidationErrors | null {
+    return control.value.includes(".") ? { idWithoutPeriod: { valid: false }} : null
+  }
+
+  // ---------------------------------------------------------------------------------------
   // setting up the static form elements
   // ---------------------------------------------------------------------------------------
 
@@ -53,7 +60,7 @@ export class EditorComponent implements OnInit {
       }),
       learnAndAdaptParms: this.fb.group({
           observationPeriod: [""],
-          successMeasureFuntion: [""],
+          successMeasureFunction: [""],
           adjustmentFactor: [""],
       }),
       wipLimitSearchParms: this.fb.group({
@@ -76,7 +83,7 @@ export class EditorComponent implements OnInit {
 
   public addValueChain(): void {
     this.valueChains.push(this.fb.group({
-      id: [""],
+      id: ["", [Validators.required, EditorComponent.vcPsNameFormatChecker]],
       valueAdd: [""],
       valueDegradation: this.fb.group({
           function: [""],
@@ -92,7 +99,7 @@ export class EditorComponent implements OnInit {
 
   public addProcessStep(pss: FormArray) {
     pss.push(this.fb.group({
-      id: [""],
+      id: ["", [ Validators.required, EditorComponent.vcPsNameFormatChecker ]],
       normEffort: [""],
       wipLimit: [""]
     }))

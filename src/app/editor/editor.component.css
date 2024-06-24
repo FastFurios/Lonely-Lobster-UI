@@ -27,3 +27,8 @@
     padding-top: 2px;
     padding-bottom: 3px;
 }
+
+.parameter-label-input {
+    display: flex;
+    justify-content: space-between; 
+}
