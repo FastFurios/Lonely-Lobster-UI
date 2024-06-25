@@ -42,7 +42,7 @@ export class EditorComponent implements OnInit {
   // ---------------------------------------------------------------------------------------
 
   static vcPsNameFormatChecker(control: FormControl): ValidationErrors | null {
-    return control.value.includes(".") ? { idWithoutPeriod: { valid: false }} : null
+    return control.value.includes(".") ? { idWithoutPeriod: { valid: false } } : null
   }
 
   // ---------------------------------------------------------------------------------------

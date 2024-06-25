@@ -16,16 +16,16 @@
                     <button type="button" class="ui mini button" (click)="addLearnAndAdaptParametersHandler()"> Worker learn & adapt </button>
                     <div *ngIf="learnAndAdaptToggle"> 
                         <div class="parameter-label-input">
-                            <label>Observation Period</label>
-                            <input type="number" placeholder="Observation Period" formControlName="observationPeriod">
+                            <label>Observation Period:</label>
+                            <input type="number" placeholder=">=1" formControlName="observationPeriod" min="1">
                         </div>
                         <div class="parameter-label-input">
-                            <label>Success Measure Function</label>
-                            <input type="text" placeholder="Success Measure Function" formControlName="successMeasureFunction">
+                            <label>Success Measure Function:</label>
+                            <input type="text" formControlName="successMeasureFunction">
                         </div>
                         <div class="parameter-label-input">
-                            <label>Adjustment Factor</label>
-                            <input  type="number" placeholder="Adjustment Factor" formControlName="adjustmentFactor">
+                            <label>Adjustment Factor:</label>
+                            <input  type="number" placeholder=">=0.1" formControlName="adjustmentFactor" min="0.1" step="0.1">
                         </div>
                     </div>
                 </div>
@@ -33,24 +33,24 @@
                     <button type="button" class="ui mini button" (click)="addWipLimitsOptimizationParametersHandler()"> WIP limits optimization </button>
                     <div *ngIf="  wipLimitOptimizeToggle"> 
                         <div class="parameter-label-input">
-                            <label>Initial Temperature</label>
-                            <input type="number" placeholder="Initial Temperature" formControlName="initialTemperature">
+                            <label>Initial Temperature:</label>
+                            <input type="number" placeholder=">=0" formControlName="initialTemperature" min="0" step="10">
                         </div>
                         <div class="parameter-label-input">
-                            <label>Degrees per Downhill Step Tolerance</label>
-                            <input type="number" placeholder="Degrees per Downhill Step Tolerance" formControlName="degreesPerDownhillStepTolerance">
+                            <label>Degrees per Downhill Step Tolerance:</label>
+                            <input type="number" placeholder=">=1" formControlName="degreesPerDownhillStepTolerance" min="1" step="1">
                         </div>
                         <div class="parameter-label-input">
-                            <label>Initial Jump Distance</label>
-                            <input type="number" placeholder="Initial Jump Distance" formControlName="initialJumpDistance">
+                            <label>Initial Jump Distance:</label>
+                            <input type="number" placeholder=">=1" formControlName="initialJumpDistance" min="1" step="1">
                         </div>
                         <div class="parameter-label-input">
-                            <label>Measurement Period</label>
-                            <input type="number" placeholder="Measurement Period" formControlName="measurementPeriod">
+                            <label>Measurement Period:</label>
+                            <input type="number" placeholder=">=1" formControlName="measurementPeriod" min="1" step="10">
                         </div>
                         <div class="parameter-label-input">
-                            <label>WIP Limit Upper Boundary Factor</label>
-                            <input type="number" placeholder="WIP Limit Upper Boundary Factor" formControlName="wipLimitUpperBoundaryFactor">
+                            <label>WIP Limit Upper Boundary Factor:</label>
+                            <input type="number" placeholder=">=1.5" formControlName="wipLimitUpperBoundaryFactor" min="1.5" step="0.1">
                         </div>
                     </div>
                 </div>
@@ -69,19 +69,19 @@
                         <app-editor-messages [control]="valueChain.get('id')!" controlName="id"></app-editor-messages>
                     </div>
                     <div class="flex-multi-columns"> 
-                        <div><label>Value-add:</label><input type="number" placeholder="number"   formControlName="valueAdd"></div>
+                        <div><label>Value-add:</label><input type="number" placeholder=">=0"   formControlName="valueAdd" min="0" step="1"></div>
                         <div class="flex-multi-columns" [formGroup]="valueDegradation(valueChain)">
                             <div>Value degradation</div> 
                             <div>
                                 <div><label>Function:</label><input type="text" placeholder="function name"     formControlName="function"></div>
-                                <div><label>Argument:</label><input type="number" placeholder="function argument" formControlName="argument"></div>
+                                <div><label>Argument:</label><input type="number" placeholder="number" formControlName="argument"></div>
                             </div>
                         </div>          
                         <div class="flex-multi-columns" [formGroup]="injection(valueChain)">
                           <div>Injection</div> 
                           <div>
-                              <div><label>Throughput:</label><input type="number" placeholder="throughput"   formControlName="throughput"></div>
-                              <div><label>Probability:</label><input type="number" placeholder="probability" formControlName="probability"></div>
+                              <div><label>Throughput:</label><input type="number" placeholder=">=0"   formControlName="throughput" min="0" step="0.1"></div>
+                              <div><label>Probability:</label><input type="number" placeholder="0.1-1.0 " formControlName="probability" min="0.1" max="1" step="0.1"></div>
                           </div>
                       </div>          
                   </div>          
@@ -94,10 +94,10 @@
                         </div>
                         <div *ngFor="let processStep of processSteps(valueChain).controls; let i = index" [formGroup]="processStep">
                             <button type="button" class="ui mini button" (click)="deleteProcessStep(valueChain, i)"> - </button>
-                            <div><input type="text" placeholder="name"  formControlName="id"></div> 
+                            <div><input type="text" formControlName="id"></div> 
                             <app-editor-messages [control]="processStep.get('id')!" controlName="id"></app-editor-messages>
-                            <div><input type="number" placeholder="> 0"   formControlName="normEffort"></div>
-                            <div><input type="number" placeholder="empty or >0"     formControlName="wipLimit"></div>
+                            <div><input type="number" placeholder=">=0"   formControlName="normEffort" min="0" step="1"></div>
+                            <div><input type="number" placeholder="0=none, else >=1"     formControlName="wipLimit" min="0" step="1"></div>
                         </div>
                     </div>
                 </div>
