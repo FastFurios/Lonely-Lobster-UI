@@ -219,3 +219,19 @@ export type I_LearningStatsWorker = {
 }
 
 export type I_LearningStatsWorkers = I_LearningStatsWorker[]
+
+//-----------------------------------------
+// value lists for the editor 
+//-----------------------------------------
+
+export const valueDegradationFunctionNames = [
+    "discounted",  // wired with discounted()
+    "expired",     // wired with expired()
+    "net"          // default, not explicitely wired
+]
+
+export const successMeasureFunctionNames = [
+    "ivc",         // wired with successMeasureIvc()
+    "roce",        // wired with successMeasureRoce()
+    "none"         // wired with successMeasureNone()
+]

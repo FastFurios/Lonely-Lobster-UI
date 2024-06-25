@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core'
 import { AbstractControl } from "@angular/forms"
+import { valueDegradationFunctionNames } from "../shared/io_api_definitions"
 
 @Component({
   selector: 'app-editor-messages',

@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators, ValidationErrors } from '@angular/forms';
-import { ValueChainId, ProcessStepId, WorkerName } from '../shared/io_api_definitions'
-import {  } from '../shared/io_api_definitions'
-
+import { ValueChainId, ProcessStepId, WorkerName, valueDegradationFunctionNames, successMeasureFunctionNames } from '../shared/io_api_definitions'
 
 type ProcessStepWithItsValueChain = {
   valueChainId: ValueChainId
@@ -25,15 +23,19 @@ type WorkersProcessStepAssignments = WorkerProcessStepAssignment[]
   styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
-  public system:          FormGroup
-//private workersProcessStepAssignments: WorkersProcessStepAssignments = []
-  selectedVcPs:           any
-  learnAndAdaptToggle:    boolean = false
-  wipLimitOptimizeToggle: boolean = false
+  public system:                    FormGroup
+  public valueDegradationFunctions: string[] = valueDegradationFunctionNames
+  public successMeasureFunctions:   string[] = successMeasureFunctionNames
+  //private workersProcessStepAssignments: WorkersProcessStepAssignments = []
+  selectedVcPs:                     any
+  learnAndAdaptToggle:              boolean = false
+  wipLimitOptimizeToggle:           boolean = false
 
   constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
+//    this.valueDegradationFunctions = valueDegradationFunctionNames
+//    this.successMeasureFunctions   = successMeasureFunctionNames
     this.initForm()
   }
 
@@ -41,7 +43,11 @@ export class EditorComponent implements OnInit {
   // validators
   // ---------------------------------------------------------------------------------------
 
-  static vcPsNameFormatChecker(control: FormControl): ValidationErrors | null {
+  static vcPsNameFormatCheck(control: FormControl): ValidationErrors | null {
+    return control.value.includes(".") ? { idWithoutPeriod: { valid: false } } : null
+  }
+
+  static zeroToOneCheck(control: FormControl): ValidationErrors | null {
     return control.value.includes(".") ? { idWithoutPeriod: { valid: false } } : null
   }
 
@@ -83,7 +89,7 @@ export class EditorComponent implements OnInit {
 
   public addValueChain(): void {
     this.valueChains.push(this.fb.group({
-      id: ["", [Validators.required, EditorComponent.vcPsNameFormatChecker]],
+      id: ["", [Validators.required, EditorComponent.vcPsNameFormatCheck]],
       valueAdd: [""],
       valueDegradation: this.fb.group({
           function: [""],
@@ -99,7 +105,7 @@ export class EditorComponent implements OnInit {
 
   public addProcessStep(pss: FormArray) {
     pss.push(this.fb.group({
-      id: ["", [ Validators.required, EditorComponent.vcPsNameFormatChecker ]],
+      id: ["", [ Validators.required, EditorComponent.vcPsNameFormatCheck ]],
       normEffort: [""],
       wipLimit: [""]
     }))
@@ -199,11 +205,12 @@ export class EditorComponent implements OnInit {
   // handlers
   // ---------------------------------------------------------------------------------------
 
+/**
   public selectedWorkerAssignmentHandler(e: any): void {
     console.log("selectedWorkerAssignment(): e= ")
     console.log(e)
   }
-
+ */
   public addLearnAndAdaptParametersHandler() {
     console.log("addLearnAndAdaptParameters()")
     this.learnAndAdaptToggle = !this.learnAndAdaptToggle

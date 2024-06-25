@@ -21,7 +21,14 @@
                         </div>
                         <div class="parameter-label-input">
                             <label>Success Measure Function:</label>
-                            <input type="text" formControlName="successMeasureFunction">
+<!--
+                            <input type="text" placeholder="function name" formControlName="successMeasureFunction">
+-->
+                            <select formControlName="successMeasureFunction">
+                                <option *ngFor="let function of successMeasureFunctions" [value]="function">
+                                {{ function }} 
+                                </option>
+                            </select> 
                         </div>
                         <div class="parameter-label-input">
                             <label>Adjustment Factor:</label>
@@ -69,21 +76,39 @@
                         <app-editor-messages [control]="valueChain.get('id')!" controlName="id"></app-editor-messages>
                     </div>
                     <div class="flex-multi-columns"> 
-                        <div><label>Value-add:</label><input type="number" placeholder=">=0"   formControlName="valueAdd" min="0" step="1"></div>
-                        <div class="flex-multi-columns" [formGroup]="valueDegradation(valueChain)">
-                            <div>Value degradation</div> 
-                            <div>
-                                <div><label>Function:</label><input type="text" placeholder="function name"     formControlName="function"></div>
-                                <div><label>Argument:</label><input type="number" placeholder="number" formControlName="argument"></div>
+                        <div class="parameter-label-input">
+                            <label>Value-add:</label>
+                            <input type="number" placeholder=">=0"   formControlName="valueAdd" min="0" step="1"> 
+                        </div>    
+                        <div [formGroup]="valueDegradation(valueChain)">
+                            <div>Value Degradation:</div> 
+                            <div class="parameter-label-input">
+                                <label>Function:</label>
+<!--
+                                <input type="text" placeholder="function name" formControlName="function">
+-->
+                                <select formControlName="function">
+                                    <option *ngFor="let function of valueDegradationFunctions" [value]="function">
+                                      {{ function }} 
+                                    </option>
+                                </select> 
+                            </div>
+                            <div class="parameter-label-input">
+                                <label>Argument:</label>
+                                <input type="number" placeholder="number" formControlName="argument">
                             </div>
                         </div>          
-                        <div class="flex-multi-columns" [formGroup]="injection(valueChain)">
-                          <div>Injection</div> 
-                          <div>
-                              <div><label>Throughput:</label><input type="number" placeholder=">=0"   formControlName="throughput" min="0" step="0.1"></div>
-                              <div><label>Probability:</label><input type="number" placeholder="0.1-1.0 " formControlName="probability" min="0.1" max="1" step="0.1"></div>
-                          </div>
-                      </div>          
+                        <div [formGroup]="injection(valueChain)">
+                            <div>Injection:</div> 
+                            <div class="parameter-label-input">
+                                <label>Throughput:</label>
+                                <input type="number" placeholder=">=0"   formControlName="throughput" min="0" step="0.1">
+                            </div>
+                            <div class="parameter-label-input">
+                                <label>Probability:</label>
+                                <input type="number" placeholder="0.1-1.0 " formControlName="probability" min="0.1" max="1" step="0.1">
+                            </div>
+                        </div>          
                   </div>          
                     <div class="flex-multi-columns"> 
                         <div>
@@ -119,7 +144,7 @@
                             <div><label> Assignments </label>  <button type="button" class="ui mini button" (click)="addWorkerAssignments(workerAssignments(worker))"> + </button></div>
                         </div>
                         <div *ngFor="let assignment of workerAssignments(worker).controls" [formGroup]="assignment">
-                            <select formControlName="vcIdpsId"   (change)="selectedWorkerAssignmentHandler($event)">
+                            <select formControlName="vcIdpsId">   <!--(change)="selectedWorkerAssignmentHandler($event)"> -->
 <!--
                                 <option default>Pick a Process Step</option>
 -->
