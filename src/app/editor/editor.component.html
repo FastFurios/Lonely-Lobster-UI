@@ -8,7 +8,7 @@
             Speichern
         </button>
     </div>
-    <div>
+    <!--<div>-->
         <div class="section">
             <div >Parameters</div> 
             <div class="flex-multi-columns">    
@@ -63,7 +63,7 @@
                 </div>
             </div>
         </div>
-        <div class="section">
+        <!--<div class="section">-->
             <div class="section">
                 <label>Value Chains</label>
                 <button type="button" class="ui mini button" (click)="addValueChain()"> + </button>
@@ -127,8 +127,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="section">
+        <!--</div>-->
+        <!--<div class="section">-->
             <div class="section">
                 <label>Workers</label>
                 <button type="button" class="ui mini button" (click)="addWorker()"> + </button>
@@ -139,6 +139,7 @@
                         <input type="text" placeholder="Worker Name" formControlName="id">
                         <button type="button" class="ui mini button" (click)="deleteWorker(i)"> - </button>
                     </div>
+                    <app-editor-messages [control]="worker.get('assignments')!" controlName="workerAssignments"></app-editor-messages>
                     <div class="flex-multi-columns"> 
                         <div>
                             <div><label> Assignments </label>  <button type="button" class="ui mini button" (click)="addWorkerAssignments(workerAssignments(worker))"> + </button></div>
@@ -156,7 +157,7 @@
                         </div>
                     </div>
                 </div>
-          </div>
+          <!--</div>-->
       </div>
-  </div>
+  <!--</div>-->
 </form>

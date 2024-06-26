@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, FormControl, Validators, ValidationErrors } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, FormControl, Validators, ValidationErrors, ValidatorFn, AbstractControl } from '@angular/forms';
 import { ValueChainId, ProcessStepId, WorkerName, valueDegradationFunctionNames, successMeasureFunctionNames } from '../shared/io_api_definitions'
 
 type ProcessStepWithItsValueChain = {
@@ -37,18 +37,6 @@ export class EditorComponent implements OnInit {
 //    this.valueDegradationFunctions = valueDegradationFunctionNames
 //    this.successMeasureFunctions   = successMeasureFunctionNames
     this.initForm()
-  }
-
-  // ---------------------------------------------------------------------------------------
-  // validators
-  // ---------------------------------------------------------------------------------------
-
-  static vcPsNameFormatCheck(control: FormControl): ValidationErrors | null {
-    return control.value.includes(".") ? { idWithoutPeriod: { valid: false } } : null
-  }
-
-  static zeroToOneCheck(control: FormControl): ValidationErrors | null {
-    return control.value.includes(".") ? { idWithoutPeriod: { valid: false } } : null
   }
 
   // ---------------------------------------------------------------------------------------
@@ -114,7 +102,7 @@ export class EditorComponent implements OnInit {
   public addWorker(): void {
     this.workers.push(this.fb.group({
       id: [""],
-      assignments: this.fb.array([])
+      assignments: this.fb.array([], [EditorComponent.workerAssignmentsCheck])
     }))
   }
 
@@ -123,6 +111,10 @@ export class EditorComponent implements OnInit {
       vcIdpsId: [""]
     }))
   }
+
+  // ---------------------------------------------------------------------------------------
+  // delete dynamic form elements
+  // ---------------------------------------------------------------------------------------
 
   public deleteValueChain(i: number): void {
     this.valueChains.removeAt(i)
@@ -140,6 +132,20 @@ export class EditorComponent implements OnInit {
     this.workerAssignments(wo).removeAt(i)
   }
     
+  // ---------------------------------------------------------------------------------------
+  // validators
+  // ---------------------------------------------------------------------------------------
+
+  static vcPsNameFormatCheck(control: FormControl): ValidationErrors | null {
+    return control.value.includes(".") ? { idWithoutPeriod: { valid: false } } : null
+  }
+
+  static workerAssignmentsCheck(woAss: AbstractControl): ValidationErrors | null {
+    const woAssFormArrayFormGroups = (<FormArray>woAss).controls
+    const valueOccurancesCounts: number[] = woAssFormArrayFormGroups.map(fg => woAssFormArrayFormGroups.filter(e => e.get("vcIdpsId")!.value == fg.get("vcIdpsId")!.value).length)  
+    return Math.max(...valueOccurancesCounts) > 1 ? { duplicates: { valid: false } } : null
+  }
+
   // ---------------------------------------------------------------------------------------
   // getting form elements
   // ---------------------------------------------------------------------------------------

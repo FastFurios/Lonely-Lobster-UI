@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core'
 import { AbstractControl } from "@angular/forms"
-import { valueDegradationFunctionNames } from "../shared/io_api_definitions"
 
 @Component({
   selector: 'app-editor-messages',
@@ -16,19 +15,8 @@ export class EditorMessagesComponent implements OnInit {
       required: "id must not be empty",
       idWithoutPeriod: "Value-chain and process-step IDs must not have a period in their name"
     },
-    zeroToOne: {
-      required: "The ISBN is missing.",
-      isbnFormat: "ISBN needs to habe either 10 or 13 digits.",
-      isbnExists: "ISBN already assigned to another existing book."
-      //   minlength: "ISBN is too short (10 digits minimum).",
-      //   maxlength: "ISBN is too long (13 digits maximum)."
-    },
-    author: {
-      atLeastOneAuthor: "At least one author required...a book doesn't write itself!"
-      //   required: "An author is missing."
-    },
-    published: {
-        required: "The publishing date is missing."
+    workerAssignments: {
+      duplicates: "An assignment connot be selected more than once for a worker",
     }
 }
 
