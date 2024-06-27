@@ -8,156 +8,144 @@
             Speichern
         </button>
     </div>
-    <!--<div>-->
-        <div class="section">
-            <div >Parameters</div> 
-            <div class="flex-multi-columns">    
-                <div [formGroup]="learnAndAdaptParms">
-                    <button type="button" class="ui mini button" (click)="addLearnAndAdaptParametersHandler()"> Worker learn & adapt </button>
-                    <div *ngIf="learnAndAdaptToggle"> 
-                        <div class="parameter-label-input">
-                            <label>Observation Period:</label>
-                            <input type="number" placeholder=">=1" formControlName="observationPeriod" min="1">
-                        </div>
-                        <div class="parameter-label-input">
-                            <label>Success Measure Function:</label>
-<!--
-                            <input type="text" placeholder="function name" formControlName="successMeasureFunction">
--->
-                            <select formControlName="successMeasureFunction">
-                                <option *ngFor="let function of successMeasureFunctions" [value]="function">
-                                {{ function }} 
-                                </option>
-                            </select> 
-                        </div>
-                        <div class="parameter-label-input">
-                            <label>Adjustment Factor:</label>
-                            <input  type="number" placeholder=">=0.1" formControlName="adjustmentFactor" min="0.1" step="0.1">
-                        </div>
+    <div class="section">
+        <div >Parameters</div> 
+        <div class="flex-multi-columns">    
+            <div [formGroup]="learnAndAdaptParms">
+                <button type="button" class="ui mini button" (click)="addLearnAndAdaptParametersHandler()"> Worker learn & adapt </button>
+                <div *ngIf="learnAndAdaptToggle"> 
+                    <div class="parameter-label-input">
+                        <label>Observation Period:</label>
+                        <input type="number" placeholder=">=1" formControlName="observationPeriod" min="1">
+                    </div>
+                    <div class="parameter-label-input">
+                        <label>Success Measure Function:</label>
+                        <select formControlName="successMeasureFunction">
+                            <option *ngFor="let function of successMeasureFunctions" [value]="function">
+                            {{ function }} 
+                            </option>
+                        </select> 
+                    </div>
+                    <div class="parameter-label-input">
+                        <label>Adjustment Factor:</label>
+                        <input  type="number" placeholder=">=0.1" formControlName="adjustmentFactor" min="0.1" step="0.1">
                     </div>
                 </div>
-                <div [formGroup]="wipLimitSearchParms">
-                    <button type="button" class="ui mini button" (click)="addWipLimitsOptimizationParametersHandler()"> WIP limits optimization </button>
-                    <div *ngIf="  wipLimitOptimizeToggle"> 
-                        <div class="parameter-label-input">
-                            <label>Initial Temperature:</label>
-                            <input type="number" placeholder=">=0" formControlName="initialTemperature" min="0" step="10">
-                        </div>
-                        <div class="parameter-label-input">
-                            <label>Degrees per Downhill Step Tolerance:</label>
-                            <input type="number" placeholder=">=1" formControlName="degreesPerDownhillStepTolerance" min="1" step="1">
-                        </div>
-                        <div class="parameter-label-input">
-                            <label>Initial Jump Distance:</label>
-                            <input type="number" placeholder=">=1" formControlName="initialJumpDistance" min="1" step="1">
-                        </div>
-                        <div class="parameter-label-input">
-                            <label>Measurement Period:</label>
-                            <input type="number" placeholder=">=1" formControlName="measurementPeriod" min="1" step="10">
-                        </div>
-                        <div class="parameter-label-input">
-                            <label>WIP Limit Upper Boundary Factor:</label>
-                            <input type="number" placeholder=">=1.5" formControlName="wipLimitUpperBoundaryFactor" min="1.5" step="0.1">
-                        </div>
+            </div>
+            <div [formGroup]="wipLimitSearchParms">
+                <button type="button" class="ui mini button" (click)="addWipLimitsOptimizationParametersHandler()"> WIP limits optimization </button>
+                <div *ngIf="  wipLimitOptimizeToggle"> 
+                    <div class="parameter-label-input">
+                        <label>Initial Temperature:</label>
+                        <input type="number" placeholder=">=0" formControlName="initialTemperature" min="0" step="10">
+                    </div>
+                    <div class="parameter-label-input">
+                        <label>Degrees per Downhill Step Tolerance:</label>
+                        <input type="number" placeholder=">=1" formControlName="degreesPerDownhillStepTolerance" min="1" step="1">
+                    </div>
+                    <div class="parameter-label-input">
+                        <label>Initial Jump Distance:</label>
+                        <input type="number" placeholder=">=1" formControlName="initialJumpDistance" min="1" step="1">
+                    </div>
+                    <div class="parameter-label-input">
+                        <label>Measurement Period:</label>
+                        <input type="number" placeholder=">=1" formControlName="measurementPeriod" min="1" step="10">
+                    </div>
+                    <div class="parameter-label-input">
+                        <label>WIP Limit Upper Boundary Factor:</label>
+                        <input type="number" placeholder=">=1.5" formControlName="wipLimitUpperBoundaryFactor" min="1.5" step="0.1">
                     </div>
                 </div>
             </div>
         </div>
-        <!--<div class="section">-->
-            <div class="section">
-                <label>Value Chains</label>
-                <button type="button" class="ui mini button" (click)="addValueChain()"> + </button>
+    </div>
+    <div class="section">
+        <label>Value Chains</label>
+        <button type="button" class="ui mini button" (click)="addValueChain()"> + </button>
+    </div>
+    <div formArrayName="valueChains">
+        <div class="section" *ngFor="let valueChain of valueChains.controls; let i = index" [formGroup]="valueChain">
+            <div>
+                <input  type="text" placeholder="Value chain" formControlName="id">
+                <button type="button" class="ui mini button" (click)="deleteValueChain(i)"> - </button>
+                <app-editor-messages [control]="valueChain.get('id')!" controlName="id"></app-editor-messages>
             </div>
-            <div formArrayName="valueChains">
-                <div class="section" *ngFor="let valueChain of valueChains.controls; let i = index" [formGroup]="valueChain">
-                    <div>
-                        <input  type="text" placeholder="Value chain" formControlName="id">
-                        <button type="button" class="ui mini button" (click)="deleteValueChain(i)"> - </button>
-                        <app-editor-messages [control]="valueChain.get('id')!" controlName="id"></app-editor-messages>
+            <div class="flex-multi-columns"> 
+                <div class="parameter-label-input">
+                    <label>Value-add:</label>
+                    <input type="number" placeholder=">=0"   formControlName="valueAdd" min="0" step="1"> 
+                </div>    
+                <div [formGroup]="valueDegradation(valueChain)">
+                    <div>Value Degradation:</div> 
+                    <div class="parameter-label-input">
+                        <label>Function:</label>
+                        <select formControlName="function">
+                            <option *ngFor="let function of valueDegradationFunctions" [ngValue]="function">
+                                {{ function }} 
+                            </option>
+                        </select> 
                     </div>
-                    <div class="flex-multi-columns"> 
-                        <div class="parameter-label-input">
-                            <label>Value-add:</label>
-                            <input type="number" placeholder=">=0"   formControlName="valueAdd" min="0" step="1"> 
-                        </div>    
-                        <div [formGroup]="valueDegradation(valueChain)">
-                            <div>Value Degradation:</div> 
-                            <div class="parameter-label-input">
-                                <label>Function:</label>
-<!--
-                                <input type="text" placeholder="function name" formControlName="function">
--->
-                                <select formControlName="function">
-                                    <option *ngFor="let function of valueDegradationFunctions" [value]="function">
-                                      {{ function }} 
-                                    </option>
-                                </select> 
-                            </div>
-                            <div class="parameter-label-input">
-                                <label>Argument:</label>
-                                <input type="number" placeholder="number" formControlName="argument">
-                            </div>
-                        </div>          
-                        <div [formGroup]="injection(valueChain)">
-                            <div>Injection:</div> 
-                            <div class="parameter-label-input">
-                                <label>Throughput:</label>
-                                <input type="number" placeholder=">=0"   formControlName="throughput" min="0" step="0.1">
-                            </div>
-                            <div class="parameter-label-input">
-                                <label>Probability:</label>
-                                <input type="number" placeholder="0.1-1.0 " formControlName="probability" min="0.1" max="1" step="0.1">
-                            </div>
-                        </div>          
-                  </div>          
-                    <div class="flex-multi-columns"> 
-                        <div>
-                            <div><label> Process Steps </label>  <button type="button" class="ui mini button" (click)="addProcessStep(processSteps(valueChain))"> + </button> </div>
-                            <div class="vertically-aligned-property-label">Id:</div>
-                            <div class="vertically-aligned-property-label">Norm Effort:</div>
-                            <div class="vertically-aligned-property-label">WIP Limit:</div>
-                        </div>
-                        <div *ngFor="let processStep of processSteps(valueChain).controls; let i = index" [formGroup]="processStep">
-                            <button type="button" class="ui mini button" (click)="deleteProcessStep(valueChain, i)"> - </button>
-                            <div><input type="text" formControlName="id"></div> 
-                            <app-editor-messages [control]="processStep.get('id')!" controlName="id"></app-editor-messages>
-                            <div><input type="number" placeholder=">=0"   formControlName="normEffort" min="0" step="1"></div>
-                            <div><input type="number" placeholder="0=none, else >=1"     formControlName="wipLimit" min="0" step="1"></div>
-                        </div>
+                    <div class="parameter-label-input">
+                        <label>Argument:</label>
+                        <input type="number" placeholder="number" formControlName="argument">
                     </div>
+                </div>          
+                <div [formGroup]="injection(valueChain)">
+                    <div>Injection:</div> 
+                    <div class="parameter-label-input">
+                        <label>Throughput:</label>
+                        <input type="number" placeholder=">=0"   formControlName="throughput" min="0" step="0.1">
+                    </div>
+                    <div class="parameter-label-input">
+                        <label>Probability:</label>
+                        <input type="number" placeholder="0.1-1.0 " formControlName="probability" min="0.1" max="1" step="0.1">
+                    </div>
+                </div>          
+            </div>          
+            <div class="flex-multi-columns"> 
+                <div>
+                    <div><label> Process Steps </label>  <button type="button" class="ui mini button" (click)="addProcessStep(processSteps(valueChain))"> + </button> </div>
+                    <div class="vertically-aligned-property-label">Id:</div>
+                    <div class="vertically-aligned-property-label">Norm Effort:</div>
+                    <div class="vertically-aligned-property-label">WIP Limit:</div>
+                </div>
+                <div *ngFor="let processStep of processSteps(valueChain).controls; let i = index" [formGroup]="processStep">
+                    <button type="button" class="ui mini button" (click)="deleteProcessStep(valueChain, i)"> - </button>
+                    <div><input type="text" formControlName="id"></div> 
+                    <app-editor-messages [control]="processStep.get('id')!" controlName="id"></app-editor-messages>
+                    <div><input type="number" placeholder=">=0"   formControlName="normEffort" min="0" step="1"></div>
+                    <div><input type="number" placeholder="0=none, else >=1"     formControlName="wipLimit" min="0" step="1"></div>
                 </div>
             </div>
-        <!--</div>-->
-        <!--<div class="section">-->
-            <div class="section">
-                <label>Workers</label>
-                <button type="button" class="ui mini button" (click)="addWorker()"> + </button>
+        </div>
+    </div>
+    <div class="section">
+        <label>Workers</label>
+        <button type="button" class="ui mini button" (click)="addWorker()"> + </button>
+    </div>
+    <div formArrayName="workers">
+        <div class="section" *ngFor="let worker of workers.controls; let i = index" [formGroup]="worker" >
+            <div>
+                <input type="text" placeholder="Worker Name" formControlName="id">
+                <button type="button" class="ui mini button" (click)="deleteWorker(i)"> - </button>
             </div>
-            <div formArrayName="workers">
-                <div class="section" *ngFor="let worker of workers.controls; let i = index" [formGroup]="worker" >
-                    <div>
-                        <input type="text" placeholder="Worker Name" formControlName="id">
-                        <button type="button" class="ui mini button" (click)="deleteWorker(i)"> - </button>
-                    </div>
-                    <app-editor-messages [control]="worker.get('assignments')!" controlName="workerAssignments"></app-editor-messages>
-                    <div class="flex-multi-columns"> 
-                        <div>
-                            <div><label> Assignments </label>  <button type="button" class="ui mini button" (click)="addWorkerAssignments(workerAssignments(worker))"> + </button></div>
-                        </div>
-                        <div *ngFor="let assignment of workerAssignments(worker).controls" [formGroup]="assignment">
-                            <select formControlName="vcIdpsId">   <!--(change)="selectedWorkerAssignmentHandler($event)"> -->
-<!--
-                                <option default>Pick a Process Step</option>
--->
-                                <option *ngFor="let vcPs of processStepsOfValueChains" [value]="vcPs">
-                                  {{ vcPs }} 
-                                </option>
-                            </select> 
-                            <button type="button" class="ui mini button" (click)="deleteAssignment(worker, i)"> - </button>
-                        </div>
-                    </div>
+
+            <app-editor-messages [control]="worker.get('assignments')!" controlName="workerAssignments"></app-editor-messages>
+
+            <div class="flex-multi-columns"> 
+                <div>
+                    <div><label> Assignments </label>  <button type="button" class="ui mini button" (click)="addWorkerAssignments(workerAssignments(worker))"> + </button></div>
                 </div>
-          <!--</div>-->
-      </div>
-  <!--</div>-->
+                <div *ngFor="let assignment of workerAssignments(worker).controls" [formGroup]="assignment">
+                    <select formControlName="vcIdpsId">
+                        <option *ngFor="let vcPs of processStepsOfValueChains" [ngValue]="vcPs">
+                            {{ vcPs }} 
+                        </option>
+                    </select> 
+                    <button type="button" class="ui mini button" (click)="deleteAssignment(worker, i)"> - </button>
+                    <app-editor-messages [control]="assignment" controlName="workerAssignment"></app-editor-messages>
+                </div>
+            </div>
+        </div>
+    </div>
 </form>

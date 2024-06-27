@@ -221,7 +221,7 @@ export class SystemComponent implements OnChanges {
       this.cms.clear()  // initialize color mapper ...
       this.cms.addCategory("value-chain",        cssColorListVc)
       this.cms.addCategory("selection-strategy", cssColorListSest) 
-      this.onSaveFile()  // ######################## tbd ###############
+//    this.onSaveFile()  // ######################## tbd ###############
 
   }
 

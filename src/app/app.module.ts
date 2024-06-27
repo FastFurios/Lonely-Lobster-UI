@@ -7,6 +7,8 @@ import { HttpClientModule } from '@angular/common/http';
 //import { RouterModule, Routes } from '@angular/router' // see https://www.samjulien.com/add-routing-existing-angular-project
 
 import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app-routing.module';
+
 import { InventoryComponent } from './inventory/inventory.component';
 import { InventoryColumnComponent } from './inventory-column/inventory-column.component';
 import { InventoryWorkitemComponent } from './inventory-workitem/inventory-workitem.component';
@@ -63,6 +65,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    AppRoutingModule,
 //  BrowserModule, 
 //  RouterModule.forRoot(routes)
   ],

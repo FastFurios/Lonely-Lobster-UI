@@ -17,6 +17,7 @@ export class EditorMessagesComponent implements OnInit {
     },
     workerAssignments: {
       duplicates: "An assignment connot be selected more than once for a worker",
+      empty: "assignment must not be empty"
     }
 }
 
@@ -29,6 +30,9 @@ constructor() { }
   // ---------------------------------------------------------------------------------------
 
   public errorsForControl(): string[] {
+    if (this.controlName == "workerAssignment") {
+      console.log("Editor-message.errorsForControl(): this.control.get(vcIdpsId).value = >" + this.control.get("vcIdpsId")?.value + "<")
+    }
     const messages = this.allMessages[this.controlName]
     if (!this.control || !this.control.errors || !messages || !this.control.dirty) { return [] }
     return Object.keys(this.control.errors).map(err => messages[err])

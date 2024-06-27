@@ -102,7 +102,7 @@ export class EditorComponent implements OnInit {
   public addWorker(): void {
     this.workers.push(this.fb.group({
       id: [""],
-      assignments: this.fb.array([], [EditorComponent.workerAssignmentsCheck])
+      assignments: this.fb.array([], [EditorComponent.workerAssignmentsDuplicateCheck])
     }))
   }
 
@@ -140,12 +140,18 @@ export class EditorComponent implements OnInit {
     return control.value.includes(".") ? { idWithoutPeriod: { valid: false } } : null
   }
 
-  static workerAssignmentsCheck(woAss: AbstractControl): ValidationErrors | null {
+  static workerAssignmentsDuplicateCheck(woAss: AbstractControl): ValidationErrors | null {
     const woAssFormArrayFormGroups = (<FormArray>woAss).controls
     const valueOccurancesCounts: number[] = woAssFormArrayFormGroups.map(fg => woAssFormArrayFormGroups.filter(e => e.get("vcIdpsId")!.value == fg.get("vcIdpsId")!.value).length)  
     return Math.max(...valueOccurancesCounts) > 1 ? { duplicates: { valid: false } } : null
   }
-
+/**
+  static workerAssignmentsEmptyCheck(woAss: AbstractControl): ValidationErrors | null {
+    const woAssFormArrayFormGroups = (<FormArray>woAss).controls
+    const lengths: number[] = woAssFormArrayFormGroups.map(fg => fg.get("vcIdpsId")!.value.length)  
+    return Math.min(...lengths) == 0 ? { empty: { valid: false } } : null
+  }
+*/
   // ---------------------------------------------------------------------------------------
   // getting form elements
   // ---------------------------------------------------------------------------------------
@@ -182,7 +188,6 @@ export class EditorComponent implements OnInit {
     return vc.get('injection') as FormGroup
   }
 
-
   // ---------------------------------------------------------------------------------------
   // getting form elements values
   // ---------------------------------------------------------------------------------------
@@ -196,27 +201,10 @@ export class EditorComponent implements OnInit {
     return (<FormArray<FormGroup>>this.system.get("valueChains"))?.controls.flatMap(vc => this.processStepsOfValueChain(vc))
   }
 
- /** 
-  private workerSelectedProcessSteps(wo: FormGroup): string[] {
-    const aux = (<FormArray<FormGroup>>wo.get("assignments"))?.controls.flatMap(( as => as.get("vcIdpsId")?.value))
-    console.log("workerSelectedProcessSteps(" + wo.get("id")?.value + ") = " + aux)
-    return aux
-  }
-
-  public notYetSelectedProcessStepsOfValueChains(wo: FormGroup): string[] {
-    return this.processStepsOfValueChains.filter(vcPs => !this.workerSelectedProcessSteps(wo).includes(vcPs))
-  }
- */
   // ---------------------------------------------------------------------------------------
   // handlers
   // ---------------------------------------------------------------------------------------
 
-/**
-  public selectedWorkerAssignmentHandler(e: any): void {
-    console.log("selectedWorkerAssignment(): e= ")
-    console.log(e)
-  }
- */
   public addLearnAndAdaptParametersHandler() {
     console.log("addLearnAndAdaptParameters()")
     this.learnAndAdaptToggle = !this.learnAndAdaptToggle
