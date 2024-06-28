@@ -12,12 +12,13 @@ export class ConfigFileService {
   constructor(private http: HttpClient) { }
 
 // ---------------------------------------------------------------------------------------
-// read system config file  
+// set and get system config file in JSON file format  
 // ---------------------------------------------------------------------------------------
   
   public filename:         string = ""
   public fileContent:      string
   private _objFromJsonFile: any 
+  private _jsonFileContentFromObj: any
 
   set objFromJsonFile(objFromJsonFile: any) {
     this._objFromJsonFile = objFromJsonFile 
@@ -27,6 +28,14 @@ export class ConfigFileService {
 
   get objFromJsonFile(): any {
     return this._objFromJsonFile
+  }
+
+  set jsonFileContentFromObj(obj: any) {
+    this._jsonFileContentFromObj = obj
+  }
+
+  get jsonFileContentFromObj(): any {
+    return this._jsonFileContentFromObj
   }
 
 

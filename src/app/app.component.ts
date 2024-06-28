@@ -17,13 +17,12 @@ export class AppComponent {
   public onFileSelected(e: any) { 
     const file: File = e.target.files[0] 
     this.filename = file.name
-    console.log(`app: onFileSelected(): filename=${this.filename}; subscribing to observable ...`)
+//  console.log(`app: onFileSelected(): filename=${this.filename}; subscribing to observable ...`)
     const obs$ = this.readFileContentObs(file)
     obs$.subscribe((fileContent: string) => { 
-      this.cfs.objFromJsonFile = JSON.parse(fileContent) 
-      console.log(`config-file.service: readFileContent(): subscriber:  this.objFromJsonFile=`)
-      console.log(this.cfs.objFromJsonFile)
-
+    this.cfs.objFromJsonFile = JSON.parse(fileContent) 
+//    console.log(`config-file.service: readFileContent(): subscriber:  this.objFromJsonFile=`)
+//    console.log(this.cfs.objFromJsonFile)
     })
   }
 

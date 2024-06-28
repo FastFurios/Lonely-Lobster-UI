@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators, ValidationErrors, ValidatorFn, AbstractControl } from '@angular/forms';
 import { ValueChainId, ProcessStepId, WorkerName, valueDegradationFunctionNames, successMeasureFunctionNames } from '../shared/io_api_definitions'
 import { ConfigFileService } from '../shared/config-file.service';
+import { stringify } from 'querystring';
 
 type ProcessStepWithItsValueChain = {
   valueChainId: ValueChainId
@@ -264,12 +265,81 @@ export class EditorComponent implements OnInit {
   public submitForm() {
     console.log("Submitting form:")
     const systemValues = this.system.value
+    console.log("this.system.value:")
     console.log(systemValues)
+    this.cfs.jsonFileContentFromObj = this.jsonFileFromObj()
+    console.log("cfs.jsonFileContentFromObj:")
+    console.log(this.cfs.jsonFileContentFromObj)
   }
-}
 
   // ---------------------------------------------------------------------------------------
   // initialize form value chains and workers with config file data
   // ---------------------------------------------------------------------------------------
 
+  private jsonFileFromObj(): any {
+    const formValue = this.system.value
+    return {
+      system_id:                    formValue.id,
+      frontend_preset_parameters: {
+        num_iterations_per_batch:   formValue.frontendPresetParameters.numIterationsPerBatch,
+        economics_stats_interval:   formValue.frontendPresetParameters.economicsStatsIntervall
+      },
+      learn_and_adapt_parms: {
+        observation_period:         formValue.learnAndAdaptParms.observationPeriod,
+        success_measure_function:   formValue.learnAndAdaptParms.successMeasureFunction,
+        adjustment_factor:          formValue.learnAndAdaptParms.adjustmentFactor
+      },
+      wip_limit_search_parms: {
+        initial_temperature:        formValue.wipLimitSearchParms.initialTemperature,
+        degrees_per_downhill_step_tolerance: formValue.wipLimitSearchParms.degreesPerDownhillStepTolerance,
+        initial_jump_distance:      formValue.wipLimitSearchParms.initialJumpDistance,
+        measurement_period:         formValue.wipLimitSearchParms.measurementPeriod,
+        wip_limit_upper_boundary_factor: formValue.wipLimitSearchParms.wipLimitUpperBoundaryFactor,
+        search_on_at_start:         formValue.wipLimitSearchParms.searchOnAtStart,
+        verbose:                    formValue.wipLimitSearchParms.verbose
+      },
+      value_chains:                 formValue.valueChains.map((vc: any) => this.addValueChainAsJson(vc)),
+      workers:                      formValue.workers.map((wo: any) => this.addWorkerAsJson(wo))       
+    } 
+  }
+
+  private addValueChainAsJson(vc: any): any {
+    return {
+      value_chain_id:           vc.id,
+      value_add:                vc.valueAdd,
+      value_degradation: {
+        function:               vc.valueDegradation.function,
+        argument:               vc.valueDegradation.argument
+      },
+      injection: {
+        throughput:             vc.injection.throughput,
+        probability:            vc.injection.probability
+      },
+      process_steps:            vc.processSteps.map((ps: any) => this.addProcessStepAsJson(ps))
+    }
+  }
+
+  private addProcessStepAsJson(ps: any): any {
+    return {
+      process_step_id:      ps.id,
+      norm_effort:          ps.normEffort,
+      wip_limit:            ps.wipLimit
+    }
+  }
+
+  private addWorkerAsJson(wo: any): any {
+    return {
+      worker_id:                  wo.id,
+      process_step_assignments:   wo.assignments.map((as: any) => this.addAssignmentAsJson(as))
+    }
+  }
+
+  private addAssignmentAsJson(as: any): any {
+    const [vcId, psId] = (<string>as.vcIdpsId).split(".") 
+    return {
+      value_chain_id:   vcId,
+      process_steps_id: psId
+    }
+  }
+}
 
