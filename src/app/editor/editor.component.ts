@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators, ValidationErrors, ValidatorFn, AbstractControl } from '@angular/forms';
 import { ValueChainId, ProcessStepId, WorkerName, valueDegradationFunctionNames, successMeasureFunctionNames } from '../shared/io_api_definitions'
+import { ConfigFileService } from '../shared/config-file.service';
 
 type ProcessStepWithItsValueChain = {
   valueChainId: ValueChainId
@@ -31,85 +32,130 @@ export class EditorComponent implements OnInit {
   learnAndAdaptToggle:              boolean = false
   wipLimitOptimizeToggle:           boolean = false
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb:  FormBuilder,
+              private cfs: ConfigFileService) { }
 
   ngOnInit(): void {
 //    this.valueDegradationFunctions = valueDegradationFunctionNames
 //    this.successMeasureFunctions   = successMeasureFunctionNames
-    this.initForm()
+    console.log(`Editor.ngOnInit(): cfs.objFromJsonFile is defined? ${this.cfs.objFromJsonFile != undefined}`)
+    this.initForm(this.cfs.objFromJsonFile)
   }
 
   // ---------------------------------------------------------------------------------------
   // setting up the static form elements
   // ---------------------------------------------------------------------------------------
 
-  private initForm(): void {
+    private initForm(cfo? /* config File Object*/: any): void {
     if (this.system) return
 
+    console.log(`Editor.initForm(): cfo is defined? ${cfo != undefined}`)
+    console.log(`Editor.initForm(${cfo.system_id})`)
     this.system = this.fb.group({
-      id:        ["", Validators.required],
+      id:        [cfo ? cfo.system_id: "", Validators.required],
       frontendPresetParameters: this.fb.group({
-          numIterationsPerBatch: [""],
-          economicsStatsIntervall: [""]
+          numIterationsPerBatch:            [cfo ? cfo.frontend_preset_parameters.num_iterations_per_batch: ""],
+          economicsStatsIntervall:          [cfo ? cfo.frontend_preset_parameters.economics_stats_interval : ""]
       }),
       learnAndAdaptParms: this.fb.group({
-          observationPeriod: [""],
-          successMeasureFunction: [""],
-          adjustmentFactor: [""],
+          observationPeriod:                [cfo ? cfo.learn_and_adapt_parms.observation_period : ""],
+          successMeasureFunction:           [cfo ? cfo.learn_and_adapt_parms.success_measure_function : ""],
+          adjustmentFactor:                 [cfo ? cfo.learn_and_adapt_parms.adjustment_factor : ""],
       }),
       wipLimitSearchParms: this.fb.group({
-          initialTemperature: [""],
-          degreesPerDownhillStepTolerance: [""],
-          initialJumpDistance: [""],
-          measurementPeriod: [""],
-          wipLimitUpperBoundaryFactor: [""],
-          searchOnAtStart: [""],
-          verbose: [""]
+          initialTemperature:               [cfo ? cfo.wip_limit_search_parms.initial_temperature : ""],
+          degreesPerDownhillStepTolerance:  [cfo ? cfo.wip_limit_search_parms.degrees_per_downhill_step_tolerance : ""],
+          initialJumpDistance:              [cfo ? cfo.wip_limit_search_parms.initial_jump_distance : ""],
+          measurementPeriod:                [cfo ? cfo.wip_limit_search_parms.measurement_period : ""],
+          wipLimitUpperBoundaryFactor:      [cfo ? cfo.wip_limit_search_parms.wip_limit_upper_boundary_factor : ""],
+          searchOnAtStart:                  [cfo ? cfo.wip_limit_search_parms.search_on_at_start : ""],
+          verbose:                          [cfo ? cfo.wip_limit_search_parms.verbose : ""]
         }),
         valueChains: this.fb.array([]),
-        workers:this.fb.array([])
+        workers:     this.fb.array([])
+    })
+
+    this.addValueChainFormGroupsToFormArray(cfo.value_chains)
+    this.addWorkerFormGroupsToFormArray(cfo.workers)
+  }
+
+  private addValueChainFormGroupsToFormArray(cfVcs: any): void {
+    cfVcs.forEach((cfVc: any) => { 
+      const newVcFormGroup = this.addValueChain(cfVc)
+      const newVcFgPssFormArray = newVcFormGroup.get("processSteps")
+      if (!newVcFgPssFormArray) {
+        console.log(`Editor.initForm().addValueChainFormGroupsToFormArray(): no process-steps FormArray found`)
+        return
+      } 
+//    const vcs = this.system.get(`valueChains`)
+//    const firstVc = (<FormArray>vcs).controls[0]
+//    console.log(`Editor.initForm().addValueChainFormGroupsToFormArray(): first vc.id = ${firstVc.get('id')?.value}`)
+      cfVc.process_steps.forEach((cfPs: any) => this.addProcessStep(<FormArray>newVcFgPssFormArray!, cfPs))
     })
   }
+
+  private addWorkerFormGroupsToFormArray(cfWos: any): void {
+    cfWos.forEach((cfWo: any) => { 
+      const newWoFormGroup = this.addWorker(cfWo)
+      const newWoFgAssFormArray = newWoFormGroup.get("assignments")
+      if (!newWoFgAssFormArray) {
+        console.log(`Editor.initForm().addWorkerFormGroupsToFormArray(): no assignmengts FormArray found`)
+        return
+      } 
+      cfWo.process_step_assignments.forEach((cfAs: any) => this.addWorkerAssignment(<FormArray>newWoFgAssFormArray, cfAs))
+    })
+  }
+
+
 
   // ---------------------------------------------------------------------------------------
   // adding dynamic form elements
   // ---------------------------------------------------------------------------------------
 
-  public addValueChain(): void {
-    this.valueChains.push(this.fb.group({
-      id: ["", [Validators.required, EditorComponent.vcPsNameFormatCheck]],
-      valueAdd: [""],
+  public addValueChain(cfVc?: any): FormGroup {
+    const newVcFormGroup = this.fb.group({
+      id:               [cfVc ? cfVc.value_chain_id : "", [Validators.required, EditorComponent.vcPsNameFormatCheck]],
+      valueAdd:         [cfVc ? cfVc.value_add      : ""],
       valueDegradation: this.fb.group({
-          function: [""],
-          argument: [""]
+          function:     [cfVc ? cfVc.value_degradation.function : ""],
+          argument:     [cfVc ? cfVc.value_degradation.argument : ""]
       }),
       injection: this.fb.group({
-          throughput: [""],
-          probability: [""]
+          throughput:   [cfVc ? cfVc.injection.throughput  : ""],
+          probability:  [cfVc ? cfVc.injection.probability : ""]
       }),
-      processSteps: this.fb.array([])
-    }))
+      processSteps:     this.fb.array([])
+    })
+    this.valueChains.push(newVcFormGroup)
+    return newVcFormGroup
   }
 
-  public addProcessStep(pss: FormArray) {
-    pss.push(this.fb.group({
-      id: ["", [ Validators.required, EditorComponent.vcPsNameFormatCheck ]],
-      normEffort: [""],
-      wipLimit: [""]
-    }))
+  public addProcessStep(pss: FormArray, cfPs?: any): FormGroup {
+    console.log(`Editor.addProcessStep(pss: ${pss != undefined}, cfPs.process_step_id: ${cfPs.process_step_id})`)
+    const newPsFormGroup = this.fb.group({
+      id:               [cfPs ? cfPs.process_step_id : "", [ Validators.required, EditorComponent.vcPsNameFormatCheck ]],
+      normEffort:       [cfPs ? cfPs.norm_effort : ""],
+      wipLimit:         [cfPs ? cfPs.wip_limit : ""]
+    })
+    pss.push(newPsFormGroup)
+    return newPsFormGroup
   }
 
-  public addWorker(): void {
-    this.workers.push(this.fb.group({
-      id: [""],
-      assignments: this.fb.array([], [EditorComponent.workerAssignmentsDuplicateCheck])
-    }))
+  public addWorker(cfWo?: any): FormGroup {
+    const newWoFormGroup = this.fb.group({
+      id:               [cfWo ? cfWo.worker_id : ""],
+      assignments:      this.fb.array([], [EditorComponent.workerAssignmentsDuplicateCheck])
+    })
+    this.workers.push(newWoFormGroup)
+    return newWoFormGroup
   }
 
-  public addWorkerAssignments(ass: FormArray) {
-    ass.push(this.fb.group({
-      vcIdpsId: [""]
-    }))
+  public addWorkerAssignment(ass: FormArray, cfAs?: any): FormGroup {
+    const newAsFormGroup = this.fb.group({
+      vcIdpsId: [cfAs ? `${cfAs.value_chain_id}.${cfAs.process_steps_id}` : ""]
+    })
+    ass.push(newAsFormGroup)
+    return newAsFormGroup
   }
 
   // ---------------------------------------------------------------------------------------
@@ -221,3 +267,9 @@ export class EditorComponent implements OnInit {
     console.log(systemValues)
   }
 }
+
+  // ---------------------------------------------------------------------------------------
+  // initialize form value chains and workers with config file data
+  // ---------------------------------------------------------------------------------------
+
+

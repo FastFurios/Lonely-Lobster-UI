@@ -134,7 +134,7 @@
 
             <div class="flex-multi-columns"> 
                 <div>
-                    <div><label> Assignments </label>  <button type="button" class="ui mini button" (click)="addWorkerAssignments(workerAssignments(worker))"> + </button></div>
+                    <div><label> Assignments </label>  <button type="button" class="ui mini button" (click)="addWorkerAssignment(workerAssignments(worker))"> + </button></div>
                 </div>
                 <div *ngFor="let assignment of workerAssignments(worker).controls" [formGroup]="assignment">
                     <select formControlName="vcIdpsId">
