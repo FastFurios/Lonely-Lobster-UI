@@ -10,7 +10,22 @@
     </div>
     <div class="section">
         <div >Parameters</div> 
-        <div class="flex-multi-columns">    
+        <div class="flex-multi-columns">  
+<!--
+            <div [formGroup]="frontendPresetParameters">
+                <button type="button" class="ui mini button" (click)="addFrontendPresetsParametersHandler()"> Frontend presets </button>
+                <div *ngIf="frontendPresetToggle"> 
+                    <div class="parameter-label-input">
+                        <label>#Iterations per batch:</label>
+                        <input type="number" placeholder=">=1" formControlName="numIterationsPerBatch" min="1">
+                    </div>
+                    <div class="parameter-label-input">
+                        <label>Economics stats interval:</label>
+                        <input type="number" placeholder=">=1" formControlName="economicsStatsInterval" min="1">
+                    </div>
+                </div>
+            </div>
+-->
             <div [formGroup]="learnAndAdaptParms">
                 <button type="button" class="ui mini button" (click)="addLearnAndAdaptParametersHandler()"> Worker learn & adapt </button>
                 <div *ngIf="learnAndAdaptToggle"> 

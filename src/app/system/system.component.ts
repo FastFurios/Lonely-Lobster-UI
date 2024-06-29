@@ -7,6 +7,7 @@ import { UiBoxSize, UiBoxMarginToWindow, UiSystemHeaderHeight, UiWorkerStatsHeig
 import { environment } from '../../environments/environment.prod'
 import { ColorMapperService } from '../shared/color-mapper.service'
 import { cssColorListVc, cssColorListSest } from '../shared/inventory-layout'
+import { ConfigFileService } from '../shared/config-file.service'
 
 enum RunResumeButton {
   run    = "Run",
@@ -43,10 +44,16 @@ export class SystemComponent implements OnChanges {
 
   version                            = environment.version
   
-  constructor( private bas: BackendApiService,
+  constructor( private cfs: ConfigFileService,
+               private bas: BackendApiService,
                private wof: WorkorderFeederService,
                private cms: ColorMapperService ) { 
   }
+
+  ngOnInit(): void {
+    this.parseAndInititalize(this.configObject)
+  }
+
 
   ngOnChanges(): void {
     this.calcSizeOfUiBoxes()
@@ -167,7 +174,7 @@ export class SystemComponent implements OnChanges {
   
   filename:         string = ""
   //systemId:         string = "- empty -"
-  objFromJsonFile:  any 
+  configObject:  any 
 
   public onFileSelected(e: any) { 
     const file: File = e.target.files[0] 
@@ -214,7 +221,7 @@ export class SystemComponent implements OnChanges {
   // ---------------------------------------------------------------------------------------
   
   private parseAndInititalize(fileContent: string): void {
-      this.objFromJsonFile = JSON.parse(fileContent) 
+      this.configObject = this.cfs.configObject // JSON.parse(fileContent) 
       //this.systemId = this.objFromJsonFile.system_id
       this.setOrResetSystem() // build the system
       this.wof.initialize()   // initialize work order feeder  
@@ -228,7 +235,7 @@ export class SystemComponent implements OnChanges {
   private setOrResetSystem() {
       this.numIterationsToGo = 0
 //    this.wof.initialize()
-      this.systemState$ = this.bas.systemStateOnInitialization(this.objFromJsonFile).pipe(
+      this.systemState$ = this.bas.systemStateOnInitialization(this.configObject).pipe(
         catchError((err: any) => {
           this.backendErrorMessage = "*** ERROR: could not reach backend or error in the backend"
           this.showSystemState = false

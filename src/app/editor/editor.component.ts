@@ -30,6 +30,7 @@ export class EditorComponent implements OnInit {
   public successMeasureFunctions:   string[] = successMeasureFunctionNames
   //private workersProcessStepAssignments: WorkersProcessStepAssignments = []
   selectedVcPs:                     any
+  frontendPresetToggle:             boolean = false
   learnAndAdaptToggle:              boolean = false
   wipLimitOptimizeToggle:           boolean = false
 
@@ -39,21 +40,21 @@ export class EditorComponent implements OnInit {
   ngOnInit(): void {
 //    this.valueDegradationFunctions = valueDegradationFunctionNames
 //    this.successMeasureFunctions   = successMeasureFunctionNames
-    console.log(`Editor.ngOnInit(): cfs.objFromJsonFile is defined? ${this.cfs.objFromJsonFile != undefined}`)
-    this.initForm(this.cfs.objFromJsonFile)
+    console.log(`Editor.ngOnInit(): cfs.objFromJsonFile is defined? ${this.cfs.configObject != undefined}`)
+    this.initForm(this.cfs.configObject)
   }
 
   // ---------------------------------------------------------------------------------------
   // setting up the static form elements
   // ---------------------------------------------------------------------------------------
 
-    private initForm(cfo? /* config File Object*/: any): void {
+  private initForm(cfo? /* config File Object*/: any): void {
     if (this.system) return
 
     console.log(`Editor.initForm(): cfo is defined? ${cfo != undefined}`)
-    console.log(`Editor.initForm(${cfo.system_id})`)
+    console.log(`Editor.initForm: system_id = ${cfo?.system_id}`)
     this.system = this.fb.group({
-      id:        [cfo ? cfo.system_id: "", Validators.required],
+      id:                                   [cfo  ? cfo.system_id : "", Validators.required],
       frontendPresetParameters: this.fb.group({
           numIterationsPerBatch:            [cfo ? cfo.frontend_preset_parameters.num_iterations_per_batch: ""],
           economicsStatsIntervall:          [cfo ? cfo.frontend_preset_parameters.economics_stats_interval : ""]
@@ -76,8 +77,8 @@ export class EditorComponent implements OnInit {
         workers:     this.fb.array([])
     })
 
-    this.addValueChainFormGroupsToFormArray(cfo.value_chains)
-    this.addWorkerFormGroupsToFormArray(cfo.workers)
+    if (cfo?.value_chains) this.addValueChainFormGroupsToFormArray(cfo.value_chains)
+    if (cfo?.workers)      this.addWorkerFormGroupsToFormArray(cfo.workers)
   }
 
   private addValueChainFormGroupsToFormArray(cfVcs: any): void {
@@ -132,7 +133,7 @@ export class EditorComponent implements OnInit {
   }
 
   public addProcessStep(pss: FormArray, cfPs?: any): FormGroup {
-    console.log(`Editor.addProcessStep(pss: ${pss != undefined}, cfPs.process_step_id: ${cfPs.process_step_id})`)
+    //console.log(`Editor.addProcessStep(pss: ${pss != undefined}, cfPs.process_step_id: ${cfPs.process_step_id})`)
     const newPsFormGroup = this.fb.group({
       id:               [cfPs ? cfPs.process_step_id : "", [ Validators.required, EditorComponent.vcPsNameFormatCheck ]],
       normEffort:       [cfPs ? cfPs.norm_effort : ""],
@@ -252,6 +253,11 @@ export class EditorComponent implements OnInit {
   // handlers
   // ---------------------------------------------------------------------------------------
 
+public addFrontendPresetsParametersHandler() {
+  console.log("addFrontendPresetsParametersHandler()")
+  this.frontendPresetToggle = !this.frontendPresetToggle
+}
+
   public addLearnAndAdaptParametersHandler() {
     console.log("addLearnAndAdaptParameters()")
     this.learnAndAdaptToggle = !this.learnAndAdaptToggle
@@ -267,16 +273,16 @@ export class EditorComponent implements OnInit {
     const systemValues = this.system.value
     console.log("this.system.value:")
     console.log(systemValues)
-    this.cfs.jsonFileContentFromObj = this.jsonFileFromObj()
+    this.cfs.configObject = this.configObject()
     console.log("cfs.jsonFileContentFromObj:")
-    console.log(this.cfs.jsonFileContentFromObj)
+    console.log(this.cfs.configObject)
   }
 
   // ---------------------------------------------------------------------------------------
   // initialize form value chains and workers with config file data
   // ---------------------------------------------------------------------------------------
 
-  private jsonFileFromObj(): any {
+  private configObject(): any {
     const formValue = this.system.value
     return {
       system_id:                    formValue.id,

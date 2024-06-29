@@ -7,8 +7,8 @@ import { EditorComponent } from './editor/editor.component'
 
 
 const routes: Routes = [
-  { path: "", redirectTo: "home", pathMatch: "full" },
-  { path: "home", component: AppComponent },
+  { path: "", redirectTo: "file", pathMatch: "full" },
+  { path: "file", component: AppComponent },
   { path: "run",  component: SystemComponent },
   { path: "edit", component: EditorComponent }]
 

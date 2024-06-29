@@ -1,17 +1,26 @@
 <div class="configLoading">
     <input type="file" class="submitButton" required (change)="onFileSelected($event)"/>
-<!-- 
+
+    <button type="button" class="submitButton" (click)="editNewConfig()">
+        Create new system configuration
+    </button>
+
+    <button type="button" class="submitButton" (click)="onSaveFile()">
+        Download system configuration
+    </button>
+
+    <!-- 
 
     fileContent.length = {{ fileContent.length }}
     objFromJsonFile.system_id = {{ objFromJsonFile["system_id"] }}
 -->
 </div>
-<div *ngIf="(objFromJsonFile != undefined)" class="ui menu">
+
+<div *ngIf="configObject">
     <a routerLink="edit" routerLinkActive="active" class="item">edit</a>
     <a routerLink="run"  routerLinkActive="active" class="item">run</a>
     <router-outlet></router-outlet>
 </div>
-
 
 <!-- 
 

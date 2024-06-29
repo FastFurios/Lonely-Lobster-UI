@@ -17,29 +17,32 @@ export class ConfigFileService {
   
   public filename:         string = ""
   public fileContent:      string
-  private _objFromJsonFile: any 
-  private _jsonFileContentFromObj: any
+  private _configObject: any 
+  private _configAsJson: any
 
-  set objFromJsonFile(objFromJsonFile: any) {
-    this._objFromJsonFile = objFromJsonFile 
+  set configObject(configObject: any) {
+    this._configObject = configObject 
     console.log(`config-file.service: set objFromJsonFile(): this._objFromJsonFile=`)
-    console.log(this._objFromJsonFile)
+    console.log(this._configObject)
   }
 
-  get objFromJsonFile(): any {
-    return this._objFromJsonFile
+  get configObject(): any {
+    return this._configObject
   }
 
-  set jsonFileContentFromObj(obj: any) {
-    this._jsonFileContentFromObj = obj
+  set configAsJson(configAsJson: any) {
+    this._configAsJson = configAsJson
+    console.log(`config-file.service: jsonFileContentFromObj(obj): this._jsonFileContentFromObj=`)
+    console.log(this._configAsJson)
   }
 
-  get jsonFileContentFromObj(): any {
-    return this._jsonFileContentFromObj
+  get configAsJson(): any {
+    return this._configAsJson
   }
 
 
-// ---------------------------------------------------------------------------------------
+/*
+  // ---------------------------------------------------------------------------------------
 // write system config file to /downloads  
 // ---------------------------------------------------------------------------------------
   
@@ -57,5 +60,5 @@ export class ConfigFileService {
     link.click()
     link.remove()
   }
-
+*/
 }
