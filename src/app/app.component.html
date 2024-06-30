@@ -1,20 +1,12 @@
-<div class="configLoading">
-    <input type="file" class="submitButton" required (change)="onFileSelected($event)"/>
-    <div>
-        <button type="button" class="submitButton" (click)="createNewConfig()">
-            Create new system
-        </button>
-    </div>
-</div>
-
-<div *ngIf="showEditRunSaveOptions">
-    <button type="button" class="submitButton" (click)="onSaveFile()">
-        Download system
-    </button>
-    <nav>
-        <ul>
-            <li><a routerLink="edit" routerLinkActive="active" class="submitButton">edit</a></li>
-            <li><a routerLink="run"  routerLinkActive="active" class="submitButton">run</a></li>
+<div class="flex-multi-columns">
+<!--    <div class="flex-multi-columns"> -->
+    <nav class="navbar">
+        <img src="../../../assets/LonelyLobster.jfif" alt="Lonely Lobster" height="50">
+        <div class="app-title">Lonely Lobster</div>
+        <ul class="nav-list">
+            <li><a routerLink="home" routerLinkActive="active">File</a></li>
+            <li><a routerLink="edit" routerLinkActive="active">Edit</a></li>
+            <li><a routerLink="run"  routerLinkActive="active">Run</a></li>
         </ul>
     </nav>
 </div>
