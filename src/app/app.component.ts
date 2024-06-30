@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Observable, catchError, throwError } from "rxjs"
 import { ConfigFileService } from './shared/config-file.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -9,11 +10,15 @@ import { ConfigFileService } from './shared/config-file.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'lonely-lobster'
+  title = "lonely-lobster"
   filename: string
-  public editNew  = false
 
-  constructor(private cfs: ConfigFileService) { }
+  public showEditRunSaveOptions = false
+
+  constructor(
+    private router: Router,
+    private route:  ActivatedRoute, 
+    private cfs:    ConfigFileService) { }
 
   public onFileSelected(e: any) { 
     const file: File = e.target.files[0] 
@@ -23,6 +28,7 @@ export class AppComponent {
     obs$.subscribe((fileContent: string) => { 
       this.cfs.configAsJson = fileContent
       this.cfs.configObject = JSON.parse(fileContent) 
+      this.showEditRunSaveOptions = true
 //    console.log(`config-file.service: readFileContent(): subscriber:  this.objFromJsonFile=`)
 //    console.log(this.cfs.objFromJsonFile)
     })
@@ -53,9 +59,10 @@ export class AppComponent {
     return this.cfs.configAsJson
   }
 
-  public editNewConfig() {
+  public createNewConfig() {
     this.cfs.configObject = undefined
-  }
+    this.router.navigate(["edit"], { relativeTo: this.route })
+    }
 
   public onSaveFile(): void {
     //  let fileContent = "Hi there, I was just saved from the Angular app!"

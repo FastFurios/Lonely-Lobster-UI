@@ -28,6 +28,7 @@ import { LearnStatsComponent } from './learn-stats/learn-stats.component';
 import { ColorLegendComponent } from './color-legend/color-legend.component';
 import { EditorComponent } from './editor/editor.component';
 import { EditorMessagesComponent } from './editor-messages/editor-messages.component';
+import { HomeComponent } from './home/home.component';
 
 /*
 const routes: Routes = [
@@ -58,7 +59,8 @@ const routes: Routes = [
     LearnStatsComponent,
     ColorLegendComponent,
     EditorComponent,
-    EditorMessagesComponent
+    EditorMessagesComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

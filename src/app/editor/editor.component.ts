@@ -204,6 +204,10 @@ export class EditorComponent implements OnInit {
   // getting form elements
   // ---------------------------------------------------------------------------------------
 
+  get frontendPresetParameters(): FormGroup {
+    return this.system.get('frontendPresetParameters') as FormGroup
+  }
+
   get learnAndAdaptParms(): FormGroup {
     return this.system.get('learnAndAdaptParms') as FormGroup
   }
