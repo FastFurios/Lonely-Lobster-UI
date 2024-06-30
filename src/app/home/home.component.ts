@@ -13,13 +13,13 @@ export class HomeComponent implements OnInit {
 
   public showEditRunSaveOptions = false
 
-
   constructor(private cfs:    ConfigFileService,
               private router: Router,
               private route:  ActivatedRoute) { }
 
   ngOnInit(): void { }
-/**
+
+  /**
   get configObject() {
     return this.cfs.configObject
   }
@@ -27,11 +27,11 @@ export class HomeComponent implements OnInit {
   get configAsJson() {
     return this.cfs.configAsJson
   }
- */
+  */
 
   public createNewConfig() {
     this.cfs.configObject = undefined
-    this.router.navigate(["edit"], { relativeTo: this.route })
+    this.router.navigate(["../edit"], { relativeTo: this.route })
   }
 
   public onFileSelected(e: any) { 

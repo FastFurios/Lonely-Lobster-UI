@@ -35,17 +35,18 @@ body {
 }
 
 .navbar {
-    display: flex;
+    display:flex;
     position: sticky;
     align-items: center;
-    justify-content: space-between;
+    /*justify-content: space-between;*/
     top: 0px;
 /*     background: rgba(0, 0, 0, 0.6) url('https://media.geeksforgeeks.org/wp-content/uploads/20201215124609/Capture-300x14.PNG'); */
-    background-color: orangered; 
+   background-color: orangered; 
 /*    background-blend-mode: darken; */
     background-size: cover;
     /* color: white; */
-    padding: 2px 2px;
+    /*padding: 2px 2px;*/
+    column-gap: 20px;
 }
 
 .nav-list {    
