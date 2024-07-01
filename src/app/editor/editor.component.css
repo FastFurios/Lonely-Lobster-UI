@@ -1,3 +1,7 @@
+.editor-text {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
 .flex-multi-columns {
     display: flex;
     flex-direction: row;

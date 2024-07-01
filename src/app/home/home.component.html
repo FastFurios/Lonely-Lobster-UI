@@ -1,11 +1,22 @@
-<div class="configLoading">
+
+<div>
+    <label for="current-system"></label>
+    <p id="current-system" class="general-font">Current System: {{ configObject.system_id ? configObject.system_id : "-" }}</p>
+
+    <label for="file-upload" class="action-choice file-selector-label-width general-font">Load System</label>
+    <input id="file-upload" type="file" required (change)="onFileSelected($event)">
+    
+    
+
+<!--
     <input type="file" class="submitButton" required (change)="onFileSelected($event)"/>
+-->
     <div>
-        <button type="button" class="submitButton" (click)="createNewConfig()">
+        <button type="button" class="action-choice general-font" (click)="createNewConfig()">
             Create new system
         </button>
     </div>
-    <button type="button" class="submitButton" (click)="onSaveFile()">
+    <button type="button" class="action-choice general-font" (click)="onSaveFile()">
         Download system
     </button>
 </div>

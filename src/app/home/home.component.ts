@@ -19,15 +19,9 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void { }
 
-  /**
   get configObject() {
     return this.cfs.configObject
   }
-
-  get configAsJson() {
-    return this.cfs.configAsJson
-  }
-  */
 
   public createNewConfig() {
     this.cfs.configObject = undefined
@@ -42,7 +36,7 @@ export class HomeComponent implements OnInit {
     obs$.subscribe((fileContent: string) => { 
       this.cfs.configAsJson = fileContent
       this.cfs.configObject = JSON.parse(fileContent) 
-      this.showEditRunSaveOptions = true
+      this.router.navigate(["../edit"], { relativeTo: this.route })
 //    console.log(`config-file.service: readFileContent(): subscriber:  this.objFromJsonFile=`)
 //    console.log(this.cfs.objFromJsonFile)
     })
