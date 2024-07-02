@@ -23,9 +23,13 @@ export class HomeComponent implements OnInit {
     return this.cfs.configObject
   }
 
+  get numSystemProcessSteps() {
+    return this.configObject.value_chains.reduce((sum: number, vc: any) => sum + vc.process_steps.length, 0)
+  }
+
   public createNewConfig() {
     this.cfs.configObject = undefined
-    this.router.navigate(["../edit"], { relativeTo: this.route })
+    //this.router.navigate(["../edit"], { relativeTo: this.route })
   }
 
   public onFileSelected(e: any) { 

@@ -71,34 +71,12 @@ body {
 }
 
 .nav-list li a:hover {
-    color: #ffd700;
-    /* Change the color on hover */
+    font-weight: bold;
+    color: white;
+    /* color: #ffd700;
+    Change the color on hover */
 }
 
 .rightNav {
     text-align: right;
 }
-
-/*
-#search {
-    padding: 8px;
-    font-size: 16px;
-    border: 2px solid #fff;
-    border-radius: 5px;
-}
-
-.btn {
-    background-color: #ffd700;
-    color: #000;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
-}
-
-.btn:hover {
-    background-color: #000;
-    color: #ffd700;
-}
-*/
