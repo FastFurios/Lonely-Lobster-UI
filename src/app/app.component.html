@@ -1,14 +1,39 @@
+
+
 <div class="flex-multi-columns">
 <!--    <div class="flex-multi-columns"> -->
-    <nav class="navbar">
+    <div class="navbar">
         <img src="../../../assets/LonelyLobster.jfif" alt="Lonely Lobster" height="50">
+        <span class="app-title">Lonely Lobster</span>
+        <a class="material-symbols-outlined"                                 routerLink="file" routerLinkActive="active">home</a>
+        <i class="material-symbols-outlined" (click)="fileUpload.click()">upload</i>
+        <a class="material-symbols-outlined"      routerLink="edit" routerLinkActive="active">edit</a>
+        <a class="material-symbols-outlined" [style]="runDownloadDiscardColor()"     routerLink="run"  routerLinkActive="active">keyboard_arrow_right</a>
+        <i class="material-symbols-outlined" [style]="runDownloadDiscardColor()"     (click)="onSaveFile()" routerLink="file" routerLinkActive="active">download</i>
+        <i class="material-symbols-outlined" [style]="runDownloadDiscardColor()" (click)="discard()">delete_forever</i>
+        <input type="file" class="file-input" (change)="onFileSelected($event)" #fileUpload>
+ 
+        <div class="file-upload">
+
+            System: {{filename || "No system defined yet."}}
+         
+         </div>
+         
+          
+<!--
+        <button class="material-symbols-outlined" (click)="changeHandler()">delete_forever</button>
         <div class="app-title">Lonely Lobster</div>
+        <button class="material-symbols-outlined">upload</button>
+        <a routerLink="edit" routerLinkActive="active"><button class="material-symbols-outlined">edit</button></a>
+        <button class="material-symbols-outlined">download</button>
+        <button class="material-symbols-outlined">keyboard_double_arrow_right</button>
         <ul class="nav-list">
-            <li><a routerLink="home" routerLinkActive="active">File</a></li>
-            <li><a routerLink="edit" routerLinkActive="active">Edit</a></li>
-            <li><a routerLink="run"  routerLinkActive="active">Run</a></li>
+            <li><a class="material-symbols-outlined" routerLink="home" routerLinkActive="active">home</a></li>
+            <li><a class="material-symbols-outlined" routerLink="edit" routerLinkActive="active">edit</a></li>
+            <li><a class="material-symbols-outlined" routerLink="run"  routerLinkActive="active">keyboard_double_arrow_right</a></li>
         </ul>
-    </nav>
+-->
+    </div>
 </div>
 <router-outlet></router-outlet>
 
