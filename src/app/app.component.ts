@@ -32,9 +32,15 @@ export class AppComponent {
     return this.canRunDownloadDiscard ? undefined : greyOut 
   }  
 
+  get configObject() {
+    return this.cfs.configObject
+  }
+
   public discard(): void {
     this.cfs.configObject = undefined
     this.canRunDownloadDiscard = false
+    this.router.navigate(["../home"], { relativeTo: this.route })
+
   }
 
   public onFileSelected(e: any) { 
@@ -78,11 +84,5 @@ export class AppComponent {
     console.log("system.onSaveFile(): saving to " + link.download)
     link.click()
     link.remove()
-  }
-
-
-
-  changeHandler() {
-    console.log("Change Handler")
   }
 }

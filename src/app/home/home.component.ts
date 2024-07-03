@@ -9,8 +9,7 @@ import { Observable } from "rxjs"
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  filename: string
-
+  public filename               = ""
   public showEditRunSaveOptions = false
 
   constructor(private cfs:    ConfigFileService,
@@ -29,20 +28,16 @@ export class HomeComponent implements OnInit {
 
   public createNewConfig() {
     this.cfs.configObject = undefined
-    //this.router.navigate(["../edit"], { relativeTo: this.route })
   }
 
   public onFileSelected(e: any) { 
     const file: File = e.target.files[0] 
     this.filename = file.name
-//  console.log(`app: onFileSelected(): filename=${this.filename}; subscribing to observable ...`)
     const obs$ = this.readFileContentObs(file)
     obs$.subscribe((fileContent: string) => { 
       this.cfs.configAsJson = fileContent
       this.cfs.configObject = JSON.parse(fileContent) 
       this.router.navigate(["../edit"], { relativeTo: this.route })
-//    console.log(`config-file.service: readFileContent(): subscriber:  this.objFromJsonFile=`)
-//    console.log(this.cfs.objFromJsonFile)
     })
   }
 
@@ -61,7 +56,6 @@ export class HomeComponent implements OnInit {
   }
 
   public onSaveFile(): void {
-    //  let fileContent = "Hi there, I was just saved from the Angular app!"
     const fileContent = this.cfs.configObject
     const file = new Blob([JSON.stringify(fileContent, null, "\t")], { type: "application/json" })
     const link = document.createElement("a")

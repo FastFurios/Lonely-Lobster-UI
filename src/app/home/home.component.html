@@ -1,21 +1,6 @@
 
-<div class="columns general-font">
-    <div>
-        <div>
-            <label for="file-upload" class="action-choice file-selector-label-width general-font">Load System</label>
-            <input id="file-upload" type="file" required (change)="onFileSelected($event)">
-        </div>   
-        <div>
-            <button type="button" class="action-choice general-font" (click)="createNewConfig()">
-                Create new system
-            </button>
-        </div>
-        <div>
-            <button type="button" class="action-choice general-font" (click)="onSaveFile()">
-                Download system
-            </button>
-        </div>
-    </div>
+Defined? {{ configObject != undefined }}
+<div *ngIf="configObject" class="columns general-font">
     <div>
         <div class="flex-row">
             <div>System:</div>

@@ -38,9 +38,7 @@ export class EditorComponent implements OnInit {
               private cfs: ConfigFileService) { }
 
   ngOnInit(): void {
-//    this.valueDegradationFunctions = valueDegradationFunctionNames
-//    this.successMeasureFunctions   = successMeasureFunctionNames
-    console.log(`Editor.ngOnInit(): cfs.objFromJsonFile is defined? ${this.cfs.configObject != undefined}`)
+    //console.log(`Editor.ngOnInit(): cfs.configObject= ${this.cfs.configObject != undefined}`)
     this.initForm(this.cfs.configObject)
   }
 
@@ -49,7 +47,7 @@ export class EditorComponent implements OnInit {
   // ---------------------------------------------------------------------------------------
 
   private initForm(cfo? /* config File Object*/: any): void {
-    if (this.system) return
+//    if (this.system) return
 
     console.log(`Editor.initForm(): cfo is defined? ${cfo != undefined}`)
     console.log(`Editor.initForm: system_id = ${cfo?.system_id}`)
@@ -193,13 +191,7 @@ export class EditorComponent implements OnInit {
     const valueOccurancesCounts: number[] = woAssFormArrayFormGroups.map(fg => woAssFormArrayFormGroups.filter(e => e.get("vcIdpsId")!.value == fg.get("vcIdpsId")!.value).length)  
     return Math.max(...valueOccurancesCounts) > 1 ? { duplicates: { valid: false } } : null
   }
-/**
-  static workerAssignmentsEmptyCheck(woAss: AbstractControl): ValidationErrors | null {
-    const woAssFormArrayFormGroups = (<FormArray>woAss).controls
-    const lengths: number[] = woAssFormArrayFormGroups.map(fg => fg.get("vcIdpsId")!.value.length)  
-    return Math.min(...lengths) == 0 ? { empty: { valid: false } } : null
-  }
-*/
+ 
   // ---------------------------------------------------------------------------------------
   // getting form elements
   // ---------------------------------------------------------------------------------------
@@ -258,28 +250,28 @@ export class EditorComponent implements OnInit {
   // ---------------------------------------------------------------------------------------
 
 public addFrontendPresetsParametersHandler() {
-  console.log("addFrontendPresetsParametersHandler()")
+//  console.log("addFrontendPresetsParametersHandler()")
   this.frontendPresetToggle = !this.frontendPresetToggle
 }
 
   public addLearnAndAdaptParametersHandler() {
-    console.log("addLearnAndAdaptParameters()")
+//    console.log("addLearnAndAdaptParameters()")
     this.learnAndAdaptToggle = !this.learnAndAdaptToggle
   }
 
   public addWipLimitsOptimizationParametersHandler() {
-    console.log("addWipLimitsOptimizationParameters()")
+//    console.log("addWipLimitsOptimizationParameters()")
     this.wipLimitOptimizeToggle = !this.wipLimitOptimizeToggle
   }
 
   public submitForm() {
-    console.log("Submitting form:")
+//    console.log("Submitting form:")
     const systemValues = this.system.value
-    console.log("this.system.value:")
-    console.log(systemValues)
+//    console.log("this.system.value:")
+//    console.log(systemValues)
     this.cfs.configObject = this.configObject()
-    console.log("cfs.jsonFileContentFromObj:")
-    console.log(this.cfs.configObject)
+//    console.log("cfs.jsonFileContentFromObj:")
+//    console.log(this.cfs.configObject)
   }
 
   // ---------------------------------------------------------------------------------------

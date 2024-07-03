@@ -22,8 +22,8 @@ export class ConfigFileService {
 
   set configObject(configObject: any) {
     this._configObject = configObject 
-    console.log(`config-file.service: set objFromJsonFile(): this._objFromJsonFile=`)
-    console.log(this._configObject)
+//    console.log(`config-file.service: set objFromJsonFile(): this._objFromJsonFile=`)
+//    console.log(this._configObject)
   }
 
   get configObject(): any {
@@ -32,8 +32,8 @@ export class ConfigFileService {
 
   set configAsJson(configAsJson: any) {
     this._configAsJson = configAsJson
-    console.log(`config-file.service: jsonFileContentFromObj(obj): this._jsonFileContentFromObj=`)
-    console.log(this._configAsJson)
+//    console.log(`config-file.service: jsonFileContentFromObj(obj): this._jsonFileContentFromObj=`)
+//    console.log(this._configAsJson)
   }
 
   get configAsJson(): any {
