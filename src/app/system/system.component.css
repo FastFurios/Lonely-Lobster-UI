@@ -55,7 +55,6 @@
   }
 
   .version {
-    padding-left: 20px;
     display: flex;
     flex-direction: column-reverse; 
     align-items: left;

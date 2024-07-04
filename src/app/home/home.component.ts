@@ -35,7 +35,7 @@ export class HomeComponent implements OnInit {
     this.filename = file.name
     const obs$ = this.readFileContentObs(file)
     obs$.subscribe((fileContent: string) => { 
-      this.cfs.configAsJson = fileContent
+      //this.cfs.configAsJson = fileContent
       this.cfs.configObject = JSON.parse(fileContent) 
       this.router.navigate(["../edit"], { relativeTo: this.route })
     })

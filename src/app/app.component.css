@@ -1,3 +1,8 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
 .app-title {
     color: orangered;
     font-family: Arial, Helvetica, sans-serif;
@@ -11,11 +16,23 @@
 .flex-multi-columns {
     display: flex;
     flex-direction: row;
+    background-color: cornsilk;
     align-items:flex-start;
-    box-sizing: border-box;
     font-family: Arial, Helvetica, sans-serif;
     font-size: small; 
     text-align: left;
+}
+
+.navbar {
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    top: 0px;
+    column-gap: 20px;
+}
+
+.file-input {
+    display: none;
 }
 
 .active {
@@ -23,75 +40,17 @@
     color: white;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: 'Arial', sans-serif;
-}
-
-
-.file-input {
-    display: none;
-  }
-
-.navbar {
-    display:flex;
-    position: sticky;
-    align-items: center;
-    /*justify-content: space-between;*/
-    top: 0px;
-/*     background: rgba(0, 0, 0, 0.6) url('https://media.geeksforgeeks.org/wp-content/uploads/20201215124609/Capture-300x14.PNG'); */
-   background-color: cornsilk; 
-/*    background-blend-mode: darken; */
-    background-size: cover;
-    /* color: white; */
-    /*padding: 2px 2px;*/
-    column-gap: 20px;
-}
-
-.nav-list {    
-    display: flex;
-    list-style: none;
-}
-
-.nav-list li {
-    margin-left: 20px;
-    margin-right: 20px;
-}
-
-.nav-list li:last-child {
-    margin-right: 10;
-}
-
 a {
     text-decoration: none;
-/*    color: white; */
     font-size: x-large;
     transition: color 0.3s ease-in-out;
-    
 }
 
-a.menu_links { cursor: pointer; }
-span.menu_links { cursor: pointer; }
-
-.nav-list li a {
-    text-decoration: none;
-/*    color: white; */
-    font-size: medium;
-    transition: color 0.3s ease-in-out;
+a.menu_links { 
+    cursor: pointer; 
 }
 
-.nav-list li a:hover {
-    font-weight: bold;
-    color: white;
-    /* color: #ffd700;
-    Change the color on hover */
-}
-
-.rightNav {
-    text-align: right;
+i:hover { 
+    cursor: pointer; 
 }
 

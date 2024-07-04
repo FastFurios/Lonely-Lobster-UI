@@ -11,12 +11,16 @@
             <div>
                 <div class="app-title">
                     <div class=version>
-                        <div class="version">backend: v{{ systemState.version }}</div>
+                        <div class="version">Backend: v{{ systemState.version }}</div>
+<!--
                         <div class="version">frontend: v{{ version  }}</div>
+-->
                     </div>
                 </div>
             </div>
+<!--
             <div> System: "<strong>{{ systemState.id }}</strong>"</div>
+-->
             <div>Time: {{ systemState.time }} </div>
             <label for="numIteration" class="iterations-selector">#iterations:</label>
             <input  type="number" 

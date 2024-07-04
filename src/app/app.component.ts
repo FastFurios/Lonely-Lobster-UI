@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { environment } from '../environments/environment.prod';
 import { ConfigFileService } from './shared/config-file.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from "rxjs"
@@ -21,12 +22,22 @@ export class AppComponent {
   title = "lonely-lobster"
   filename: string = ""
 
+  public version               = environment.version
   public canRunDownloadDiscard = false
-  
+
   constructor(
     private router: Router,
     private route:  ActivatedRoute, 
     private cfs:    ConfigFileService) { }
+
+  ngOnInit() {
+    this.cfs.componentEventSubject$.subscribe(compEvent => this.processComponentEvent(compEvent))
+  }
+
+  private processComponentEvent(compEvent: string): void {
+    this.canRunDownloadDiscard = compEvent == "EditorSaveEvent"
+    console.log("App.processComponentEvent(): compEvent= " + compEvent + "; this.canRunDownloadDiscard= " + this.canRunDownloadDiscard)
+  }
 
   public runDownloadDiscardColor(): string | undefined {
     return this.canRunDownloadDiscard ? undefined : greyOut 
@@ -40,7 +51,11 @@ export class AppComponent {
     this.cfs.configObject = undefined
     this.canRunDownloadDiscard = false
     this.router.navigate(["../home"], { relativeTo: this.route })
+  }
 
+  public updateCanRunDownloadDiscard() {
+    console.log("AppComponent: updateCanRunDownloadDiscard()")
+    this.canRunDownloadDiscard = this.cfs.configObject ? true : false
   }
 
   public onFileSelected(e: any) { 
@@ -50,7 +65,7 @@ export class AppComponent {
 //  console.log(`app: onFileSelected(): filename=${this.filename}; subscribing to observable ...`)
     const obs$ = this.readFileContentObs(file)
     obs$.subscribe((fileContent: string) => { 
-      this.cfs.configAsJson = fileContent
+      //this.cfs.configAsJson = fileContent
       this.cfs.configObject = JSON.parse(fileContent) 
       //this.router.navigate(["../edit"], { relativeTo: this.route })
       console.log(`config-file.service: cfs.configObject=`)

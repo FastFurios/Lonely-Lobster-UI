@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators, ValidationErrors, ValidatorFn, AbstractControl } from '@angular/forms';
 import { ValueChainId, ProcessStepId, WorkerName, valueDegradationFunctionNames, successMeasureFunctionNames } from '../shared/io_api_definitions'
 import { ConfigFileService } from '../shared/config-file.service';
@@ -25,6 +25,7 @@ type WorkersProcessStepAssignments = WorkerProcessStepAssignment[]
   styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
+  @Output() systemSaved                      = new EventEmitter()
   public system:                    FormGroup
   public valueDegradationFunctions: string[] = valueDegradationFunctionNames
   public successMeasureFunctions:   string[] = successMeasureFunctionNames
@@ -265,13 +266,9 @@ public addFrontendPresetsParametersHandler() {
   }
 
   public submitForm() {
-//    console.log("Submitting form:")
     const systemValues = this.system.value
-//    console.log("this.system.value:")
-//    console.log(systemValues)
     this.cfs.configObject = this.configObject()
-//    console.log("cfs.jsonFileContentFromObj:")
-//    console.log(this.cfs.configObject)
+      this.cfs.componentEvent = "EditorSaveEvent"
   }
 
   // ---------------------------------------------------------------------------------------
@@ -325,7 +322,7 @@ public addFrontendPresetsParametersHandler() {
     return {
       process_step_id:      ps.id,
       norm_effort:          ps.normEffort,
-      wip_limit:            ps.wipLimit
+        wip_limit:            ps.wipLimit
     }
   }
 
