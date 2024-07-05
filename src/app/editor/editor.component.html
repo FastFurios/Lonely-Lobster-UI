@@ -16,6 +16,7 @@
                 <button type="button" class="ui mini button" (click)="addFrontendPresetsParametersHandler()"> Frontend presets </button>
 -->
                 <div *ngIf="frontendPresetToggle"> 
+                    <label>Presetting:</label>
                     <div class="parameter-label-input">
                         <label>#Iterations per batch:</label>
                         <input type="number" placeholder=">=1" formControlName="numIterationsPerBatch" min="1">
@@ -31,6 +32,7 @@
                 <button type="button" class="ui mini button" (click)="addLearnAndAdaptParametersHandler()"> Worker learn & adapt </button>
 -->
                 <div *ngIf="learnAndAdaptToggle"> 
+                    <label>Learn and Adapt:</label>
                     <div class="parameter-label-input">
                         <label>Observation Period:</label>
                         <input type="number" placeholder=">=1" formControlName="observationPeriod" min="1">
@@ -54,6 +56,7 @@
                 <button type="button" class="ui mini button" (click)="addWipLimitsOptimizationParametersHandler()"> WIP limits optimization </button>
 -->
                 <div *ngIf="  wipLimitOptimizeToggle"> 
+                    <label>WIP limit optimization:</label>
                     <div class="parameter-label-input">
                         <label>Initial Temperature:</label>
                         <input type="number" placeholder=">=0" formControlName="initialTemperature" min="0" step="10">
@@ -88,7 +91,7 @@
     <div formArrayName="valueChains">
         <div class="section" *ngFor="let valueChain of valueChains.controls; let i = index" [formGroup]="valueChain">
             <div>
-                <input  type="text" placeholder="Value chain" formControlName="id">
+                <input  type="text" class="bold-text" placeholder="Value chain" formControlName="id">
                 <button type="button" class="material-symbols-outlined button_icon" (click)="deleteValueChain(i)"> delete_forever </button>
 <!--
                 <button type="button" class="ui mini button" (click)="deleteValueChain(i)"> - </button>
@@ -134,9 +137,9 @@
                     <div class="vertically-aligned-property-label">Norm Effort:</div>
                     <div class="vertically-aligned-property-label">WIP Limit:</div>
                 </div>
-                <div *ngFor="let processStep of processSteps(valueChain).controls; let i = index" [formGroup]="processStep">
-                    <button type="button" class="material-symbols-outlined button_icon" (click)="deleteProcessStep(valueChain, i)"> delete_forever </button>
-                    <div><input type="text" formControlName="id"></div> 
+                <div *ngFor="let processStep of processSteps(valueChain).controls; let j = index" [formGroup]="processStep">
+                    <button type="button" class="material-symbols-outlined button_icon" (click)="deleteProcessStep(valueChain, j)"> delete_forever </button>
+                    <div><input class="bold-text" type="text" formControlName="id"></div> 
                     <app-editor-messages [control]="processStep.get('id')!" controlName="id"></app-editor-messages>
                     <div><input type="number" placeholder=">=0"   formControlName="normEffort" min="0" step="1"></div>
                     <div><input type="number" placeholder="0=none, else >=1"     formControlName="wipLimit" min="0" step="1"></div>
@@ -149,10 +152,10 @@
         <button type="button" class="material-symbols-outlined button_icon" (click)="addWorker()">add_circle </button>
     </div>
     <div formArrayName="workers">
-        <div class="section" *ngFor="let worker of workers.controls; let i = index" [formGroup]="worker" >
+        <div class="section" *ngFor="let worker of workers.controls; let k = index" [formGroup]="worker" >
             <div>
-                <input type="text" placeholder="Worker Name" formControlName="id">
-                <button type="button" class="material-symbols-outlined button_icon" (click)="deleteWorker(i)"> delete_forever </button>
+                <input type="text" class="bold-text" placeholder="Worker Name" formControlName="id">
+                <button type="button" class="material-symbols-outlined button_icon" (click)="deleteWorker(k)"> delete_forever </button>
             </div>
 
             <app-editor-messages [control]="worker.get('assignments')!" controlName="workerAssignments"></app-editor-messages>
@@ -161,7 +164,7 @@
                 <div>
                     <div><label> Assignments </label>  <button type="button" class="material-symbols-outlined button_icon" (click)="addWorkerAssignment(workerAssignments(worker))"> add_circle </button></div>
                 </div>
-                <div *ngFor="let assignment of workerAssignments(worker).controls" [formGroup]="assignment">
+                <div *ngFor="let assignment of workerAssignments(worker).controls; let l = index" [formGroup]="assignment">
                     <select formControlName="vcIdpsId">
                         <option *ngFor="let vcPs of processStepsOfValueChains" [ngValue]="vcPs">
                             {{ vcPs }} 
@@ -170,7 +173,7 @@
 <!--
                     <button type="button"  (click)="deleteAssignment(worker, i)"> - </button>
 -->
-                    <button type="button" class="material-symbols-outlined button_icon" (click)="deleteAssignment(worker, i)"> delete_forever </button>
+                    <button type="button" class="material-symbols-outlined button_icon" (click)="deleteAssignment(worker, l)"> delete_forever </button>
                     <app-editor-messages [control]="assignment" controlName="workerAssignment"></app-editor-messages>
                 </div>
             </div>

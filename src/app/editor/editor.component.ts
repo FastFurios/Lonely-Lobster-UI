@@ -176,6 +176,7 @@ export class EditorComponent implements OnInit {
   }
     
   public deleteAssignment(wo: FormGroup, i: number): void {
+    console.log(`Editor: deleteAssignment(${wo.get("id")}, ${i})`)
     this.workerAssignments(wo).removeAt(i)
   }
     
