@@ -2,9 +2,9 @@
     <div class="section">
         <label>System</label>
         <input  type="text" formControlName="id">
-        <button class="ui button" type="submit"
+        <button class="material-symbols-outlined button_icon" type="submit"
             [disabled]="system.invalid">
-            Save
+            save
         </button>
     </div>
     <div class="section">
@@ -12,9 +12,6 @@
         <button id="parameters" type="button" class="material-symbols-outlined button_icon" (click)="addParametersHandler()"> arrow_drop_down_circle </button>
         <div class="flex-multi-columns">  
             <div [formGroup]="frontendPresetParameters">
-<!--
-                <button type="button" class="ui mini button" (click)="addFrontendPresetsParametersHandler()"> Frontend presets </button>
--->
                 <div *ngIf="frontendPresetToggle"> 
                     <label>Presetting:</label>
                     <div class="parameter-label-input">
@@ -28,9 +25,6 @@
                 </div>
             </div>
             <div [formGroup]="learnAndAdaptParms">
-<!--
-                <button type="button" class="ui mini button" (click)="addLearnAndAdaptParametersHandler()"> Worker learn & adapt </button>
--->
                 <div *ngIf="learnAndAdaptToggle"> 
                     <label>Learn and Adapt:</label>
                     <div class="parameter-label-input">
@@ -52,9 +46,6 @@
                 </div>
             </div>
             <div [formGroup]="wipLimitSearchParms">
-<!--
-                <button type="button" class="ui mini button" (click)="addWipLimitsOptimizationParametersHandler()"> WIP limits optimization </button>
--->
                 <div *ngIf="  wipLimitOptimizeToggle"> 
                     <label>WIP limit optimization:</label>
                     <div class="parameter-label-input">
@@ -84,18 +75,12 @@
     <div class="section">
         <label>Value Chains</label>
         <button type="button" class="material-symbols-outlined button_icon" (click)="addValueChain()"> add_circle </button>
-<!--
-        <button type="button" class="ui mini button" (click)="addValueChain()"> + </button>
--->
 </div>
     <div formArrayName="valueChains">
         <div class="section" *ngFor="let valueChain of valueChains.controls; let i = index" [formGroup]="valueChain">
             <div>
                 <input  type="text" class="bold-text" placeholder="Value chain" formControlName="id">
                 <button type="button" class="material-symbols-outlined button_icon" (click)="deleteValueChain(i)"> delete_forever </button>
-<!--
-                <button type="button" class="ui mini button" (click)="deleteValueChain(i)"> - </button>
--->
                 <app-editor-messages [control]="valueChain.get('id')!" controlName="id"></app-editor-messages>
             </div>
             <div class="flex-multi-columns"> 
@@ -157,9 +142,7 @@
                 <input type="text" class="bold-text" placeholder="Worker Name" formControlName="id">
                 <button type="button" class="material-symbols-outlined button_icon" (click)="deleteWorker(k)"> delete_forever </button>
             </div>
-
             <app-editor-messages [control]="worker.get('assignments')!" controlName="workerAssignments"></app-editor-messages>
-
             <div class="flex-multi-columns"> 
                 <div>
                     <div><label> Assignments </label>  <button type="button" class="material-symbols-outlined button_icon" (click)="addWorkerAssignment(workerAssignments(worker))"> add_circle </button></div>
@@ -170,9 +153,6 @@
                             {{ vcPs }} 
                         </option>
                     </select> 
-<!--
-                    <button type="button"  (click)="deleteAssignment(worker, i)"> - </button>
--->
                     <button type="button" class="material-symbols-outlined button_icon" (click)="deleteAssignment(worker, l)"> delete_forever </button>
                     <app-editor-messages [control]="assignment" controlName="workerAssignment"></app-editor-messages>
                 </div>

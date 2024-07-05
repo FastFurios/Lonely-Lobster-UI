@@ -1,8 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, FormControl, Validators, ValidationErrors, ValidatorFn, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, FormControl, Validators, ValidationErrors, AbstractControl } from '@angular/forms';
 import { ValueChainId, ProcessStepId, WorkerName, valueDegradationFunctionNames, successMeasureFunctionNames } from '../shared/io_api_definitions'
 import { ConfigFileService } from '../shared/config-file.service';
-import { stringify } from 'querystring';
 
 type ProcessStepWithItsValueChain = {
   valueChainId: ValueChainId
@@ -41,8 +40,15 @@ export class EditorComponent implements OnInit {
   ngOnInit(): void {
     //console.log(`Editor.ngOnInit(): cfs.configObject= ${this.cfs.configObject != undefined}`)
     this.initForm(this.cfs.configObject)
+    this.cfs.componentEventSubject$.subscribe((compEvent:string) => {
+      if (compEvent == "ConfigLoadEvent") this.processComponentEvent(compEvent)})
   }
 
+  private processComponentEvent(compEvent: string): void {
+  //console.log("Editor.processComponentEvent(): received compEvent= " + compEvent + "; initializing form")
+    if (this.cfs.configObject) this.initForm(this.cfs.configObject)
+  }
+  
   // ---------------------------------------------------------------------------------------
   // setting up the static form elements
   // ---------------------------------------------------------------------------------------
@@ -50,8 +56,7 @@ export class EditorComponent implements OnInit {
   private initForm(cfo? /* config File Object*/: any): void {
 //    if (this.system) return
 
-    console.log(`Editor.initForm(): cfo is defined? ${cfo != undefined}`)
-    console.log(`Editor.initForm: system_id = ${cfo?.system_id}`)
+    console.log(`Editor.initForm(): config-file-service system=${cfo?.system_id}; initializing form...`)
     this.system = this.fb.group({
       id:                                   [cfo  ? cfo.system_id : "", Validators.required],
       frontendPresetParameters: this.fb.group({
@@ -176,7 +181,7 @@ export class EditorComponent implements OnInit {
   }
     
   public deleteAssignment(wo: FormGroup, i: number): void {
-    console.log(`Editor: deleteAssignment(${wo.get("id")}, ${i})`)
+//  console.log(`Editor: deleteAssignment(${wo.get("id")}, ${i})`)
     this.workerAssignments(wo).removeAt(i)
   }
     
@@ -278,7 +283,7 @@ export class EditorComponent implements OnInit {
   public submitForm() {
     const systemValues = this.system.value
     this.cfs.configObject = this.configObject()
-      this.cfs.componentEvent = "EditorSaveEvent"
+    this.cfs.componentEvent = "EditorSaveEvent"
   }
 
   // ---------------------------------------------------------------------------------------

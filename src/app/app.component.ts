@@ -31,7 +31,9 @@ export class AppComponent {
     private cfs:    ConfigFileService) { }
 
   ngOnInit() {
-    this.cfs.componentEventSubject$.subscribe(compEvent => this.processComponentEvent(compEvent))
+    this.cfs.componentEventSubject$.subscribe((compEvent:string) => {
+      if (compEvent == "EditorSaveEvent") this.processComponentEvent(compEvent)
+    })
   }
 
   private processComponentEvent(compEvent: string): void {
@@ -71,8 +73,9 @@ export class AppComponent {
       console.log(`config-file.service: cfs.configObject=`)
       console.log(this.cfs.configObject)
       this.canRunDownloadDiscard = true
-      this.router.navigate(["../home"], { relativeTo: this.route })
-      //    console.log(this.cfs.objFromJsonFile)
+      this.cfs.componentEvent = "ConfigLoadEvent"
+//    this.router.navigate(["../home"], { relativeTo: this.route })
+//    console.log(this.cfs.objFromJsonFile)
     })
   }
 

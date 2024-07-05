@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpErrorResponse } from '@angular/common/http'
-import { Observable, throwError } from "rxjs"
-import { BehaviorSubject } from 'rx'
+import { Observable, BehaviorSubject, throwError } from "rxjs"
+import { Subject } from 'rx'
 
 const sysConfigsPath = "http://localhost:8080/"
 
@@ -38,7 +38,8 @@ export class ConfigFileService {
   }
 
   set componentEvent(compEvent: string) {
-    this.componentEventSubject.onNext(compEvent)
+    console.log(`cfs.component(${compEvent}): triggering component event`)
+    this.componentEventSubject.next(compEvent)
   }
 
 }
