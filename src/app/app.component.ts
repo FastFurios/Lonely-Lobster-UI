@@ -71,7 +71,8 @@ export class AppComponent {
       console.log(`config-file.service: cfs.configObject=`)
       console.log(this.cfs.configObject)
       this.canRunDownloadDiscard = true
-//    console.log(this.cfs.objFromJsonFile)
+      this.router.navigate(["../home"], { relativeTo: this.route })
+      //    console.log(this.cfs.objFromJsonFile)
     })
   }
 

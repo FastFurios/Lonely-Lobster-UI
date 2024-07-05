@@ -55,22 +55,22 @@ export class EditorComponent implements OnInit {
     this.system = this.fb.group({
       id:                                   [cfo  ? cfo.system_id : "", Validators.required],
       frontendPresetParameters: this.fb.group({
-          numIterationsPerBatch:            [cfo ? cfo.frontend_preset_parameters.num_iterations_per_batch: ""],
-          economicsStatsIntervall:          [cfo ? cfo.frontend_preset_parameters.economics_stats_interval : ""]
+          numIterationsPerBatch:            [cfo ? cfo.frontend_preset_parameters?.num_iterations_per_batch: ""],
+          economicsStatsIntervall:          [cfo ? cfo.frontend_preset_parameters?.economics_stats_interval : ""]
       }),
       learnAndAdaptParms: this.fb.group({
-          observationPeriod:                [cfo ? cfo.learn_and_adapt_parms.observation_period : ""],
-          successMeasureFunction:           [cfo ? cfo.learn_and_adapt_parms.success_measure_function : ""],
-          adjustmentFactor:                 [cfo ? cfo.learn_and_adapt_parms.adjustment_factor : ""],
+          observationPeriod:                [cfo ? cfo.learn_and_adapt_parms?.observation_period : ""],
+          successMeasureFunction:           [cfo ? cfo.learn_and_adapt_parms?.success_measure_function : ""],
+          adjustmentFactor:                 [cfo ? cfo.learn_and_adapt_parms?.adjustment_factor : ""],
       }),
       wipLimitSearchParms: this.fb.group({
-          initialTemperature:               [cfo ? cfo.wip_limit_search_parms.initial_temperature : ""],
-          degreesPerDownhillStepTolerance:  [cfo ? cfo.wip_limit_search_parms.degrees_per_downhill_step_tolerance : ""],
-          initialJumpDistance:              [cfo ? cfo.wip_limit_search_parms.initial_jump_distance : ""],
-          measurementPeriod:                [cfo ? cfo.wip_limit_search_parms.measurement_period : ""],
-          wipLimitUpperBoundaryFactor:      [cfo ? cfo.wip_limit_search_parms.wip_limit_upper_boundary_factor : ""],
-          searchOnAtStart:                  [cfo ? cfo.wip_limit_search_parms.search_on_at_start : ""],
-          verbose:                          [cfo ? cfo.wip_limit_search_parms.verbose : ""]
+          initialTemperature:               [cfo ? cfo.wip_limit_search_parms?.initial_temperature : ""],
+          degreesPerDownhillStepTolerance:  [cfo ? cfo.wip_limit_search_parms?.degrees_per_downhill_step_tolerance : ""],
+          initialJumpDistance:              [cfo ? cfo.wip_limit_search_parms?.initial_jump_distance : ""],
+          measurementPeriod:                [cfo ? cfo.wip_limit_search_parms?.measurement_period : ""],
+          wipLimitUpperBoundaryFactor:      [cfo ? cfo.wip_limit_search_parms?.wip_limit_upper_boundary_factor : ""],
+          searchOnAtStart:                  [cfo ? cfo.wip_limit_search_parms?.search_on_at_start : ""],
+          verbose:                          [cfo ? cfo.wip_limit_search_parms?.verbose : ""]
         }),
         valueChains: this.fb.array([]),
         workers:     this.fb.array([])
@@ -250,7 +250,15 @@ export class EditorComponent implements OnInit {
   // handlers
   // ---------------------------------------------------------------------------------------
 
-public addFrontendPresetsParametersHandler() {
+  public addParametersHandler() {
+    //  console.log("addFrontendPresetsParametersHandler()")
+      this.frontendPresetToggle   = !this.frontendPresetToggle
+      this.learnAndAdaptToggle    = !this.learnAndAdaptToggle
+      this.wipLimitOptimizeToggle = !this.wipLimitOptimizeToggle
+  }
+
+/*
+  public addFrontendPresetsParametersHandler() {
 //  console.log("addFrontendPresetsParametersHandler()")
   this.frontendPresetToggle = !this.frontendPresetToggle
 }
@@ -264,6 +272,7 @@ public addFrontendPresetsParametersHandler() {
 //    console.log("addWipLimitsOptimizationParameters()")
     this.wipLimitOptimizeToggle = !this.wipLimitOptimizeToggle
   }
+*/
 
   public submitForm() {
     const systemValues = this.system.value
