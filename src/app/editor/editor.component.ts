@@ -60,7 +60,7 @@ export class EditorComponent implements OnInit {
     this.system = this.fb.group({
       id:                                   [cfo  ? cfo.system_id : "", Validators.required],
       frontendPresetParameters: this.fb.group({
-          numIterationsPerBatch:            [cfo ? cfo.frontend_preset_parameters?.num_iterations_per_batch: ""],
+          numIterationsPerBatch:            [cfo ? cfo.frontend_preset_parameters?.num_iterations_per_batch : ""],
           economicsStatsIntervall:          [cfo ? cfo.frontend_preset_parameters?.economics_stats_interval : ""]
       }),
       learnAndAdaptParms: this.fb.group({
@@ -77,12 +77,14 @@ export class EditorComponent implements OnInit {
           searchOnAtStart:                  [cfo ? cfo.wip_limit_search_parms?.search_on_at_start : ""],
           verbose:                          [cfo ? cfo.wip_limit_search_parms?.verbose : ""]
         }),
-        valueChains: this.fb.array([]),
-        workers:     this.fb.array([])
+        valueChains:                        this.fb.array([]),
+        workitemSelectionStrategies:        this.fb.array([]),
+        workers:                            this.fb.array([])
     })
 
-    if (cfo?.value_chains) this.addValueChainFormGroupsToFormArray(cfo.value_chains)
-    if (cfo?.workers)      this.addWorkerFormGroupsToFormArray(cfo.workers)
+    if (cfo?.value_chains)                  this.addValueChainFormGroupsToFormArray(cfo.value_chains)
+    if (cfo?.workitemSelectionStrategies)   this.addWorkitemSelectionStrategyFormGroupsToFormArray(cfo.workitemSelectionStrategies)
+    if (cfo?.workers)                       this.addWorkerFormGroupsToFormArray(cfo.workers)
   }
 
   private addValueChainFormGroupsToFormArray(cfVcs: any): void {
@@ -92,13 +94,23 @@ export class EditorComponent implements OnInit {
       if (!newVcFgPssFormArray) {
         console.log(`Editor.initForm().addValueChainFormGroupsToFormArray(): no process-steps FormArray found`)
         return
-      } 
-//    const vcs = this.system.get(`valueChains`)
-//    const firstVc = (<FormArray>vcs).controls[0]
-//    console.log(`Editor.initForm().addValueChainFormGroupsToFormArray(): first vc.id = ${firstVc.get('id')?.value}`)
+      }       
       cfVc.process_steps.forEach((cfPs: any) => this.addProcessStep(<FormArray>newVcFgPssFormArray!, cfPs))
     })
   }
+
+  private addWorkitemSelectionStrategyFormGroupsToFormArray(cfWiSss: any) {
+    cfWiSss.forEach((cfWiSs: any) => { 
+      const newWiSSFormGroup = this.addWorkItemSelectionStrategy(cfWiSs)
+      const newWiSSFgSCsFormArray = newWiSSFormGroup.get("selectionCriteria")
+      if (!newWiSSFgSCsFormArray) {
+        console.log(`Editor.initForm().addWorkitemSelectionStrategiesFormGroupsToFormArray(): no selectionCriteria FormArray found`)
+        return
+      }       
+//****      cfWiSs.selection_Criteria.forEach((cfPs: any) => this.addProcessStep(<FormArray>newVcFgPssFormArray!, cfPs))
+    })
+  }
+
 
   private addWorkerFormGroupsToFormArray(cfWos: any): void {
     cfWos.forEach((cfWo: any) => { 
@@ -145,6 +157,24 @@ export class EditorComponent implements OnInit {
     })
     pss.push(newPsFormGroup)
     return newPsFormGroup
+  }
+
+  public addWorkItemSelectionStrategy(cfWiSS?: any): FormGroup {
+    const newWiSSFormGroup = this.fb.group({
+      id:               [cfWiSS ? cfWiSS.id : ""],
+      strategy:         this.fb.array([])
+    })
+    this.workItemSelectionStrategies.push(newWiSSFormGroup)
+    return newWiSSFormGroup
+  }
+
+  public addSelectionCriterion(scs: FormArray, cfSc?: any): FormGroup {
+    const newScFormGroup = this.fb.group({
+      measure:               [cfSc ? cfSc.measure : "", [ Validators.required ]],
+      selectionCriterion:    [cfSc ? cfSc.selection_criterion : ""]
+    })
+    scs.push(newScFormGroup)
+    return newScFormGroup
   }
 
   public addWorker(cfWo?: any): FormGroup {
@@ -221,6 +251,10 @@ export class EditorComponent implements OnInit {
 
   public processSteps(vc: FormGroup): FormArray<FormGroup> {
     return vc.get('processSteps') as FormArray
+  }
+
+  get workItemSelectionStrategies(): FormArray<FormGroup> {
+    return this.system.get('workItemSelectionStrategies') as FormArray
   }
 
   get workers(): FormArray<FormGroup> {

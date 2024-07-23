@@ -235,3 +235,27 @@ export const successMeasureFunctionNames = [
     "roce",        // wired with successMeasureRoce()
     "none"         // wired with successMeasureNone()
 ]
+
+export const enum  workItemSelectionStrategyMeasureNames {
+    accumulatedEffortInProcessStep  = "accumulated effort in process step",
+    remainingEffortInProcessStep    = "remaining effort in process step",
+    accumulatedEffortInValueChain   = "accumulated effort in value chain",
+    remainingEffortInValueChain     = "remaining effort in value chain",
+
+    visitedProcessSteps             = "visited process steps",
+    remainingProcessSteps           = "remaining process steps",
+
+    valueOfValueChain               = "value-add of value chain",
+    totalEffortInValueChain         = "total effort in value chain",
+    contributionOfValueChain        = "contribution of value chain",
+
+    sizeOfInventoryInProcessStep    = "size of inventory in process step",
+
+    elapsedTimeInProcessStep        = "elapsed time in process step",
+    elapsedTimeInValueChain         = "elapsed time in value chain"
+}
+
+export const selectionCriterionNames = [ // for workItemSelectionStrategyMeasureNames
+    "max",
+    "min"
+]
