@@ -7,6 +7,8 @@
             save
         </button>
     </div>
+
+    <!-- PARAMETERS ------------------------------------------------------------------------------------------->
     <div class="section">
         <label for="parameters">Parameters</label>
         <button id="parameters" type="button" class="material-symbols-outlined button_icon" (click)="addParametersHandler()"> arrow_drop_down_circle </button>
@@ -75,7 +77,9 @@
     <div class="section">
         <label>Value Chains</label>
         <button type="button" class="material-symbols-outlined button_icon" (click)="addValueChain()"> add_circle </button>
-</div>
+    </div>
+
+    <!-- VALUE CHAINS ------------------------------------------------------------------------------------------->
     <div formArrayName="valueChains">
         <div class="section" *ngFor="let valueChain of valueChains.controls; let i = index" [formGroup]="valueChain">
             <div>
@@ -132,6 +136,47 @@
             </div>
         </div>
     </div>
+
+
+    <!-- STRATEGIES ------------------------------------------------------------------------------------------->
+    <div class="section">
+        <label>Globally defined workitem selection strategies</label>
+        <button type="button" class="material-symbols-outlined button_icon" (click)="addGloballyDefinedWorkitemSelectionStrategy()">add_circle </button>
+    </div>
+    <div formArrayName="globallyDefinedWorkitemSelectionStrategies">
+        <div class="section" *ngFor="let strategy of globallyDefinedWorkitemSelectionStrategies.controls; let k = index" [formGroup]="strategy" >
+            <div>
+                <input type="text" class="bold-text" placeholder="Strategy Name" formControlName="id">
+                <button type="button" class="material-symbols-outlined button_icon" (click)="deleteGloballyDefinedWorkitemSelectionStrategy(k)"> delete_forever </button>
+            </div>
+<!--
+            <app-editor-messages [control]="worker.get('assignments')!" controlName="workerAssignments"></app-editor-messages>
+-->
+            <div class="flex-multi-columns"> 
+                <div>
+                    <div><label> Sort vectors </label>  <button type="button" class="material-symbols-outlined button_icon" (click)="addSortVector(sortVectors(strategy))"> add_circle </button></div>
+                </div>
+                <div *ngFor="let sortVector of sortVectors(strategy).controls; let l = index" [formGroup]="sortVector">
+                    <select formControlName="measure">
+                        <option *ngFor="let measure of workItemSelectionStrategyMeasures" [ngValue]="measure">
+                            {{ measure }} 
+                        </option>
+                    </select> 
+                    <select formControlName="selectionCriterion">
+                        <option *ngFor="let selectionCriterion of selectionCriteria" [ngValue]="selectionCriterion">
+                            {{ selectionCriterion }} 
+                        </option>
+                    </select> 
+                    <button type="button" class="material-symbols-outlined button_icon" (click)="deleteSortVector(sortVector, l)"> delete_forever </button>
+<!--
+                    <app-editor-messages [control]="assignment" controlName="workerAssignment"></app-editor-messages>
+-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WORKERS ------------------------------------------------------------------------------------------->
     <div class="section">
         <label>Workers</label>
         <button type="button" class="material-symbols-outlined button_icon" (click)="addWorker()">add_circle </button>
@@ -155,6 +200,20 @@
                     </select> 
                     <button type="button" class="material-symbols-outlined button_icon" (click)="deleteAssignment(worker, l)"> delete_forever </button>
                     <app-editor-messages [control]="assignment" controlName="workerAssignment"></app-editor-messages>
+                </div>
+            </div>
+            <div class="flex-multi-columns"> 
+                <div>
+                    <div><label> Strategies </label>  <button type="button" class="material-symbols-outlined button_icon" (click)="addWorkerStrategy(workerStrategies(worker))"> add_circle </button></div>
+                </div>
+                <div *ngFor="let workerStrategy of workerStrategies(worker).controls; let l = index" [formGroup]="workerStrategy">
+                    <select formControlName="woWiSsId">
+                        <option *ngFor="let wiSsId of globallyDefinedWorkitemSelectionStrategiesIds" [ngValue]="wiSsId">
+                            {{ wiSsId }} 
+                        </option>
+                    </select> 
+                    <button type="button" class="material-symbols-outlined button_icon" (click)="deleteWorkerStrategy(worker, l)"> delete_forever </button>
+                    <app-editor-messages [control]="workerStrategy" controlName="workerStrategy"></app-editor-messages>
                 </div>
             </div>
         </div>
