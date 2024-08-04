@@ -18,16 +18,16 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void { }
 
-  get configObject() {
-    return this.cfs.configObject
+  get configAsPojo() {
+    return this.cfs.configAsPojo
   }
 
   get numSystemProcessSteps() {
-    return this.configObject.value_chains.reduce((sum: number, vc: any) => sum + vc.process_steps.length, 0)
+    return this.configAsPojo?.valueChains.reduce((sum: number, vc: any) => sum + vc.process_steps.length, 0)
   }
 
   public createNewConfig() {
-    this.cfs.configObject = undefined
+    this.cfs.configAsPojo = undefined
   }
 
   public onFileSelected(e: any) { 
@@ -36,7 +36,7 @@ export class HomeComponent implements OnInit {
     const obs$ = this.readFileContentObs(file)
     obs$.subscribe((fileContent: string) => { 
       //this.cfs.configAsJson = fileContent
-      this.cfs.configObject = JSON.parse(fileContent) 
+      this.cfs.configAsPojo = JSON.parse(fileContent) 
       this.router.navigate(["../edit"], { relativeTo: this.route })
     })
   }
@@ -56,7 +56,7 @@ export class HomeComponent implements OnInit {
   }
 
   public onSaveFile(): void {
-    const fileContent = this.cfs.configObject
+    const fileContent = this.cfs.configAsPojo
     const file = new Blob([JSON.stringify(fileContent, null, "\t")], { type: "application/json" })
     const link = document.createElement("a")
     link.href = URL.createObjectURL(file)

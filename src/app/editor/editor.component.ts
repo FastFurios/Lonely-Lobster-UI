@@ -45,14 +45,14 @@ export class EditorComponent implements OnInit {
 
   ngOnInit(): void {
     //console.log(`Editor.ngOnInit(): cfs.configObject= ${this.cfs.configObject != undefined}`)
-    this.initForm(this.cfs.configObject)
+    this.initForm(this.cfs.configAsPojo)
     this.cfs.componentEventSubject$.subscribe((compEvent:string) => {
       if (compEvent == "ConfigLoadEvent") this.processComponentEvent(compEvent)})
   }
 
   private processComponentEvent(compEvent: string): void {
   //console.log("Editor.processComponentEvent(): received compEvent= " + compEvent + "; initializing form")
-    if (this.cfs.configObject) this.initForm(this.cfs.configObject)
+    if (this.cfs.configAsPojo) this.initForm(this.cfs.configAsPojo)
   }
   
   // ---------------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ export class EditorComponent implements OnInit {
   private initForm(cfo? /* config File Object*/: any): void {
 //    if (this.system) return
 
-    console.log(`Editor.initForm(): config-file-service system=${cfo?.system_id}; initializing form...`)
+//  console.log(`Editor.initForm(): config-file-service system=${cfo?.system_id}; initializing form...`)
     this.system = this.fb.group({
       id:                                   [cfo  ? cfo.system_id : "", Validators.required],
       frontendPresetParameters: this.fb.group({
@@ -342,14 +342,6 @@ export class EditorComponent implements OnInit {
   }
 
   // ---------------------------------------------------------------------------------------
-  // getting elements in config file
-  // ---------------------------------------------------------------------------------------
- 
-  private globallyDefinedWorkItemSelectionStrategy(stratId: string): I_selectionStrategy | undefined {
-    return this.cfs.configObject.globally_defined_workitem_selection_strategies?.find((strat: any) => strat.id == stratId)
-  }
-
-  // ---------------------------------------------------------------------------------------
   // handlers
   // ---------------------------------------------------------------------------------------
 
@@ -360,26 +352,9 @@ export class EditorComponent implements OnInit {
       this.wipLimitOptimizeToggle = !this.wipLimitOptimizeToggle
   }
 
-/*
-  public addFrontendPresetsParametersHandler() {
-//  console.log("addFrontendPresetsParametersHandler()")
-  this.frontendPresetToggle = !this.frontendPresetToggle
-}
-
-  public addLearnAndAdaptParametersHandler() {
-//    console.log("addLearnAndAdaptParameters()")
-    this.learnAndAdaptToggle = !this.learnAndAdaptToggle
-  }
-
-  public addWipLimitsOptimizationParametersHandler() {
-//    console.log("addWipLimitsOptimizationParameters()")
-    this.wipLimitOptimizeToggle = !this.wipLimitOptimizeToggle
-  }
-*/
-
   public submitForm() {
     const systemValues = this.system.value
-    this.cfs.configObject = this.configObject()
+    this.cfs.configAsPojo = this.configObject()
     this.cfs.componentEvent = "EditorSaveEvent"
   }
 
@@ -389,8 +364,8 @@ export class EditorComponent implements OnInit {
 
   private configObject(): any {
     const formValue = this.system.value
-    console.log("formValue=")
-    console.log(formValue)
+    //console.log("formValue=")
+    //console.log(formValue)
     return {
       system_id:                    formValue.id,
       frontend_preset_parameters: {
@@ -413,7 +388,7 @@ export class EditorComponent implements OnInit {
       },
       value_chains:                 formValue.valueChains.map((vc: any) => this.addValueChainAsJson(vc)),
       workers:                      formValue.workers.map((wo: any) => this.addWorkerAsJson(wo)),
-      globally_defined_workitem_selection_strategies: formValue.globallyDefinedWorkItemSelectionStrategies.map((wiSs: any) => this.addStrategyAsJson(wiSs))        
+      globally_defined_workitem_selection_strategies: formValue.globallyDefinedWorkitemSelectionStrategies.map((wiSs: any) => this.addStrategyAsJson(wiSs))        
     } 
   }
 
@@ -437,7 +412,7 @@ export class EditorComponent implements OnInit {
     return {
       process_step_id:      ps.id,
       norm_effort:          ps.normEffort,
-        wip_limit:            ps.wipLimit
+      wip_limit:            ps.wipLimit
     }
   }
 
@@ -465,5 +440,8 @@ export class EditorComponent implements OnInit {
       }})
     }
   }
+
+// **** where are the workers' strategies be exported? *** 
+
 }
 

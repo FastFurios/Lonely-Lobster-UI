@@ -38,40 +38,40 @@ export class AppComponent {
 
   private processComponentEvent(compEvent: string): void {
     this.canRunDownloadDiscard = compEvent == "EditorSaveEvent"
-    console.log("App.processComponentEvent(): compEvent= " + compEvent + "; this.canRunDownloadDiscard= " + this.canRunDownloadDiscard)
+    //console.log("App.processComponentEvent(): compEvent= " + compEvent + "; this.canRunDownloadDiscard= " + this.canRunDownloadDiscard)
   }
 
   public runDownloadDiscardColor(): string | undefined {
     return this.canRunDownloadDiscard ? undefined : greyOut 
   }  
 
-  get configObject() {
-    return this.cfs.configObject
+  get configAsPojo() {
+    return this.cfs.configAsPojo
   }
 
   public discard(): void {
-    this.cfs.configObject = undefined
+    this.cfs.configAsPojo = undefined
     this.canRunDownloadDiscard = false
     this.router.navigate(["../home"], { relativeTo: this.route })
   }
 
   public updateCanRunDownloadDiscard() {
-    console.log("AppComponent: updateCanRunDownloadDiscard()")
-    this.canRunDownloadDiscard = this.cfs.configObject ? true : false
+    //console.log("AppComponent: updateCanRunDownloadDiscard()")
+    this.canRunDownloadDiscard = this.cfs.configAsPojo ? true : false
   }
 
   public onFileSelected(e: any) { 
-    console.log("onFileSelected")
+    //console.log("onFileSelected")
     const file: File = e.target.files[0] 
     this.filename = file.name
 //  console.log(`app: onFileSelected(): filename=${this.filename}; subscribing to observable ...`)
     const obs$ = this.readFileContentObs(file)
     obs$.subscribe((fileContent: string) => { 
       //this.cfs.configAsJson = fileContent
-      this.cfs.configObject = JSON.parse(fileContent) 
+      this.cfs.configAsPojo = JSON.parse(fileContent) 
       //this.router.navigate(["../edit"], { relativeTo: this.route })
-      console.log(`config-file.service: cfs.configObject=`)
-      console.log(this.cfs.configObject)
+      //console.log(`config-file.service: cfs.configObject=`)
+      //console.log(this.cfs.configObject)
       this.canRunDownloadDiscard = true
       this.cfs.componentEvent = "ConfigLoadEvent"
 //    this.router.navigate(["../home"], { relativeTo: this.route })
@@ -95,12 +95,12 @@ export class AppComponent {
 
   public onSaveFile(): void {
     //  let fileContent = "Hi there, I was just saved from the Angular app!"
-    const fileContent = this.cfs.configObject
+    const fileContent = this.cfs.configAsPojo
     const file = new Blob([JSON.stringify(fileContent, null, "\t")], { type: "application/json" })
     const link = document.createElement("a")
     link.href = URL.createObjectURL(file)
     link.download = this.filename
-    console.log("system.onSaveFile(): saving to " + link.download)
+    //console.log("system.onSaveFile(): saving to " + link.download)
     link.click()
     link.remove()
   }
