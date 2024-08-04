@@ -265,6 +265,6 @@ export enum workItemSelectionStrategyMeasureNames {
 }
 
 export const selectionCriterionNames = [ // for workItemSelectionStrategyMeasureNames
-    "max",
-    "min"
+    "maximum",
+    "minimum"
 ]

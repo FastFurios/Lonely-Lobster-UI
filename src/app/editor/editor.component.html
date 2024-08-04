@@ -156,18 +156,21 @@
                 <div>
                     <div><label> Sort vectors </label>  <button type="button" class="material-symbols-outlined button_icon" (click)="addSortVector(sortVectors(strategy))"> add_circle </button></div>
                 </div>
-                <div *ngFor="let sortVector of sortVectors(strategy).controls; let l = index" [formGroup]="sortVector">
+                <div *ngFor="let sortVector of sortVectors(strategy).controls; let j = index" [formGroup]="sortVector">
+<!--
+                    {{ sortVector.get("measure")?.value }}
+-->
                     <select formControlName="measure">
-                        <option *ngFor="let measure of workItemSelectionStrategyMeasures" [ngValue]="measure">
-                            {{ measure }} 
-                        </option>
+                        <option *ngFor="let m of workItemSelectionStrategyMeasures" [ngValue]="m">
+                            {{ m }} 
+                        </option> 
                     </select> 
                     <select formControlName="selectionCriterion">
-                        <option *ngFor="let selectionCriterion of selectionCriteria" [ngValue]="selectionCriterion">
-                            {{ selectionCriterion }} 
+                        <option *ngFor="let sc of selectionCriteria" [ngValue]="sc">
+                            {{ sc }} 
                         </option>
                     </select> 
-                    <button type="button" class="material-symbols-outlined button_icon" (click)="deleteSortVector(sortVector, l)"> delete_forever </button>
+                    <button type="button" class="material-symbols-outlined button_icon" (click)="deleteSortVector(strategy, j)"> delete_forever </button>
 <!--
                     <app-editor-messages [control]="assignment" controlName="workerAssignment"></app-editor-messages>
 -->

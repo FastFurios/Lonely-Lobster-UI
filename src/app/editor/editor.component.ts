@@ -90,6 +90,7 @@ export class EditorComponent implements OnInit {
 
     if (cfo?.value_chains)                  this.addValueChainFormGroupsToFormArray(cfo.value_chains)
     if (cfo?.globally_defined_workitem_selection_strategies) this.addGloballyDefinedWorkitemSelectionStrategyFormGroupsToFormArray(cfo.globally_defined_workitem_selection_strategies)
+    //console.log(`Editor.initForm(): globallyDefinedWorkitemSelectionStrategies: ${this.globallyDefinedWorkitemSelectionStrategies.controls.map((wiSSFG: FormGroup) =>  (wiSSFG.get("strategy") as FormArray)?.controls.map((sv:any) => sv.get('measure').value))}`) // wiSSFG.get('id')?.value)} 
     if (cfo?.workers)                       this.addWorkerFormGroupsToFormArray(cfo.workers)
   }
 
@@ -192,12 +193,17 @@ export class EditorComponent implements OnInit {
   }
 
   public addSortVector(svs: FormArray, cfSV?: any): FormGroup {
+    function measureDescription(cfSV: any): string {
+      if (!cfSV) return ""
+      const measureKey: keyof typeof workItemSelectionStrategyMeasureNames = cfSV.measure
+      return workItemSelectionStrategyMeasureNames[measureKey]
+    }
     const newSvFormGroup = this.fb.group({
-      measure:               [cfSV ? cfSV.measure            : "", [ Validators.required ]],
+      measure:               [measureDescription(cfSV), [ Validators.required ]],
       selectionCriterion:    [cfSV ? cfSV.selection_criterion: "", [ Validators.required ]]
     })
     svs.push(newSvFormGroup)
-    console.log(`addSortVector(svs=${svs}, cfSv=${cfSV.measure}: ${cfSV.selection_criterion}): length of svs= ${svs.length}`)
+    //console.log(`addSortVector(svs=${svs}, cfSv=${cfSV.measure}: ${cfSV.selection_criterion}): length of svs= ${svs.length}`)
     return newSvFormGroup
   }
 
@@ -294,6 +300,7 @@ export class EditorComponent implements OnInit {
   }
 
   public sortVectors(wiSS: FormGroup): FormArray<FormGroup> {
+    //console.log(`Editor.sortVectors(${wiSS.get("id")?.value}).length = ${(wiSS.get("strategy") as FormArray<FormGroup>)?.controls.map((sv: FormGroup) => sv.get("measure")?.value)}`)
     return wiSS.get('strategy') as FormArray
   }
 
@@ -382,6 +389,8 @@ export class EditorComponent implements OnInit {
 
   private configObject(): any {
     const formValue = this.system.value
+    console.log("formValue=")
+    console.log(formValue)
     return {
       system_id:                    formValue.id,
       frontend_preset_parameters: {
