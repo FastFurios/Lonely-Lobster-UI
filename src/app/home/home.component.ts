@@ -18,25 +18,28 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void { }
 
-  get configAsPojo() {
-    return this.cfs.configAsPojo
+  get configAsJson() {
+    console.log(`home.get configAsJson(): returning:`)
+    console.log(this.cfs.configAsJson)
+    return this.cfs.configAsJson
   }
 
   get numSystemProcessSteps() {
-    return this.configAsPojo?.valueChains.reduce((sum: number, vc: any) => sum + vc.process_steps.length, 0)
+    return this.configAsJson?.value_chains.reduce((sum: number, vc: any) => sum + vc.process_steps.length, 0)
   }
 
   public createNewConfig() {
-    this.cfs.configAsPojo = undefined
+    this.cfs.configAsJson = undefined
   }
-
+/**
   public onFileSelected(e: any) { 
     const file: File = e.target.files[0] 
     this.filename = file.name
     const obs$ = this.readFileContentObs(file)
+    console.log(`home.onFileSelected(): reading file ${this.filename}`)
     obs$.subscribe((fileContent: string) => { 
-      //this.cfs.configAsJson = fileContent
-      this.cfs.configAsPojo = JSON.parse(fileContent) 
+      console.log(`home.onFileSelected()`)
+      this.cfs.configAsJson = JSON.parse(fileContent) 
       this.router.navigate(["../edit"], { relativeTo: this.route })
     })
   }
@@ -65,4 +68,5 @@ export class HomeComponent implements OnInit {
     link.click()
     link.remove()
   }
+ */
 }

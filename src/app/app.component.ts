@@ -68,7 +68,7 @@ export class AppComponent {
     const obs$ = this.readFileContentObs(file)
     obs$.subscribe((fileContent: string) => { 
       //this.cfs.configAsJson = fileContent
-      this.cfs.configAsPojo = JSON.parse(fileContent) 
+      this.cfs.configAsJson = JSON.parse(fileContent) 
       //this.router.navigate(["../edit"], { relativeTo: this.route })
       //console.log(`config-file.service: cfs.configObject=`)
       //console.log(this.cfs.configObject)

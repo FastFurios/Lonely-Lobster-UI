@@ -1,22 +1,22 @@
 
-Defined? {{ configAsPojo != undefined }}
-<div *ngIf="configAsPojo" class="columns general-font">
+Defined? {{ configAsJson != undefined }}
+<div *ngIf="configAsJson" class="columns general-font">
     <div>
         <div class="flex-row">
             <div>System:</div>
-            <div>{{ configAsPojo.id ? configAsPojo.id : "-" }}</div>
+            <div>{{ configAsJson.system_id ? configAsJson.system_id : "-" }}</div>
         </div>
         <div class="flex-row">
             <div>Value-Chains:</div>
-            <div> {{ configAsPojo.valueChains ? configAsPojo.valueChains.length : "-" }}</div>
+            <div> {{ configAsJson.value_chains ? configAsJson.value_chains.length : "-" }}</div>
         </div>
         <div class="flex-row">
             <div>Process-steps:</div>
-            <div>{{ configAsPojo ? numSystemProcessSteps : "-" }}</div>
+            <div>{{ configAsJson ? numSystemProcessSteps : "-" }}</div>
         </div>
         <div class="flex-row">
             <div>Workers:</div>
-            <div>{{ configAsPojo.workers ? configAsPojo.workers.length : "-" }}</div>
+            <div>{{ configAsJson.workers ? configAsJson.workers.length : "-" }}</div>
         </div>
     </div>
 </div>

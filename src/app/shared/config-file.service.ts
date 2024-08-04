@@ -95,7 +95,7 @@ export class ConfigFileService {
   
   public filename:         string = ""
   public fileContent:      string
-  private _configAsPojo:   ConfigAsPojo | undefined
+  private _configAsPojo:   ConfigAsPojo
   private _configAsJson:   I_ConfigAsJson
   private componentEventSubject          = new BehaviorSubject<string>("")
   public  componentEventSubject$         = this.componentEventSubject.asObservable()
@@ -104,6 +104,12 @@ export class ConfigFileService {
     this._configAsPojo = configPojo 
 //    console.log(`config-file.service: set objFromJsonFile(): this._objFromJsonFile=`)
 //    console.log(this._configObject)
+  }
+
+  set configAsJson(configJson: I_ConfigAsJson) {
+    // console.log(`cfs.configAsJson(configJson) with configJson =`)
+    // console.log(configJson)
+    this._configAsJson = configJson 
   }
 
   get configAsPojo(): ConfigAsPojo | undefined {

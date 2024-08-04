@@ -45,7 +45,7 @@ export class EditorComponent implements OnInit {
 
   ngOnInit(): void {
     //console.log(`Editor.ngOnInit(): cfs.configObject= ${this.cfs.configObject != undefined}`)
-    this.initForm(this.cfs.configAsPojo)
+    this.initForm(this.cfs.configAsJson)
     this.cfs.componentEventSubject$.subscribe((compEvent:string) => {
       if (compEvent == "ConfigLoadEvent") this.processComponentEvent(compEvent)})
   }
