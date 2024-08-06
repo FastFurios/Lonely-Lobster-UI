@@ -1,22 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators, ValidationErrors, AbstractControl } from '@angular/forms';
-import { ValueChainId, ProcessStepId, WorkerName, valueDegradationFunctionNames, successMeasureFunctionNames, I_selectionStrategy, I_sortVector, workItemSelectionStrategyMeasureNames, selectionCriterionNames } from '../shared/io_api_definitions'
+import { I_ConfigAsJson, I_ValueChainAsJson, I_ProcessStepAsJson, I_GloballyDefinedWorkitemSelectionStrategyAsJson, I_WorkerAsJson, I_ValueChainAndProcessStepAsJson, valueDegradationFunctionNames, successMeasureFunctionNames, I_selectionStrategy, I_sortVector, workItemSelectionStrategyMeasureNames, selectionCriterionNames, I_ProcessStep, I_SortVectorAsJson } from '../shared/io_api_definitions'
 import { ConfigFileService } from '../shared/config-file.service';
-
-type ProcessStepWithItsValueChain = {
-  valueChainId: ValueChainId
-  processStepId:ProcessStepId 
-}
-
-type NumberedListEntryOfProcessStepsWithItsValueChain = {
-  entryId:                       number // primary key for a pair of valueChain and process step 
-  processStepWithItsValueChain:  ProcessStepWithItsValueChain
-}
-
-type NumberedListOfProcessStepsWithTheirValueChains = NumberedListEntryOfProcessStepsWithItsValueChain[]
-
-type WorkerProcessStepAssignment = { worker: WorkerName; vcPs: ProcessStepWithItsValueChain }
-type WorkersProcessStepAssignments = WorkerProcessStepAssignment[]
 
 
 
@@ -27,7 +12,7 @@ type WorkersProcessStepAssignments = WorkerProcessStepAssignment[]
 })
 export class EditorComponent implements OnInit {
   @Output() systemSaved                      = new EventEmitter()
-  public system:                    FormGroup
+  public systemFg:                  FormGroup
   public valueDegradationFunctions: string[] = valueDegradationFunctionNames
   public successMeasureFunctions:   string[] = successMeasureFunctionNames
   public workItemSelectionStrategyMeasures   = Object.values(workItemSelectionStrategyMeasureNames)
@@ -35,7 +20,6 @@ export class EditorComponent implements OnInit {
 
   
   //private workersProcessStepAssignments: WorkersProcessStepAssignments = []
-  selectedVcPs:                     any
   frontendPresetToggle:             boolean = false
   learnAndAdaptToggle:              boolean = false
   wipLimitOptimizeToggle:           boolean = false
@@ -51,19 +35,19 @@ export class EditorComponent implements OnInit {
   }
 
   private processComponentEvent(compEvent: string): void {
-  //console.log("Editor.processComponentEvent(): received compEvent= " + compEvent + "; initializing form")
-    if (this.cfs.configAsPojo) this.initForm(this.cfs.configAsPojo)
+    //console.log("Editor.processComponentEvent(): received compEvent= " + compEvent + "; initializing form")
+    if (this.cfs.configAsJson) this.initForm(this.cfs.configAsJson)
   }
   
   // ---------------------------------------------------------------------------------------
   // setting up the static form elements
   // ---------------------------------------------------------------------------------------
 
-  private initForm(cfo? /* config File Object*/: any): void {
+  private initForm(cfo?: I_ConfigAsJson): void {
 //    if (this.system) return
 
 //  console.log(`Editor.initForm(): config-file-service system=${cfo?.system_id}; initializing form...`)
-    this.system = this.fb.group({
+    this.systemFg = this.fb.group({
       id:                                   [cfo  ? cfo.system_id : "", Validators.required],
       frontendPresetParameters: this.fb.group({
           numIterationsPerBatch:            [cfo ? cfo.frontend_preset_parameters?.num_iterations_per_batch : ""],
@@ -88,55 +72,54 @@ export class EditorComponent implements OnInit {
         workers:                            this.fb.array([])
     })
 
-    if (cfo?.value_chains)                  this.addValueChainFormGroupsToFormArray(cfo.value_chains)
-    if (cfo?.globally_defined_workitem_selection_strategies) this.addGloballyDefinedWorkitemSelectionStrategyFormGroupsToFormArray(cfo.globally_defined_workitem_selection_strategies)
-    //console.log(`Editor.initForm(): globallyDefinedWorkitemSelectionStrategies: ${this.globallyDefinedWorkitemSelectionStrategies.controls.map((wiSSFG: FormGroup) =>  (wiSSFG.get("strategy") as FormArray)?.controls.map((sv:any) => sv.get('measure').value))}`) // wiSSFG.get('id')?.value)} 
-    if (cfo?.workers)                       this.addWorkerFormGroupsToFormArray(cfo.workers)
+    if (cfo?.value_chains)                  this.addValueChainsFgs(cfo.value_chains)
+    if (cfo?.globally_defined_workitem_selection_strategies) this.addGloballyDefinedWorkitemSelectionStrategiesFgs(cfo.globally_defined_workitem_selection_strategies)
+    if (cfo?.workers)                       this.addWorkersFgs(cfo.workers)
   }
 
-  private addValueChainFormGroupsToFormArray(cfVcs: any): void {
-    cfVcs.forEach((cfVc: any) => { 
-      const newVcFormGroup = this.addValueChain(cfVc)
-      const newVcFgPssFormArray = newVcFormGroup.get("processSteps")
-      if (!newVcFgPssFormArray) {
+  private addValueChainsFgs(cfVcs: I_ValueChainAsJson[]): void {
+    cfVcs.forEach((cfVc: I_ValueChainAsJson) => { 
+      const newVcFg = this.addValueChainFg(cfVc)
+      const newVcFgPssFa = newVcFg.get("processSteps")
+      if (!newVcFgPssFa) {
         console.log(`Editor.initForm().addValueChainFormGroupsToFormArray(): no process-steps FormArray found`)
         return
       }       
-      cfVc.process_steps.forEach((cfPs: any) => this.addProcessStep(<FormArray>newVcFgPssFormArray!, cfPs))
+      cfVc.process_steps.forEach((cfPs: I_ProcessStepAsJson) => this.addProcessStepFg(<FormArray>newVcFgPssFa!, cfPs))
     })
   }
 
-  private addGloballyDefinedWorkitemSelectionStrategyFormGroupsToFormArray(cfWiSSs: any): void {
-    cfWiSSs.forEach((cfWiSS: any) => { 
-      const newWiSSFormGroup = this.addGloballyDefinedWorkitemSelectionStrategy(cfWiSS)
-      const newWiSSFgSvsFormArray = newWiSSFormGroup.get("strategy")
-      if (!newWiSSFgSvsFormArray) {
+  private addGloballyDefinedWorkitemSelectionStrategiesFgs(cfWiSSs: I_GloballyDefinedWorkitemSelectionStrategyAsJson[]): void {
+    cfWiSSs.forEach((cfWiSS: I_GloballyDefinedWorkitemSelectionStrategyAsJson) => { 
+      const newWiSSFg = this.addGloballyDefinedWorkitemSelectionStrategyFg(cfWiSS)
+      const newWiSSFgSvsFa = newWiSSFg.get("strategy")
+      if (!newWiSSFgSvsFa) {
         console.log(`Editor.initForm().addGloballyDefinedWorkitemSelectionStrategyFormGroupsToFormArray(): no strategy FormArray found`)
         return
       }       
-      cfWiSS.strategy.forEach((cfSv: I_sortVector) => this.addSortVector(<FormArray>newWiSSFgSvsFormArray, cfSv))
+      cfWiSS.strategy.forEach((cfSv: I_sortVector) => this.addSortVectorFg(<FormArray>newWiSSFgSvsFa, cfSv))
     })
   }
 
-  private addWorkerFormGroupsToFormArray(cfWos: any): void {
-    cfWos.forEach((cfWo: any) => { 
-      const newWoFormGroup = this.addWorker(cfWo)
+  private addWorkersFgs(cfWos: I_WorkerAsJson[]): void {
+    cfWos.forEach((cfWo: I_WorkerAsJson) => { 
+      const newWoFg = this.addWorkerFg(cfWo)
 
       // add assignments
-      const newWoFgAssFormArray = newWoFormGroup.get("assignments")
-      if (!newWoFgAssFormArray) {
+      const newWoFgAssFa = newWoFg.get("assignments")
+      if (!newWoFgAssFa) {
         console.log(`Editor.initForm().addWorkerFormGroupsToFormArray(): no assignmengts FormArray found`)
         return
       } 
-      cfWo.process_step_assignments.forEach((cfAs: any) => this.addWorkerAssignment(<FormArray>newWoFgAssFormArray, cfAs))
+      cfWo.process_step_assignments.forEach((cfAs: I_ValueChainAndProcessStepAsJson) => this.addWorkerAssignmentFg(<FormArray>newWoFgAssFa, cfAs))
 
       // add workitem selection strategies
-      const newWoFgStratFormArray = newWoFormGroup.get("strategies")
-      if (!newWoFgStratFormArray) {
+      const newWoFgStratsFa = newWoFg.get("strategies")
+      if (!newWoFgStratsFa) {
         console.log(`Editor.initForm().addWorkerFormGroupsToFormArray(): no strategies FormArray found`)
         return
       } 
-      cfWo.workitem_selection_strategies.forEach((cfStrat: string) => this.addWorkerStrategy(<FormArray>newWoFgStratFormArray, cfStrat))
+      cfWo.workitem_selection_strategies?.forEach((cfStrat: string) => this.addWorkerStrategyFg(<FormArray>newWoFgStratsFa, cfStrat))
     })
   }
 
@@ -144,117 +127,117 @@ export class EditorComponent implements OnInit {
   // adding dynamic form elements
   // ---------------------------------------------------------------------------------------
 
-  public addValueChain(cfVc?: any): FormGroup {
-    const newVcFormGroup = this.fb.group({
+  public addValueChainFg(cfVc?: I_ValueChainAsJson): FormGroup {
+    const newVcFg = this.fb.group({
       id:               [cfVc ? cfVc.value_chain_id : "", [Validators.required, EditorComponent.vcPsNameFormatCheck]],
       valueAdd:         [cfVc ? cfVc.value_add      : ""],
       valueDegradation: this.fb.group({
-          function:     [cfVc ? cfVc.value_degradation.function : ""],
-          argument:     [cfVc ? cfVc.value_degradation.argument : ""]
+          function:     [cfVc ? cfVc.value_degradation?.function : ""],
+          argument:     [cfVc ? cfVc.value_degradation?.argument : ""]
       }),
       injection: this.fb.group({
-          throughput:   [cfVc ? cfVc.injection.throughput  : ""],
-          probability:  [cfVc ? cfVc.injection.probability : ""]
+          throughput:   [cfVc ? cfVc.injection?.throughput  : ""],
+          probability:  [cfVc ? cfVc.injection?.probability : ""]
       }),
       processSteps:     this.fb.array([])
     })
-    this.valueChains.push(newVcFormGroup)
-    return newVcFormGroup
+    this.valueChainsFa.push(newVcFg)
+    return newVcFg
   }
 
-  public addProcessStep(pss: FormArray, cfPs?: any): FormGroup {
+  public addProcessStepFg(pss: FormArray, cfPs?: I_ProcessStepAsJson): FormGroup {
     //console.log(`Editor.addProcessStep(pss: ${pss != undefined}, cfPs.process_step_id: ${cfPs.process_step_id})`)
-    const newPsFormGroup = this.fb.group({
+    const newPsFg = this.fb.group({
       id:               [cfPs ? cfPs.process_step_id : "", [ Validators.required, EditorComponent.vcPsNameFormatCheck ]],
       normEffort:       [cfPs ? cfPs.norm_effort : ""],
       wipLimit:         [cfPs ? cfPs.wip_limit : ""]
     })
-    pss.push(newPsFormGroup)
-    return newPsFormGroup
+    pss.push(newPsFg)
+    return newPsFg
   }
 
-  public addWorker(cfWo?: any): FormGroup {
-    const newWoFormGroup = this.fb.group({
+  public addWorkerFg(cfWo?: I_WorkerAsJson): FormGroup {
+    const newWoFg = this.fb.group({
       id:               [cfWo ? cfWo.worker_id : ""],
       assignments:      this.fb.array([], [EditorComponent.workerAssignmentsDuplicateCheck]),
       strategies:       this.fb.array([])
     })
-    this.workers.push(newWoFormGroup)
-    return newWoFormGroup
+    this.workersFa.push(newWoFg)
+    return newWoFg
   }
 
-  public addGloballyDefinedWorkitemSelectionStrategy(cfWiSS?: any): FormGroup {
-    const newWiSSFormGroup = this.fb.group({
+  public addGloballyDefinedWorkitemSelectionStrategyFg(cfWiSS?: I_GloballyDefinedWorkitemSelectionStrategyAsJson): FormGroup {
+    const newWiSSFg = this.fb.group({
       id:               [cfWiSS ? cfWiSS.id : "", [Validators.required]],
       strategy:         this.fb.array([])
     })
-    this.globallyDefinedWorkitemSelectionStrategies.push(newWiSSFormGroup)
-    return newWiSSFormGroup
+    this.globallyDefinedWorkitemSelectionStrategiesFa.push(newWiSSFg)
+    return newWiSSFg
   }
 
-  public addSortVector(svs: FormArray, cfSV?: any): FormGroup {
-    function measureDescription(cfSV: any): string {
+  public addSortVectorFg(svs: FormArray, cfSV?: I_SortVectorAsJson): FormGroup {
+    function measureDescription(cfSV: any /* should be I_SortVectorAsJson */): string {
       if (!cfSV) return ""
       const measureKey: keyof typeof workItemSelectionStrategyMeasureNames = cfSV.measure
       return workItemSelectionStrategyMeasureNames[measureKey]
     }
-    const newSvFormGroup = this.fb.group({
+    const newSvFg = this.fb.group({
       measure:               [measureDescription(cfSV), [ Validators.required ]],
       selectionCriterion:    [cfSV ? cfSV.selection_criterion: "", [ Validators.required ]]
     })
-    svs.push(newSvFormGroup)
+    svs.push(newSvFg)
     //console.log(`addSortVector(svs=${svs}, cfSv=${cfSV.measure}: ${cfSV.selection_criterion}): length of svs= ${svs.length}`)
-    return newSvFormGroup
+    return newSvFg
   }
 
-  public addWorkerAssignment(ass: FormArray, cfAs?: any): FormGroup {
-    const newAsFormGroup = this.fb.group({
+  public addWorkerAssignmentFg(ass: FormArray, cfAs?: I_ValueChainAndProcessStepAsJson): FormGroup {
+    const newAsFg = this.fb.group({
       vcIdpsId: [cfAs ? `${cfAs.value_chain_id}.${cfAs.process_steps_id}` : ""]
     })
-    ass.push(newAsFormGroup)
-    return newAsFormGroup
+    ass.push(newAsFg)
+    return newAsFg
   }
 
   
-  public addWorkerStrategy(woWiSSs: FormArray, cfWiSSId?: string): FormGroup | undefined {
-    const newWiSSFormGroup = this.fb.group({
+  public addWorkerStrategyFg(woWiSSs: FormArray, cfWiSSId?: string): FormGroup | undefined {
+    const newWiSSFg = this.fb.group({
       woWiSsId: [cfWiSSId ? cfWiSSId : ""],
     })
-    woWiSSs.push(newWiSSFormGroup)
-    return newWiSSFormGroup
+    woWiSSs.push(newWiSSFg)
+    return newWiSSFg
   }
 
   // ---------------------------------------------------------------------------------------
   // delete dynamic form elements
   // ---------------------------------------------------------------------------------------
 
-  public deleteValueChain(i: number): void {
-    this.valueChains.removeAt(i)
+  public deleteValueChainFg(i: number): void {
+    this.valueChainsFa.removeAt(i)
   }
     
-  public deleteProcessStep(vc: FormGroup, i: number): void {
-    this.processSteps(vc).removeAt(i)
+  public deleteProcessStepFg(vc: FormGroup, i: number): void {
+    this.processStepsFa(vc).removeAt(i)
   }
     
-  public deleteGloballyDefinedWorkitemSelectionStrategy(i: number): void {
-    this.globallyDefinedWorkitemSelectionStrategies.removeAt(i)
+  public deleteGloballyDefinedWorkitemSelectionStrategyFg(i: number): void {
+    this.globallyDefinedWorkitemSelectionStrategiesFa.removeAt(i)
   }
 
-  public deleteSortVector(wiSS: FormGroup, i: number): void {
-    this.sortVectors(wiSS).removeAt(i)
+  public deleteSortVectorFg(wiSS: FormGroup, i: number): void {
+    this.sortVectorsFa(wiSS).removeAt(i)
   }
     
-  public deleteWorker(i: number): void {
-    this.workers.removeAt(i)
+  public deleteWorkerFg(i: number): void {
+    this.workersFa.removeAt(i)
   }
     
-  public deleteAssignment(wo: FormGroup, i: number): void {
+  public deleteAssignmentFg(wo: FormGroup, i: number): void {
 //  console.log(`Editor: deleteAssignment(${wo.get("id")}, ${i})`)
-    this.workerAssignments(wo).removeAt(i)
+    this.workerAssignmentsFa(wo).removeAt(i)
   }
     
-  public deleteWorkerStrategy(wo: FormGroup, i: number): void {
-    this.workerStrategies(wo).removeAt(i)
+  public deleteWorkerStrategyFg(wo: FormGroup, i: number): void {
+    this.workerStrategiesFa(wo).removeAt(i)
   }
     
   // ---------------------------------------------------------------------------------------
@@ -275,70 +258,69 @@ export class EditorComponent implements OnInit {
   // getting form elements
   // ---------------------------------------------------------------------------------------
 
-  get frontendPresetParameters(): FormGroup {
-    return this.system.get('frontendPresetParameters') as FormGroup
+  get frontendPresetParametersFg(): FormGroup {
+    return this.systemFg.get('frontendPresetParameters') as FormGroup
+  }
+  public valueDegradationFg(vc: FormGroup): FormGroup {
+    return vc.get('valueDegradation') as FormGroup
   }
 
-  get learnAndAdaptParms(): FormGroup {
-    return this.system.get('learnAndAdaptParms') as FormGroup
+  public injectionFg(vc: FormGroup): FormGroup {
+    return vc.get('injection') as FormGroup
   }
 
-  get wipLimitSearchParms(): FormGroup {
-    return this.system.get('wipLimitSearchParms') as FormGroup
+  get learnAndAdaptParmsFg(): FormGroup {
+    return this.systemFg.get('learnAndAdaptParms') as FormGroup
   }
 
-  get valueChains(): FormArray<FormGroup> {
-    return this.system.get('valueChains') as FormArray
+  get wipLimitSearchParmsFg(): FormGroup {
+    return this.systemFg.get('wipLimitSearchParms') as FormGroup
   }
 
-  public processSteps(vc: FormGroup): FormArray<FormGroup> {
+  get valueChainsFa(): FormArray<FormGroup> {
+    return this.systemFg.get('valueChains') as FormArray
+  }
+
+  public processStepsFa(vc: FormGroup): FormArray<FormGroup> {
     return vc.get('processSteps') as FormArray
   }
 
-  get globallyDefinedWorkitemSelectionStrategies(): FormArray<FormGroup> {
-    return this.system.get('globallyDefinedWorkitemSelectionStrategies') as FormArray
+  get globallyDefinedWorkitemSelectionStrategiesFa(): FormArray<FormGroup> {
+    return this.systemFg.get('globallyDefinedWorkitemSelectionStrategies') as FormArray
   }
 
-  public sortVectors(wiSS: FormGroup): FormArray<FormGroup> {
+  public sortVectorsFa(wiSS: FormGroup): FormArray<FormGroup> {
     //console.log(`Editor.sortVectors(${wiSS.get("id")?.value}).length = ${(wiSS.get("strategy") as FormArray<FormGroup>)?.controls.map((sv: FormGroup) => sv.get("measure")?.value)}`)
     return wiSS.get('strategy') as FormArray
   }
 
-  get workers(): FormArray<FormGroup> {
-    return this.system.get('workers') as FormArray
+  get workersFa(): FormArray<FormGroup> {
+    return this.systemFg.get('workers') as FormArray
   }
 
-  public workerAssignments(wo: FormGroup): FormArray<FormGroup> {
+  public workerAssignmentsFa(wo: FormGroup): FormArray<FormGroup> {
     return wo.get('assignments') as FormArray
   }
 
-  public workerStrategies(wo: FormGroup): FormArray<FormGroup> {
+  public workerStrategiesFa(wo: FormGroup): FormArray<FormGroup> {
     return wo.get('strategies') as FormArray
-  }
-
-  public valueDegradation(vc: FormGroup): FormGroup {
-    return vc.get('valueDegradation') as FormGroup
-  }
-
-  public injection(vc: FormGroup): FormGroup {
-    return vc.get('injection') as FormGroup
   }
 
   // ---------------------------------------------------------------------------------------
   // getting form elements values
   // ---------------------------------------------------------------------------------------
  
-  private processStepsOfValueChain(vc: FormGroup): string[] {
+  private processStepsOfValueChainStrings(vc: FormGroup): string[] {
     const vcId = vc.get("id")?.value
     return (<FormArray<FormGroup>>vc.get("processSteps"))?.controls.map(ps => vcId + "." + ps.get("id")?.value)
   }
 
-  get processStepsOfValueChains(): string[] {
-    return (<FormArray<FormGroup>>this.system.get("valueChains"))?.controls.flatMap(vc => this.processStepsOfValueChain(vc))
+  get processStepsOfValueChainsStrings(): string[] {
+    return (<FormArray<FormGroup>>this.systemFg.get("valueChains"))?.controls.flatMap(vc => this.processStepsOfValueChainStrings(vc))
   }
 
-  get globallyDefinedWorkitemSelectionStrategiesIds(): string[] {
-    return this.globallyDefinedWorkitemSelectionStrategies.controls.flatMap(wiSs => wiSs.get("id")?.value)
+  get globallyDefinedWorkitemSelectionStrategiesIdsStrings(): string[] {
+    return this.globallyDefinedWorkitemSelectionStrategiesFa.controls.flatMap(wiSs => wiSs.get("id")?.value)
   }
 
   // ---------------------------------------------------------------------------------------
@@ -353,7 +335,7 @@ export class EditorComponent implements OnInit {
   }
 
   public submitForm() {
-    const systemValues = this.system.value
+    const systemValues = this.systemFg.value
     this.cfs.configAsPojo = this.configObject()
     this.cfs.componentEvent = "EditorSaveEvent"
   }
@@ -363,7 +345,7 @@ export class EditorComponent implements OnInit {
   // ---------------------------------------------------------------------------------------
 
   private configObject(): any {
-    const formValue = this.system.value
+    const formValue = this.systemFg.value
     //console.log("formValue=")
     //console.log(formValue)
     return {
