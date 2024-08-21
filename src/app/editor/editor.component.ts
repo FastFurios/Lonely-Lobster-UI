@@ -336,7 +336,7 @@ export class EditorComponent implements OnInit {
 
   public submitForm() {
     const systemValues = this.systemFg.value
-    this.cfs.configAsPojo = this.configObject()
+    this.cfs.configAsJson = this.configObjectAsJson()
     this.cfs.componentEvent = "EditorSaveEvent"
   }
 
@@ -344,7 +344,7 @@ export class EditorComponent implements OnInit {
   // initialize form value chains and workers with config file data
   // ---------------------------------------------------------------------------------------
 
-  private configObject(): any {
+  private configObjectAsJson(): any {
     const formValue = this.systemFg.value
     //console.log("formValue=")
     //console.log(formValue)

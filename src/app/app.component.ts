@@ -45,19 +45,19 @@ export class AppComponent {
     return this.canRunDownloadDiscard ? undefined : greyOut 
   }  
 
-  get configAsPojo() {
-    return this.cfs.configAsPojo
+  get configAsJson() {
+    return this.cfs.configAsJson
   }
 
   public discard(): void {
-    this.cfs.configAsPojo = undefined
+    this.cfs.configAsJson = undefined
     this.canRunDownloadDiscard = false
     this.router.navigate(["../home"], { relativeTo: this.route })
   }
 
   public updateCanRunDownloadDiscard() {
     //console.log("AppComponent: updateCanRunDownloadDiscard()")
-    this.canRunDownloadDiscard = this.cfs.configAsPojo ? true : false
+    this.canRunDownloadDiscard = this.cfs.configAsJson ? true : false
   }
 
   public onFileSelected(e: any) { 
@@ -95,7 +95,7 @@ export class AppComponent {
 
   public onSaveFile(): void {
     //  let fileContent = "Hi there, I was just saved from the Angular app!"
-    const fileContent = this.cfs.configAsPojo
+    const fileContent = this.cfs.configAsJson
     const file = new Blob([JSON.stringify(fileContent, null, "\t")], { type: "application/json" })
     const link = document.createElement("a")
     link.href = URL.createObjectURL(file)
