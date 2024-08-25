@@ -19,8 +19,8 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void { }
 
   get configAsJson() {
-    console.log(`home.get configAsJson(): returning:`)
-    console.log(this.cfs.configAsJson)
+    // console.log(`home.get configAsJson(): returning:`)
+    // console.log(this.cfs.configAsJson)
     return this.cfs.configAsJson
   }
 

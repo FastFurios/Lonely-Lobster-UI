@@ -1,7 +1,7 @@
 import { Component, OnChanges, HostListener } from '@angular/core'
 import { Observable, catchError, throwError } from "rxjs"
 import { BackendApiService } from '../shared/backend-api.service'
-import { TimeUnit, I_SystemState, I_SystemStatistics, I_ValueChainStatistics, ObExtended, PsWorkerUtilization, ValueChainId, VcExtended } from "../shared/io_api_definitions"
+import { TimeUnit, I_SystemState, I_SystemStatistics, I_ValueChainStatistics, ObExtended, PsWorkerUtilization, ValueChainId, VcExtended, I_ConfigAsJson } from "../shared/io_api_definitions"
 import { WorkorderFeederService } from '../shared/workorder-feeder.service'
 import { UiBoxSize, UiBoxMarginToWindow, UiSystemHeaderHeight, UiWorkerStatsHeight } from '../shared/ui-boxes-definitions'
 import { environment } from '../../environments/environment.prod'
@@ -34,6 +34,9 @@ export class SystemComponent implements OnChanges {
   numIterationsToExecute:   number   // gets initialized by backend  // = 1
   numIterationsToGo:        number
   backendErrorMessage:      string   = ""
+  filename:                 string = ""
+  //systemId:         string = "- empty -"
+  configObject:             I_ConfigAsJson 
   showSystemState:          boolean  = false
   reloadLearnStatsLegend:   boolean  = false
   invVisible:               boolean  = true
@@ -51,9 +54,8 @@ export class SystemComponent implements OnChanges {
   }
 
   ngOnInit(): void {
-    this.parseAndInititalize(this.configObject)
+    this.parseAndInititalize()
   }
-
 
   ngOnChanges(): void {
     this.calcSizeOfUiBoxes()
@@ -171,11 +173,7 @@ export class SystemComponent implements OnChanges {
   // ---------------------------------------------------------------------------------------
   // read and write system config file  
   // ---------------------------------------------------------------------------------------
-  
-  filename:         string = ""
-  //systemId:         string = "- empty -"
-  configObject:  any 
-
+  /**
   public onFileSelected(e: any) { 
     const file: File = e.target.files[0] 
     this.filename = file.name
@@ -214,13 +212,13 @@ export class SystemComponent implements OnChanges {
     link.click()
     link.remove()
   }
-
+  */
   // ---------------------------------------------------------------------------------------
   // initialize and reset system;
   // fetch statistics  
   // ---------------------------------------------------------------------------------------
   
-  private parseAndInititalize(fileContent: string): void {
+  private parseAndInititalize(): void {
       this.configObject = this.cfs.configAsJson // JSON.parse(fileContent) 
       //this.systemId = this.objFromJsonFile.system_id
       this.setOrResetSystem() // build the system
