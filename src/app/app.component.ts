@@ -5,13 +5,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from "rxjs"
 
 const greyOut = "color: lightgrey;"
-type IsEnabled = {
+/*type IsEnabled = {
   upload:   boolean,
   edit:     boolean,
   run:      boolean,
   download: boolean,
   discard:  boolean
-}
+}*/
 
 @Component({
   selector: 'app-root',

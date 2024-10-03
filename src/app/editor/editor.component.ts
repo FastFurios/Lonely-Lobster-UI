@@ -272,7 +272,7 @@ export class EditorComponent implements OnInit {
   get learnAndAdaptParmsFg(): FormGroup {
     return this.systemFg.get('learnAndAdaptParms') as FormGroup
   }
-
+  
   get wipLimitSearchParmsFg(): FormGroup {
     return this.systemFg.get('wipLimitSearchParms') as FormGroup
   }

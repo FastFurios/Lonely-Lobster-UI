@@ -87,7 +87,7 @@ export type ConfigAsPojo = {
 })
 export class ConfigFileService {
 
-  constructor(private http: HttpClient) { }
+  constructor(/*private http: HttpClient*/) { }
 
 // ---------------------------------------------------------------------------------------
 // set and get system config file in JSON file format  
