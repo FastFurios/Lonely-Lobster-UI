@@ -104,4 +104,4 @@ export class AppComponent {
     link.click()
     link.remove()
   }
-}
+} 
