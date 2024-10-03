@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { BehaviorSubject } from "rxjs"
-import { I_ConfigAsJson, I_FrontendPresetParametersAsJson } from './io_api_definitions'
+import { I_ConfigAsJson } from './io_api_definitions'
 
 const sysConfigsPath = "http://localhost:8080/"
 
@@ -95,26 +95,29 @@ export class ConfigFileService {
   
   public filename:         string = ""
   public fileContent:      string
-  private _configAsPojo:   ConfigAsPojo
+  //private _configAsPojo:   ConfigAsPojo
   private _configAsJson:   I_ConfigAsJson
   private componentEventSubject          = new BehaviorSubject<string>("")
   public  componentEventSubject$         = this.componentEventSubject.asObservable()
 
-  set configAsPojo(configPojo: ConfigAsPojo) {
+ /* 
+  set configAsJson(configPojo: ConfigAsPojo) {
     this._configAsPojo = configPojo 
 //    console.log(`config-file.service: set objFromJsonFile(): this._objFromJsonFile=`)
 //    console.log(this._configObject)
   }
-
+*/
   set configAsJson(configJson: I_ConfigAsJson) {
     // console.log(`cfs.configAsJson(configJson) with configJson =`)
     // console.log(configJson)
     this._configAsJson = configJson 
   }
 
-  get configAsPojo(): ConfigAsPojo | undefined {
+  /*
+  get configAsJson(): ConfigAsPojo | undefined {
     return this._configAsPojo
   }
+  */
 
   get configAsJson(): I_ConfigAsJson {
     return this._configAsJson

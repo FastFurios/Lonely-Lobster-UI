@@ -19,8 +19,8 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void { }
 
   get configAsJson() {
-    console.log(`home.get configAsJson(): returning:`)
-    console.log(this.cfs.configAsJson)
+    // console.log(`home.get configAsJson(): returning:`)
+    // console.log(this.cfs.configAsJson)
     return this.cfs.configAsJson
   }
 
@@ -31,6 +31,7 @@ export class HomeComponent implements OnInit {
   public createNewConfig() {
     this.cfs.configAsJson = undefined
   }
+  
 /**
   public onFileSelected(e: any) { 
     const file: File = e.target.files[0] 

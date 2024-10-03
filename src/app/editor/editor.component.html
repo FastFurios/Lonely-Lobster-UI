@@ -157,9 +157,7 @@
                     <div><label> Sort vectors </label>  <button type="button" class="material-symbols-outlined button_icon" (click)="addSortVectorFg(sortVectorsFa(strategy))"> add_circle </button></div>
                 </div>
                 <div *ngFor="let sortVector of sortVectorsFa(strategy).controls; let j = index" [formGroup]="sortVector">
-<!--
                     {{ sortVector.get("measure")?.value }}
--->
                     <select formControlName="measure">
                         <option *ngFor="let m of workItemSelectionStrategyMeasures" [ngValue]="m">
                             {{ m }} 

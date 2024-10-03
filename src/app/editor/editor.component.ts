@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators, ValidationErrors, AbstractControl } from '@angular/forms';
-import { I_ConfigAsJson, I_ValueChainAsJson, I_ProcessStepAsJson, I_GloballyDefinedWorkitemSelectionStrategyAsJson, I_WorkerAsJson, I_ValueChainAndProcessStepAsJson, valueDegradationFunctionNames, successMeasureFunctionNames, I_selectionStrategy, I_sortVector, workItemSelectionStrategyMeasureNames, selectionCriterionNames, I_ProcessStep, I_SortVectorAsJson } from '../shared/io_api_definitions'
+import { I_ConfigAsJson, I_ValueChainAsJson, I_ProcessStepAsJson, I_GloballyDefinedWorkitemSelectionStrategyAsJson, I_WorkerAsJson, I_ValueChainAndProcessStepAsJson, valueDegradationFunctionNames, successMeasureFunctionNames, I_selectionStrategy, I_sortVector, workItemSelectionStrategyMeasureNames, selectionCriterionNames, I_SortVectorAsJson } from '../shared/io_api_definitions'
 import { ConfigFileService } from '../shared/config-file.service';
 
 
@@ -28,7 +28,8 @@ export class EditorComponent implements OnInit {
               private cfs: ConfigFileService) { }
 
   ngOnInit(): void {
-    //console.log(`Editor.ngOnInit(): cfs.configObject= ${this.cfs.configObject != undefined}`)
+    console.log(`Editor.ngOnInit(): this.cfs.configAsJson=`)
+    console.log(this.cfs.configAsJson)
     this.initForm(this.cfs.configAsJson)
     this.cfs.componentEventSubject$.subscribe((compEvent:string) => {
       if (compEvent == "ConfigLoadEvent") this.processComponentEvent(compEvent)})
@@ -36,6 +37,8 @@ export class EditorComponent implements OnInit {
 
   private processComponentEvent(compEvent: string): void {
     //console.log("Editor.processComponentEvent(): received compEvent= " + compEvent + "; initializing form")
+    console.log(`Editor.processComponentEvent(): this.cfs.configAsJson=`)
+    console.log(this.cfs.configAsJson)
     if (this.cfs.configAsJson) this.initForm(this.cfs.configAsJson)
   }
   
@@ -335,8 +338,7 @@ export class EditorComponent implements OnInit {
   }
 
   public submitForm() {
-    const systemValues = this.systemFg.value
-    this.cfs.configAsPojo = this.configObject()
+    this.cfs.configAsJson = this.configObjectAsJsonFromForm()
     this.cfs.componentEvent = "EditorSaveEvent"
   }
 
@@ -344,10 +346,10 @@ export class EditorComponent implements OnInit {
   // initialize form value chains and workers with config file data
   // ---------------------------------------------------------------------------------------
 
-  private configObject(): any {
+  private configObjectAsJsonFromForm(): any {
     const formValue = this.systemFg.value
-    //console.log("formValue=")
-    //console.log(formValue)
+    console.log("formValue=")
+    console.log(formValue)
     return {
       system_id:                    formValue.id,
       frontend_preset_parameters: {
@@ -370,7 +372,8 @@ export class EditorComponent implements OnInit {
       },
       value_chains:                 formValue.valueChains.map((vc: any) => this.addValueChainAsJson(vc)),
       workers:                      formValue.workers.map((wo: any) => this.addWorkerAsJson(wo)),
-      globally_defined_workitem_selection_strategies: formValue.globallyDefinedWorkitemSelectionStrategies.map((wiSs: any) => this.addStrategyAsJson(wiSs))        
+      globally_defined_workitem_selection_strategies: 
+                                    formValue.globallyDefinedWorkitemSelectionStrategies.map((wiSs: any) => this.addStrategyAsJson(wiSs))        
     } 
   }
 
@@ -400,12 +403,13 @@ export class EditorComponent implements OnInit {
 
   private addWorkerAsJson(wo: any): any {
     return {
-      worker_id:                  wo.id,
-      process_step_assignments:   wo.assignments.map((as: any) => this.addAssignmentAsJson(as))
+      worker_id:                      wo.id,
+      process_step_assignments:       wo.assignments.map((as: any) => this.addWorkerAssignmentAsJson(as)),
+      workitem_selection_strategies:  wo.strategies.map((woSt: any) => woSt.woWiSsId)
     }
   }
 
-  private addAssignmentAsJson(as: any): any {
+  private addWorkerAssignmentAsJson(as: any): any {
     const [vcId, psId] = (<string>as.vcIdpsId).split(".") 
     return {
       value_chain_id:   vcId,
@@ -414,16 +418,14 @@ export class EditorComponent implements OnInit {
   }
 
   private addStrategyAsJson(wiSs: any): I_selectionStrategy {
+    // console.log("Editor.addStrategyAsJson(): wiSs =")
+    // console.log(wiSs)
     return {
       id:   wiSs.id,
       strategy: wiSs.strategy.map((svs: any) => { return {
-        measure:             svs.measure,
+        measure:             Object.keys(workItemSelectionStrategyMeasureNames)[Object.values(workItemSelectionStrategyMeasureNames).indexOf(svs.measure)] as string,
         selection_criterion: svs.selectionCriterion
       }})
     }
   }
-
-// **** where are the workers' strategies be exported? *** 
-
 }
-

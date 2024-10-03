@@ -13,7 +13,7 @@
         <i class="material-symbols-outlined" [style]="runDownloadDiscardColor()" (click)="discard()">delete_forever</i>
         <div>
             Version: Frontend: {{ version }}
-            <div class="file-upload"> System: {{ configAsPojo?.id || "No system defined yet." }} </div>
+            <div class="file-upload"> System: {{ configAsJson?.system_id || "No system defined yet." }} </div>
         </div>
     </div>
 </div>
