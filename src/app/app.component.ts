@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { environment } from '../environments/environment.prod';
 import { ConfigFileService } from './shared/config-file.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, catchError, throwError } from "rxjs"
+import { Observable } from "rxjs"
 
 import { BackendApiService } from './shared/backend-api.service';
-import { I_WorkItemEvents } from './shared/io_api_definitions';
+import { I_WorkItemEvents, I_WorkItemEvent } from './shared/io_api_definitions';
 
 const greyOut = "color: lightgrey;"
 /*type IsEnabled = {
@@ -98,30 +98,32 @@ export class AppComponent {
     })
   }
 
-  public onSaveFile(): void {
-    //  let fileContent = "Hi there, I was just saved from the Angular app!"
-    const fileContent = this.cfs.configAsJson
-    const file = new Blob([JSON.stringify(fileContent, null, "\t")], { type: "application/json" })
+
+  private downloadToFile(blob: Blob): void {
     const link = document.createElement("a")
-    link.href = URL.createObjectURL(file)
+    link.href = URL.createObjectURL(blob)
     link.download = this.filename
-    //console.log("system.onSaveFile(): saving to " + link.download)
     link.click()
     link.remove()
   }
 
+  public onSaveFile(): void {
+    const fileContent = this.cfs.configAsJson
+    const blob = new Blob([JSON.stringify(fileContent, null, "\t")], { type: "application/json" })
+    this.downloadToFile(blob)
+  }
+
   public onDownloadEvents(): void {
+    function workitemEventAsCsvRow(wie: I_WorkItemEvent): string {
+      return `${wie.system};${wie.timestamp};${wie.workitem};${wie.eventType};${wie.valueChain};${wie.processStep};${wie.worker ? wie.worker : ""}`
+    }
     this.workItemEvents$ = this.bas.workItemEvents()
     this.workItemEvents$.subscribe(wies => {
-      console.log("Workitem Events:")
-      console.log(wies)
-      const file = new Blob([JSON.stringify(wies, null, "\t")], { type: "application/json" })
-      const link = document.createElement("a")
-      link.href = URL.createObjectURL(file)
-      link.download = this.filename + "-WorkItemEvents"
-      //console.log("system.onSaveFile(): saving to " + link.download)
-      link.click()
-      link.remove()
+      const wiesAsStringRows: string[] = ["system; time; workitem;event;value-chain;process-step; worker"]
+                                        .concat(wies.map(wie => workitemEventAsCsvRow(wie)))
+      const csvContent = wiesAsStringRows.join('\n')
+      const blob = new Blob([csvContent], { type: "text/csv" })
+      this.downloadToFile(blob)
     })
   }
 }
