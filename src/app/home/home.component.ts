@@ -13,8 +13,8 @@ export class HomeComponent implements OnInit {
   public showEditRunSaveOptions = false
 
   constructor(private cfs:    ConfigFileService,
-              private router: Router,
-              private route:  ActivatedRoute) { }
+              /*private router: Router,
+              private route:  ActivatedRoute*/) { }
 
   ngOnInit(): void { }
 

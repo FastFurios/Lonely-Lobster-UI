@@ -8,13 +8,13 @@ import { BackendApiService } from './shared/backend-api.service';
 import { I_WorkItemEvents } from './shared/io_api_definitions';
 
 const greyOut = "color: lightgrey;"
-type IsEnabled = {
+/*type IsEnabled = {
   upload:   boolean,
   edit:     boolean,
   run:      boolean,
   download: boolean,
   discard:  boolean
-}
+}*/
 
 @Component({
   selector: 'app-root',
