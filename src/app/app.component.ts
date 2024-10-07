@@ -2,7 +2,10 @@ import { Component } from '@angular/core';
 import { environment } from '../environments/environment.prod';
 import { ConfigFileService } from './shared/config-file.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from "rxjs"
+import { Observable, catchError, throwError } from "rxjs"
+
+import { BackendApiService } from './shared/backend-api.service';
+import { I_WorkItemEvents } from './shared/io_api_definitions';
 
 const greyOut = "color: lightgrey;"
 type IsEnabled = {
@@ -24,11 +27,13 @@ export class AppComponent {
 
   public version               = environment.version
   public canRunDownloadDiscard = false
+  private workItemEvents$: Observable<I_WorkItemEvents>
 
   constructor(
     private router: Router,
     private route:  ActivatedRoute, 
-    private cfs:    ConfigFileService) { }
+    private cfs:    ConfigFileService,
+    private bas:    BackendApiService) { }
 
   ngOnInit() {
     this.cfs.componentEventSubject$.subscribe((compEvent:string) => {
@@ -103,5 +108,20 @@ export class AppComponent {
     //console.log("system.onSaveFile(): saving to " + link.download)
     link.click()
     link.remove()
+  }
+
+  public onDownloadEvents(): void {
+    this.workItemEvents$ = this.bas.workItemEvents()
+    this.workItemEvents$.subscribe(wies => {
+      console.log("Workitem Events:")
+      console.log(wies)
+      const file = new Blob([JSON.stringify(wies, null, "\t")], { type: "application/json" })
+      const link = document.createElement("a")
+      link.href = URL.createObjectURL(file)
+      link.download = this.filename + "-WorkItemEvents"
+      //console.log("system.onSaveFile(): saving to " + link.download)
+      link.click()
+      link.remove()
+    })
   }
 }

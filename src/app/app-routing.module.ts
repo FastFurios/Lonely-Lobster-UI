@@ -9,9 +9,11 @@ import { EditorComponent } from './editor/editor.component'
 const routes: Routes = [
   { path: "", redirectTo: "home", pathMatch: "full" },
   { path: "file", redirectTo: "home", pathMatch: "full" },
-  { path: "home",  component: HomeComponent },
+  { path: "home", component: HomeComponent },
   { path: "run",  component: SystemComponent },
-  { path: "edit", component: EditorComponent }]
+  { path: "edit", component: EditorComponent },
+  { path: "events-download", redirectTo: "home", pathMatch: "full" }
+]
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

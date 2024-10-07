@@ -10,6 +10,7 @@
         <a class="material-symbols-outlined" routerLink="edit" routerLinkActive="active">edit</a>
         <a class="material-symbols-outlined" routerLink="run"  routerLinkActive="active" [style]="runDownloadDiscardColor()">keyboard_arrow_right</a>
         <i class="material-symbols-outlined" routerLink="file" routerLinkActive="active" [style]="runDownloadDiscardColor()" (click)="onSaveFile()">download</i>
+        <i class="material-symbols-outlined" routerLink="events-download" routerLinkActive="active" [style]="runDownloadDiscardColor()" (click)="onDownloadEvents()">format_list_numbered</i>
         <i class="material-symbols-outlined" [style]="runDownloadDiscardColor()" (click)="discard()">delete_forever</i>
         <div>
             Version: Frontend: {{ version }}
