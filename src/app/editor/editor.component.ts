@@ -20,9 +20,10 @@ export class EditorComponent implements OnInit {
 
   
   //private workersProcessStepAssignments: WorkersProcessStepAssignments = []
-  frontendPresetToggle:             boolean = false
-  learnAndAdaptToggle:              boolean = false
-  wipLimitOptimizeToggle:           boolean = false
+//  showParameters:                   boolean = true
+//  frontendPresetToggle:             boolean = false
+//  learnAndAdaptToggle:              boolean = false
+//  wipLimitOptimizeToggle:           boolean = false
 
   constructor(private fb:  FormBuilder,
               private cfs: ConfigFileService) { }
@@ -330,12 +331,15 @@ export class EditorComponent implements OnInit {
   // handlers
   // ---------------------------------------------------------------------------------------
 
-  public addParametersHandler() {
+  /*
+  public showParametersHandler() {
     //  console.log("addFrontendPresetsParametersHandler()")
+      this.showParameters = !this.showParameters
       this.frontendPresetToggle   = !this.frontendPresetToggle
       this.learnAndAdaptToggle    = !this.learnAndAdaptToggle
       this.wipLimitOptimizeToggle = !this.wipLimitOptimizeToggle
   }
+  */
 
   public submitForm() {
     this.cfs.configAsJson = this.configObjectAsJsonFromForm()
