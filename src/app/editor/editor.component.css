@@ -29,6 +29,10 @@ button:hover {
     text-align: left;
 }
 
+.columns-with-left-margin {
+    margin-left: 10px;
+}
+
 .section {
     background-color: rgb(246, 234, 192);
     border-style:solid;

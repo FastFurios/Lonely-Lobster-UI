@@ -13,9 +13,9 @@
         <label for="parameters">Parameters</label>
         <button id="parameters" type="button" class="material-symbols-outlined button_icon" (click)="addParametersHandler()"> arrow_drop_down_circle </button>
         <div class="flex-multi-columns">  
-            <div [formGroup]="frontendPresetParametersFg">
+            <div [formGroup]="frontendPresetParametersFg" class="columns-with-left-margin">
                 <div *ngIf="frontendPresetToggle"> 
-                    <label>Presetting:</label>
+                    <label class="bold-text">Presetting:</label>
                     <div class="parameter-label-input">
                         <label>#Iterations per batch:</label>
                         <input type="number" placeholder=">=1" formControlName="numIterationsPerBatch" min="1">
@@ -26,9 +26,9 @@
                     </div>
                 </div>
             </div>
-            <div [formGroup]="learnAndAdaptParmsFg">
+            <div [formGroup]="learnAndAdaptParmsFg" class="columns-with-left-margin">
                 <div *ngIf="learnAndAdaptToggle"> 
-                    <label>Learn and Adapt:</label>
+                    <label class="bold-text">Learn and Adapt:</label>
                     <div class="parameter-label-input">
                         <label>Observation Period:</label>
                         <input type="number" placeholder=">=1" formControlName="observationPeriod" min="1">
@@ -47,9 +47,9 @@
                     </div>
                 </div>
             </div>
-            <div [formGroup]="wipLimitSearchParmsFg">
+            <div [formGroup]="wipLimitSearchParmsFg" class="columns-with-left-margin">
                 <div *ngIf="  wipLimitOptimizeToggle"> 
-                    <label>WIP limit optimization:</label>
+                    <label class="bold-text">WIP limit optimization:</label>
                     <div class="parameter-label-input">
                         <label>Initial Temperature:</label>
                         <input type="number" placeholder=">=0" formControlName="initialTemperature" min="0" step="10">
@@ -92,7 +92,7 @@
                     <label>Value-add:</label>
                     <input type="number" placeholder=">=0" formControlName="valueAdd" min="0" step="1"> 
                 </div>    
-                <div [formGroup]="valueDegradationFg(valueChain)">
+                <div [formGroup]="valueDegradationFg(valueChain)" class="columns-with-left-margin">
                     <div>Value Degradation:</div> 
                     <div class="parameter-label-input">
                         <label>Function:</label>
@@ -107,7 +107,7 @@
                         <input type="number" placeholder="number" formControlName="argument">
                     </div>
                 </div>          
-                <div [formGroup]="injectionFg(valueChain)">
+                <div [formGroup]="injectionFg(valueChain)" class="columns-with-left-margin">
                     <div>Injection:</div> 
                     <div class="parameter-label-input">
                         <label>Throughput:</label>
@@ -156,8 +156,8 @@
                 <div>
                     <div><label> Sort vectors </label>  <button type="button" class="material-symbols-outlined button_icon" (click)="addSortVectorFg(sortVectorsFa(strategy))"> add_circle </button></div>
                 </div>
-                <div *ngFor="let sortVector of sortVectorsFa(strategy).controls; let j = index" [formGroup]="sortVector">
-                    {{ sortVector.get("measure")?.value }}
+                <div *ngFor="let sortVector of sortVectorsFa(strategy).controls; let j = index" [formGroup]="sortVector" class="columns-with-left-margin">
+                    <!--{{ sortVector.get("measure")?.value }}-->
                     <select formControlName="measure">
                         <option *ngFor="let m of workItemSelectionStrategyMeasures" [ngValue]="m">
                             {{ m }} 
@@ -193,7 +193,7 @@
                 <div>
                     <div><label> Assignments </label>  <button type="button" class="material-symbols-outlined button_icon" (click)="addWorkerAssignmentFg(workerAssignmentsFa(worker))"> add_circle </button></div>
                 </div>
-                <div *ngFor="let assignment of workerAssignmentsFa(worker).controls; let l = index" [formGroup]="assignment">
+                <div *ngFor="let assignment of workerAssignmentsFa(worker).controls; let l = index" [formGroup]="assignment" class="columns-with-left-margin">
                     <select formControlName="vcIdpsId">
                         <option *ngFor="let vcPs of processStepsOfValueChainsStrings" [ngValue]="vcPs">
                             {{ vcPs }} 
@@ -207,7 +207,7 @@
                 <div>
                     <div><label> Strategies </label>  <button type="button" class="material-symbols-outlined button_icon" (click)="addWorkerStrategyFg(workerStrategiesFa(worker))"> add_circle </button></div>
                 </div>
-                <div *ngFor="let workerStrategy of workerStrategiesFa(worker).controls; let l = index" [formGroup]="workerStrategy">
+                <div *ngFor="let workerStrategy of workerStrategiesFa(worker).controls; let l = index" [formGroup]="workerStrategy" class="columns-with-left-margin">
                     <select formControlName="woWiSsId">
                         <option *ngFor="let wiSsId of globallyDefinedWorkitemSelectionStrategiesIdsStrings" [ngValue]="wiSsId">
                             {{ wiSsId }} 
