@@ -99,10 +99,12 @@ export class AppComponent {
   }
 
 
-  private downloadToFile(blob: Blob): void {
+  private downloadToFile(blob: Blob, fileExtension: string): void {
     const link = document.createElement("a")
     link.href = URL.createObjectURL(blob)
-    link.download = this.filename
+    if (!this.configAsJson) return
+    const now = new Date()
+    link.download = `${this.configAsJson.system_id}_${now.getFullYear()}-${now.getMonth().toString().padStart(2, "0")}-${now.getDay().toString().padStart(2, "0")}_${now.getHours().toString().padStart(2, "0")}-${now.getMinutes().toString().padStart(2, "0")}.${fileExtension}`
     link.click()
     link.remove()
   }
@@ -110,7 +112,7 @@ export class AppComponent {
   public onSaveFile(): void {
     const fileContent = this.cfs.configAsJson
     const blob = new Blob([JSON.stringify(fileContent, null, "\t")], { type: "application/json" })
-    this.downloadToFile(blob)
+    this.downloadToFile(blob, "json")
   }
 
   public onDownloadEvents(): void {
@@ -123,7 +125,7 @@ export class AppComponent {
                                         .concat(wies.map(wie => workitemEventAsCsvRow(wie)))
       const csvContent = wiesAsStringRows.join('\n')
       const blob = new Blob([csvContent], { type: "text/csv" })
-      this.downloadToFile(blob)
+      this.downloadToFile(blob, "csv")
     })
   }
 }

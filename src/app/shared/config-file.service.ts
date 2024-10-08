@@ -72,6 +72,7 @@ export type Worker = {
   strategies?: string[]
 }
 
+/*
 export type ConfigAsPojo = {
    id: string
    frontendPresetParameters?: FrontendPresetParameters
@@ -81,6 +82,7 @@ export type ConfigAsPojo = {
    valueChains: ValueChain[]
    workers: Worker[]
 } | undefined
+*/
 
 @Injectable({
   providedIn: 'root'
