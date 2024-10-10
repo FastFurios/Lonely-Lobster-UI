@@ -55,7 +55,7 @@ export class EditorComponent implements OnInit {
       id:                                   [cfo  ? cfo.system_id : "", Validators.required],
       frontendPresetParameters: this.fb.group({
           numIterationsPerBatch:            [cfo ? cfo.frontend_preset_parameters?.num_iterations_per_batch : ""],
-          economicsStatsIntervall:          [cfo ? cfo.frontend_preset_parameters?.economics_stats_interval : ""]
+          economicsStatsInterval:           [cfo ? cfo.frontend_preset_parameters?.economics_stats_interval : ""]
       }),
       learnAndAdaptParms: this.fb.group({
           observationPeriod:                [cfo ? cfo.learn_and_adapt_parms?.observation_period : ""],
@@ -79,6 +79,10 @@ export class EditorComponent implements OnInit {
     if (cfo?.value_chains)                  this.addValueChainsFgs(cfo.value_chains)
     if (cfo?.globally_defined_workitem_selection_strategies) this.addGloballyDefinedWorkitemSelectionStrategiesFgs(cfo.globally_defined_workitem_selection_strategies)
     if (cfo?.workers)                       this.addWorkersFgs(cfo.workers)
+
+    console.log("editor.initFOrm(): this.systemFg.value:")
+    console.log(this.systemFg.value)  
+
   }
 
   private addValueChainsFgs(cfVcs: I_ValueChainAsJson[]): void {
@@ -358,7 +362,7 @@ export class EditorComponent implements OnInit {
       system_id:                    formValue.id,
       frontend_preset_parameters: {
         num_iterations_per_batch:   formValue.frontendPresetParameters.numIterationsPerBatch,
-        economics_stats_interval:   formValue.frontendPresetParameters.economicsStatsIntervall
+        economics_stats_interval:   formValue.frontendPresetParameters.economicsStatsInterval
       },
       learn_and_adapt_parms: {
         observation_period:         formValue.learnAndAdaptParms.observationPeriod,
