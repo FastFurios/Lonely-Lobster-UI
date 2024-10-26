@@ -18,28 +18,16 @@ export class EditorComponent implements OnInit {
   public workItemSelectionStrategyMeasures   = Object.values(workItemSelectionStrategyMeasureNames)
   public selectionCriteria                   = selectionCriterionNames
 
-  
-  //private workersProcessStepAssignments: WorkersProcessStepAssignments = []
-//  showParameters:                   boolean = true
-//  frontendPresetToggle:             boolean = false
-//  learnAndAdaptToggle:              boolean = false
-//  wipLimitOptimizeToggle:           boolean = false
-
   constructor(private fb:  FormBuilder,
               private cfs: ConfigFileService) { }
 
   ngOnInit(): void {
-    console.log(`Editor.ngOnInit(): this.cfs.configAsJson=`)
-    console.log(this.cfs.configAsJson)
     this.initForm(this.cfs.configAsJson)
     this.cfs.componentEventSubject$.subscribe((compEvent:string) => {
       if (compEvent == "ConfigLoadEvent") this.processComponentEvent(compEvent)})
   }
 
   private processComponentEvent(compEvent: string): void {
-    //console.log("Editor.processComponentEvent(): received compEvent= " + compEvent + "; initializing form")
-    console.log(`Editor.processComponentEvent(): this.cfs.configAsJson=`)
-    console.log(this.cfs.configAsJson)
     if (this.cfs.configAsJson) this.initForm(this.cfs.configAsJson)
   }
   
@@ -80,8 +68,8 @@ export class EditorComponent implements OnInit {
     if (cfo?.globally_defined_workitem_selection_strategies) this.addGloballyDefinedWorkitemSelectionStrategiesFgs(cfo.globally_defined_workitem_selection_strategies)
     if (cfo?.workers)                       this.addWorkersFgs(cfo.workers)
 
-    console.log("editor.initFOrm(): this.systemFg.value:")
-    console.log(this.systemFg.value)  
+//  console.log("editor.initFOrm(): this.systemFg.value:")
+//  console.log(this.systemFg.value)  
 
   }
 
@@ -356,8 +344,8 @@ export class EditorComponent implements OnInit {
 
   private configObjectAsJsonFromForm(): any {
     const formValue = this.systemFg.value
-    console.log("formValue=")
-    console.log(formValue)
+//  console.log("formValue=")
+//  console.log(formValue)
     return {
       system_id:                    formValue.id,
       frontend_preset_parameters: {

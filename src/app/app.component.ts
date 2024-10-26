@@ -25,8 +25,10 @@ export class AppComponent {
   title = "lonely-lobster"
   filename: string = ""
 
-  public version               = environment.version
-  public canRunDownloadDiscard = false
+  public version                = environment.version
+  public canRunDownloadDiscard  = false
+  public userLoggedIn           = false
+  public loggedInUserName       = "Gerold"
   private workItemEvents$: Observable<I_WorkItemEvents>
 
   constructor(
@@ -50,6 +52,15 @@ export class AppComponent {
     return this.canRunDownloadDiscard ? undefined : greyOut 
   }  
 
+
+  public logIn(): void {
+    this.userLoggedIn = true
+  }
+
+  public logOut(): void {
+    this.userLoggedIn = false
+  }
+
   get configAsJson() {
     return this.cfs.configAsJson
   }
@@ -57,6 +68,7 @@ export class AppComponent {
   public discard(): void {
     this.cfs.configAsJson = undefined
     this.canRunDownloadDiscard = false
+    // tbc: add API call to backend to destroy the Lonely Lobster system for this session
     this.router.navigate(["../home"], { relativeTo: this.route })
   }
 

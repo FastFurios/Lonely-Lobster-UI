@@ -1,23 +1,41 @@
 
 
-<div class="flex-multi-columns">
+<!-- <div class="flex-multi-columns"> -->
     <input type="file" class="file-input" (change)="onFileSelected($event)" #fileUpload>
-    <div class="navbar">
-        <img src="../../../assets/LonelyLobster.jfif" alt="Lonely Lobster" height="50">
-        <span class="app-title">Lonely Lobster</span>
-        <a class="material-symbols-outlined" routerLink="home" routerLinkActive="active">home</a>
-        <i class="material-symbols-outlined" (click)="fileUpload.click()">upload</i>
-        <a class="material-symbols-outlined" routerLink="edit" routerLinkActive="active">edit</a>
-        <a class="material-symbols-outlined" routerLink="run"  routerLinkActive="active" [style]="runDownloadDiscardColor()">keyboard_arrow_right</a>
-        <i class="material-symbols-outlined" routerLink="file" routerLinkActive="active" [style]="runDownloadDiscardColor()" (click)="onSaveFile()">download</i>
-        <i class="material-symbols-outlined" routerLink="events-download" routerLinkActive="active" [style]="runDownloadDiscardColor()" (click)="onDownloadEvents()">format_list_numbered</i>
-        <i class="material-symbols-outlined" [style]="runDownloadDiscardColor()" (click)="discard()">delete_forever</i>
+    <div class="flex-strechted-left-to-right">
+        <div class="navbar">
+            <img src="../../../assets/LonelyLobster.jfif" alt="Lonely Lobster" height="50">
+            <span class="app-title">Lonely Lobster</span>
+            <a class="material-symbols-outlined" routerLink="home" routerLinkActive="active">home</a>
+            <i class="material-symbols-outlined" (click)="fileUpload.click()">upload</i>
+            <a class="material-symbols-outlined" routerLink="edit" routerLinkActive="active">edit</a>
+            <a class="material-symbols-outlined" routerLink="run"  routerLinkActive="active" [style]="runDownloadDiscardColor()">keyboard_arrow_right</a>
+            <i class="material-symbols-outlined" routerLink="file" routerLinkActive="active" [style]="runDownloadDiscardColor()" (click)="onSaveFile()">download</i>
+            <i class="material-symbols-outlined" routerLink="events-download" routerLinkActive="active" [style]="runDownloadDiscardColor()" (click)="onDownloadEvents()">format_list_numbered</i>
+            <i class="material-symbols-outlined" [style]="runDownloadDiscardColor()" (click)="discard()">delete_forever</i>
+        </div>
         <div>
-            Version: Frontend: {{ version }}
-            <div class="file-upload"> System: {{ configAsJson?.system_id || "No system defined yet." }} </div>
+            <div>
+                Version: Frontend: {{ version }}
+                <div class="file-upload"> System: {{ configAsJson?.system_id || "No system defined yet." }} </div>
+            </div>
+        </div>
+        <div>
+            <div *ngIf="!userLoggedIn" class="flex-pushed-to-the-right">
+                <div class="right-padding-20">not logged in</div>
+                <span *ngIf="!userLoggedIn" class="material-symbols-outlined" (click)="logIn()"> login </span>
+                <span class="right-padding-20"></span>
+            </div>    
+            <div *ngIf="userLoggedIn" class="flex-pushed-to-the-right">
+                <span class="material-symbols-outlined"> account_circle </span>
+                <div>{{ loggedInUserName }}</div>
+                <span class="right-padding-20"></span>
+                <span class="material-symbols-outlined" (click)="logOut()"> logout </span>
+                <span class="right-padding-20"></span>
+            </div>
         </div>
     </div>
-</div>
+<!-- </div> -->
 <router-outlet (systemSaved)="updateCanRunDownloadDiscard()"></router-outlet>
 
 <!-- 

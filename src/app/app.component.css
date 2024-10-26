@@ -13,7 +13,29 @@
     padding-right: 50px;
 }
 
-.flex-multi-columns {
+.flex-strechted-left-to-right {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: cornsilk;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: small; 
+    text-align: left;
+}
+
+.flex-pushed-to-the-right {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: cornsilk;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: small; 
+    text-align: left;
+}
+
+/* .flex-multi-columns {
     display: flex;
     flex-direction: row;
     background-color: cornsilk;
@@ -21,7 +43,7 @@
     font-family: Arial, Helvetica, sans-serif;
     font-size: small; 
     text-align: left;
-}
+} */
 
 .navbar {
     display:flex;
@@ -52,5 +74,14 @@ a.menu_links {
 
 i:hover { 
     cursor: pointer; 
+}
+
+.right-padding-20 {
+    padding-right: 20px;
+}
+
+.vertically-centered {
+    display: grid;
+    place-items: center; /* centers both vertically and horizontally */
 }
 
