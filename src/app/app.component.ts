@@ -3,6 +3,10 @@ import { environment } from '../environments/environment.prod';
 import { ConfigFileService } from './shared/config-file.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from "rxjs"
+// import { MsalService } from "@azure/msal-angular" // MSAL = Microsoft Authentication Library
+// import { AuthenticationResult } from "@azure/msal-browser"
+//import { JwtPayload } from 'jwt-decode'
+
 
 import { BackendApiService } from './shared/backend-api.service';
 import { I_WorkItemEvents, I_WorkItemEvent } from './shared/io_api_definitions';
