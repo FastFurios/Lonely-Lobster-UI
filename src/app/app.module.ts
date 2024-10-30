@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 //import { RouterModule, Routes } from '@angular/router' // see https://www.samjulien.com/add-routing-existing-angular-project
 
 import { AppComponent } from './app.component';
@@ -38,40 +38,34 @@ const routes: Routes = [
 ]
 */
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    InventoryComponent,
-    InventoryColumnComponent,
-    InventoryWorkitemComponent,
-    FlowArrowComponent,
-    ProcessStepComponent,
-    ValueChainComponent,
-    SystemComponent,
-    WorkerComponent,
-    WorkersStatsComponent,
-    OutputBasketComponent,
-    TestParentComponent,
-    TestChildComponent,
-    WorkerStrainComponent,
-    FlowStatsComponent,
-    SystemStatsComponent,
-    LearnStatsComponent,
-    ColorLegendComponent,
-    EditorComponent,
-    EditorMessagesComponent,
-    HomeComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    AppRoutingModule,
-//  BrowserModule, 
-//  RouterModule.forRoot(routes)
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        InventoryComponent,
+        InventoryColumnComponent,
+        InventoryWorkitemComponent,
+        FlowArrowComponent,
+        ProcessStepComponent,
+        ValueChainComponent,
+        SystemComponent,
+        WorkerComponent,
+        WorkersStatsComponent,
+        OutputBasketComponent,
+        TestParentComponent,
+        TestChildComponent,
+        WorkerStrainComponent,
+        FlowStatsComponent,
+        SystemStatsComponent,
+        LearnStatsComponent,
+        ColorLegendComponent,
+        EditorComponent,
+        EditorMessagesComponent,
+        HomeComponent
+    ],
+    bootstrap: [AppComponent], 
+    imports: [
+        BrowserModule,
+        FormsModule,
+        ReactiveFormsModule,
+        AppRoutingModule], 
+    providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }
