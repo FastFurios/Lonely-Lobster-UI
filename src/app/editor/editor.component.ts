@@ -1,7 +1,8 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators, ValidationErrors, AbstractControl } from '@angular/forms';
 import { I_ConfigAsJson, I_ValueChainAsJson, I_ProcessStepAsJson, I_GloballyDefinedWorkitemSelectionStrategyAsJson, I_WorkerAsJson, I_ValueChainAndProcessStepAsJson, valueDegradationFunctionNames, successMeasureFunctionNames, I_selectionStrategy, I_sortVector, workItemSelectionStrategyMeasureNames, selectionCriterionNames, I_SortVectorAsJson } from '../shared/io_api_definitions'
-import { ConfigFileService } from '../shared/config-file.service';
+import { ConfigFileService } from '../shared/config-file.service'
+import { AppStateService, FrontendState } from '../shared/app-state.service'
 
 
 
@@ -19,13 +20,15 @@ export class EditorComponent implements OnInit {
   public selectionCriteria                   = selectionCriterionNames
 
   constructor(private fb:  FormBuilder,
-              private cfs: ConfigFileService) { }
+              private cfs: ConfigFileService,
+              private ats: AppStateService) { }
 
   ngOnInit(): void {
     this.initForm(this.cfs.configAsJson)
     this.cfs.componentEventSubject$.subscribe((compEvent:string) => {
       if (compEvent == "ConfigLoadEvent") this.processComponentEvent(compEvent)})
-  }
+      this.ats.frontendEventsSubject$.next("config-edit-saved")
+    }
 
   private processComponentEvent(compEvent: string): void {
     if (this.cfs.configAsJson) this.initForm(this.cfs.configAsJson)

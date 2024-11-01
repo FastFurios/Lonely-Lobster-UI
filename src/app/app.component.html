@@ -9,10 +9,10 @@
             <a class="material-symbols-outlined" routerLink="home" routerLinkActive="active">home</a>
             <i class="material-symbols-outlined" (click)="fileUpload.click()">upload</i>
             <a class="material-symbols-outlined" routerLink="edit" routerLinkActive="active">edit</a>
-            <a class="material-symbols-outlined" routerLink="run"  routerLinkActive="active" [style]="runDownloadDiscardColor()">keyboard_arrow_right</a>
-            <i class="material-symbols-outlined" routerLink="file" routerLinkActive="active" [style]="runDownloadDiscardColor()" (click)="onSaveFile()">download</i>
-            <i class="material-symbols-outlined" routerLink="events-download" routerLinkActive="active" [style]="runDownloadDiscardColor()" (click)="onDownloadEvents()">format_list_numbered</i>
-            <i class="material-symbols-outlined" [style]="runDownloadDiscardColor()" (click)="discard()">delete_forever</i>
+            <a class="material-symbols-outlined" routerLink="run"  routerLinkActive="active" [style]="actionsPossible.run ? undefined : greyOut">keyboard_arrow_right</a>
+            <i class="material-symbols-outlined" [style]="actionsPossible.downloadConfig ? undefined : greyOut" (click)="onSaveFile()">download</i>
+            <i class="material-symbols-outlined" routerLink="events-download" routerLinkActive="active" [style]="actionsPossible.downloadEvents ? undefined : greyOut" (click)="onDownloadEvents()">format_list_numbered</i>
+            <i class="material-symbols-outlined" [style]="actionsPossible.discard ? undefined : greyOut" (click)="onDiscard()">delete_forever</i>
         </div>
         <div>
             <div>
@@ -21,16 +21,16 @@
             </div>
         </div>
         <div>
-            <div *ngIf="!userLoggedIn" class="flex-pushed-to-the-right">
+            <div *ngIf="!userIsLoggedIn" class="flex-pushed-to-the-right">
                 <div class="right-padding-20">not logged in</div>
-                <span *ngIf="!userLoggedIn" class="material-symbols-outlined" (click)="logIn()"> login </span>
+                <span *ngIf="!userIsLoggedIn" class="material-symbols-outlined" (click)="onLogIn()"> login </span>
                 <span class="right-padding-20"></span>
             </div>    
-            <div *ngIf="userLoggedIn" class="flex-pushed-to-the-right">
+            <div *ngIf="userIsLoggedIn" class="flex-pushed-to-the-right">
                 <span class="material-symbols-outlined"> account_circle </span>
                 <div>{{ loggedInUserName }}</div>
                 <span class="right-padding-20"></span>
-                <span class="material-symbols-outlined" (click)="logOut()"> logout </span>
+                <span class="material-symbols-outlined" (click)="onLogOut()"> logout </span>
                 <span class="right-padding-20"></span>
             </div>
         </div>

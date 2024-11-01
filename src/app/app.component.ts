@@ -1,24 +1,26 @@
 import { Component } from '@angular/core';
-import { environment } from '../environments/environment.prod';
-import { ConfigFileService } from './shared/config-file.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { environment } from '../environments/environment.prod';
 import { Observable } from "rxjs"
-// import { MsalService } from "@azure/msal-angular" // MSAL = Microsoft Authentication Library
-// import { AuthenticationResult } from "@azure/msal-browser"
-//import { JwtPayload } from 'jwt-decode'
 
+import { MsalService } from "@azure/msal-angular" // MSAL = Microsoft Authentication Library
+import { AuthenticationResult } from "@azure/msal-browser"
+import { AuthenticationService } from './shared/authentication.service'
+import { JwtPayload } from 'jwt-decode'
 
+import { ConfigFileService } from './shared/config-file.service';
 import { BackendApiService } from './shared/backend-api.service';
 import { I_WorkItemEvents, I_WorkItemEvent } from './shared/io_api_definitions';
+import { AppStateService, FrontendState } from './shared/app-state.service';
 
-const greyOut = "color: lightgrey;"
-/*type IsEnabled = {
-  upload:   boolean,
-  edit:     boolean,
-  run:      boolean,
-  download: boolean,
-  discard:  boolean
-}*/
+type ActionsPossible = {
+    login:          boolean,
+    run:            boolean,
+    downloadConfig: boolean,
+    downloadEvents: boolean,
+    discard:        boolean
+}
+
 
 @Component({
   selector: 'app-root',
@@ -26,60 +28,90 @@ const greyOut = "color: lightgrey;"
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = "lonely-lobster"
+  //title = "Lonely-Lobster"
   filename: string = ""
+  greyOut = "color: lightgrey;"
 
-  public version                = environment.version
-  public canRunDownloadDiscard  = false
-  public userLoggedIn           = false
-  public loggedInUserName       = "Gerold"
+  public  version                = environment.version
+  public  canRun                 = false
+  public  canDownloadDiscard     = false
+  public  userIsLoggedIn         = false
+  public  loggedInUserName       = "Gerold"
   private workItemEvents$: Observable<I_WorkItemEvents>
+  public  actionsPossible: ActionsPossible
 
   constructor(
     private router: Router,
     private route:  ActivatedRoute, 
+    private mas:    MsalService, 
+    private aus:    AuthenticationService,
     private cfs:    ConfigFileService,
-    private bas:    BackendApiService) { }
+    private ats:    AppStateService,
+    private bas:    BackendApiService) { 
+      this.actionsPossible = {
+          login:          true,
+          run:            false,
+          downloadConfig: false,
+          downloadEvents: false,
+          discard:        false
+      }
+  }
 
   ngOnInit() {
-    this.cfs.componentEventSubject$.subscribe((compEvent:string) => {
-      if (compEvent == "EditorSaveEvent") this.processComponentEvent(compEvent)
-    })
+      this.mas.initialize()
+      this.ats.frontendNewStateBroadcastSubject$.subscribe((state: FrontendState) => {
+        this.processNewState(state)
+      })
   }
 
-  private processComponentEvent(compEvent: string): void {
-    this.canRunDownloadDiscard = compEvent == "EditorSaveEvent"
-    //console.log("App.processComponentEvent(): compEvent= " + compEvent + "; this.canRunDownloadDiscard= " + this.canRunDownloadDiscard)
+  private processNewState(state: FrontendState): void {
+      this.userIsLoggedIn = state.isLoggedIn
+      this.actionsPossible = {
+          login:          !state.isLoggedIn,
+          run:            state.hasSystemConfiguration && state.isLoggedIn,
+          downloadConfig: state.hasSystemConfiguration,
+          downloadEvents: state.hasBackendSystemInstance,
+          discard:        state.hasSystemConfiguration
+      }
+
+      // ...
   }
 
-  public runDownloadDiscardColor(): string | undefined {
-    return this.canRunDownloadDiscard ? undefined : greyOut 
-  }  
 
-
-  public logIn(): void {
-    this.userLoggedIn = true
-  }
-
-  public logOut(): void {
-    this.userLoggedIn = false
-  }
 
   get configAsJson() {
     return this.cfs.configAsJson
   }
+  public updateCanRunDownloadDiscard(): void { // *** tbd
+  }
 
-  public discard(): void {
+
+  // --------------------------------------------------------------------------------------
+  //     Logging in and out  
+  // --------------------------------------------------------------------------------------
+
+  public onLogIn(): void {
+    this.ats.frontendEventsSubject$.next("logged-in")
+  }
+
+  public onLogOut(): void {
+    this.ats.frontendEventsSubject$.next("logged-out")
+  }
+
+  // --------------------------------------------------------------------------------------
+  //     Discarding Configuration and also the Backend system instance  
+  // --------------------------------------------------------------------------------------
+
+  public onDiscard(): void {
     this.cfs.configAsJson = undefined
-    this.canRunDownloadDiscard = false
+    this.ats.frontendEventsSubject$.next("discarded")
     // tbc: add API call to backend to destroy the Lonely Lobster system for this session
     this.router.navigate(["../home"], { relativeTo: this.route })
   }
 
-  public updateCanRunDownloadDiscard() {
-    //console.log("AppComponent: updateCanRunDownloadDiscard()")
-    this.canRunDownloadDiscard = this.cfs.configAsJson ? true : false
-  }
+  // --------------------------------------------------------------------------------------
+  //     Uploading a Configuration  
+  // --------------------------------------------------------------------------------------
 
   public onFileSelected(e: any) { 
     //console.log("onFileSelected")
@@ -93,8 +125,8 @@ export class AppComponent {
       //this.router.navigate(["../edit"], { relativeTo: this.route })
       //console.log(`config-file.service: cfs.configObject=`)
       //console.log(this.cfs.configObject)
-      this.canRunDownloadDiscard = true
-      this.cfs.componentEvent = "ConfigLoadEvent"
+      this.ats.frontendEventsSubject$.next("config-uploaded")
+//    this.cfs.componentEvent = "ConfigLoadEvent"
 //    this.router.navigate(["../home"], { relativeTo: this.route })
 //    console.log(this.cfs.objFromJsonFile)
     })
@@ -114,6 +146,9 @@ export class AppComponent {
     })
   }
 
+  // --------------------------------------------------------------------------------------
+  //     Downloading a Configuration  
+  // --------------------------------------------------------------------------------------
 
   private downloadToFile(blob: Blob, fileExtension: string): void {
     const link = document.createElement("a")
@@ -130,6 +165,10 @@ export class AppComponent {
     const blob = new Blob([JSON.stringify(fileContent, null, "\t")], { type: "application/json" })
     this.downloadToFile(blob, "json")
   }
+
+  // --------------------------------------------------------------------------------------
+  //     Downloading a CSV with the workitems' events  
+  // --------------------------------------------------------------------------------------
 
   public onDownloadEvents(): void {
     function workitemEventAsCsvRow(wie: I_WorkItemEvent): string {

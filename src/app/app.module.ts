@@ -1,13 +1,17 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClient, /* HttpClientModule, HTTP_INTERCEPTORS, */ provideHttpClient, withInterceptors } from '@angular/common/http'
 
-
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-//import { RouterModule, Routes } from '@angular/router' // see https://www.samjulien.com/add-routing-existing-angular-project
+import { PublicClientApplication, IPublicClientApplication } from "@azure/msal-browser"
+import { MsalModule, MsalService, MSAL_INSTANCE } from "@azure/msal-angular";
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { environment } from '../environments/environment'
+
+import { addAuthTokenToHttpHeader$, handleResponseError$ } from './shared/http-interceptor-functions'
+
 
 import { InventoryComponent } from './inventory/inventory.component';
 import { InventoryColumnComponent } from './inventory-column/inventory-column.component';
@@ -38,6 +42,17 @@ const routes: Routes = [
 ]
 */
 
+export function MsalInstanceFactory(): IPublicClientApplication {
+  return new PublicClientApplication({
+      auth: {
+        clientId:     environment.msalConfig.clientId,  // id of this application i.e. the Angular front end
+        authority:    environment.msalConfig.authority,
+        redirectUri:  environment.msalConfig.redirectUri
+      }
+  })
+}
+
+
 @NgModule({ declarations: [
         AppComponent,
         InventoryComponent,
@@ -61,11 +76,23 @@ const routes: Routes = [
         EditorMessagesComponent,
         HomeComponent
     ],
-    bootstrap: [AppComponent], 
     imports: [
         BrowserModule,
-        FormsModule,
+        FormsModule, // *** really required? 
         ReactiveFormsModule,
-        AppRoutingModule], 
-    providers: [provideHttpClient(withInterceptorsFromDi())] })
+        AppRoutingModule,
+        MsalModule  // MS Authentication Library
+      ], 
+    providers: [
+      {
+        provide: MSAL_INSTANCE,
+        useFactory: MsalInstanceFactory
+      },
+      MsalService,
+      HttpClient, // *** really required?   
+      provideHttpClient(withInterceptors([addAuthTokenToHttpHeader$, handleResponseError$]))
+      // provideHttpClient(withInterceptorsFromDi())
+    ],    
+    bootstrap: [AppComponent] 
+  })
 export class AppModule { }

@@ -8,6 +8,8 @@ import { environment } from '../../environments/environment.prod'
 import { ColorMapperService } from '../shared/color-mapper.service'
 import { cssColorListVc, cssColorListSest } from '../shared/inventory-layout'
 import { ConfigFileService } from '../shared/config-file.service'
+import { AppStateService, FrontendState } from '../shared/app-state.service';
+import { ApplicableRefactorInfo } from 'typescript'
 
 enum RunResumeButton {
   run    = "Run",
@@ -50,11 +52,14 @@ export class SystemComponent implements OnChanges {
   constructor( private cfs: ConfigFileService,
                private bas: BackendApiService,
                private wof: WorkorderFeederService,
+               private ats: AppStateService,
                private cms: ColorMapperService ) { 
   }
 
   ngOnInit(): void {
     this.parseAndInititalize()
+    this.ats.frontendEventsSubject$.next("system-instantiated")
+    console.log("System.ngOnInit()")
   }
 
   ngOnChanges(): void {
