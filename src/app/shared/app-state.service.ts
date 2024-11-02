@@ -89,16 +89,24 @@ export class AppStateService {
   }
 
   private transitionToNewState(e: FrontendEvent): void {
-      if (!e) return
-      console.log(`app-state.servce: newState(): Current state= ${this.currentStateId}, received event=${e}, possible transitions= ${states[this.currentStateId].transitions.map(t => `${t.event}=>${t.newStateId}`)}`)
+      console.log(`app-state.service: transitionToNewState(): Current state= ${this.currentStateId}, possible transitions= ${states[this.currentStateId].transitions.map(t => `${t.event}=>${t.newStateId}`)}, received event=${e}`)
+      if (!e) {
+        console.log(`app-state.service: transitionToNewState(): No defined transition => currentState stays unchanged at ${this.currentStateId}`)
+        return
+      }
       const newStateId =  states[this.currentStateId].transitions.find(t => t.event == e)?.newStateId
-      if (!newStateId) return // no state transition // throw Error(`app-state.servce: newState(): Could not make state transition as I could not find a matching transition entry. Current state= ${this.currentStateId}, received event=${e}`)
-      this.currentStateId = newStateId
+//    this.currentStateId = newStateId ? newStateId : this.currentStateId
+      if(newStateId != undefined) {
+         this.currentStateId = newStateId
+         console.log(`app-state.service: transitionToNewState(): currentStateId set to ${this.currentStateId}`)
+      } else {
+        console.log(`app-state.service: transitionToNewState(): newStateId= ${newStateId}; no change to current state`)
+      }
       this.broadcastState()
-      console.log(`app-state.servce: newState(): New current state= ${this.currentStateId}`)
   }
 
   private broadcastState(): void {
-      this.frontendNewStateBroadcastSubject$.next(states[this.currentStateId])
+    console.log(`app-state.service: broadcastState(): New current state= ${this.currentStateId}`)
+    this.frontendNewStateBroadcastSubject$.next(states[this.currentStateId])
   }  
 }

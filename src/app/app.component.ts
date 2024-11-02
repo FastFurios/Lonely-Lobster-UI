@@ -1,17 +1,18 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { environment } from '../environments/environment.prod';
+import { Component } from '@angular/core'
+import { ActivatedRoute, Router } from '@angular/router'
+import { environment } from '../environments/environment.prod'
 import { Observable } from "rxjs"
+import { Location } from '@angular/common'
 
 import { MsalService } from "@azure/msal-angular" // MSAL = Microsoft Authentication Library
 import { AuthenticationResult } from "@azure/msal-browser"
 import { AuthenticationService } from './shared/authentication.service'
 import { JwtPayload } from 'jwt-decode'
 
-import { ConfigFileService } from './shared/config-file.service';
-import { BackendApiService } from './shared/backend-api.service';
-import { I_WorkItemEvents, I_WorkItemEvent } from './shared/io_api_definitions';
-import { AppStateService, FrontendState } from './shared/app-state.service';
+import { ConfigFileService } from './shared/config-file.service'
+import { BackendApiService } from './shared/backend-api.service'
+import { I_WorkItemEvents, I_WorkItemEvent } from './shared/io_api_definitions'
+import { AppStateService, FrontendState } from './shared/app-state.service'
 
 type ActionsPossible = {
     login:          boolean,
@@ -41,13 +42,14 @@ export class AppComponent {
   public  actionsPossible: ActionsPossible
 
   constructor(
-    private router: Router,
-    private route:  ActivatedRoute, 
-    private mas:    MsalService, 
-    private aus:    AuthenticationService,
-    private cfs:    ConfigFileService,
-    private ats:    AppStateService,
-    private bas:    BackendApiService) { 
+    private router:   Router,
+    private route:    ActivatedRoute, 
+    private mas:      MsalService, 
+    private aus:      AuthenticationService,
+    private cfs:      ConfigFileService,
+    private ats:      AppStateService,
+    private bas:      BackendApiService,
+    private location: Location) { 
       this.actionsPossible = {
           login:          true,
           run:            false,
@@ -64,17 +66,21 @@ export class AppComponent {
       })
   }
 
+  private isRunActionPossible(state: FrontendState): boolean {
+      const runPossible = state.hasSystemConfiguration && state.isLoggedIn
+      if (this.router.url == "/run" && !runPossible) this.location.back(); // goes back to the last URL in history
+      return runPossible
+  }
+
   private processNewState(state: FrontendState): void {
-      this.userIsLoggedIn = state.isLoggedIn
+    this.userIsLoggedIn = state.isLoggedIn
       this.actionsPossible = {
           login:          !state.isLoggedIn,
-          run:            state.hasSystemConfiguration && state.isLoggedIn,
+          run:            this.isRunActionPossible(state),
           downloadConfig: state.hasSystemConfiguration,
           downloadEvents: state.hasBackendSystemInstance,
           discard:        state.hasSystemConfiguration
       }
-
-      // ...
   }
 
 
@@ -91,10 +97,12 @@ export class AppComponent {
   // --------------------------------------------------------------------------------------
 
   public onLogIn(): void {
+    console.log(`AppComponent.onLogIn(): send "logged-in" to ATS`)
     this.ats.frontendEventsSubject$.next("logged-in")
   }
 
   public onLogOut(): void {
+    console.log(`AppComponent.onLogOut(): send "logged-out" to ATS`)
     this.ats.frontendEventsSubject$.next("logged-out")
   }
 
@@ -104,6 +112,7 @@ export class AppComponent {
 
   public onDiscard(): void {
     this.cfs.configAsJson = undefined
+    console.log(`AppComponent.onDiscard(): send "discarded" to ATS`)
     this.ats.frontendEventsSubject$.next("discarded")
     // tbc: add API call to backend to destroy the Lonely Lobster system for this session
     this.router.navigate(["../home"], { relativeTo: this.route })
@@ -125,6 +134,7 @@ export class AppComponent {
       //this.router.navigate(["../edit"], { relativeTo: this.route })
       //console.log(`config-file.service: cfs.configObject=`)
       //console.log(this.cfs.configObject)
+      console.log(`AppComponent.onFileSelected(): send "config-uploaded" to ATS`)
       this.ats.frontendEventsSubject$.next("config-uploaded")
 //    this.cfs.componentEvent = "ConfigLoadEvent"
 //    this.router.navigate(["../home"], { relativeTo: this.route })

@@ -27,7 +27,6 @@ export class EditorComponent implements OnInit {
     this.initForm(this.cfs.configAsJson)
     this.cfs.componentEventSubject$.subscribe((compEvent:string) => {
       if (compEvent == "ConfigLoadEvent") this.processComponentEvent(compEvent)})
-      this.ats.frontendEventsSubject$.next("config-edit-saved")
     }
 
   private processComponentEvent(compEvent: string): void {
@@ -336,9 +335,11 @@ export class EditorComponent implements OnInit {
   }
   */
 
-  public submitForm() {
+  public onSubmitForm() {
     this.cfs.configAsJson = this.configObjectAsJsonFromForm()
     this.cfs.componentEvent = "EditorSaveEvent"
+    console.log(`Editor.onSubmitForm(): send "config-edit-saved" to ATS`)
+    this.ats.frontendEventsSubject$.next("config-edit-saved")
   }
 
   // ---------------------------------------------------------------------------------------
