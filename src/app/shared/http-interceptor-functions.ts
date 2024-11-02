@@ -11,6 +11,11 @@ import { AuthenticationService } from './authentication.service'
 export function addAuthTokenToHttpHeader$(req: HttpRequest<any>, next: HttpHandlerFn): Observable<HttpEvent<any>> {
   const authService = inject(AuthenticationService) // make my authentication service accessible to this function 
   const authToken = authService.accessToken
+/* const l = authToken.length
+const s1 = authToken.substring(0, l-50);
+const s2 = authToken.substring(l-45);
+const s3 = s1 + "_____" + s2;
+const authReq = req.clone({ setHeaders: { Authorization: `Bearer ${s3}` }})  // add prefix "Bearer " which indicates to the backend this is a bearer and no user identity token */
   const authReq = req.clone({ setHeaders: { Authorization: `Bearer ${authToken}` }})  // add prefix "Bearer " which indicates to the backend this is a bearer and no user identity token
   return next(authReq);
 }
@@ -25,7 +30,7 @@ export function handleResponseError$(req: HttpRequest<any>, next: HttpHandlerFn)
             switch (error.status) {
                 case   0: { errorMessage = 'Unable to connect to the server.'; break }  
                 case 401: { errorMessage = 'Unauthorized access. Please log in.'; break }
-                case 403: { errorMessage = 'Access denied. You do not have permission to view this resource.'; break }
+                case 403: { errorMessage = 'Access denied. You do not have permission to use this resource.'; break }
                 case 500: { errorMessage = 'Internal server error.'; break }
                 default:    errorMessage = `Server error: ${error.status} - ${error.message}`
             }

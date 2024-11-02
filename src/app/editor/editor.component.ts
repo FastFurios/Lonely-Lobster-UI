@@ -26,8 +26,12 @@ export class EditorComponent implements OnInit {
   ngOnInit(): void {
     this.initForm(this.cfs.configAsJson)
     this.cfs.componentEventSubject$.subscribe((compEvent:string) => {
-      if (compEvent == "ConfigLoadEvent") this.processComponentEvent(compEvent)})
-    }
+      if (compEvent == "ConfigLoadEvent") this.processComponentEvent(compEvent)
+    })
+    this.ats.frontendNewStateBroadcastSubject$.subscribe((state: FrontendState) => {
+      this.initForm(this.cfs.configAsJson)
+    })
+  }
 
   private processComponentEvent(compEvent: string): void {
     if (this.cfs.configAsJson) this.initForm(this.cfs.configAsJson)

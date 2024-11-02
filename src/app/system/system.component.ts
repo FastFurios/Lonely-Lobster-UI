@@ -9,7 +9,6 @@ import { ColorMapperService } from '../shared/color-mapper.service'
 import { cssColorListVc, cssColorListSest } from '../shared/inventory-layout'
 import { ConfigFileService } from '../shared/config-file.service'
 import { AppStateService, FrontendState } from '../shared/app-state.service';
-import { ApplicableRefactorInfo } from 'typescript'
 
 enum RunResumeButton {
   run    = "Run",

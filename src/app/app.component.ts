@@ -22,6 +22,7 @@ type ActionsPossible = {
     discard:        boolean
 }
 
+type JwtPayloadWithGivenName = JwtPayload & { given_name: string }
 
 @Component({
   selector: 'app-root',
@@ -37,7 +38,7 @@ export class AppComponent {
   public  canRun                 = false
   public  canDownloadDiscard     = false
   public  userIsLoggedIn         = false
-  public  loggedInUserName       = "Gerold"
+  public  loggedInUserName       = ""
   private workItemEvents$: Observable<I_WorkItemEvents>
   public  actionsPossible: ActionsPossible
 
@@ -97,13 +98,31 @@ export class AppComponent {
   // --------------------------------------------------------------------------------------
 
   public onLogIn(): void {
-    console.log(`AppComponent.onLogIn(): send "logged-in" to ATS`)
-    this.ats.frontendEventsSubject$.next("logged-in")
+    // need to provide the backend's "Application ID URI" with the "scope" appended, here "system.run". Scope needs to be defined in EntraID backend application under "Expose an API";   
+    // the "Application ID URI" part will be in the "aud" (audience) claim in the token, the "scope" in the "scp" claim.
+    // EntraID will respond with a token that is made only for the use with the specific API and with the exact scope that is required in the call to the API  
+    this.mas.loginPopup({scopes: ["api://5797aa9c-0703-46d9-9fba-934498b8e5d6/system.run"]})
+      .subscribe({
+        next: (authResult: AuthenticationResult) => {
+//        this.msalLoginStatus = "ok"
+          this.aus.accessToken = authResult.accessToken
+          console.log("AppComponent.onLogIn(): this.aus.accessToken= " + this.aus.accessToken)
+          this.loggedInUserName = (<JwtPayloadWithGivenName>this.aus.decodedAccessToken)?.given_name
+          console.log(`AppComponent.onLogIn(): send "logged-in" to ATS`)
+          this.ats.frontendEventsSubject$.next("logged-in")
+        },
+        error: (err: Error) => {
+          console.log("app.login.mas.loginPopup().error: err.message = " + err.message)
+          console.log(`AppComponent.onLogIn(): authentication error; send "logged-out" to ATS`)
+          this.ats.frontendEventsSubject$.next("logged-out")
+        }
+    })
   }
 
   public onLogOut(): void {
-    console.log(`AppComponent.onLogOut(): send "logged-out" to ATS`)
-    this.ats.frontendEventsSubject$.next("logged-out")
+      this.mas.logout()
+      console.log(`AppComponent.onLogOut(): send "logged-out" to ATS`)
+      this.ats.frontendEventsSubject$.next("logged-out")
   }
 
   // --------------------------------------------------------------------------------------
