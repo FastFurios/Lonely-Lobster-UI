@@ -131,6 +131,8 @@ export class AppComponent {
 
   public onDiscard(): void {
     this.cfs.configAsJson = undefined
+    const dropping$ = this.bas.dropSystem()
+    dropping$.subscribe(() => console.log("AppComponent.onDiscard(): response to drop request received"))
     console.log(`AppComponent.onDiscard(): send "discarded" to ATS`)
     this.ats.frontendEventsSubject$.next("discarded")
     // tbc: add API call to backend to destroy the Lonely Lobster system for this session

@@ -43,6 +43,14 @@ export class BackendApiService {
         )
   }
 
+  public learningStatistics(): Observable<I_LearningStatsWorkers> {
+    console.log("backend-api-service.learningStatitics()")
+    return this.http.get<I_LearningStatsWorkers>(this.API_URL + "learn-stats/", { withCredentials: true } /*, {responseType: "json"}*/)
+        .pipe(
+          catchError((error: HttpErrorResponse) => this.errorHandler(error))
+        )
+  }
+
   public workItemEvents(): Observable<I_WorkItemEvents> {
     return this.http.get<I_WorkItemEvents>(this.API_URL + "workitem-events/", { withCredentials: true } /*, {responseType: "json"}*/)
         .pipe(
@@ -50,9 +58,9 @@ export class BackendApiService {
         )
   }
 
-  public learningStatistics(): Observable<I_LearningStatsWorkers> {
-    console.log("backend-api-service.learningStatitics()")
-    return this.http.get<I_LearningStatsWorkers>(this.API_URL + "learn-stats/", { withCredentials: true } /*, {responseType: "json"}*/)
+  public dropSystem(): Observable<any> {
+    console.log("BAS: this.dropSystem()")
+    return this.http.get<any>(this.API_URL + "drop/", { withCredentials: true } /*, {responseType: "json"}*/)
         .pipe(
           catchError((error: HttpErrorResponse) => this.errorHandler(error))
         )
