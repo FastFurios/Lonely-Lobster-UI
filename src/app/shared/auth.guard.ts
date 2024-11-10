@@ -13,6 +13,7 @@ export class AuthGuard implements CanActivate {
 
   constructor(private ats: AppStateService) { 
       this.ats.frontendNewStateBroadcastSubject$.subscribe((state: FrontendState) => {
+          console.log(``)
           this.frontendState = state
       })
   }

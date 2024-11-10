@@ -131,8 +131,7 @@ export class AppComponent {
 
   public onDiscard(): void {
     this.cfs.configAsJson = undefined
-    const dropping$ = this.bas.dropSystem()
-    dropping$.subscribe(() => console.log("AppComponent.onDiscard(): response to drop request received"))
+    this.bas.dropSystem().subscribe(() => console.log("AppComponent.onDiscard(): response to drop request received"))
     console.log(`AppComponent.onDiscard(): send "discarded" to ATS`)
     this.ats.frontendEventsSubject$.next("discarded")
     // tbc: add API call to backend to destroy the Lonely Lobster system for this session
@@ -148,8 +147,9 @@ export class AppComponent {
     const file: File = e.target.files[0] 
     this.filename = file.name
 //  console.log(`app: onFileSelected(): filename=${this.filename}; subscribing to observable ...`)
-    const obs$ = this.readFileContentObs(file)
-    obs$.subscribe((fileContent: string) => { 
+    this.bas.dropSystem().subscribe(() => console.log("AppComponent.onFileSelected(): response to drop request received"))
+
+    this.readFileContentObs(file).subscribe((fileContent: string) => { 
       //this.cfs.configAsJson = fileContent
       this.cfs.configAsJson = JSON.parse(fileContent) 
       //this.router.navigate(["../edit"], { relativeTo: this.route })
@@ -161,6 +161,7 @@ export class AppComponent {
 //    this.router.navigate(["../home"], { relativeTo: this.route })
 //    console.log(this.cfs.objFromJsonFile)
     })
+    this.router.navigate(["../home"], { relativeTo: this.route })
   }
 
   private readFileContentObs(file: File): Observable<string> {
