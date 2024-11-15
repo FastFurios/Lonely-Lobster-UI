@@ -31,11 +31,13 @@ export function handleResponseError$(req: HttpRequest<any>, next: HttpHandlerFn)
                 case   0: { errorMessage = 'Unable to connect to the server.'; break }  
                 case 401: { errorMessage = 'Unauthorized access. Please log in.'; break }
                 case 403: { errorMessage = 'Access denied. You do not have permission to use this resource.'; break }
+                case 404: { errorMessage = 'System no longer active probably due to auto dropping when inactive for some time.'; break }
                 case 500: { errorMessage = 'Internal server error.'; break }
-                default:    errorMessage = `Server error: ${error.status} - ${error.message}`
+                default:  { errorMessage = `Server error: ${error.status} - ${error.message}` }
             }
             //errorMessage = "Damn' it, an error has occurred!"
-            console.error("handleResponseError$ err.status= " + error.status)
+            console.error("interceptor handleResponseError$() error.status= " + error.status + ", error.message= " + error.message  + ", errorMessage= " + errorMessage + ", error.error= ")
+            console.error(error.error)
             return throwError(() => new Error(errorMessage))     // Return a user-friendly error message)
         })
     )

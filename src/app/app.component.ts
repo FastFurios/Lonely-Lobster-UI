@@ -147,7 +147,7 @@ export class AppComponent {
     const file: File = e.target.files[0] 
     this.filename = file.name
 //  console.log(`app: onFileSelected(): filename=${this.filename}; subscribing to observable ...`)
-    this.bas.dropSystem().subscribe(() => console.log("AppComponent.onFileSelected(): response to drop request received"))
+    if (this.cfs.configAsJson) this.bas.dropSystem().subscribe(() => console.log("AppComponent.onFileSelected(): response to drop request received"))
 
     this.readFileContentObs(file).subscribe((fileContent: string) => { 
       //this.cfs.configAsJson = fileContent

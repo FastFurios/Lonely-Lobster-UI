@@ -7,6 +7,16 @@ import { I_IterationRequests, I_SystemState, I_SystemStatistics, I_WorkItemEvent
 
 // --- service class --------------------
 
+class LonelyLobsterError extends Error {
+  constructor(       message:     string,
+              public statusCode:  number, 
+              public description: string) { 
+      super(message) 
+  }
+} 
+
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,10 +25,10 @@ export class BackendApiService {
 
   constructor(private http: HttpClient) { }
 
-  private errorHandler(error: HttpErrorResponse): Observable<any> {
-    console.error("errorHandler(): Fehler aufgetreten! message= " + error.message + ", code=" + error.ok)
-    console.error(error)
-    return throwError(() => error.message /*new Error()*/)
+  private errorHandler(err: HttpErrorResponse): Observable<any> {
+    console.error("errorHandler(): Fehler aufgetreten! message= " + err.message + ", status=" + err.status)
+    console.error(err)
+    return throwError(() => err.message /*new Error()*/)
   }
 
   public systemStateOnInitialization(systemParmsAsJson: any): Observable<I_SystemState> {
