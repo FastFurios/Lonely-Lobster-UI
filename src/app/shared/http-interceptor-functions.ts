@@ -4,8 +4,6 @@ import { inject } from '@angular/core'
 import { Observable, throwError, catchError } from 'rxjs'
 import { HttpRequest, HttpHandlerFn, HttpEvent, HttpErrorResponse } from '@angular/common/http'
 import { AuthenticationService } from './authentication.service'
-import { EventsService } from './events.service'
-
 
 // -----------------------------------------------------------------------------------------
 // interceptor for outgoing http-requests that should carry a token

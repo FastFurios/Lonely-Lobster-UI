@@ -1,8 +1,15 @@
 <p>events-display works!</p>
 
-<div class="scrollable-list">
+<!-- <div class="scrollable-list">
     <div *ngFor="let event of events" class="event-item">
       <p>{{ event.dateAndtime }}</p>
       <p>{{ event.description }}</p>
     </div>
-  </div>
+</div> -->
+
+<table class="scrollable-list">
+    <tr *ngFor="let event of events" class="event-item">
+        <td>{{ event.dateAndtime | date: "H:mm:ss" }}</td>
+        <td>{{ event.description }}</td>
+    </tr>
+</table>
