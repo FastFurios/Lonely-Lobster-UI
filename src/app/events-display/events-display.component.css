@@ -12,7 +12,7 @@
     position: absolute; /* Overlay the parent component */
     top: 20px;
     left: 20px;
-    width: 300px;
+    width: 600px;
     max-height: 400px;
     overflow-y: auto; /* Enable vertical scrolling */
     background-color: #ffffff;
