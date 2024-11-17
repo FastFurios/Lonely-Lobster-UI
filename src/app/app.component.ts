@@ -11,8 +11,10 @@ import { JwtPayload } from 'jwt-decode'
 
 import { ConfigFileService } from './shared/config-file.service'
 import { BackendApiService } from './shared/backend-api.service'
-import { I_WorkItemEvents, I_WorkItemEvent } from './shared/io_api_definitions'
+import { I_WorkItemEvents, I_WorkItemEvent, ApplicationEvent } from './shared/io_api_definitions'
 import { AppStateService, FrontendState } from './shared/app-state.service'
+import { EventsDisplayComponent } from './events-display/events-display.component'
+import { EventsService } from './shared/events.service'
 
 type ActionsPossible = {
     login:          boolean,
@@ -41,6 +43,7 @@ export class AppComponent {
   public  loggedInUserName       = ""
   private workItemEvents$: Observable<I_WorkItemEvents>
   public  actionsPossible: ActionsPossible
+  public  events:          ApplicationEvent[]
 
   constructor(
     private router:   Router,
@@ -50,6 +53,7 @@ export class AppComponent {
     private cfs:      ConfigFileService,
     private ats:      AppStateService,
     private bas:      BackendApiService,
+    private ess:      EventsService,
     private location: Location) { 
       this.actionsPossible = {
           login:          true,
@@ -65,6 +69,7 @@ export class AppComponent {
       this.ats.frontendNewStateBroadcastSubject$.subscribe((state: FrontendState) => {
         this.processNewState(state)
       })
+      this.events = this.ess.events 
   }
 
   private isRunActionPossible(state: FrontendState): boolean {
@@ -83,8 +88,6 @@ export class AppComponent {
           discard:        state.hasSystemConfiguration
       }
   }
-
-
 
   get configAsJson() {
     return this.cfs.configAsJson

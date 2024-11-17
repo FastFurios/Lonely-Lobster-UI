@@ -9,6 +9,7 @@ import { ColorMapperService } from '../shared/color-mapper.service'
 import { cssColorListVc, cssColorListSest } from '../shared/inventory-layout'
 import { ConfigFileService } from '../shared/config-file.service'
 import { AppStateService, FrontendState } from '../shared/app-state.service';
+import { EventsService } from '../shared/events.service'
 
 enum RunResumeButton {
   run    = "Run",
@@ -241,7 +242,7 @@ export class SystemComponent implements OnChanges {
         catchError((err: any) => {
           this.backendErrorMessage = "*** ERROR: could not reach backend or error in the backend"
           this.showSystemState = false
-          return throwError(() => new Error("*** ERROR: " + err.error.message))
+          return throwError(() => new Error("*** ERROR: " + err/* .error.message */))
         })
       )
       this.systemState$.subscribe(systemState => {

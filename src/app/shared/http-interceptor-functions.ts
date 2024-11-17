@@ -4,6 +4,8 @@ import { inject } from '@angular/core'
 import { Observable, throwError, catchError } from 'rxjs'
 import { HttpRequest, HttpHandlerFn, HttpEvent, HttpErrorResponse } from '@angular/common/http'
 import { AuthenticationService } from './authentication.service'
+import { EventsService } from './events.service'
+
 
 // -----------------------------------------------------------------------------------------
 // interceptor for outgoing http-requests that should carry a token
@@ -36,9 +38,13 @@ export function handleResponseError$(req: HttpRequest<any>, next: HttpHandlerFn)
                 default:  { errorMessage = `Server error: ${error.status} - ${error.message}` }
             }
             //errorMessage = "Damn' it, an error has occurred!"
-            console.error("interceptor handleResponseError$() error.status= " + error.status + ", error.message= " + error.message  + ", errorMessage= " + errorMessage + ", error.error= ")
-            console.error(error.error)
-            return throwError(() => new Error(errorMessage))     // Return a user-friendly error message)
+            // console.error("interceptor handleResponseError$() error.status= " + error.status + ", error.message= " + error.message  + ", errorMessage= " + errorMessage + ", error.error= ")
+            // console.error(error.error)
+            // const ess = inject(EventsService) // make my the Events service accessible to this function 
+            // ess.add(error.error)
+            // console.error("interceptor handleResponseError$() event-service has the following events:")
+            // console.error(ess.events)
+            return throwError(() => error /* error.error*/ /*new Error(errorMessage)*/)     // Return a user-friendly error message)
         })
     )
 }

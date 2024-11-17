@@ -3,7 +3,9 @@ import { environment } from '../../environments/environment'
 import { HttpClient, HttpErrorResponse } from '@angular/common/http'
 import { Observable, throwError } from "rxjs"
 import { catchError } from "rxjs/operators"
-import { I_IterationRequests, I_SystemState, I_SystemStatistics, I_WorkItemEvents, I_LearningStatsWorkers, TimeUnit } from './io_api_definitions'
+import { I_IterationRequests, I_SystemState, I_SystemStatistics, I_WorkItemEvents, I_LearningStatsWorkers, TimeUnit, ApplicationEvent } from './io_api_definitions'
+import { EventsService } from './events.service'
+
 
 // --- service class --------------------
 
@@ -16,26 +18,30 @@ class LonelyLobsterError extends Error {
 } 
 
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class BackendApiService {
   private API_URL = environment.API_URL
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,
+              private ess:  EventsService) { }
 
-  private errorHandler(err: HttpErrorResponse): Observable<any> {
-    console.error("errorHandler(): Fehler aufgetreten! message= " + err.message + ", status=" + err.status)
-    console.error(err)
-    return throwError(() => err.message /*new Error()*/)
+  private errorHandler(her: HttpErrorResponse): Observable<any> {
+    console.error("BAS errorHandler(): Fehler aufgetreten! err =")
+    console.log(her)
+    this.ess.add(her.error as ApplicationEvent)
+    // console.log("BAS errorHandler(): list of application events is currently =")
+    // console.log(this.ess.events)
+
+    return throwError(() => her.error.description /*new Error()*/)
   }
 
   public systemStateOnInitialization(systemParmsAsJson: any): Observable<I_SystemState> {
     return this.http.post<I_SystemState>(this.API_URL + "initialize/", systemParmsAsJson, { withCredentials: true } /*, {responseType: "json"}*/)
-/*      .pipe(
+      .pipe(
           catchError((error: HttpErrorResponse) => this.errorHandler(error))
-        )*/
+      )
   }
 
   public nextSystemStateOnInput(iterationRequests: I_IterationRequests): Observable<I_SystemState> {

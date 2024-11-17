@@ -32,6 +32,7 @@ import { LearnStatsComponent } from './learn-stats/learn-stats.component';
 import { ColorLegendComponent } from './color-legend/color-legend.component';
 import { EditorComponent } from './editor/editor.component';
 import { EditorMessagesComponent } from './editor-messages/editor-messages.component';
+import { EventsDisplayComponent } from './events-display/events-display.component';
 import { HomeComponent } from './home/home.component';
 
 /*
@@ -74,7 +75,8 @@ export function MsalInstanceFactory(): IPublicClientApplication {
         ColorLegendComponent,
         EditorComponent,
         EditorMessagesComponent,
-        HomeComponent
+        HomeComponent,
+        EventsDisplayComponent
     ],
     imports: [
         BrowserModule,
