@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  version: "6.0.0",
   API_URL: "http://localhost:3000/",
 
   // msal config details
