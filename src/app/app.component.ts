@@ -15,6 +15,10 @@ import { I_WorkItemEvents, I_WorkItemEvent, ApplicationEvent } from './shared/io
 import { AppStateService, FrontendState } from './shared/app-state.service'
 import { EventsDisplayComponent } from './events-display/events-display.component'
 import { EventsService } from './shared/events.service'
+import { applicationEventFrom } from './shared/helpers'
+import { EventSeverity, EventTypeId } from './shared/io_api_definitions'
+
+
 
 type ActionsPossible = {
     login:          boolean,
@@ -117,6 +121,7 @@ export class AppComponent {
         error: (err: Error) => {
           console.log("app.login.mas.loginPopup().error: err.message = " + err.message)
           console.log(`AppComponent.onLogIn(): authentication error; send "logged-out" to ATS`)
+          this.ess.add(applicationEventFrom("Entra ID login request", "app.component", 200, EventSeverity.critical, err.message))
           this.ats.frontendEventsSubject$.next("logged-out")
         }
     })
@@ -152,7 +157,7 @@ export class AppComponent {
 //  console.log(`app: onFileSelected(): filename=${this.filename}; subscribing to observable ...`)
     if (this.cfs.configAsJson) this.bas.dropSystem().subscribe(() => console.log("AppComponent.onFileSelected(): response to drop request received"))
 
-    this.readFileContentObs(file).subscribe((fileContent: string) => { 
+    this.readFileContent$(file).subscribe((fileContent: string) => { 
       //this.cfs.configAsJson = fileContent
       this.cfs.configAsJson = JSON.parse(fileContent) 
       //this.router.navigate(["../edit"], { relativeTo: this.route })
@@ -167,7 +172,7 @@ export class AppComponent {
     this.router.navigate(["../home"], { relativeTo: this.route })
   }
 
-  private readFileContentObs(file: File): Observable<string> {
+  private readFileContent$(file: File): Observable<string> {
     return new Observable((subscriber) => {
       if (!file) subscriber.error("no file selected")
       if (file.size == 0) subscriber.error("selected file is empty")
