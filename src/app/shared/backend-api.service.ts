@@ -34,7 +34,7 @@ export class BackendApiService {
     // console.log("BAS errorHandler(): list of application events is currently =")
     // console.log(this.ess.events)
 
-    return throwError(() => her.error.description /*new Error()*/)
+    return throwError(() => her.error.description /*new Error()*/)   // *** obsolete? delete this line?
   }
 
   public systemStateOnInitialization(systemParmsAsJson: any): Observable<I_SystemState> {
@@ -77,8 +77,8 @@ export class BackendApiService {
   public dropSystem(): Observable<any> {
     console.log("BAS: this.dropSystem()")
     return this.http.get<any>(this.API_URL + "drop/", { withCredentials: true } /*, {responseType: "json"}*/)
-        .pipe(
-          catchError((error: HttpErrorResponse) => this.errorHandler(error))
-        )
+        // .pipe(
+        //   catchError((error: HttpErrorResponse) => this.errorHandler(error))
+        // )
   }
 }

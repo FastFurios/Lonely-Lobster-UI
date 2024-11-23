@@ -4,6 +4,11 @@ import { inject } from '@angular/core'
 import { Observable, throwError, catchError } from 'rxjs'
 import { HttpRequest, HttpHandlerFn, HttpEvent, HttpErrorResponse } from '@angular/common/http'
 import { AuthenticationService } from './authentication.service'
+import { ApplicationEvent, EventSeverity, EventTypeId } from './io_api_definitions'
+import { environment } from '../../environments/environment.prod'
+import { AppComponent } from '../app.component'
+import { applicationEventFrom } from './helpers'
+
 
 // -----------------------------------------------------------------------------------------
 // interceptor for outgoing http-requests that should carry a token
@@ -26,23 +31,20 @@ const authReq = req.clone({ setHeaders: { Authorization: `Bearer ${s3}` }})  // 
 export function handleResponseError$(req: HttpRequest<any>, next: HttpHandlerFn): Observable<HttpEvent<any>> {  // derived from ChatGPT suggestion
     return next(req).pipe(
         catchError((error: HttpErrorResponse) => {
-            let errorMessage = ''
-            switch (error.status) {
-                case   0: { errorMessage = 'Unable to connect to the server.'; break }  
-                case 401: { errorMessage = 'Unauthorized access. Please log in.'; break }
-                case 403: { errorMessage = 'Access denied. You do not have permission to use this resource.'; break }
-                case 404: { errorMessage = 'System no longer active probably due to auto dropping when inactive for some time.'; break }
-                case 500: { errorMessage = 'Internal server error.'; break }
-                default:  { errorMessage = `Server error: ${error.status} - ${error.message}` }
-            }
-            //errorMessage = "Damn' it, an error has occurred!"
-            // console.error("interceptor handleResponseError$() error.status= " + error.status + ", error.message= " + error.message  + ", errorMessage= " + errorMessage + ", error.error= ")
-            // console.error(error.error)
-            // const ess = inject(EventsService) // make my the Events service accessible to this function 
-            // ess.add(error.error)
-            // console.error("interceptor handleResponseError$() event-service has the following events:")
-            // console.error(ess.events)
-            return throwError(() => error /* error.error*/ /*new Error(errorMessage)*/)     // Return a user-friendly error message)
-        })
-    )
+            // i.e. backend attached an Application Event as error to error then pass this thru w/o any changes
+            if (error.status != 0) return throwError(() => error /* error.error*/ /*new Error(errorMessage)*/)     // Return a user-friendly error message)
+
+            // error status == 0, i.e. no proper http error status from the server. Indicates local network problem.  
+            // create an Application Event with the available data from the error
+            const appEvent: ApplicationEvent = applicationEventFrom("http-request", `${error.statusText}: ${error.url}`, EventTypeId.networkProblems, EventSeverity.critical)
+
+            // incorporate the ApplicationEvent into an augmented HtpErrorResponse and pass it to the requester
+            return throwError(() => new HttpErrorResponse({
+                headers:      error.headers,
+                status:       error.status,
+                statusText:   error.statusText,
+                url:          error.url ? error.url : undefined,
+                error:        appEvent  // HttpErrorResponse augmented with the Application Event 
+            }))
+      }))
 }

@@ -10,6 +10,7 @@
 <table class="scrollable-list">
     <tr *ngFor="let event of events" class="event-item">
         <td>{{ event.dateAndtime | date: "H:mm:ss" }}</td>
+        <td>{{ event.source }}</td>
         <td>{{ event.context }}</td>
         <td>{{ event.description }}</td>
     </tr>

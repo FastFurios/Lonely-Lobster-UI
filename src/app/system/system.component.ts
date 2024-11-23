@@ -9,7 +9,6 @@ import { ColorMapperService } from '../shared/color-mapper.service'
 import { cssColorListVc, cssColorListSest } from '../shared/inventory-layout'
 import { ConfigFileService } from '../shared/config-file.service'
 import { AppStateService, FrontendState } from '../shared/app-state.service';
-import { EventsService } from '../shared/events.service'
 
 enum RunResumeButton {
   run    = "Run",
@@ -176,49 +175,6 @@ export class SystemComponent implements OnChanges {
   }
 
   // ---------------------------------------------------------------------------------------
-  // read and write system config file  
-  // ---------------------------------------------------------------------------------------
-  /**
-  public onFileSelected(e: any) { 
-    const file: File = e.target.files[0] 
-    this.filename = file.name
-    const obs$ = this.readFileContentObs(file)
-    obs$.subscribe((fileContent: string) => this.parseAndInititalize(fileContent))
-  }
-
-  private readFileContentObs(file: File): Observable<string> {
-    return new Observable((subscriber) => {
-      if (!file) subscriber.error("no file selected")
-      if (file.size == 0) subscriber.error("selected file is empty")
-
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        if (!reader.result) subscriber.error("no result from reading")
-        else subscriber.next(reader.result.toString())
-      }
-      reader.onerror = (error) => {
-        subscriber.error(error);
-      }
-      reader.readAsText(file)
-    })
-  }
-
-  public onSaveFile(): void {
-//  let fileContent = "Hi there, I was just saved from the Angular app!"
-    let fileContent = {
-      name: "Gerold",
-      age: 56
-    }
-    const file = new Blob([JSON.stringify(fileContent)], { type: "application/json" })
-    const link = document.createElement("a")
-    link.href = URL.createObjectURL(file)
-    link.download = this.filename
-    console.log("system.onSaveFile(): saving to " + link.download)
-    link.click()
-    link.remove()
-  }
-  */
-  // ---------------------------------------------------------------------------------------
   // initialize and reset system;
   // fetch statistics  
   // ---------------------------------------------------------------------------------------
@@ -238,13 +194,14 @@ export class SystemComponent implements OnChanges {
   private setOrResetSystem() {
       this.numIterationsToGo = 0
 //    this.wof.initialize()
-      this.systemState$ = this.bas.systemStateOnInitialization(this.configObject).pipe(
-        catchError((err: any) => {
-          this.backendErrorMessage = "*** ERROR: could not reach backend or error in the backend"
-          this.showSystemState = false
-          return throwError(() => new Error("*** ERROR: " + err/* .error.message */))
-        })
-      )
+      this.systemState$ = this.bas.systemStateOnInitialization(this.configObject)
+      // .pipe(
+      //   catchError((err: any) => {
+      //     this.backendErrorMessage = "*** ERROR: could not reach backend or error in the backend"
+      //     this.showSystemState = false
+      //     return throwError(() => new Error("*** ERROR: " + err/* .error.message */))
+      //   })
+      // )
       this.systemState$.subscribe(systemState => {
         this.numValueChains = systemState.valueChains.length
         //console.log("system.setOrResetSystem(): systemState.frontendPresets=")
@@ -253,7 +210,7 @@ export class SystemComponent implements OnChanges {
         this.processIteration(systemState) 
         this.calcSizeOfUiBoxes() 
         this.backendErrorMessage = ""
-        this.signalLearnStatsLegendToReload()
+        this.signalToLearnStatsLegendToReload()
       })
       this.showSystemState = true
   }
@@ -272,7 +229,7 @@ export class SystemComponent implements OnChanges {
   // additional UI handling  
   // ---------------------------------------------------------------------------------------
   
-  private signalLearnStatsLegendToReload(): void {
+  private signalToLearnStatsLegendToReload(): void {
     this.reloadLearnStatsLegend = true
     setTimeout(() => { 
       this.reloadLearnStatsLegend = false }, 1000)  // ping the child component "LearnStats" that it should reload its color legend  

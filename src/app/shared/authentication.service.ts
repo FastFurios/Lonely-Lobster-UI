@@ -30,7 +30,7 @@ export class AuthenticationService {
         } 
     catch (error) {
       console.error('Error decoding token:', error)
-      this.ess.add(applicationEventFrom("decoding JWT token", "Authentication.Service", 200, EventSeverity.critical, this.accessToken))
+      this.ess.add(applicationEventFrom("decoding JWT token", "Authentication.Service", EventTypeId.authorizationError, EventSeverity.critical, this.accessToken))
       decodedToken = null
     }
     return decodedToken

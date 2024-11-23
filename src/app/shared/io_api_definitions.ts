@@ -373,13 +373,23 @@ export const selectionCriterionNames = [ // for workItemSelectionStrategyMeasure
 // event messages for user and/or application logging purposes
 //-----------------------------------------
 
-export type EventTypeId = number
+export enum EventTypeId {
+    configFileNotFound  = "Configuration File not found",
+    configCorrupt       = "Configuration is corrupt",
+    valueOutOfRange     = "Some system internal value is out of range",    
+    authorizationError  = "Request not authorized",
+    sessionNotFound     = "Session not found (possibly expired)",
+    networkProblems     = "Cannot reach resource due to network problems (probably on frontend-side).",
+    configJsonError     = "JSON of configuration file is corrupt."
+} 
+
 export enum EventSeverity {
     info,
     warning,
     critical,
     fatal
 }
+
 export interface ApplicationEvent {
     dateAndtime:    Date
     source:         string

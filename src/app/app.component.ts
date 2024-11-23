@@ -55,7 +55,7 @@ export class AppComponent {
     private mas:      MsalService, 
     private aus:      AuthenticationService,
     private cfs:      ConfigFileService,
-    private ats:      AppStateService,
+    private ass:      AppStateService,
     private bas:      BackendApiService,
     private ess:      EventsService,
     private location: Location) { 
@@ -70,7 +70,7 @@ export class AppComponent {
 
   ngOnInit() {
       this.mas.initialize()
-      this.ats.frontendNewStateBroadcastSubject$.subscribe((state: FrontendState) => {
+      this.ass.frontendNewStateBroadcastSubject$.subscribe((state: FrontendState) => {
         this.processNewState(state)
       })
       this.events = this.ess.events 
@@ -116,13 +116,13 @@ export class AppComponent {
           console.log("AppComponent.onLogIn(): this.aus.accessToken= " + this.aus.accessToken)
           this.loggedInUserName = (<JwtPayloadWithGivenName>this.aus.decodedAccessToken)?.given_name
           console.log(`AppComponent.onLogIn(): send "logged-in" to ATS`)
-          this.ats.frontendEventsSubject$.next("logged-in")
+          this.ass.frontendEventsSubject$.next("logged-in")
         },
         error: (err: Error) => {
           console.log("app.login.mas.loginPopup().error: err.message = " + err.message)
           console.log(`AppComponent.onLogIn(): authentication error; send "logged-out" to ATS`)
-          this.ess.add(applicationEventFrom("Entra ID login request", "app.component", 200, EventSeverity.critical, err.message))
-          this.ats.frontendEventsSubject$.next("logged-out")
+          this.ess.add(applicationEventFrom("Entra ID login request", "app.component", EventTypeId.networkProblems, EventSeverity.critical, err.message))
+          this.ass.frontendEventsSubject$.next("logged-out")
         }
     })
   }
@@ -130,7 +130,7 @@ export class AppComponent {
   public onLogOut(): void {
       this.mas.logout()
       console.log(`AppComponent.onLogOut(): send "logged-out" to ATS`)
-      this.ats.frontendEventsSubject$.next("logged-out")
+      this.ass.frontendEventsSubject$.next("logged-out")
   }
 
   // --------------------------------------------------------------------------------------
@@ -141,7 +141,7 @@ export class AppComponent {
     this.cfs.configAsJson = undefined
     this.bas.dropSystem().subscribe(() => console.log("AppComponent.onDiscard(): response to drop request received"))
     console.log(`AppComponent.onDiscard(): send "discarded" to ATS`)
-    this.ats.frontendEventsSubject$.next("discarded")
+    this.ass.frontendEventsSubject$.next("discarded")
     // tbc: add API call to backend to destroy the Lonely Lobster system for this session
     this.router.navigate(["../home"], { relativeTo: this.route })
   }
@@ -155,16 +155,21 @@ export class AppComponent {
     const file: File = e.target.files[0] 
     this.filename = file.name
 //  console.log(`app: onFileSelected(): filename=${this.filename}; subscribing to observable ...`)
-    if (this.cfs.configAsJson) this.bas.dropSystem().subscribe(() => console.log("AppComponent.onFileSelected(): response to drop request received"))
+    if (this.cfs.configAsJson) this.bas.dropSystem()
+      //.subscribe(() => console.log("AppComponent.onFileSelected(): response to drop request received"))
 
     this.readFileContent$(file).subscribe((fileContent: string) => { 
       //this.cfs.configAsJson = fileContent
-      this.cfs.configAsJson = JSON.parse(fileContent) 
+      try {
+        this.cfs.configAsJson = JSON.parse(fileContent) 
+      } catch (error) {
+        this.ess.add(applicationEventFrom("parsing JSON from config file", file.name, EventTypeId.configJsonError, EventSeverity.critical))
+      }
       //this.router.navigate(["../edit"], { relativeTo: this.route })
       //console.log(`config-file.service: cfs.configObject=`)
       //console.log(this.cfs.configObject)
       console.log(`AppComponent.onFileSelected(): send "config-uploaded" to ATS`)
-      this.ats.frontendEventsSubject$.next("config-uploaded")
+      this.ass.frontendEventsSubject$.next("config-uploaded")
 //    this.cfs.componentEvent = "ConfigLoadEvent"
 //    this.router.navigate(["../home"], { relativeTo: this.route })
 //    console.log(this.cfs.objFromJsonFile)
