@@ -1,14 +1,9 @@
-<p>events-display works!</p>
-
-<!-- <div class="scrollable-list">
-    <div *ngFor="let event of events" class="event-item">
-      <p>{{ event.dateAndtime }}</p>
-      <p>{{ event.description }}</p>
-    </div>
-</div> -->
+<!-- <p>events-display works!</p>
+ -->
 
 <table class="scrollable-list">
     <tr *ngFor="let event of events" class="event-item">
+        <td><i class="material-symbols-outlined">{{materialIcon(event.severity)}}</i></td>
         <td>{{ event.dateAndtime | date: "H:mm:ss" }}</td>
         <td>{{ event.source }}</td>
         <td>{{ event.context }}</td>

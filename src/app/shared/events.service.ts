@@ -18,6 +18,8 @@ export class EventsService {
 
   get events(): ApplicationEvent[] { return this._events }
 
+  get hasEvents(): boolean { return this._events.length > 0 }
+
   public stringified(): string { 
     return this._events.map(ae => `${ae.dateAndtime} ${ae.typeId} ${ae.source} ${ae.sourceVersion} ${ae.severity} ${ae.context}: ${ae.description}`)
                        .reduce((s1, s2) => s1 + "\n" + s2)

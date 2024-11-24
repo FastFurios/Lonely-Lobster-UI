@@ -195,13 +195,14 @@ export class SystemComponent implements OnChanges {
       this.numIterationsToGo = 0
 //    this.wof.initialize()
       this.systemState$ = this.bas.systemStateOnInitialization(this.configObject)
-      // .pipe(
-      //   catchError((err: any) => {
-      //     this.backendErrorMessage = "*** ERROR: could not reach backend or error in the backend"
-      //     this.showSystemState = false
-      //     return throwError(() => new Error("*** ERROR: " + err/* .error.message */))
-      //   })
-      // )
+      .pipe(
+          catchError((err: any) => {
+            // this.backendErrorMessage = "*** ERROR: could not reach backend or error in the backend"
+            this.showSystemState = false
+            // return throwError(() => new Error("*** ERROR: " + err/* .error.message */))
+            return throwError(() => err)
+        })
+      )
       this.systemState$.subscribe(systemState => {
         this.numValueChains = systemState.valueChains.length
         //console.log("system.setOrResetSystem(): systemState.frontendPresets=")

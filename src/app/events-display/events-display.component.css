@@ -6,7 +6,9 @@
     display: block;
     background-color: #f0f0f0;
   }
-  
+
+
+
   /* Scrollable List */
   .scrollable-list {
     position: absolute; /* Overlay the parent component */
@@ -32,4 +34,3 @@
   .list-item:last-child {
     border-bottom: none;
   }
-  

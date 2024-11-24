@@ -85,3 +85,9 @@ i:hover {
     place-items: center; /* centers both vertically and horizontally */
 }
 
+
+.error-box {
+    color: red;
+    background-color: white;
+  }
+

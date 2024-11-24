@@ -21,11 +21,11 @@ import { EventSeverity, EventTypeId } from './shared/io_api_definitions'
 
 
 type ActionsPossible = {
-    login:          boolean,
-    run:            boolean,
-    downloadConfig: boolean,
-    downloadEvents: boolean,
-    discard:        boolean
+    login:              boolean,
+    run:                boolean,
+    downloadConfig:     boolean,
+    downloadEvents:     boolean,
+    discard:            boolean
 }
 
 type JwtPayloadWithGivenName = JwtPayload & { given_name: string }
@@ -44,6 +44,7 @@ export class AppComponent {
   public  canRun                 = false
   public  canDownloadDiscard     = false
   public  userIsLoggedIn         = false
+  public  displayEvents          = false
   public  loggedInUserName       = ""
   private workItemEvents$: Observable<I_WorkItemEvents>
   public  actionsPossible: ActionsPossible
@@ -60,11 +61,11 @@ export class AppComponent {
     private ess:      EventsService,
     private location: Location) { 
       this.actionsPossible = {
-          login:          true,
-          run:            false,
-          downloadConfig: false,
-          downloadEvents: false,
-          discard:        false
+          login:              true,
+          run:                false,
+          downloadConfig:     false,
+          downloadEvents:     false,
+          discard:            false
       }
   }
 
@@ -83,13 +84,13 @@ export class AppComponent {
   }
 
   private processNewState(state: FrontendState): void {
-    this.userIsLoggedIn = state.isLoggedIn
+      this.userIsLoggedIn = state.isLoggedIn
       this.actionsPossible = {
           login:          !state.isLoggedIn,
           run:            this.isRunActionPossible(state),
           downloadConfig: state.hasSystemConfiguration,
           downloadEvents: state.hasBackendSystemInstance,
-          discard:        state.hasSystemConfiguration
+          discard:        state.hasSystemConfiguration 
       }
   }
 
@@ -162,8 +163,9 @@ export class AppComponent {
       //this.cfs.configAsJson = fileContent
       try {
         this.cfs.configAsJson = JSON.parse(fileContent) 
+        this.ess.add(applicationEventFrom("parsing JSON from config file", file.name, EventTypeId.configFileLoaded, EventSeverity.info))
       } catch (error) {
-        this.ess.add(applicationEventFrom("parsing JSON from config file", file.name, EventTypeId.configJsonError, EventSeverity.critical))
+        this.ess.add(applicationEventFrom("parsing JSON from config file", file.name, EventTypeId.configJsonError, EventSeverity.fatal))
       }
       //this.router.navigate(["../edit"], { relativeTo: this.route })
       //console.log(`config-file.service: cfs.configObject=`)
@@ -228,4 +230,20 @@ export class AppComponent {
       this.downloadToFile(blob, "csv")
     })
   }
+
+  // --------------------------------------------------------------------------------------
+  //     Display application events list  
+  // --------------------------------------------------------------------------------------
+  public onToggleEventsDisplay(): void {
+    this.displayEvents = !this.displayEvents
+  }
+
+  public hasEvents(): boolean { return this.ess.hasEvents}
+
+  get latestEventDescription(): string {
+    const c_lengthEventDisplay = 50 
+    const latestEventDiscription: string = this.events[this.events.length - 1].description 
+    return latestEventDiscription.length < c_lengthEventDisplay ? latestEventDiscription : latestEventDiscription.substring(0, c_lengthEventDisplay - 3) +"..."  
+  }
+
 }

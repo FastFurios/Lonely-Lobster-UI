@@ -31,7 +31,7 @@ const authReq = req.clone({ setHeaders: { Authorization: `Bearer ${s3}` }})  // 
 export function handleResponseError$(req: HttpRequest<any>, next: HttpHandlerFn): Observable<HttpEvent<any>> {  // derived from ChatGPT suggestion
     return next(req).pipe(
         catchError((error: HttpErrorResponse) => {
-            // i.e. backend attached an Application Event as error to error then pass this thru w/o any changes
+            // if backend set the error status != 0 then pass this thru to the requester w/o any changes
             if (error.status != 0) return throwError(() => error /* error.error*/ /*new Error(errorMessage)*/)     // Return a user-friendly error message)
 
             // error status == 0, i.e. no proper http error status from the server. Indicates local network problem.  
