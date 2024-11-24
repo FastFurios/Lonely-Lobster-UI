@@ -77,8 +77,8 @@ export class BackendApiService {
   public dropSystem(): Observable<any> {
     console.log("BAS: this.dropSystem()")
     return this.http.get<any>(this.API_URL + "drop/", { withCredentials: true } /*, {responseType: "json"}*/)
-        // .pipe(
-        //   catchError((error: HttpErrorResponse) => this.errorHandler(error))
-        // )
+        .pipe(
+          catchError((error: HttpErrorResponse) => this.errorHandler(error))
+        )
   }
 }

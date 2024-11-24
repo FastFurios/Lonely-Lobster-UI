@@ -14,7 +14,7 @@ import { BackendApiService } from './shared/backend-api.service'
 import { I_WorkItemEvents, I_WorkItemEvent, ApplicationEvent } from './shared/io_api_definitions'
 import { AppStateService, FrontendState } from './shared/app-state.service'
 import { EventsDisplayComponent } from './events-display/events-display.component'
-import { EventsService } from './shared/events.service'
+import { EventsService, MaterialIconAndColor as MaterialIconAndCssStyle } from './shared/events.service'
 import { applicationEventFrom } from './shared/helpers'
 import { EventSeverity, EventTypeId } from './shared/io_api_definitions'
 
@@ -29,6 +29,13 @@ type ActionsPossible = {
 }
 
 type JwtPayloadWithGivenName = JwtPayload & { given_name: string }
+
+type EventDisplayDescAndSeverityMatIcon = {
+    description:  string
+    materialIcon: string
+    cssStyle:     string
+}
+
 
 @Component({
   selector: 'app-root',
@@ -234,16 +241,24 @@ export class AppComponent {
   // --------------------------------------------------------------------------------------
   //     Display application events list  
   // --------------------------------------------------------------------------------------
-  public onToggleEventsDisplay(): void {
-    this.displayEvents = !this.displayEvents
-  }
+  public onToggleEventsDisplay(): void { if (this.hasEvents()) this.displayEvents = !this.displayEvents }
 
   public hasEvents(): boolean { return this.ess.hasEvents}
 
-  get latestEventDescription(): string {
+  get latestEventDescAndSevMatIcon(): EventDisplayDescAndSeverityMatIcon {
+    if (!this.hasEvents()) return { 
+        description:  "",
+        materialIcon: "",
+        cssStyle:     ""
+      }
     const c_lengthEventDisplay = 50 
-    const latestEventDiscription: string = this.events[this.events.length - 1].description 
-    return latestEventDiscription.length < c_lengthEventDisplay ? latestEventDiscription : latestEventDiscription.substring(0, c_lengthEventDisplay - 3) +"..."  
+    const latestEvent: ApplicationEvent = this.events[this.events.length - 1]
+    const latestEventMatIconAndCssStyle: MaterialIconAndCssStyle = EventsService.materialIconAndCssStyle(latestEvent.severity)
+    return { 
+        description:  latestEvent.description.length < c_lengthEventDisplay ? latestEvent.description : latestEvent.description.substring(0, c_lengthEventDisplay - 3) +"...",
+        materialIcon: latestEventMatIconAndCssStyle.materialIcon,
+        cssStyle:     latestEventMatIconAndCssStyle.cssStyle
+    }
   }
-
+  
 }
