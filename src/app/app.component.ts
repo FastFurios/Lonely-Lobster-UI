@@ -124,6 +124,7 @@ export class AppComponent {
           console.log("AppComponent.onLogIn(): this.aus.accessToken= " + this.aus.accessToken)
           this.loggedInUserName = (<JwtPayloadWithGivenName>this.aus.decodedAccessToken)?.given_name
           console.log(`AppComponent.onLogIn(): send "logged-in" to ATS`)
+          this.ess.add(applicationEventFrom("Entra ID login request", "app.component", EventTypeId.loggedOn, EventSeverity.info))
           this.ass.frontendEventsSubject$.next("logged-in")
         },
         error: (err: Error) => {
@@ -138,6 +139,7 @@ export class AppComponent {
   public onLogOut(): void {
       this.mas.logout()
       console.log(`AppComponent.onLogOut(): send "logged-out" to ATS`)
+      this.ess.add(applicationEventFrom("Entra ID login request", "app.component", EventTypeId.loggedOut, EventSeverity.info))
       this.ass.frontendEventsSubject$.next("logged-out")
   }
 

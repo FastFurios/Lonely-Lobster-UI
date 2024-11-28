@@ -381,7 +381,11 @@ export enum EventTypeId {
     authorizationError  = "Request not authorized",
     sessionNotFound     = "Session not found (possibly expired)",
     networkProblems     = "Cannot reach resource due to network problems (probably on frontend-side).",
-    configJsonError     = "JSON of configuration file is corrupt."
+    configJsonError     = "JSON of configuration file is corrupt.",
+    loggedOn            = "logged in.",
+    loggedOut           = "logged out.",
+    systemInOperation   = "System in operation.",
+    systemFailed        = "System failed."
 } 
 
 export enum EventSeverity {

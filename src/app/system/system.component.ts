@@ -1,7 +1,7 @@
 import { Component, OnChanges, HostListener } from '@angular/core'
 import { Observable, catchError, throwError } from "rxjs"
 import { BackendApiService } from '../shared/backend-api.service'
-import { TimeUnit, I_SystemState, I_SystemStatistics, I_ValueChainStatistics, ObExtended, PsWorkerUtilization, ValueChainId, VcExtended, I_ConfigAsJson } from "../shared/io_api_definitions"
+import { TimeUnit, I_SystemState, I_SystemStatistics, I_ValueChainStatistics, ObExtended, PsWorkerUtilization, ValueChainId, VcExtended, I_ConfigAsJson, EventTypeId, EventSeverity } from "../shared/io_api_definitions"
 import { WorkorderFeederService } from '../shared/workorder-feeder.service'
 import { UiBoxSize, UiBoxMarginToWindow, UiSystemHeaderHeight, UiWorkerStatsHeight } from '../shared/ui-boxes-definitions'
 import { environment } from '../../environments/environment.prod'
@@ -9,6 +9,9 @@ import { ColorMapperService } from '../shared/color-mapper.service'
 import { cssColorListVc, cssColorListSest } from '../shared/inventory-layout'
 import { ConfigFileService } from '../shared/config-file.service'
 import { AppStateService, FrontendState } from '../shared/app-state.service';
+import { EventsService } from '../shared/events.service';
+import { applicationEventFrom } from '../shared/helpers'
+
 
 enum RunResumeButton {
   run    = "Run",
@@ -52,7 +55,8 @@ export class SystemComponent implements OnChanges {
                private bas: BackendApiService,
                private wof: WorkorderFeederService,
                private ats: AppStateService,
-               private cms: ColorMapperService ) { 
+               private cms: ColorMapperService,
+               private ess: EventsService ) { 
   }
 
   ngOnInit(): void {
@@ -186,7 +190,7 @@ export class SystemComponent implements OnChanges {
       this.wof.initialize()   // initialize work order feeder  
       this.cms.clear()  // initialize color mapper ...
       this.cms.addCategory("value-chain",        cssColorListVc)
-      this.cms.addCategory("selection-strategy", cssColorListSest) 
+      this.cms.addCategory("selection-strategy", cssColorListSest)
 //    this.onSaveFile()  // ######################## tbd ###############
 
   }
@@ -195,24 +199,26 @@ export class SystemComponent implements OnChanges {
       this.numIterationsToGo = 0
 //    this.wof.initialize()
       this.systemState$ = this.bas.systemStateOnInitialization(this.configObject)
-      .pipe(
-          catchError((err: any) => {
-            // this.backendErrorMessage = "*** ERROR: could not reach backend or error in the backend"
-            this.showSystemState = false
-            // return throwError(() => new Error("*** ERROR: " + err/* .error.message */))
-            return throwError(() => err)
-        })
+          .pipe(
+              catchError((err: any) => {
+                // this.backendErrorMessage = "*** ERROR: could not reach backend or error in the backend"
+                this.showSystemState = false
+                // return throwError(() => new Error("*** ERROR: " + err/* .error.message */))
+                this.ess.add(applicationEventFrom("setOrResetSystem", "(Re)setting system", EventTypeId.systemFailed, EventSeverity.fatal))
+                return throwError(() => err)
+            })
       )
       this.systemState$.subscribe(systemState => {
-        this.numValueChains = systemState.valueChains.length
-        //console.log("system.setOrResetSystem(): systemState.frontendPresets=")
-        //console.log(systemState.frontendPresets)
-        this.applyPresets(systemState)
-        this.processIteration(systemState) 
-        this.calcSizeOfUiBoxes() 
-        this.backendErrorMessage = ""
-        this.signalToLearnStatsLegendToReload()
-      })
+          this.numValueChains = systemState.valueChains.length
+          //console.log("system.setOrResetSystem(): systemState.frontendPresets=")
+          //console.log(systemState.frontendPresets)
+          this.applyPresets(systemState)
+          this.processIteration(systemState) 
+          this.calcSizeOfUiBoxes() 
+          this.backendErrorMessage = ""
+          this.signalToLearnStatsLegendToReload()
+          this.ess.add(applicationEventFrom("setOrResetSystem", "(Re)setting system", EventTypeId.systemInOperation, EventSeverity.info))
+        })
       this.showSystemState = true
   }
   
