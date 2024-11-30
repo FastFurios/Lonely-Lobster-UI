@@ -13,7 +13,6 @@ import { ConfigFileService } from './shared/config-file.service'
 import { BackendApiService } from './shared/backend-api.service'
 import { I_WorkItemEvents, I_WorkItemEvent, ApplicationEvent } from './shared/io_api_definitions'
 import { AppStateService, FrontendState } from './shared/app-state.service'
-import { EventsDisplayComponent } from './events-display/events-display.component'
 import { EventsService, MaterialIconAndColor as MaterialIconAndCssStyle } from './shared/events.service'
 import { applicationEventFrom } from './shared/helpers'
 import { EventSeverity, EventTypeId } from './shared/io_api_definitions'
@@ -124,7 +123,7 @@ export class AppComponent {
           console.log("AppComponent.onLogIn(): this.aus.accessToken= " + this.aus.accessToken)
           this.loggedInUserName = (<JwtPayloadWithGivenName>this.aus.decodedAccessToken)?.given_name
           console.log(`AppComponent.onLogIn(): send "logged-in" to ATS`)
-          this.ess.add(applicationEventFrom("Entra ID login request", "app.component", EventTypeId.loggedOn, EventSeverity.info))
+          this.ess.add(applicationEventFrom("Entra ID login request", "app.component", EventTypeId.loggedIn, EventSeverity.info))
           this.ass.frontendEventsSubject$.next("logged-in")
         },
         error: (err: Error) => {
@@ -148,12 +147,15 @@ export class AppComponent {
   // --------------------------------------------------------------------------------------
 
   public onDiscard(): void {
-    this.cfs.configAsJson = undefined
-    this.bas.dropSystem().subscribe(() => console.log("AppComponent.onDiscard(): response to drop request received"))
-    console.log(`AppComponent.onDiscard(): send "discarded" to ATS`)
-    this.ass.frontendEventsSubject$.next("discarded")
-    // tbc: add API call to backend to destroy the Lonely Lobster system for this session
-    this.router.navigate(["../home"], { relativeTo: this.route })
+    this.bas.dropSystem().subscribe(() => { 
+      this.cfs.configAsJson = undefined
+      this.ess.add(applicationEventFrom("Dropping system", "app.component", EventTypeId.systemDropped, EventSeverity.info))
+      console.log("AppComponent.onDiscard(): response to drop request received") 
+      console.log(`AppComponent.onDiscard(): send "discarded" to ATS`)
+      this.ass.frontendEventsSubject$.next("discarded")
+      // tbc: add API call to backend to destroy the Lonely Lobster system for this session
+      this.router.navigate(["../home"], { relativeTo: this.route })
+    })
   }
 
   // --------------------------------------------------------------------------------------
@@ -214,6 +216,7 @@ export class AppComponent {
     link.download = `${this.configAsJson.system_id}_${now.getFullYear()}-${now.getMonth().toString().padStart(2, "0")}-${now.getDay().toString().padStart(2, "0")}_${now.getHours().toString().padStart(2, "0")}-${now.getMinutes().toString().padStart(2, "0")}.${fileExtension}`
     link.click()
     link.remove()
+    this.ess.add(applicationEventFrom("Downloaded config", "/download", EventTypeId.configDownloaded, EventSeverity.info))
   }
 
   public onSaveFile(): void {
@@ -237,6 +240,7 @@ export class AppComponent {
       const csvContent = wiesAsStringRows.join('\n')
       const blob = new Blob([csvContent], { type: "text/csv" })
       this.downloadToFile(blob, "csv")
+      this.ess.add(applicationEventFrom("Downloaded statistic events", "/download", EventTypeId.statsEventsDownloaded, EventSeverity.info))
     })
   }
 
