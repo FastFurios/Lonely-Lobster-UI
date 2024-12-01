@@ -4,23 +4,30 @@
 
  <div class="table-container">
     <table>
-        <thead>
-            <tr>
-                <th></th>
-                <th>Time</th>
+        <colgroup>
+            <col style="width: 20px;">
+            <col style="width: 50px;">
+            <col style="width: 100px;">
+            <col style="width: 300px;">
+            <col style="width: 300px;">
+        </colgroup>
+<!--         <thead>
+ -->            <tr>
+                <th>(i)</th>
+                <th>Millisecs</th>
                 <th>Source</th>
-                <th>Context</th>
                 <th>Description</th>
+                <th>Context</th>
             </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let event of events" [style]="materialIconAndCssStyle(event.severity).cssStyle" class="list-item" >
+<!--         </thead>
+ --><!--         <tbody> -->
+            <tr *ngFor="let event of events" [style]="materialIconAndCssStyle(event.severity).cssStyle">
                 <td><i class="material-symbols-outlined">{{ materialIconAndCssStyle(event.severity).materialIcon }}</i></td>
                 <td>{{ event.dateAndtime | date: "H:mm:ss" }}</td>
                 <td>{{ event.source }}</td>
-                <td>{{ event.context }}</td>
                 <td>{{ event.description }}</td>
+                <td>{{ event.context }}</td>
             </tr>
-        </tbody>
+        <!-- </tbody> -->
     </table>
 </div>

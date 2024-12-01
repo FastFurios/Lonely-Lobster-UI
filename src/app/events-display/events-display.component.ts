@@ -14,7 +14,7 @@ export class EventsDisplayComponent {
     constructor(private ess: EventsService) { }
 
     get events(): ApplicationEvent[] {
-        return [...this.ess.events].sort((a: ApplicationEvent, b:ApplicationEvent) => b.dateAndtime.getMilliseconds() - a.dateAndtime.getMilliseconds())
+        return [...this.ess.events].sort((a: ApplicationEvent, b:ApplicationEvent) => b.dateAndtime > a.dateAndtime ? 1 : -1)
     }
     
     public materialIconAndCssStyle(sev: EventSeverity): MaterialIconAndColor { return EventsService.materialIconAndCssStyle(sev) }

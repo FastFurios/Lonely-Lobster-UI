@@ -55,16 +55,15 @@ export class AppComponent {
   public  actionsPossible: ActionsPossible
   public  events:          ApplicationEvent[]
 
-  constructor(
-    private router:   Router,
-    private route:    ActivatedRoute, 
-    private mas:      MsalService, 
-    private aus:      AuthenticationService,
-    private cfs:      ConfigFileService,
-    private ass:      AppStateService,
-    private bas:      BackendApiService,
-    private ess:      EventsService,
-    private location: Location) { 
+  constructor(private router:   Router,
+              private route:    ActivatedRoute, 
+              private mas:      MsalService, 
+              private aus:      AuthenticationService,
+              private cfs:      ConfigFileService,
+              private ass:      AppStateService,
+              private bas:      BackendApiService,
+              private ess:      EventsService,
+              private location: Location) { 
       this.actionsPossible = {
           login:              true,
           run:                false,
@@ -147,6 +146,7 @@ export class AppComponent {
 
   public onDiscard(): void {
       this.cfs.configAsJson = undefined
+      this.ass.frontendEventsSubject$.next("discarded")
       this.ess.add(EventsService.applicationEventFrom("Discarding configuration", "app.component", EventTypeId.configDropped, EventSeverity.info))
   
       if (this.userIsLoggedIn) {
@@ -154,7 +154,6 @@ export class AppComponent {
             this.ess.add(EventsService.applicationEventFrom("Dropping system", "app.component", EventTypeId.systemDropped, EventSeverity.info))
             // console.log("AppComponent.onDiscard(): response to drop request received") 
             // console.log(`AppComponent.onDiscard(): send "discarded" to ATS`)
-            this.ass.frontendEventsSubject$.next("discarded")
             // tbc: add API call to backend to destroy the Lonely Lobster system for this session
             this.router.navigate(["../home"], { relativeTo: this.route })
           })

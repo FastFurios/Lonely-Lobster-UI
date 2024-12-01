@@ -19,8 +19,9 @@ export class EventsService {
 
   public add(appEvent: ApplicationEvent): void { 
     this._events.push(appEvent) 
+//  this._events.sort((a, b) => b.dateAndtime.getMilliseconds() - a.dateAndtime.getMilliseconds())
     console.log("Events service: added event: resulting list = ")
-    console.log(this.stringified())
+    console.log(this.stringified()) 
   }
 
   get events(): ApplicationEvent[] { return this._events }

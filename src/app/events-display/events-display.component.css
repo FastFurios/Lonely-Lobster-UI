@@ -25,9 +25,10 @@ table {
     width: 100%;
     border-collapse: collapse;
 }
+
 th, td {
-/*     border: 1px solid #ddd;
- */    padding: 8px;
+ /* border: 1px solid #ddd;*/    
+    padding: 8px;
     text-align: left;
 }
 th {
@@ -39,36 +40,3 @@ th {
 tr:nth-child(even) {
     background-color: #f9f9f9;
 }
-
-
-
-
-
-
-
-  /* Scrollable List */
-  .scrollable-list {
-    position: absolute; /* Overlay the parent component */
-    top: 10px;
-    left: 20px;
-    width: 500px;
-    max-height: 100px;
-    overflow-y: auto; /* Enable vertical scrolling */
-    background-color: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow to make it pop */
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    z-index: 1000; /* Ensure it's on top */
-    padding: 10px;
-  }
-  
-  /* Individual List Items */
-  .list-item {
-    padding: 10px;
-    border-bottom: 1px solid grey;
-  }
-  
-  .list-item:last-child {
-    border-bottom: none;
-  }
-
