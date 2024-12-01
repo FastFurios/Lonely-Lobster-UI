@@ -396,7 +396,8 @@ export enum EventTypeId {
 
     configDownloaded    = "Configuration downloaded.",
     statsEventsDownloaded= "Statistic events downloaded.",
-    systemDropped       = "System dropped.",
+    configDropped       = "Configuration discarded.",
+    systemDropped       = "Backend system discarded."
 
 } 
 

@@ -4,8 +4,6 @@ import { I_ConfigAsJson, I_ValueChainAsJson, I_ProcessStepAsJson, I_GloballyDefi
 import { ConfigFileService } from '../shared/config-file.service'
 import { AppStateService, FrontendState } from '../shared/app-state.service'
 import { EventsService } from '../shared/events.service'
-import { applicationEventFrom } from '../shared/helpers'
-
 
 
 @Component({
@@ -345,7 +343,7 @@ export class EditorComponent implements OnInit {
   public onSubmitForm() {
     this.cfs.configAsJson = this.configObjectAsJsonFromForm()
     this.cfs.componentEvent = "EditorSaveEvent"
-    this.ess.add(applicationEventFrom("Saved edit changes.", "", EventTypeId.configSaved, EventSeverity.info))
+    this.ess.add(EventsService.applicationEventFrom("Saved edit changes.", "", EventTypeId.configSaved, EventSeverity.info))
     console.log(`Editor.onSubmitForm(): send "config-edit-saved" to ATS`)
     this.ats.frontendEventsSubject$.next("config-edit-saved")
   }

@@ -14,7 +14,6 @@ import { BackendApiService } from './shared/backend-api.service'
 import { I_WorkItemEvents, I_WorkItemEvent, ApplicationEvent } from './shared/io_api_definitions'
 import { AppStateService, FrontendState } from './shared/app-state.service'
 import { EventsService, MaterialIconAndColor as MaterialIconAndCssStyle } from './shared/events.service'
-import { applicationEventFrom } from './shared/helpers'
 import { EventSeverity, EventTypeId } from './shared/io_api_definitions'
 
 
@@ -123,13 +122,13 @@ export class AppComponent {
           console.log("AppComponent.onLogIn(): this.aus.accessToken= " + this.aus.accessToken)
           this.loggedInUserName = (<JwtPayloadWithGivenName>this.aus.decodedAccessToken)?.given_name
           console.log(`AppComponent.onLogIn(): send "logged-in" to ATS`)
-          this.ess.add(applicationEventFrom("Entra ID login request", "app.component", EventTypeId.loggedIn, EventSeverity.info))
+          this.ess.add(EventsService.applicationEventFrom("Entra ID login request", "app.component", EventTypeId.loggedIn, EventSeverity.info))
           this.ass.frontendEventsSubject$.next("logged-in")
         },
         error: (err: Error) => {
           console.log("app.login.mas.loginPopup().error: err.message = " + err.message)
           console.log(`AppComponent.onLogIn(): authentication error; send "logged-out" to ATS`)
-          this.ess.add(applicationEventFrom("Entra ID login request", "app.component", EventTypeId.networkProblems, EventSeverity.critical, err.message))
+          this.ess.add(EventsService.applicationEventFrom("Entra ID login request", "app.component", EventTypeId.networkProblems, EventSeverity.critical, err.message))
           this.ass.frontendEventsSubject$.next("logged-out")
         }
     })
@@ -138,7 +137,7 @@ export class AppComponent {
   public onLogOut(): void {
       this.mas.logout()
       console.log(`AppComponent.onLogOut(): send "logged-out" to ATS`)
-      this.ess.add(applicationEventFrom("Entra ID login request", "app.component", EventTypeId.loggedOut, EventSeverity.info))
+      this.ess.add(EventsService.applicationEventFrom("Entra ID login request", "app.component", EventTypeId.loggedOut, EventSeverity.info))
       this.ass.frontendEventsSubject$.next("logged-out")
   }
 
@@ -147,15 +146,19 @@ export class AppComponent {
   // --------------------------------------------------------------------------------------
 
   public onDiscard(): void {
-    this.bas.dropSystem().subscribe(() => { 
       this.cfs.configAsJson = undefined
-      this.ess.add(applicationEventFrom("Dropping system", "app.component", EventTypeId.systemDropped, EventSeverity.info))
-      console.log("AppComponent.onDiscard(): response to drop request received") 
-      console.log(`AppComponent.onDiscard(): send "discarded" to ATS`)
-      this.ass.frontendEventsSubject$.next("discarded")
-      // tbc: add API call to backend to destroy the Lonely Lobster system for this session
-      this.router.navigate(["../home"], { relativeTo: this.route })
-    })
+      this.ess.add(EventsService.applicationEventFrom("Discarding configuration", "app.component", EventTypeId.configDropped, EventSeverity.info))
+  
+      if (this.userIsLoggedIn) {
+          this.bas.dropSystem().subscribe(() => { 
+            this.ess.add(EventsService.applicationEventFrom("Dropping system", "app.component", EventTypeId.systemDropped, EventSeverity.info))
+            // console.log("AppComponent.onDiscard(): response to drop request received") 
+            // console.log(`AppComponent.onDiscard(): send "discarded" to ATS`)
+            this.ass.frontendEventsSubject$.next("discarded")
+            // tbc: add API call to backend to destroy the Lonely Lobster system for this session
+            this.router.navigate(["../home"], { relativeTo: this.route })
+          })
+      }
   }
 
   // --------------------------------------------------------------------------------------
@@ -174,9 +177,9 @@ export class AppComponent {
       //this.cfs.configAsJson = fileContent
       try {
         this.cfs.configAsJson = JSON.parse(fileContent) 
-        this.ess.add(applicationEventFrom("parsing JSON from config file", file.name, EventTypeId.configFileLoaded, EventSeverity.info))
+        this.ess.add(EventsService.applicationEventFrom("parsing JSON from config file", file.name, EventTypeId.configFileLoaded, EventSeverity.info))
       } catch (error) {
-        this.ess.add(applicationEventFrom("parsing JSON from config file", file.name, EventTypeId.configJsonError, EventSeverity.fatal))
+        this.ess.add(EventsService.applicationEventFrom("parsing JSON from config file", file.name, EventTypeId.configJsonError, EventSeverity.fatal))
       }
       //this.router.navigate(["../edit"], { relativeTo: this.route })
       //console.log(`config-file.service: cfs.configObject=`)
@@ -216,7 +219,7 @@ export class AppComponent {
     link.download = `${this.configAsJson.system_id}_${now.getFullYear()}-${now.getMonth().toString().padStart(2, "0")}-${now.getDay().toString().padStart(2, "0")}_${now.getHours().toString().padStart(2, "0")}-${now.getMinutes().toString().padStart(2, "0")}.${fileExtension}`
     link.click()
     link.remove()
-    this.ess.add(applicationEventFrom("Downloaded config", "/download", EventTypeId.configDownloaded, EventSeverity.info))
+    this.ess.add(EventsService.applicationEventFrom("Downloaded config", "/download", EventTypeId.configDownloaded, EventSeverity.info))
   }
 
   public onSaveFile(): void {
@@ -230,18 +233,18 @@ export class AppComponent {
   // --------------------------------------------------------------------------------------
 
   public onDownloadEvents(): void {
-    function workitemEventAsCsvRow(wie: I_WorkItemEvent): string {
-      return `${wie.system};${wie.timestamp};${wie.workitem};${wie.eventType};${wie.valueChain};${wie.processStep};${wie.worker ? wie.worker : ""}`
-    }
-    this.workItemEvents$ = this.bas.workItemEvents()
-    this.workItemEvents$.subscribe(wies => {
-      const wiesAsStringRows: string[] = ["system; time; workitem;event;value-chain;process-step; worker"]
-                                        .concat(wies.map(wie => workitemEventAsCsvRow(wie)))
-      const csvContent = wiesAsStringRows.join('\n')
-      const blob = new Blob([csvContent], { type: "text/csv" })
-      this.downloadToFile(blob, "csv")
-      this.ess.add(applicationEventFrom("Downloaded statistic events", "/download", EventTypeId.statsEventsDownloaded, EventSeverity.info))
-    })
+      function workitemEventAsCsvRow(wie: I_WorkItemEvent): string {
+          return `${wie.system};${wie.timestamp};${wie.workitem};${wie.eventType};${wie.valueChain};${wie.processStep};${wie.worker ? wie.worker : ""}`
+      }
+      this.workItemEvents$ = this.bas.workItemEvents()
+      this.workItemEvents$.subscribe(wies => {
+          const wiesAsStringRows: string[] = ["system; time; workitem;event;value-chain;process-step; worker"]
+                                            .concat(wies.map(wie => workitemEventAsCsvRow(wie)))
+          const csvContent = wiesAsStringRows.join('\n')
+          const blob = new Blob([csvContent], { type: "text/csv" })
+          this.downloadToFile(blob, "csv")
+          this.ess.add(EventsService.applicationEventFrom("Downloaded statistic events", "/download", EventTypeId.statsEventsDownloaded, EventSeverity.info))
+      })
   }
 
   // --------------------------------------------------------------------------------------

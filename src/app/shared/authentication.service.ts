@@ -3,7 +3,7 @@
 import { Injectable } from '@angular/core';
 import { jwtDecode, JwtPayload } from 'jwt-decode'
 import { EventsService } from './events.service'
-import { applicationEventFrom } from './helpers'
+import {  } from './helpers'
 import { EventSeverity, EventTypeId } from './io_api_definitions'
 
 @Injectable({
@@ -30,7 +30,7 @@ export class AuthenticationService {
         } 
     catch (error) {
       console.error('Error decoding token:', error)
-      this.ess.add(applicationEventFrom("decoding JWT token", "Authentication.Service", EventTypeId.authorizationError, EventSeverity.critical, this.accessToken))
+      this.ess.add(EventsService.applicationEventFrom("decoding JWT token", "Authentication.Service", EventTypeId.authorizationError, EventSeverity.critical, this.accessToken))
       decodedToken = null
     }
     return decodedToken

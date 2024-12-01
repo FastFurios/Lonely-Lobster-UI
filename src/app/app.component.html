@@ -20,9 +20,9 @@
             <div>
                 Version: Frontend: {{ version }}
                 System: <div class="file-upload">  {{ configAsJson?.system_id || "No system defined yet." }} </div>
-                <div class="flex-strechted-left-to-right">
+                <div class="flex-from-left-to-right">
                     <div>Events:</div>
-                    <div class="flex-strechted-left-to-right" [style]="latestEventDescAndSevMatIcon.cssStyle">
+                    <div class="flex-from-left-to-right" [style]="latestEventDescAndSevMatIcon.cssStyle">
                         <i class="material-symbols-outlined">{{ latestEventDescAndSevMatIcon.materialIcon }}</i>                    
                         <div>{{ latestEventDescAndSevMatIcon.description }}</div>
                     </div>

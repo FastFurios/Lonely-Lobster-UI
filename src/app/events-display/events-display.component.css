@@ -9,13 +9,50 @@
 
 
 
+
+
+.table-container {
+    position: absolute; /* Overlay the parent component */
+    top: 10px;
+    left: 20px;
+    max-height: 500px; /* Set the height of the scrollable area */
+    overflow-y: auto; /* Enable vertical scrolling */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+/*     border: 1px solid #ddd;
+ */    padding: 8px;
+    text-align: left;
+}
+th {
+    background-color: #f4f4f4;
+    position: sticky;
+    top: 0; /* Makes the header sticky */
+    z-index: 1;
+}
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+
+
+
+
+
+
   /* Scrollable List */
   .scrollable-list {
     position: absolute; /* Overlay the parent component */
-    top: 20px;
+    top: 10px;
     left: 20px;
-    width: 600px;
-    max-height: 400px;
+    width: 500px;
+    max-height: 100px;
     overflow-y: auto; /* Enable vertical scrolling */
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow to make it pop */
@@ -28,7 +65,7 @@
   /* Individual List Items */
   .list-item {
     padding: 10px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid grey;
   }
   
   .list-item:last-child {

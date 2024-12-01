@@ -1,12 +1,26 @@
 <!-- <p>events-display works!</p>
  -->
 
-<table class="scrollable-list">
-    <tr *ngFor="let event of events" class="event-item" [style]="materialIconAndCssStyle(event.severity).cssStyle">
-        <td><i class="material-symbols-outlined">{{ materialIconAndCssStyle(event.severity).materialIcon }}</i></td>
-        <td>{{ event.dateAndtime | date: "H:mm:ss" }}</td>
-        <td>{{ event.source }}</td>
-        <td>{{ event.context }}</td>
-        <td>{{ event.description }}</td>
-    </tr>
-</table>
+
+ <div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Time</th>
+                <th>Source</th>
+                <th>Context</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let event of events" [style]="materialIconAndCssStyle(event.severity).cssStyle" class="list-item" >
+                <td><i class="material-symbols-outlined">{{ materialIconAndCssStyle(event.severity).materialIcon }}</i></td>
+                <td>{{ event.dateAndtime | date: "H:mm:ss" }}</td>
+                <td>{{ event.source }}</td>
+                <td>{{ event.context }}</td>
+                <td>{{ event.description }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

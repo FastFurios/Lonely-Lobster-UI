@@ -10,8 +10,6 @@ import { cssColorListVc, cssColorListSest } from '../shared/inventory-layout'
 import { ConfigFileService } from '../shared/config-file.service'
 import { AppStateService, FrontendState } from '../shared/app-state.service';
 import { EventsService } from '../shared/events.service';
-import { applicationEventFrom } from '../shared/helpers'
-
 
 enum RunResumeButton {
   run    = "Run",
@@ -204,7 +202,7 @@ export class SystemComponent implements OnChanges {
                 // this.backendErrorMessage = "*** ERROR: could not reach backend or error in the backend"
                 this.showSystemState = false
                 // return throwError(() => new Error("*** ERROR: " + err/* .error.message */))
-                this.ess.add(applicationEventFrom("setOrResetSystem", "(Re)setting system", EventTypeId.systemFailed, EventSeverity.fatal))
+                this.ess.add(EventsService.applicationEventFrom("setOrResetSystem", "(Re)setting system", EventTypeId.systemFailed, EventSeverity.fatal))
                 return throwError(() => err)
             })
       )
@@ -217,7 +215,7 @@ export class SystemComponent implements OnChanges {
           this.calcSizeOfUiBoxes() 
           this.backendErrorMessage = ""
           this.signalToLearnStatsLegendToReload()
-          this.ess.add(applicationEventFrom("setOrResetSystem", "(Re)setting system", EventTypeId.systemInOperation, EventSeverity.info))
+          this.ess.add(EventsService.applicationEventFrom("setOrResetSystem", "(Re)setting system", EventTypeId.systemInOperation, EventSeverity.info))
         })
       this.showSystemState = true
   }

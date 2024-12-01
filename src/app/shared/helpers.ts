@@ -20,21 +20,3 @@ export class DoubleStringMap<V> extends Map<string, V> {
       return `${key1}.${key2}`
     }
   }
-
-
-
-  import { environment } from '../../environments/environment'
-  import { EventTypeId, EventSeverity, ApplicationEvent } from './io_api_definitions'
-  
-  export function applicationEventFrom(at: string, moreContext: string, typeId: EventTypeId, sev: EventSeverity, desc?: string): ApplicationEvent {
-    return {
-        dateAndtime:    new Date(),
-        source:         "frontend",
-        sourceVersion:  environment.version,
-        severity:       sev,
-        typeId:         typeId,
-        description:    desc ? desc : typeId.toString(),  // use detail description or if not available then standard text of event type
-        context:        `${at}: ${moreContext}`
-    }
-}
-  

@@ -5,10 +5,7 @@ import { Observable, throwError, catchError } from 'rxjs'
 import { HttpRequest, HttpHandlerFn, HttpEvent, HttpErrorResponse } from '@angular/common/http'
 import { AuthenticationService } from './authentication.service'
 import { ApplicationEvent, EventSeverity, EventTypeId } from './io_api_definitions'
-import { environment } from '../../environments/environment.prod'
-import { AppComponent } from '../app.component'
-import { applicationEventFrom } from './helpers'
-
+import { EventsService } from './events.service'
 
 // -----------------------------------------------------------------------------------------
 // interceptor for outgoing http-requests that should carry a token
@@ -31,20 +28,35 @@ const authReq = req.clone({ setHeaders: { Authorization: `Bearer ${s3}` }})  // 
 export function handleResponseError$(req: HttpRequest<any>, next: HttpHandlerFn): Observable<HttpEvent<any>> {  // derived from ChatGPT suggestion
     return next(req).pipe(
         catchError((error: HttpErrorResponse) => {
-            // if backend set the error status != 0 then pass this thru to the requester w/o any changes
-            if (error.status != 0) return throwError(() => error /* error.error*/ /*new Error(errorMessage)*/)     // Return a user-friendly error message)
+            let appEvent: ApplicationEvent
+            switch (error.status) {
+                case 0: { // no proper http error status from the server. Indicates local network problem. Create an Application Event with the available data from the error
+                    appEvent = EventsService.applicationEventFrom("http-request", `${error.statusText}: ${error.url}`, EventTypeId.networkProblems, EventSeverity.critical)
+                    break
+                }
+                case 401: { // request rejected by express middleware due to invalid or missing token. Create an Application Event with the available data from the error
+                    appEvent = EventsService.applicationEventFrom("http-request", `${error.statusText}: ${error.url}`, EventTypeId.authorizationError, EventSeverity.critical)
+                    break
+                }
+                default: { // for other error.status the backend should have attached a proper Appliction Event to the HttpErrorResponse's error property
+                    return throwError(() => error)
+                }
+            }
+            // special treatment required i.e. appEvent to be attached to HttpErrorResponse's error property and pass the augmented HttpErrorResponse to the requester
+            const augmentedHttpErrorResponse = {
+              ...error,
+              error: appEvent
+            }
+            return throwError(() => augmentedHttpErrorResponse)
+            
+            // return throwError(() => new HttpErrorResponse({
+            //     headers:      error.headers,
+            //     status:       error.status,
+            //     statusText:   error.statusText,
+            //     url:          error.url ? error.url : undefined,
+            //     error:        appEvent  // HttpErrorResponse augmented with the Application Event 
+            //   }))
 
-            // error status == 0, i.e. no proper http error status from the server. Indicates local network problem.  
-            // create an Application Event with the available data from the error
-            const appEvent: ApplicationEvent = applicationEventFrom("http-request", `${error.statusText}: ${error.url}`, EventTypeId.networkProblems, EventSeverity.critical)
-
-            // incorporate the ApplicationEvent into an augmented HtpErrorResponse and pass it to the requester
-            return throwError(() => new HttpErrorResponse({
-                headers:      error.headers,
-                status:       error.status,
-                statusText:   error.statusText,
-                url:          error.url ? error.url : undefined,
-                error:        appEvent  // HttpErrorResponse augmented with the Application Event 
-            }))
+            // if (error.status != 0 && error.status != 401) return throwError(() => error /* error.error*/ /*new Error(errorMessage)*/)     // Return a user-friendly error message)
       }))
 }
