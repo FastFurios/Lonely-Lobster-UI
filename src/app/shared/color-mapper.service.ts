@@ -1,3 +1,8 @@
+//-------------------------------------------------------------------
+// COLOR MAPPER SERVICE
+//-------------------------------------------------------------------
+// last code cleaning: 11.12.2024
+
 import { Injectable } from '@angular/core'
 
 export type RgbColor      = [number, number, number]
@@ -12,7 +17,10 @@ export type ColorLegendItem = {
   textColor:        string // CSS color string
 }
 
-
+/**
+ * @class Given a color list it manages the latest dispensed color index.   
+ * @private 
+ */
 class ColorDispenser {
   private nextIndex: number = 0
   constructor(private colList: CssColorList) {
@@ -25,22 +33,30 @@ class ColorDispenser {
   }
 }
 
-export class ObjectColorMap extends Map<ColoringCategory, RgbColor> {
+/**
+ * @class Manages a map that maps objects to assigned colors.
+ */
+export class ObjectColorMap extends Map<ObjectId, RgbColor> {
+  private changeAndResetChangeIndicatorState: boolean = true // true if lately   .... dubious
   constructor(private colDisp: ColorDispenser) { 
     super() 
   }
-
-  private changeAndResetChangeIndicatorState: boolean = true
-
-  public changed(): boolean {
-    let aux = this.changeAndResetChangeIndicatorState
-    this.changeAndResetChangeIndicatorState = false
-    return aux
-  }
-
+  // /**
+  //  *  ... ??? 
+  //  * @returns ??? true the map was changed
+  //  */
+  // public changed(): boolean {
+  //   let aux = this.changeAndResetChangeIndicatorState
+  //   this.changeAndResetChangeIndicatorState = false
+  //   return aux
+  // }
+  /** 
+   * @param id - id of the object which's color is looked up  
+   * @returns the assigned color of the object 
+   */
   public color(id: ObjectId): RgbColor {
     let color = this.get(id)
-    if (!color) {
+    if (!color) { // in case it has no color yet, a color is assigned
       color = this.colDisp.nextColor
       this.set(id, color)
       this.changeAndResetChangeIndicatorState = true
@@ -49,34 +65,63 @@ export class ObjectColorMap extends Map<ColoringCategory, RgbColor> {
   }
 }
 
+/**
+ * @class Service to manage colors assigned to objects of various categories
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class ColorMapperService extends Map<ColoringCategory, ObjectColorMap> {
   constructor() { super() }
 
+  /** 
+   * Adds a new category with its color map
+   * @param cat - the category   
+   * @param colList - the color list   
+   */
   public addCategory(cat: ColoringCategory, colList: CssColorList): void {
     this.set(cat, new ObjectColorMap(new ColorDispenser(colList)))
   }
 
-  public colorOfObject(cat: ColoringCategory, obj: ObjectId): RgbColor | undefined {
+  /** 
+   * Looks up the color of an object of a given category
+   * @param cat - the category
+   * @param objId - id of the object
+   * @returns the color of the object or undefined if object is not found    
+   */
+  public colorOfObject(cat: ColoringCategory, objId: ObjectId): RgbColor | undefined {
     if (!this.get(cat)) throw new Error("ColorMapperService: colorOfObject(...): cat is undefined")
-    return this.get(cat)?.color(obj)
+    return this.get(cat)?.color(objId)
   }
 
+  /** 
+   * Looks up the color map of a given category
+   * @param cat - the category
+   * @returns the color map or undefined if not found    
+   */
   public allAssignedColors(cat: ColoringCategory): ObjectColorMap | undefined {
     return this.get(cat)
   }
 
-  public allAssignedColorsAsArray(cat: ColoringCategory): [string, RgbColor][]  {
-    const arr: [string, RgbColor][] = []
+  /** 
+   * Looks up the objects and their assigned colors
+   * @param cat - the category
+   * @returns an array of tuples of object ids and their color    
+   */
+  public allAssignedColorsAsArray(cat: ColoringCategory): [ObjectId, RgbColor][]  {
+    const arr: [ObjectId, RgbColor][] = []
     if (!this.allAssignedColors(cat)) throw new Error("allAssignedColorsAsArray: this.allAssignedColors(" + cat + ") is undefined")
-    for (let e of this.allAssignedColors(cat)!) arr.push(e)
-    return arr
+    //for (let e of this.allAssignedColors(cat)!) arr.push(e)
+    return [...(this.allAssignedColors(cat)!.entries())] // return arr
   }
 
-  public changed(cat: ColoringCategory): boolean {
-    if (this.get(cat)) return this.get(cat)!.changed()
-    return false
-  }
+  // /** 
+  //  * Looks up if the objects and their assigned colors
+  //  * @param cat - the category
+  //  * @returns an array of tuples of object ids and their color    
+  //  */
+  // public changed(cat: ColoringCategory): boolean {
+  //   if (this.get(cat)) return this.get(cat)!.changed()
+  //   return false
+  // }
 }

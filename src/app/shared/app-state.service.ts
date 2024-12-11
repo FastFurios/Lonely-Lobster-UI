@@ -1,7 +1,12 @@
+//-------------------------------------------------------------------
+// APPLICATION STATE SERVICE
+//-------------------------------------------------------------------
+// last code cleaning: 08.12.2024
+
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from "rxjs"
 
-
+/** Events that components can signal to the application state service */
 export type FrontendEvent                  = "logged-in" | "logged-out" | "config-edit-saved" | "config-uploaded" | "discarded" | "system-instantiated" | undefined
 
 type FrontendStateAndTransitionsId  = 0 | 1 | 2 | 3 | 4
@@ -11,6 +16,7 @@ type FrontendStateTransition = {
     newStateId: FrontendStateAndTransitionsId
 }
 
+/** Frontend state type*/
 export type FrontendState  = {
     isLoggedIn:               boolean
     hasSystemConfiguration:   boolean
@@ -75,19 +81,30 @@ const states: FrontendStateAndTransitions[] = [
 ]
 
 
+/**
+ * @class This Angular service provides the methods for managing the application state and its transitions triggered by user interactions. 
+ * On state transitions this service notifies subscribed components. 
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class AppStateService {
   private currentStateId: FrontendStateAndTransitionsId = 0
 
-  public  frontendEventsSubject$            = new BehaviorSubject<FrontendEvent>(undefined)//.asObservable()  // components notify this service about events
-  public  frontendNewStateBroadcastSubject$ = new BehaviorSubject<FrontendState>(states[0])  // the new state is broadcasted to the components so they can take appropriate actions 
+  /** BehaviorSubject by which components can signal an event (using method .next("<event>")) */
+  public  frontendEventsSubject$            = new BehaviorSubject<FrontendEvent>(undefined)
+  /** BehaviorSubject by which subscribed components can receive the new state after a transition change so they can take appropriate actions  */
+  public  frontendNewStateBroadcastSubject$ = new BehaviorSubject<FrontendState>(states[0])  
 
+  /** listen to incoming events from other components and responds with the new state */
   constructor() { 
       this.frontendEventsSubject$.subscribe((e: FrontendEvent) => this.transitionToNewState(e))
   }
-
+  /** 
+   * determine the new state on basis of the current state and the event; updates {@link currentStateId} with the new state; 
+   * broadcasts the new current state to the components subscribed to {@link frontendNewStateBroadcastSubject$}
+   * @param e - event received from a component
+  */
   private transitionToNewState(e: FrontendEvent): void {
       console.log(`app-state.service: transitionToNewState(): Current state= ${this.currentStateId}, possible transitions= ${states[this.currentStateId].transitions.map(t => `${t.event}=>${t.newStateId}`)}, received event=${e}`)
       if (!e) {
@@ -95,7 +112,6 @@ export class AppStateService {
         return
       }
       const newStateId =  states[this.currentStateId].transitions.find(t => t.event == e)?.newStateId
-//    this.currentStateId = newStateId ? newStateId : this.currentStateId
       if(newStateId != undefined) {
          this.currentStateId = newStateId
          console.log(`app-state.service: transitionToNewState(): currentStateId set to ${this.currentStateId}`)
@@ -105,6 +121,9 @@ export class AppStateService {
       this.broadcastState()
   }
 
+  /** 
+   * broadcasts the current state to the components subscribed to {@link frontendNewStateBroadcastSubject$}
+  */
   private broadcastState(): void {
     console.log(`app-state.service: broadcastState(): New current state= ${this.currentStateId}`)
     this.frontendNewStateBroadcastSubject$.next(states[this.currentStateId])
