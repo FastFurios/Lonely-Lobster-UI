@@ -13,7 +13,7 @@ import { ConfigFileService } from './shared/config-file.service'
 import { BackendApiService } from './shared/backend-api.service'
 import { I_WorkItemEvents, I_WorkItemEvent, ApplicationEvent } from './shared/io_api_definitions'
 import { AppStateService, FrontendState } from './shared/app-state.service'
-import { EventsService, MaterialIconAndColor as MaterialIconAndCssStyle } from './shared/events.service'
+import { EventsService, MaterialIconAndCssStyle as MaterialIconAndCssStyle } from './shared/events.service'
 import { EventSeverity, EventTypeId } from './shared/io_api_definitions'
 
 
@@ -98,8 +98,8 @@ export class AppComponent {
       }
   }
 
-  get configAsJson() {
-    return this.cfs.configAsJson
+  configAsJson() {
+    return this.cfs.configAsJson()
   }
   public updateCanRunDownloadDiscard(): void { // *** tbd
   }
@@ -145,7 +145,7 @@ export class AppComponent {
   // --------------------------------------------------------------------------------------
 
   public onDiscard(): void {
-      this.cfs.configAsJson = undefined
+      this.cfs.discardConfigAsJson()
       this.ass.frontendEventsSubject$.next("discarded")
       this.ess.add(EventsService.applicationEventFrom("Discarding configuration", "app.component", EventTypeId.configDropped, EventSeverity.info))
   
@@ -169,13 +169,13 @@ export class AppComponent {
     const file: File = e.target.files[0] 
     this.filename = file.name
 //  console.log(`app: onFileSelected(): filename=${this.filename}; subscribing to observable ...`)
-    if (this.cfs.configAsJson) this.bas.dropSystem()
+    if (this.cfs.configAsJson()) this.bas.dropSystem()
       //.subscribe(() => console.log("AppComponent.onFileSelected(): response to drop request received"))
 
     this.readFileContent$(file).subscribe((fileContent: string) => { 
       //this.cfs.configAsJson = fileContent
       try {
-        this.cfs.configAsJson = JSON.parse(fileContent) 
+        this.cfs.storeConfigAsJson(JSON.parse(fileContent)) 
         this.ess.add(EventsService.applicationEventFrom("parsing JSON from config file", file.name, EventTypeId.configFileLoaded, EventSeverity.info))
       } catch (error) {
         this.ess.add(EventsService.applicationEventFrom("parsing JSON from config file", file.name, EventTypeId.configJsonError, EventSeverity.fatal))
@@ -215,7 +215,7 @@ export class AppComponent {
     link.href = URL.createObjectURL(blob)
     if (!this.configAsJson) return
     const now = new Date()
-    link.download = `${this.configAsJson.system_id}_${now.getFullYear()}-${now.getMonth().toString().padStart(2, "0")}-${now.getDay().toString().padStart(2, "0")}_${now.getHours().toString().padStart(2, "0")}-${now.getMinutes().toString().padStart(2, "0")}.${fileExtension}`
+    link.download = `${this.configAsJson()?.system_id}_${now.getFullYear()}-${now.getMonth().toString().padStart(2, "0")}-${now.getDay().toString().padStart(2, "0")}_${now.getHours().toString().padStart(2, "0")}-${now.getMinutes().toString().padStart(2, "0")}.${fileExtension}`
     link.click()
     link.remove()
     this.ess.add(EventsService.applicationEventFrom("Downloaded config", "/download", EventTypeId.configDownloaded, EventSeverity.info))

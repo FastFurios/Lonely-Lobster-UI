@@ -25,12 +25,9 @@ export class HomeComponent implements OnInit {
   }
 
   get numSystemProcessSteps() {
-    return this.configAsJson?.value_chains.reduce((sum: number, vc: any) => sum + vc.process_steps.length, 0)
+    return this.configAsJson()?.value_chains.reduce((sum: number, vc: any) => sum + vc.process_steps.length, 0)
   }
 
-  public createNewConfig() {
-    this.cfs.configAsJson = undefined
-  }
   
 /**
   public onFileSelected(e: any) { 

@@ -4,19 +4,19 @@
     <div>
         <div class="flex-row">
             <div>System:</div>
-            <div>{{ configAsJson.system_id ? configAsJson.system_id : "-" }}</div>
+            <div>{{ configAsJson()?.system_id ? configAsJson()!.system_id : "-" }}</div>
         </div>
         <div class="flex-row">
             <div>Value-Chains:</div>
-            <div> {{ configAsJson.value_chains ? configAsJson.value_chains.length : "-" }}</div>
+            <div> {{ configAsJson()?.value_chains ? configAsJson()!.value_chains.length : "-" }}</div>
         </div>
         <div class="flex-row">
             <div>Process-steps:</div>
-            <div>{{ configAsJson ? numSystemProcessSteps : "-" }}</div>
+            <div>{{ configAsJson() ? numSystemProcessSteps : "-" }}</div>
         </div>
         <div class="flex-row">
             <div>Workers:</div>
-            <div>{{ configAsJson.workers ? configAsJson.workers.length : "-" }}</div>
+            <div>{{ configAsJson()?.workers ? configAsJson()!.workers.length : "-" }}</div>
         </div>
     </div>
 </div>

@@ -182,7 +182,7 @@ export class SystemComponent implements OnChanges {
   // ---------------------------------------------------------------------------------------
   
   private parseAndInititalize(): void {
-      this.configObject = this.cfs.configAsJson // JSON.parse(fileContent) 
+      this.configObject = this.cfs.configAsJson() 
       //this.systemId = this.objFromJsonFile.system_id
       this.setOrResetSystem() // build the system
       this.wof.initialize()   // initialize work order feeder  

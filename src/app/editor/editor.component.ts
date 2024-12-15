@@ -25,18 +25,18 @@ export class EditorComponent implements OnInit {
               private ess: EventsService) { }
 
   ngOnInit(): void {
-    this.initForm(this.cfs.configAsJson)
-    this.cfs.componentEventSubject$.subscribe((compEvent:string) => {
-      if (compEvent == "ConfigLoadEvent") this.processComponentEvent(compEvent)
-    })
+    this.initForm(this.cfs.configAsJson())
+    // this.cfs.componentEventSubject$.subscribe((compEvent:string) => {
+    //   if (compEvent == "ConfigLoadEvent") this.processComponentEvent(compEvent)
+    // })
     this.ats.frontendNewStateBroadcastSubject$.subscribe((state: FrontendState) => {
-      this.initForm(this.cfs.configAsJson)
+      this.initForm(this.cfs.configAsJson())
     })
   }
 
-  private processComponentEvent(compEvent: string): void {
-    if (this.cfs.configAsJson) this.initForm(this.cfs.configAsJson)
-  }
+  // private processComponentEvent(compEvent: string): void {
+  //   if (this.cfs.configAsJson()) this.initForm(this.cfs.configAsJson())
+  // }
   
   // ---------------------------------------------------------------------------------------
   // setting up the static form elements
@@ -341,8 +341,7 @@ export class EditorComponent implements OnInit {
   */
 
   public onSubmitForm() {
-    this.cfs.configAsJson = this.configObjectAsJsonFromForm()
-    this.cfs.componentEvent = "EditorSaveEvent"
+    this.cfs.storeConfigAsJson(this.configObjectAsJsonFromForm())
     this.ess.add(EventsService.applicationEventFrom("Saved edit changes.", "", EventTypeId.configSaved, EventSeverity.info))
     console.log(`Editor.onSubmitForm(): send "config-edit-saved" to ATS`)
     this.ats.frontendEventsSubject$.next("config-edit-saved")

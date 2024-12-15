@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ApplicationEvent, EventSeverity } from '../shared/io_api_definitions';
-import { EventsService, MaterialIconAndColor } from '../shared/events.service';
+import { EventsService, MaterialIconAndCssStyle } from '../shared/events.service';
 
 
 @Component({
@@ -17,6 +17,6 @@ export class EventsDisplayComponent {
         return [...this.ess.events].sort((a: ApplicationEvent, b:ApplicationEvent) => b.dateAndtime > a.dateAndtime ? 1 : -1)
     }
     
-    public materialIconAndCssStyle(sev: EventSeverity): MaterialIconAndColor { return EventsService.materialIconAndCssStyle(sev) }
+    public materialIconAndCssStyle(sev: EventSeverity): MaterialIconAndCssStyle { return EventsService.materialIconAndCssStyle(sev) }
 
 }

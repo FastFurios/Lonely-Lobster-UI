@@ -1,133 +1,42 @@
+//-------------------------------------------------------------------
+// CONFIGURATION FILE SERVICE
+//-------------------------------------------------------------------
+// last code cleaning: 14.12.2024
+
 import { Injectable } from '@angular/core'
-import { HttpClient } from '@angular/common/http'
-import { BehaviorSubject } from "rxjs"
 import { I_ConfigAsJson } from './io_api_definitions'
-
-const sysConfigsPath = "http://localhost:8080/"
-
-export type FrontendPresetParameters = {
-  numIterationsPerBatch: number
-  economicsStatsIntervall: number
-}
-
-export type LearnAndAdaptParms = {
-  observationPeriod: number
-  successMeasureFunction: number
-  adjustmentFactor: number
-}
-
-export type WipLimitSearchParms = {
-  initialTemperature: number
-  degreesPerDownhillStepTolerance: number
-  initialJumpDistance: number
-  measurementPeriod: number
-  wipLimitUpperBoundaryFactor: number
-  searchOnAtStart: boolean
-  verbose: boolean
-}
-
-export type ProcessStep = {
-  id: string
-  normEffort: number
-  wipLimit?: number
-}
-
-export type ValueDegradation = {
-  function: string
-  argument: number
-}
-
-export type Injection = {
-  throughput: number
-  probability: number
-}
-
-export type SortVector = {
-  measure: string
-  selectioCriterion: string
-}
-
-export type GloballyDefinedWorkitemSelectionStrategy = {
-  id: string
-  strategy: SortVector[]
-}
-
-export type ValueChain = {
-  id: string
-  valueAdd: number
-  valueDegradation?: ValueDegradation
-  injection?: Injection
-  processSteps: ProcessStep[]
-  workers: Worker[]
-}
-
-export type Assignment = {
-  vcId: string
-  psId: string
-}
-
-export type Worker = {
-  id: string
-  assignments: Assignment[]
-  strategies?: string[]
-}
-
-/*
-export type ConfigAsPojo = {
-   id: string
-   frontendPresetParameters?: FrontendPresetParameters
-   learnAndAdaptParms?: LearnAndAdaptParms
-   wipLimitSearchParms?: WipLimitSearchParms
-   globallyDefinedWorkitemSelectionStrategies: GloballyDefinedWorkitemSelectionStrategy[]
-   valueChains: ValueChain[]
-   workers: Worker[]
-} | undefined
-*/
-
+ 
+/**
+ * @class Stores a system configuration as a POJO (plain old javascript object) with the structure of a system confuration JSON file and provides it to other frontend components 
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigFileService {
+  private _configAsJson:   I_ConfigAsJson | undefined
 
-  constructor(private http: HttpClient) { }   // *** to be cleaned ***
-
-// ---------------------------------------------------------------------------------------
-// set and get system config file in JSON file format  
-// ---------------------------------------------------------------------------------------
-  
-  public filename:         string = ""
-  public fileContent:      string
-  //private _configAsPojo:   ConfigAsPojo
-  private _configAsJson:   I_ConfigAsJson
-  private componentEventSubject          = new BehaviorSubject<string>("")
-  public  componentEventSubject$         = this.componentEventSubject.asObservable()
-
- /* 
-  set configAsJson(configPojo: ConfigAsPojo) {
-    this._configAsPojo = configPojo 
-//    console.log(`config-file.service: set objFromJsonFile(): this._objFromJsonFile=`)
-//    console.log(this._configObject)
-  }
-*/
-  set configAsJson(configJson: I_ConfigAsJson) {
-    // console.log(`cfs.configAsJson(configJson) with configJson =`)
-    // console.log(configJson)
-    this._configAsJson = configJson 
-  }
-
-  /*
-  get configAsJson(): ConfigAsPojo | undefined {
-    return this._configAsPojo
-  }
-  */
-
-  get configAsJson(): I_ConfigAsJson {
+  constructor() { }
+  /** 
+   * get the currently stored configuration 
+   * @returns the currently stored configuration   
+   */
+  configAsJson(): I_ConfigAsJson | undefined {
     return this._configAsJson
   }
 
-  set componentEvent(compEvent: string) {
-    //console.log(`cfs.component(${compEvent}): triggering component event`)
-    this.componentEventSubject.next(compEvent)
+   /** 
+   * Stores a new system configuration in this service and emits a component event
+   * @param configJson - system configuration in parsed JSON form, i.e. a POJO  
+   */
+  storeConfigAsJson(configJson: I_ConfigAsJson | undefined): void {
+    this._configAsJson = configJson 
   }
 
+   /** 
+   * Deletes the system configuration in this service 
+   * @param configJson - emits an discarding event   
+   */
+   discardConfigAsJson(): void {
+    this._configAsJson = undefined 
+  }
 }

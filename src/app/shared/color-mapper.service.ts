@@ -1,15 +1,13 @@
 //-------------------------------------------------------------------
 // COLOR MAPPER SERVICE
 //-------------------------------------------------------------------
-// last code cleaning: 11.12.2024
+// last code cleaning: 14.12.2024
 
 import { Injectable } from '@angular/core'
 
 export type RgbColor      = [number, number, number]
 export type CssColorList  = RgbColor[]
-export type ObjectType    = string
-export type ObjectId      = string
-export type ObjectIdToCssColorMap = Map<[ObjectType, ObjectId], RgbColor>  
+type ObjectId             = string
 export type ColoringCategory = string
 export type ColorLegendItem = {
   id:               string
