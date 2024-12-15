@@ -1,23 +1,69 @@
-//----------------------------------------------------------------------
-// Lonely Lobster API and general type definitions 
-//----------------------------------------------------------------------
+//-------------------------------------------------------------------
+// API AND OTHER GENERAL TYPE DEFINITIONS 
+//-------------------------------------------------------------------
+// last code cleaning: 15.12.2024
 
-import { SourceMap } from "module"
+/**
+ * All relevant type definitions shared between the backend and the frontend.
+ * The master of this file is located in the backend project "Lonely Lobster".
+ * Do not forget to copy the latest version over to the Angular frontend project (use the "$ sh getApiDefsFromBackend.sh") 
+ */
 
-// the master of this file is located in the project "Lonely Lobster".
-// Do not forget to copy the latest version over to the Angular frontend project (use the "$ sh getApiDefsFromBackend.sh") 
 
-export type Effort         = number // measured in Worker Time Units
-export type Value          = number // measured in Worker Time Units
+/**
+ * Basic types
+ */
+
+/**
+ * The discrete unit the time progresses in Lonely Lobster: 0, 1, 2 ...     
+ */
+export type TimeUnit       = number 
+/**
+ * A specific point in the discrete range of Lonely Lobster time units  
+ */
+export type Timestamp      = number
+/**
+ * Number of discrete time units     
+ */
+export type TimeUnits      = number
+/**
+ * The discrete duration between 2 timestamps    
+ */
+export type TimeInterval   = number
+/**
+ * Accumulated effort that has gone into a workitem; measured as count of all timestamps any worker has worked the workitem  
+ */
+export type Effort         = TimeUnits // measured in Worker Time Units
+/**
+ * value the workitem generates once reached the output basket i.e. it is an endproduct; measured in Worker Time Units 
+ */
+export type Value          = TimeUnits
+
 export type ValueChainId   = string
 export type ProcessStepId  = string
 export type WorkItemId     = number
+/**
+ * Workitem display tag (used for console display in batch mode only) 
+ */
 export type WorkItemTag    = [string, string]
 export type WorkerName     = string
-export type TimeUnit       = number
-export type Timestamp      = number
 export type RgbColor       = [number, number, number]
+/**
+ * The rate and distribution by which new work orders are injected into a value chain on average.
+ * Throughput is the average number of new workorders over time, probability controls how often the virtually accumulated number of workorders are injected as bulk.
+ * Here how it works: at every timestamp "throughput" workorders are added to the virtual list of new workorders. At every timestamp the system rolls a dice with the probability "probability"
+ * if the so far accumulated vitual new workorders are to be injected now or later. Examples:
+ * If throughput is 2 and probability is 1 then 2 new workorders are injected into the value chain at every timestamp.
+ * If throughput is 0.5 and probability is 1 then 1 new workorders is injected into the value chain every other timestamp.
+ * If throughput is 0.4 and probability is 1 then 1 new workorders is injected at the third timestamp leaving a remainder of 0.4+0.4+0.4-1.0=0.2 in the accumulated vitual new workorders.
+ * after 2 more time units the accumulated virtual workorders is 0.2+0.4+0.4 =1.0 and the next workorder is injected. 
+ * If throughput is 1 and probability is 0.5 then the systems adds 1 new workorder to the accumulated number of new workorders until the rolled dice at the end of every timestamp decides to flush out the accumulated new workorders and inject them.
+ * A remainder < 1 may be left over. The system continues to ad another new workorder to the accumulated number of new workorders and rolls the dice and so on...   
+ */
 export type Injection      = { throughput: number, probability: number }
+/**
+ * Work in progress limit: if 0 then no limit, if > 0 then the wip limit restricts the number of workitems allowed in a process step at any given time.  
+ */
 export type WipLimit       = number
 
 //-------------------------

@@ -1,7 +1,7 @@
 import { Component, OnChanges, HostListener } from '@angular/core'
 import { Observable, catchError, throwError } from "rxjs"
 import { BackendApiService } from '../shared/backend-api.service'
-import { TimeUnit, I_SystemState, I_SystemStatistics, I_ValueChainStatistics, ObExtended, PsWorkerUtilization, ValueChainId, VcExtended, I_ConfigAsJson, EventTypeId, EventSeverity } from "../shared/io_api_definitions"
+import { TimeInterval, I_SystemState, I_SystemStatistics, I_ValueChainStatistics, ObExtended, PsWorkerUtilization, ValueChainId, VcExtended, I_ConfigAsJson, EventTypeId, EventSeverity } from "../shared/io_api_definitions"
 import { WorkorderFeederService } from '../shared/workorder-feeder.service'
 import { UiBoxSize, UiBoxMarginToWindow, UiSystemHeaderHeight, UiWorkerStatsHeight } from '../shared/ui-boxes-definitions'
 import { environment } from '../../environments/environment.prod'
@@ -31,7 +31,7 @@ export class SystemComponent implements OnChanges {
   vcsExtended:              VcExtended[] 
   obExtended:               ObExtended
   statsAreUpToDate:         boolean  = false
-  statsInterval:            TimeUnit // gets initialized by backend  //= 0 // from t=1 to now 
+  statsInterval:            TimeInterval // gets initialized by backend  //= 0 // from t=1 to now 
   numValueChains:           number
   numIterationsToExecute:   number   // gets initialized by backend  // = 1
   numIterationsToGo:        number
@@ -171,7 +171,7 @@ export class SystemComponent implements OnChanges {
     this.fetchSystemStatistics()
   }
 
-  public changedStatsIntervalHandler(interval: TimeUnit) {
+  public changedStatsIntervalHandler(interval: TimeInterval) {
     this.statsInterval = interval
     this.fetchSystemStatistics()
   }

@@ -8,7 +8,7 @@ import { environment } from '../../environments/environment'
 import { HttpClient, HttpErrorResponse } from '@angular/common/http'
 import { Observable, throwError } from "rxjs"
 import { catchError } from "rxjs/operators"
-import { I_IterationRequests, I_SystemState, I_SystemStatistics, I_WorkItemEvents, I_LearningStatsWorkers, I_ConfigAsJson, TimeUnit, ApplicationEvent } from './io_api_definitions'
+import { I_IterationRequests, I_SystemState, I_SystemStatistics, I_WorkItemEvents, I_LearningStatsWorkers, I_ConfigAsJson, TimeInterval, ApplicationEvent } from './io_api_definitions'
 import { EventsService } from './events.service'
 
 /**
@@ -75,7 +75,7 @@ export class BackendApiService {
    * @param interval - The observation interval i.e. how many iterations from now back into the past should be used to generate the statistics.       
    * @returns an Observable that will eventually return the backend's response which should contain the system statistics. 
    */  
-  public currentSystemStatistics(interval: TimeUnit): Observable<I_SystemStatistics> {
+  public currentSystemStatistics(interval: TimeInterval): Observable<I_SystemStatistics> {
     return this.http.get<I_SystemStatistics>(this.API_URL + "statistics?interval=" + interval.toString(), { withCredentials: true } /*, {responseType: "json"}*/)
         .pipe(
           catchError((error: HttpErrorResponse) => this.errorHandler(error))

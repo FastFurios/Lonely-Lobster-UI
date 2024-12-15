@@ -3,7 +3,12 @@ import { Injection, ProcessStepId, PsWorkerUtilization, PsExtended, VcExtended, 
 import { ColorMapperService, RgbColor } from '../shared/color-mapper.service'
 import { WorkorderFeederService  } from '../shared/workorder-feeder.service'
 import { UiBoxSize, UiVcBoxLeftMargin} from '../shared/ui-boxes-definitions'
-import { I_FlowStats } from '../shared/flow-stats-definitions'
+
+interface I_FlowStats {
+  tpv: number,  // throughput measured in value
+  tpi: number,  // throughput measured in #items
+  ct:  number   // cycle time
+}
 
 @Component({
   selector: 'app-value-chain',

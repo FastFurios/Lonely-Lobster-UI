@@ -100,6 +100,7 @@ export class AppStateService {
   constructor() { 
       this.frontendEventsSubject$.subscribe((e: FrontendEvent) => this.transitionToNewState(e))
   }
+
   /** 
    * determine the new state on basis of the current state and the event; updates {@link currentStateId} with the new state; 
    * broadcasts the new current state to the components subscribed to {@link frontendNewStateBroadcastSubject$}
