@@ -222,7 +222,8 @@ export class AppComponent {
   }
 
   public onSaveFile(): void {
-    const fileContent = this.cfs.configAsJson
+    const fileContent = this.cfs.configAsJson()
+    console.log("app component: onSaveFile(): fileContent= " + fileContent)
     const blob = new Blob([JSON.stringify(fileContent, null, "\t")], { type: "application/json" })
     this.downloadToFile(blob, "json")
   }

@@ -1,3 +1,8 @@
+//-------------------------------------------------------------------
+// EDITOR COMPONENT
+//-------------------------------------------------------------------
+// last code cleaning: 21.12.2024
+
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators, ValidationErrors, AbstractControl } from '@angular/forms';
 import { I_ConfigAsJson, I_ValueChainAsJson, I_ProcessStepAsJson, I_GloballyDefinedWorkitemSelectionStrategyAsJson, I_WorkerAsJson, I_ValueChainAndProcessStepAsJson, valueDegradationFunctionNames, successMeasureFunctionNames, I_selectionStrategy, I_sortVector, workItemSelectionStrategyMeasureNames, selectionCriterionNames, I_SortVectorAsJson, EventTypeId, EventSeverity } from '../shared/io_api_definitions'
@@ -5,18 +10,25 @@ import { ConfigFileService } from '../shared/config-file.service'
 import { AppStateService, FrontendState } from '../shared/app-state.service'
 import { EventsService } from '../shared/events.service'
 
-
+/**
+ * @class This Angular component is an editor with which a system configuration can be created or updated. In the code I use the suffix "fg" for a Reactive Form Group, "fa" for a Reactive Form Array. 
+ */
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
-  @Output() systemSaved                      = new EventEmitter()
+  //@Output() systemSaved                      = new EventEmitter() // 21.12.24 probably obsolete
+  /** Form group that stores and displays the system configuration */
   public systemFg:                  FormGroup
+  /** Possible values for value degradation function names */
   public valueDegradationFunctions: string[] = valueDegradationFunctionNames
+  /** Possible values for success measure function names */
   public successMeasureFunctions:   string[] = successMeasureFunctionNames
+  /** Possible values for work item selection strategy names */
   public workItemSelectionStrategyMeasures   = Object.values(workItemSelectionStrategyMeasureNames)
+  /** Possible values for sorting order names */
   public selectionCriteria                   = selectionCriterionNames
 
   constructor(private fb:  FormBuilder,
@@ -24,28 +36,21 @@ export class EditorComponent implements OnInit {
               private ats: AppStateService,
               private ess: EventsService) { }
 
+  /** Initialize the system configuration form group with the configuration of the configuration file service. Listen for application transition events and re-initialize the form group on event */            
   ngOnInit(): void {
     this.initForm(this.cfs.configAsJson())
-    // this.cfs.componentEventSubject$.subscribe((compEvent:string) => {
-    //   if (compEvent == "ConfigLoadEvent") this.processComponentEvent(compEvent)
-    // })
     this.ats.frontendNewStateBroadcastSubject$.subscribe((state: FrontendState) => {
       this.initForm(this.cfs.configAsJson())
     })
   }
 
-  // private processComponentEvent(compEvent: string): void {
-  //   if (this.cfs.configAsJson()) this.initForm(this.cfs.configAsJson())
-  // }
-  
-  // ---------------------------------------------------------------------------------------
-  // setting up the static form elements
-  // ---------------------------------------------------------------------------------------
-
+// ---------------------------------------------------------------------------------------
+/** 
+ * Set up the system configuration form group with all values from the system configuration.   
+ * @param cfo - system confiuration 
+ */
+ // ---------------------------------------------------------------------------------------
   private initForm(cfo?: I_ConfigAsJson): void {
-//    if (this.system) return
-
-//  console.log(`Editor.initForm(): config-file-service system=${cfo?.system_id}; initializing form...`)
     this.systemFg = this.fb.group({
       id:                                   [cfo  ? cfo.system_id : "", Validators.required],
       frontendPresetParameters: this.fb.group({
@@ -74,10 +79,6 @@ export class EditorComponent implements OnInit {
     if (cfo?.value_chains)                  this.addValueChainsFgs(cfo.value_chains)
     if (cfo?.globally_defined_workitem_selection_strategies) this.addGloballyDefinedWorkitemSelectionStrategiesFgs(cfo.globally_defined_workitem_selection_strategies)
     if (cfo?.workers)                       this.addWorkersFgs(cfo.workers)
-
-//  console.log("editor.initFOrm(): this.systemFg.value:")
-//  console.log(this.systemFg.value)  
-
   }
 
   private addValueChainsFgs(cfVcs: I_ValueChainAsJson[]): void {
@@ -149,7 +150,6 @@ export class EditorComponent implements OnInit {
   }
 
   public addProcessStepFg(pss: FormArray, cfPs?: I_ProcessStepAsJson): FormGroup {
-    //console.log(`Editor.addProcessStep(pss: ${pss != undefined}, cfPs.process_step_id: ${cfPs.process_step_id})`)
     const newPsFg = this.fb.group({
       id:               [cfPs ? cfPs.process_step_id : "", [ Validators.required, EditorComponent.vcPsNameFormatCheck ]],
       normEffort:       [cfPs ? cfPs.norm_effort : ""],
@@ -179,7 +179,7 @@ export class EditorComponent implements OnInit {
   }
 
   public addSortVectorFg(svs: FormArray, cfSV?: I_SortVectorAsJson): FormGroup {
-    function measureDescription(cfSV: any /* should be I_SortVectorAsJson */): string {
+    function measureDescription(cfSV: any /* should be I_SortVectorAsJson but does not compile when typed that way !?! */): string {
       if (!cfSV) return ""
       const measureKey: keyof typeof workItemSelectionStrategyMeasureNames = cfSV.measure
       return workItemSelectionStrategyMeasureNames[measureKey]
@@ -189,7 +189,6 @@ export class EditorComponent implements OnInit {
       selectionCriterion:    [cfSV ? cfSV.selection_criterion: "", [ Validators.required ]]
     })
     svs.push(newSvFg)
-    //console.log(`addSortVector(svs=${svs}, cfSv=${cfSV.measure}: ${cfSV.selection_criterion}): length of svs= ${svs.length}`)
     return newSvFg
   }
 
@@ -235,7 +234,6 @@ export class EditorComponent implements OnInit {
   }
     
   public deleteAssignmentFg(wo: FormGroup, i: number): void {
-//  console.log(`Editor: deleteAssignment(${wo.get("id")}, ${i})`)
     this.workerAssignmentsFa(wo).removeAt(i)
   }
     
@@ -247,10 +245,12 @@ export class EditorComponent implements OnInit {
   // validators
   // ---------------------------------------------------------------------------------------
 
+  /** Check if form control value is in the "value-chain.process-step" format  */
   static vcPsNameFormatCheck(control: FormControl): ValidationErrors | null {
     return control.value.includes(".") ? { idWithoutPeriod: { valid: false } } : null
   }
 
+  /** Check if worker is assigned to a process step just once */
   static workerAssignmentsDuplicateCheck(woAss: AbstractControl): ValidationErrors | null {
     const woAssFormArrayFormGroups = (<FormArray>woAss).controls
     const valueOccurancesCounts: number[] = woAssFormArrayFormGroups.map(fg => woAssFormArrayFormGroups.filter(e => e.get("vcIdpsId")!.value == fg.get("vcIdpsId")!.value).length)  
@@ -293,7 +293,6 @@ export class EditorComponent implements OnInit {
   }
 
   public sortVectorsFa(wiSS: FormGroup): FormArray<FormGroup> {
-    //console.log(`Editor.sortVectors(${wiSS.get("id")?.value}).length = ${(wiSS.get("strategy") as FormArray<FormGroup>)?.controls.map((sv: FormGroup) => sv.get("measure")?.value)}`)
     return wiSS.get('strategy') as FormArray
   }
 
@@ -330,16 +329,7 @@ export class EditorComponent implements OnInit {
   // handlers
   // ---------------------------------------------------------------------------------------
 
-  /*
-  public showParametersHandler() {
-    //  console.log("addFrontendPresetsParametersHandler()")
-      this.showParameters = !this.showParameters
-      this.frontendPresetToggle   = !this.frontendPresetToggle
-      this.learnAndAdaptToggle    = !this.learnAndAdaptToggle
-      this.wipLimitOptimizeToggle = !this.wipLimitOptimizeToggle
-  }
-  */
-
+  /** When form is submitted store edited configuration in the configuration file service, add an application event to the application event service and notify the application state transition service that configuration was edited and saved. */
   public onSubmitForm() {
     this.cfs.storeConfigAsJson(this.configObjectAsJsonFromForm())
     this.ess.add(EventsService.applicationEventFrom("Saved edit changes.", "", EventTypeId.configSaved, EventSeverity.info))
@@ -353,8 +343,6 @@ export class EditorComponent implements OnInit {
 
   private configObjectAsJsonFromForm(): any {
     const formValue = this.systemFg.value
-//  console.log("formValue=")
-//  console.log(formValue)
     return {
       system_id:                    formValue.id,
       frontend_preset_parameters: {
@@ -423,8 +411,6 @@ export class EditorComponent implements OnInit {
   }
 
   private addStrategyAsJson(wiSs: any): I_selectionStrategy {
-    // console.log("Editor.addStrategyAsJson(): wiSs =")
-    // console.log(wiSs)
     return {
       id:   wiSs.id,
       strategy: wiSs.strategy.map((svs: any) => { return {
