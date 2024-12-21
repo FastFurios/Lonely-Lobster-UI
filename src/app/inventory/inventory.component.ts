@@ -1,38 +1,50 @@
+//-------------------------------------------------------------------
+// INVENTIÒRY COMPONENT
+//-------------------------------------------------------------------
+// last code cleaning: 21.12.2024
 import { Component, OnInit, Input } from '@angular/core'
 import { I_WorkItem } from '../shared/io_api_definitions'
 import { PsInventory, PsInventoryShow, workitemsAsPsInventory } from '../shared/inventory-layout'
 import { UiBoxSize, UiInventoryColWidth } from '../shared/ui-boxes-definitions'
 
+/**
+ * @class This Angular component renders the work item inventory of a work item basket i.e. a process step or the output basket.  
+ */
 @Component({
   selector: 'app-inventory',
   templateUrl: './inventory.component.html',
   styleUrls: ['./inventory.component.css']
 })
 export class InventoryComponent implements OnInit {
+  /** work items in the inventory */
   @Input() wis:                 I_WorkItem[]
+  /** true if inventory of output basket */
   @Input() isListOfEndProducts: boolean
+  /** size of inventory display area */
   @Input() inventoryBoxSize:    UiBoxSize
+  /** work items grouped in columns by elapsed time */
   psInventory:                  PsInventory
+  /** work items grouped in columns by elapsed time prepared for display i.e. with numbers of non-dispalyable excess work items */
   psInventoryShow:              PsInventoryShow
+  /** number of displayed columns */
   numColsShown:                 number
   
-  constructor() {
-    //console.log("Inventory: constructor()")
-  }
+  /** @private */
+  constructor() { }
+  /** @private */
+  ngOnInit(): void { }
 
-  ngOnInit(): void { 
-    //console.log("Inventory: ngOnInit() psInventoryShow.cols.lengths = " + this.psInventoryShow.cols.length + "; wis.length = " + this.wis.length)
-  }
-
+  /** adapt inventory display when work items in inventory change or display area size is changed */
   ngOnChanges(): void {
     this.psInventory = workitemsAsPsInventory(this.wis, this.isListOfEndProducts)
     this.calcSizesOfInventoryColumn()
-    //console.log("Inventory: ngOnChanges() psInventoryShow.cols.lengths = " + this.psInventoryShow.cols.length + "; wis.length = " + this.wis.length)
   }
 
   // ----- (re-)sizing of childs' UI boxes  -------------
+  /** display box size of a column */
   inventoryColumnBoxSize: UiBoxSize
 
+  /** adapt the inventory display to the available display area */
   private calcSizesOfInventoryColumn(): void {
     if (!this.psInventory) return
 

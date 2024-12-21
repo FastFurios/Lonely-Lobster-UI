@@ -1,6 +1,14 @@
+//-------------------------------------------------------------------
+// EDITOR-MESSAGES COMPONENT
+//-------------------------------------------------------------------
+// last code cleaning: 21.12.2024
+
 import { Component, OnInit, Input } from '@angular/core'
 import { AbstractControl } from "@angular/forms"
 
+/**
+ * @class This Angular component renderes validation messages in the system configuration editor. 
+ */
 @Component({
   selector: 'app-editor-messages',
   templateUrl: './editor-messages.component.html',
@@ -19,20 +27,21 @@ export class EditorMessagesComponent implements OnInit {
       duplicates: "An assignment connot be selected more than once for a worker",
       empty: "assignment must not be empty"
     }
-}
-
-constructor() { }
-
+  }
+  /** @private  */
+  constructor() { }
+  /** @private  */
   ngOnInit(): void { }
 
   // ---------------------------------------------------------------------------------------
   // validators
   // ---------------------------------------------------------------------------------------
 
+  /**
+   * Validation messages for a control and its current value 
+   * @returns Validation message
+   */
   public errorsForControl(): string[] {
-    if (this.controlName == "workerAssignment") {
-      //console.log("Editor-message.errorsForControl(): this.control.get(vcIdpsId).value = >" + this.control.get("vcIdpsId")?.value + "<")
-    }
     const messages = this.allMessages[this.controlName]
     if (!this.control || !this.control.errors || !messages || !this.control.dirty) { return [] }
     return Object.keys(this.control.errors).map(err => messages[err])

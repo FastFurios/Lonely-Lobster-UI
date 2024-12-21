@@ -1,3 +1,8 @@
+//-------------------------------------------------------------------
+// FLOW STATISTICS COMPONENT
+//-------------------------------------------------------------------
+// last code cleaning: 21.12.2024
+
 import { Component, Input, OnInit } from '@angular/core'
 import { I_WorkItemStatistics } from '../shared/io_api_definitions'
 
@@ -7,6 +12,9 @@ interface I_FlowStatsDisplay {
   ct:  string   // cycle time
 }
 
+/**
+ * @class This Angular component displays the flow statistics i.e. cycle time (CT), throughput measured in work items (TPI) and its value (TPV). 
+ */
 @Component({
   selector: 'app-flow-stats',
   templateUrl: './flow-stats.component.html',
@@ -14,13 +22,15 @@ interface I_FlowStatsDisplay {
 })
 export class FlowStatsComponent implements OnInit {
   @Input() workitemStats?: I_WorkItemStatistics
+  /** when true display labels CT, TPI, TPV */
   @Input() displayVerbose: boolean
+  /** display TPV */
   @Input() showTpv:        boolean
-  @Input() vertical:       boolean
   flowStatsDisplay:        I_FlowStatsDisplay
 
+  /** @private */
   constructor() { }
-
+  /** @private */
   ngOnInit(): void { }
 
   ngOnChanges(): void { 
