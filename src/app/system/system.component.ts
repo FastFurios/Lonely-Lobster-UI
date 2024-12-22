@@ -1,3 +1,8 @@
+//-------------------------------------------------------------------
+// SYSTEM COMPONENT
+//-------------------------------------------------------------------
+// last code cleaning: 22.12.2024
+
 import { Component, OnChanges, HostListener } from '@angular/core'
 import { Observable, catchError, throwError } from "rxjs"
 import { BackendApiService } from '../shared/backend-api.service'
@@ -8,59 +13,75 @@ import { environment } from '../../environments/environment.prod'
 import { ColorMapperService } from '../shared/color-mapper.service'
 import { cssColorListVc, cssColorListSest } from '../shared/inventory-layout'
 import { ConfigFileService } from '../shared/config-file.service'
-import { AppStateService, FrontendState } from '../shared/app-state.service';
+import { AppStateService } from '../shared/app-state.service';
 import { EventsService } from '../shared/events.service';
 
+/** defines if a new full run can be started or an interrupted run can be resumed */
 enum RunResumeButton {
   run    = "Run",
   resume = "Resume"
 }
 
+/** maximum of iterations allowed for a run  */
 const c_IterationRequestMaxSize = 100
 
+/**
+ * @class This Angular component is the central main app to control iteration runs in the Lonely-Lobster backend and display the results.
+ */
 @Component({
   selector: 'app-system',
   templateUrl: './system.component.html',
   styleUrls: ['./system.component.css']
 })
 export class SystemComponent implements OnChanges {
+  /** observable that delivers the new system state calculated by the backend  */
   systemState$:             Observable<I_SystemState> 
+  /** current system state */
   systemState:              I_SystemState
+  /** observable that delivers the statistics for the system calculated by the backend */
   systemStatistics$:        Observable<I_SystemStatistics>
+  /** latest system statistics */
   systemStatistics:         I_SystemStatistics
   vcsExtended:              VcExtended[] 
   obExtended:               ObExtended
+  /** indicator whether the statistics displayed are current or outdated */
   statsAreUpToDate:         boolean  = false
-  statsInterval:            TimeInterval // gets initialized by backend  //= 0 // from t=1 to now 
+  /** number of time units back into the past from which the system statistics are calculated by the backend; initialized by the backend after having read the system configuration */
+  statsInterval:            TimeInterval 
   numValueChains:           number
+  /** number of iterations in the current run */
   numIterationsToExecute:   number   // gets initialized by backend  // = 1
+  /** number of remaining iterations to go in the current run */
   numIterationsToGo:        number
-  backendErrorMessage:      string   = ""
-  filename:                 string = ""
-  //systemId:         string = "- empty -"
+  /** system configuration object */
   configObject:             I_ConfigAsJson 
+  /**  */
   showSystemState:          boolean  = false
   reloadLearnStatsLegend:   boolean  = false
+  /** show inventories when true  */
   invVisible:               boolean  = true
+  /** if true then number of iterations per run is 1 */
   iterateOneByOne:          boolean  = true
   optimizeWipLimits:        boolean  = false 
+  /** remaining iterations to go after an interrupting stop of a run */
   resumeRemainingIterations:number
+  /** initial setting of button is "run" */
   runResumeButton                    = RunResumeButton.run
-
+  /** version of the frontend i.e. this Angular application */
   version                            = environment.version
   
   constructor( private cfs: ConfigFileService,
                private bas: BackendApiService,
                private wof: WorkorderFeederService,
-               private ats: AppStateService,
+               private ass: AppStateService,
                private cms: ColorMapperService,
                private ess: EventsService ) { 
   }
 
+  /** on initialization of this Angular component intialize system in the backend and notify the application state transition service of this event */
   ngOnInit(): void {
     this.parseAndInititalize()
-    this.ats.frontendEventsSubject$.next("system-instantiated")
-    console.log("System.ngOnInit()")
+    this.ass.frontendEventsSubject$.next("system-instantiated")
   }
 
   ngOnChanges(): void {
@@ -71,12 +92,13 @@ export class SystemComponent implements OnChanges {
   // iterating, reseting, stopping
   // ---------------------------------------------------------------------------------------
 
+  /** 
+   * after the frontend received a new system state from the backend, update the frontend UI. If there are still iterations to go for the run, initiate the remaining iterations. 
+   * If no more iterations to go, fetch the system statistics from the backend.
+   * @param systemState - current system state      
+   */
   private processIteration(systemState: I_SystemState) {
     this.systemState = systemState 
-    //console.log("systemState.isWipLimitOptimizationInBackendActive=" + systemState.isWipLimitOptimizationInBackendActive)
-    //console.log("this.optimizeWipLimits=" + this.optimizeWipLimits)
-    //console.log("systemState.turnWipLimitOptimizationOnInFrontend=" + systemState.turnWipLimitOptimizationOnInFrontend)
-    //console.log(systemState)
     this.optimizeWipLimits = systemState.turnWipLimitOptimizationOnInFrontend || (this.optimizeWipLimits && systemState.isWipLimitOptimizationInBackendActive)
     this.calcSizeOfUiBoxes()
     this.updateVcsExtended()
@@ -94,6 +116,9 @@ export class SystemComponent implements OnChanges {
     }
   }
 
+  /**
+   * iterate the remaining iterations of a run
+   */
   public iterateNextStates(): void {
     this.statsAreUpToDate = false
     const miniBatchSize = this.iterateOneByOne ? 1 
@@ -110,6 +135,9 @@ export class SystemComponent implements OnChanges {
   // prepare data objects to be passed down to value chains and output basket
   // ---------------------------------------------------------------------------------------
 
+  /**
+   * update the extended value-chain data structures that are passed down to the value-chain component objects
+   */
   private updateVcsExtended() {
     this.vcsExtended = this.systemState.valueChains
                               .map(vc => { 
@@ -121,6 +149,9 @@ export class SystemComponent implements OnChanges {
                               })
   }
 
+  /**
+   * update the extended output basket data structures that is passed down to the output basket component objects
+   */
   private updateObExtended() {
     this.obExtended = {
       ob:         this.systemState.outputBasket,
@@ -149,28 +180,27 @@ export class SystemComponent implements OnChanges {
   // <button> and other handlers
   // ---------------------------------------------------------------------------------------
 
+  /** runs&resume button clicked */
   public runResumeIterationsHandler() {
     this.numIterationsToGo = this.runResumeButton == RunResumeButton.resume ? this.resumeRemainingIterations - 1 : this.numIterationsToExecute 
     this.runResumeButton = RunResumeButton.run
-    //this.learnStatsUptodate = false
     this.iterateNextStates()
   }
   
+  /* stop button clicked */
   public stopIterationsHandler() {
     this.resumeRemainingIterations = Math.max(0, this.numIterationsToGo)
     this.numIterationsToGo = 0
     this.runResumeButton = RunResumeButton.resume
   }
 
+  /** reset button clicked */
   public resetSystemHandler() {
     this.setOrResetSystem()
     this.runResumeButton = RunResumeButton.run
   }
 
-  public fetchStatisticsHandler() {
-    this.fetchSystemStatistics()
-  }
-
+  /** when user changed the interval for which the system statistics are to be shown, re-fetch the statistics for the changed interval */
   public changedStatsIntervalHandler(interval: TimeInterval) {
     this.statsInterval = interval
     this.fetchSystemStatistics()
@@ -181,45 +211,45 @@ export class SystemComponent implements OnChanges {
   // fetch statistics  
   // ---------------------------------------------------------------------------------------
   
+  /**
+   * read the system configuration from the configuration file service, build the system in the backend, initialize the work order feeder and the color mapper service 
+   */
   private parseAndInititalize(): void {
       this.configObject = this.cfs.configAsJson() 
-      //this.systemId = this.objFromJsonFile.system_id
       this.setOrResetSystem() // build the system
       this.wof.initialize()   // initialize work order feeder  
       this.cms.clear()  // initialize color mapper ...
       this.cms.addCategory("value-chain",        cssColorListVc)
       this.cms.addCategory("selection-strategy", cssColorListSest)
-//    this.onSaveFile()  // ######################## tbd ###############
-
   }
 
+  /**
+   * (re-)build the system in the backend; when system state response received from backend, set UI iteration pre-settings, iterate once, make the statistics color legend reload, add an application event   
+   */
   private setOrResetSystem() {
       this.numIterationsToGo = 0
-//    this.wof.initialize()
       this.systemState$ = this.bas.systemStateOnInitialization(this.configObject)
           .pipe(
               catchError((err: any) => {
-                // this.backendErrorMessage = "*** ERROR: could not reach backend or error in the backend"
                 this.showSystemState = false
-                // return throwError(() => new Error("*** ERROR: " + err/* .error.message */))
                 this.ess.add(EventsService.applicationEventFrom("setOrResetSystem", "(Re)setting system", EventTypeId.systemFailed, EventSeverity.fatal))
                 return throwError(() => err)
             })
       )
       this.systemState$.subscribe(systemState => {
           this.numValueChains = systemState.valueChains.length
-          //console.log("system.setOrResetSystem(): systemState.frontendPresets=")
-          //console.log(systemState.frontendPresets)
           this.applyPresets(systemState)
           this.processIteration(systemState) 
           this.calcSizeOfUiBoxes() 
-          this.backendErrorMessage = ""
           this.signalToLearnStatsLegendToReload()
           this.ess.add(EventsService.applicationEventFrom("setOrResetSystem", "(Re)setting system", EventTypeId.systemInOperation, EventSeverity.info))
         })
       this.showSystemState = true
   }
   
+  /**
+   * fetch the system statistics from the backend
+   */
   private fetchSystemStatistics() {
     this.systemStatistics$ = this.bas.currentSystemStatistics(this.statsInterval)
     this.systemStatistics$.subscribe(systemStatistics => {
@@ -234,17 +264,28 @@ export class SystemComponent implements OnChanges {
   // additional UI handling  
   // ---------------------------------------------------------------------------------------
   
+  /** set a signal for 1000msecs that the leaning statistics component reloads */
   private signalToLearnStatsLegendToReload(): void {
     this.reloadLearnStatsLegend = true
     setTimeout(() => { 
       this.reloadLearnStatsLegend = false }, 1000)  // ping the child component "LearnStats" that it should reload its color legend  
   }
 
-  public identify(index: number, vcExt: VcExtended): ValueChainId { // https://stackoverflow.com/questions/42108217/how-to-use-trackby-with-ngfor // https://upmostly.com/angular/using-trackby-with-ngfor-loops-in-angular // https://angular.io/api/common/NgFor
-    //console.log("System: identify() returning vcExt.vc.id = " + vcExt.vc.id )
+  /**
+   * when rendering the value-chains in the *ngFor loop, help Angular runtime to avoid re-rendering the html element for all value-chains, instead only for value-chains where the id was changed 
+   * i.e. a new system with other value-chains was built
+   * @param index - unused
+   * @param vcExt - value-chain extended data structure
+   * @returns value-chain id 
+   */
+  public identify(index: number, vcExt: VcExtended): ValueChainId {
     return vcExt.vc.id
   } 
 
+  /**
+   * set the UI pre-settings from the system state adter initialization of the backend
+   * @param systemState - system state from the backend 
+   */
   private applyPresets(systemState: I_SystemState): void {
     this.numIterationsToExecute = systemState.frontendPresets.numIterationPerBatch
     this.statsInterval          = systemState.frontendPresets.economicsStatsInterval
@@ -254,6 +295,7 @@ export class SystemComponent implements OnChanges {
   // (re-)sizing of childs' UI boxes  
   // ---------------------------------------------------------------------------------------
   
+  /** re-calculate the sizes of the UI boxes when size of browser window was changed by user */
   @HostListener('window:resize', ['$event'])
   onResize(/*event: Event*/) {
     this.calcSizeOfUiBoxes()
@@ -263,6 +305,7 @@ export class SystemComponent implements OnChanges {
   vcBoxSize:  UiBoxSize // a single Value Chain
   obBoxSize:  UiBoxSize // Output Basket
   
+  /** calculate UI boxes' sizes */
   private calcSizeOfUiBoxes(): void {
     this.vcsBoxSize = { 
       width:  Math.round(window.innerWidth / 2 - UiBoxMarginToWindow), 
