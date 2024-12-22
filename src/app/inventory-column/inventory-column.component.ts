@@ -40,7 +40,7 @@ export class InventoryColumnComponent implements OnInit {
     this.calcHeightOfInventoryColumn()
   }
 
-  /** calculate how many work items fit into the height of the inventory column and the number of non-displayable excess work items*/
+  /** calculate how many work items fit into the height of the inventory column and the number of non-displayable excess work items */
   private calcHeightOfInventoryColumn(): void {
     const wisShow = this.psInventoryColumn.wis.slice(0, Math.floor(this.inventoryColumnBoxSize.height / (1 + 15 + 1) /* = wi box with margin top and bottom */) - 1)
     const excessWisNum = this.psInventoryColumn.wis.length - wisShow.length

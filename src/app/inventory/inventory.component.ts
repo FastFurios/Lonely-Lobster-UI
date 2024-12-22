@@ -2,6 +2,7 @@
 // INVENTIÒRY COMPONENT
 //-------------------------------------------------------------------
 // last code cleaning: 21.12.2024
+
 import { Component, OnInit, Input } from '@angular/core'
 import { I_WorkItem } from '../shared/io_api_definitions'
 import { PsInventory, PsInventoryShow, workitemsAsPsInventory } from '../shared/inventory-layout'
@@ -41,13 +42,12 @@ export class InventoryComponent implements OnInit {
   }
 
   // ----- (re-)sizing of childs' UI boxes  -------------
-  /** display box size of a column */
+  /** UI box size of a column */
   inventoryColumnBoxSize: UiBoxSize
 
   /** adapt the inventory display to the available display area */
   private calcSizesOfInventoryColumn(): void {
     if (!this.psInventory) return
-
     this.inventoryColumnBoxSize = { 
       width:  UiInventoryColWidth, 
       height: this.inventoryBoxSize.height }

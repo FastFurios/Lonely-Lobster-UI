@@ -7,7 +7,7 @@ import { Component, OnInit, OnChanges, SimpleChanges, ViewChild, ElementRef, Aft
 import { UiBoxSize} from '../shared/ui-boxes-definitions'
 
 /**
- * @class This Angular component dislays the flow arrows between workitem baskets i.e. process steps and/or the output basket. 
+ * @class This Angular component renders the flow arrows between workitem baskets i.e. process steps and/or the output basket. 
  */
 @Component({
   selector: 'app-flow-arrow',
@@ -26,7 +26,7 @@ export class FlowArrowComponent implements OnInit, OnChanges, AfterViewInit {
 
   /** @private */
   constructor() { }
-
+  /** @private */
   ngOnInit(): void { }
 
   ngAfterViewInit(): void {
@@ -35,7 +35,7 @@ export class FlowArrowComponent implements OnInit, OnChanges, AfterViewInit {
     this.viewIsUp = true
   }
 
-  /** redraw arrow when flow rate or display area size changes */
+  /** redraw arrow when flow rate or display area size change */
   ngOnChanges(changes: SimpleChanges): void {
     if (this.viewIsUp) {
       this.ctx.clearRect(0, 0, this.flowArrowBoxSize.width, this.flowArrowBoxSize.height)
@@ -43,7 +43,7 @@ export class FlowArrowComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
-  /** Render the flow arrow */
+  /** draw the flow arrow */
   private drawShape(thickness: number, length: number) {
     // Filled right arrow
     let realThickness: number;

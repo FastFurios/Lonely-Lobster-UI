@@ -578,7 +578,7 @@ export interface I_sortVector {
 /**
  * a list of sort vectors ordered by the sequence the multi-columnar sort takes place      
  */ 
-export interface I_selectionStrategy {
+export interface I_SelectionStrategy {
     id:         string
     strategy:   I_sortVector[]
 }

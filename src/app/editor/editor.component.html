@@ -200,6 +200,10 @@
                         <input type="number" placeholder=">=0" formControlName="initialTemperature" min="0" step="10">
                     </div>
                     <div class="parameter-label-input">
+                        <label>Cooling Factor:</label>
+                        <input type="number" placeholder="<1.0" formControlName="coolingParameter" min="0" max="0.99" step="0.01">
+                    </div>
+                    <div class="parameter-label-input">
                         <label>Degrees per Downhill Step Tolerance:</label>
                         <input type="number" placeholder=">=1" formControlName="degreesPerDownhillStepTolerance" min="1" step="1">
                     </div>

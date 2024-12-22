@@ -5,13 +5,13 @@
 
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators, ValidationErrors, AbstractControl } from '@angular/forms';
-import { I_ConfigAsJson, I_ValueChainAsJson, I_ProcessStepAsJson, I_GloballyDefinedWorkitemSelectionStrategyAsJson, I_WorkerAsJson, I_ValueChainAndProcessStepAsJson, valueDegradationFunctionNames, successMeasureFunctionNames, I_selectionStrategy, I_sortVector, workItemSelectionStrategyMeasureNames, selectionCriterionNames, I_SortVectorAsJson, EventTypeId, EventSeverity } from '../shared/io_api_definitions'
+import { I_ConfigAsJson, I_ValueChainAsJson, I_ProcessStepAsJson, I_GloballyDefinedWorkitemSelectionStrategyAsJson, I_WorkerAsJson, I_ValueChainAndProcessStepAsJson, valueDegradationFunctionNames, successMeasureFunctionNames, I_SelectionStrategy, I_sortVector, workItemSelectionStrategyMeasureNames, selectionCriterionNames, I_SortVectorAsJson, EventTypeId, EventSeverity } from '../shared/io_api_definitions'
 import { ConfigFileService } from '../shared/config-file.service'
 import { AppStateService, FrontendState } from '../shared/app-state.service'
 import { EventsService } from '../shared/events.service'
 
 /**
- * @class This Angular component is an editor with which a system configuration can be created or updated. In the code I use the suffix "fg" for a Reactive Form Group, "fa" for a Reactive Form Array. 
+ * @class This Angular component is an editor with which a system configuration can be created or updated. In the code the symbol suffix "fg" stands for a Reactive Form Group, "fa" for a Reactive Form Array. 
  */
 @Component({
   selector: 'app-editor',
@@ -19,34 +19,33 @@ import { EventsService } from '../shared/events.service'
   styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
-  //@Output() systemSaved                      = new EventEmitter() // 21.12.24 probably obsolete
-  /** Form group that stores and displays the system configuration */
+  /** Form Group that stores and displays the system configuration */
   public systemFg:                  FormGroup
-  /** Possible values for value degradation function names */
+  /** possible values for value degradation function names */
   public valueDegradationFunctions: string[] = valueDegradationFunctionNames
-  /** Possible values for success measure function names */
+  /** possible values for success measure function names */
   public successMeasureFunctions:   string[] = successMeasureFunctionNames
-  /** Possible values for work item selection strategy names */
+  /** possible values for work item selection strategy names */
   public workItemSelectionStrategyMeasures   = Object.values(workItemSelectionStrategyMeasureNames)
-  /** Possible values for sorting order names */
+  /** possible values for sorting order names */
   public selectionCriteria                   = selectionCriterionNames
 
   constructor(private fb:  FormBuilder,
               private cfs: ConfigFileService,
-              private ats: AppStateService,
+              private ass: AppStateService,
               private ess: EventsService) { }
 
-  /** Initialize the system configuration form group with the configuration of the configuration file service. Listen for application transition events and re-initialize the form group on event */            
+  /** initialize the system configuration Form Group with the configuration of the configuration file service. Listen for application state transition events and re-initialize the Form Group when event occured */            
   ngOnInit(): void {
     this.initForm(this.cfs.configAsJson())
-    this.ats.frontendNewStateBroadcastSubject$.subscribe((state: FrontendState) => {
+    this.ass.frontendNewStateBroadcastSubject$.subscribe((state: FrontendState) => {
       this.initForm(this.cfs.configAsJson())
     })
   }
 
 // ---------------------------------------------------------------------------------------
 /** 
- * Set up the system configuration form group with all values from the system configuration.   
+ * set up the system configuration Form Group with all values from the system configuration   
  * @param cfo - system confiuration 
  */
  // ---------------------------------------------------------------------------------------
@@ -64,6 +63,7 @@ export class EditorComponent implements OnInit {
       }),
       wipLimitSearchParms: this.fb.group({
           initialTemperature:               [cfo ? cfo.wip_limit_search_parms?.initial_temperature : ""],
+          coolingParameter:                 [cfo ? cfo.wip_limit_search_parms?.cooling_parm : ""],
           degreesPerDownhillStepTolerance:  [cfo ? cfo.wip_limit_search_parms?.degrees_per_downhill_step_tolerance : ""],
           initialJumpDistance:              [cfo ? cfo.wip_limit_search_parms?.initial_jump_distance : ""],
           measurementPeriod:                [cfo ? cfo.wip_limit_search_parms?.measurement_period : ""],
@@ -329,19 +329,20 @@ export class EditorComponent implements OnInit {
   // handlers
   // ---------------------------------------------------------------------------------------
 
-  /** When form is submitted store edited configuration in the configuration file service, add an application event to the application event service and notify the application state transition service that configuration was edited and saved. */
+  /** when form is submitted store edited configuration in the configuration file service, add an application event to the application event service 
+   * and notify the application state transition service that configuration was edited and saved */
   public onSubmitForm() {
     this.cfs.storeConfigAsJson(this.configObjectAsJsonFromForm())
     this.ess.add(EventsService.applicationEventFrom("Saved edit changes.", "", EventTypeId.configSaved, EventSeverity.info))
     console.log(`Editor.onSubmitForm(): send "config-edit-saved" to ATS`)
-    this.ats.frontendEventsSubject$.next("config-edit-saved")
+    this.ass.frontendEventsSubject$.next("config-edit-saved")
   }
 
   // ---------------------------------------------------------------------------------------
-  // initialize form value chains and workers with config file data
+  // create JSON type system configuration object from the editor's system configuration Form Group
   // ---------------------------------------------------------------------------------------
 
-  private configObjectAsJsonFromForm(): any {
+  private configObjectAsJsonFromForm(): I_ConfigAsJson {
     const formValue = this.systemFg.value
     return {
       system_id:                    formValue.id,
@@ -356,6 +357,7 @@ export class EditorComponent implements OnInit {
       },
       wip_limit_search_parms: {
         initial_temperature:        formValue.wipLimitSearchParms.initialTemperature,
+        cooling_parm:               formValue.wipLimitSearchParms.coolingParameter,
         degrees_per_downhill_step_tolerance: formValue.wipLimitSearchParms.degreesPerDownhillStepTolerance,
         initial_jump_distance:      formValue.wipLimitSearchParms.initialJumpDistance,
         measurement_period:         formValue.wipLimitSearchParms.measurementPeriod,
@@ -370,7 +372,7 @@ export class EditorComponent implements OnInit {
     } 
   }
 
-  private addValueChainAsJson(vc: any): any {
+  private addValueChainAsJson(vc: any): I_ValueChainAsJson {
     return {
       value_chain_id:           vc.id,
       value_add:                vc.valueAdd,
@@ -386,7 +388,7 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  private addProcessStepAsJson(ps: any): any {
+  private addProcessStepAsJson(ps: any): I_ProcessStepAsJson {
     return {
       process_step_id:      ps.id,
       norm_effort:          ps.normEffort,
@@ -394,7 +396,7 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  private addWorkerAsJson(wo: any): any {
+  private addWorkerAsJson(wo: any): I_WorkerAsJson {
     return {
       worker_id:                      wo.id,
       process_step_assignments:       wo.assignments.map((as: any) => this.addWorkerAssignmentAsJson(as)),
@@ -402,7 +404,7 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  private addWorkerAssignmentAsJson(as: any): any {
+  private addWorkerAssignmentAsJson(as: any): I_ValueChainAndProcessStepAsJson {
     const [vcId, psId] = (<string>as.vcIdpsId).split(".") 
     return {
       value_chain_id:   vcId,
@@ -410,7 +412,7 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  private addStrategyAsJson(wiSs: any): I_selectionStrategy {
+  private addStrategyAsJson(wiSs: any): I_SelectionStrategy {
     return {
       id:   wiSs.id,
       strategy: wiSs.strategy.map((svs: any) => { return {

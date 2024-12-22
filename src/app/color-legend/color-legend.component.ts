@@ -8,7 +8,7 @@ import { ColorMapperService, ColorLegendItem, ColoringCategory } from '../shared
 import { rgbColorToCssString, textColorAgainstBackground } from '../shared/inventory-layout'
 
 /**
- * @class This Angular shows the color legend of the globally defined work item selection strategies. 
+ * @class This Angular component shows the color legend of the globally defined work item selection strategies. 
  */
 @Component({
   selector: 'app-color-legend',
@@ -16,27 +16,24 @@ import { rgbColorToCssString, textColorAgainstBackground } from '../shared/inven
   styleUrls: ['./color-legend.component.css']
 })
 export class ColorLegendComponent implements OnInit {
-  /** Indicates if legend should be reloaded i.e. displayed */
+  /** indicates if legend should be reloaded and displayed */
   @Input() reload:    boolean
-  /** Color category for which the Color Mapper service assigns colors to this category*/
+  /** color category for which the Color Mapper service assigns colors */
   @Input() colorCat:  ColoringCategory
-  /** Color map array for display in the template */
+  /** color map array for display in the html template */
   colorLegend:        ColorLegendItem[]
 
-  /** @private */  
   constructor(private cms: ColorMapperService) { }
 
-  /** @private */  
   ngOnInit(): void { 
     this.fillColorLegend() 
   }
 
-  /** If reload indicator changes fill the color legend  */  
   ngOnChanges(): void {
     if (this.reload) this.fillColorLegend()
   }
 
-  /** Fill the color map array for display in the template */
+  /** fill the color map array for display in the html template */
   private fillColorLegend(): void {
     const objColMap = this.cms.allAssignedColors(this.colorCat)
     if (!objColMap) {
