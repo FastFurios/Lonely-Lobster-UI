@@ -1,3 +1,8 @@
+//-------------------------------------------------------------------
+// APP COMPONENT
+//-------------------------------------------------------------------
+// last code cleaning: 22.12.2024
+
 import { Component } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { environment } from '../environments/environment.prod'
@@ -13,11 +18,11 @@ import { ConfigFileService } from './shared/config-file.service'
 import { BackendApiService } from './shared/backend-api.service'
 import { I_WorkItemEvents, I_WorkItemEvent, ApplicationEvent } from './shared/io_api_definitions'
 import { AppStateService, FrontendState } from './shared/app-state.service'
-import { EventsService, MaterialIconAndCssStyle as MaterialIconAndCssStyle } from './shared/events.service'
+import { EventsService, MaterialIconAndCssStyle } from './shared/events.service'
 import { EventSeverity, EventTypeId } from './shared/io_api_definitions'
 
 
-
+/** list of possible user actions */
 type ActionsPossible = {
     login:              boolean,
     run:                boolean,
@@ -26,37 +31,47 @@ type ActionsPossible = {
     discard:            boolean
 }
 
+/** json web token with the user name */
 type JwtPayloadWithGivenName = JwtPayload & { given_name: string }
 
+/** application event description, Material Design icon and CSS style */
 type EventDisplayDescAndSeverityMatIcon = {
     description:  string
     materialIcon: string
     cssStyle:     string
 }
 
-
+/**
+ * @class This Angular component renders the control bar of the frontend. 
+ */
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  //title = "Lonely-Lobster"
   filename: string = ""
   greyOut = "color: lightgrey;"
 
+  /** frontend version */
   public  version                = environment.version
-  public  canRun                 = false
-  public  canDownloadDiscard     = false
+  /** true if user is logged in */
   public  userIsLoggedIn         = false
+  /** true if events list to be displayed */
   public  displayEvents          = false
+  /** user name as provided by the JSON web token */
   public  loggedInUserName       = ""
+  /** observable by which the lifecycle events of all work item can be read */
   private workItemEvents$: Observable<I_WorkItemEvents>
+  /** array that manages which user actions are possible in the current application state */
   public  actionsPossible: ActionsPossible
+  /** list of application events */
   public  events:          ApplicationEvent[]
 
+  /** set the initial list of possible user actions */
   constructor(private router:   Router,
               private route:    ActivatedRoute, 
+              /** Microsoft Authentication Service */
               private mas:      MsalService, 
               private aus:      AuthenticationService,
               private cfs:      ConfigFileService,
@@ -73,6 +88,7 @@ export class AppComponent {
       }
   }
 
+  /** on component initialization, initialize access to Entra ID, subscribe to application events and process new application state */
   ngOnInit() {
       this.mas.initialize()
       this.ass.frontendNewStateBroadcastSubject$.subscribe((state: FrontendState) => {
@@ -81,12 +97,14 @@ export class AppComponent {
       this.events = this.ess.events 
   }
 
+  /** check if running a Lonely Lobster system in the backend is possible */
   private isRunActionPossible(state: FrontendState): boolean {
       const runPossible = state.hasSystemConfiguration && state.isLoggedIn
       if (this.router.url == "/run" && !runPossible) this.location.back(); // goes back to the last URL in history
       return runPossible
   }
 
+  /** determine action possible dependent on frontend state */
   private processNewState(state: FrontendState): void {
       this.userIsLoggedIn = state.isLoggedIn
       this.actionsPossible = {
@@ -98,17 +116,16 @@ export class AppComponent {
       }
   }
 
+  /** system configuration in JSON format */
   configAsJson() {
     return this.cfs.configAsJson()
   }
-  public updateCanRunDownloadDiscard(): void { // *** tbd
-  }
-
 
   // --------------------------------------------------------------------------------------
   //     Logging in and out  
   // --------------------------------------------------------------------------------------
 
+  /** log on to Entra ID, store json web token in the authentication service, determine user name, log application event and send logged-in event to the application state transition service */
   public onLogIn(): void {
     // need to provide the backend's "Application ID URI" with the "scope" appended, here "system.run". Scope needs to be defined in EntraID backend application under "Expose an API";   
     // the "Application ID URI" part will be in the "aud" (audience) claim in the token, the "scope" in the "scp" claim.
@@ -116,11 +133,8 @@ export class AppComponent {
     this.mas.loginPopup({scopes: ["api://5797aa9c-0703-46d9-9fba-934498b8e5d6/system.run"]})
       .subscribe({
         next: (authResult: AuthenticationResult) => {
-//        this.msalLoginStatus = "ok"
           this.aus.accessToken = authResult.accessToken
-          console.log("AppComponent.onLogIn(): this.aus.accessToken= " + this.aus.accessToken)
           this.loggedInUserName = (<JwtPayloadWithGivenName>this.aus.decodedAccessToken)?.given_name
-          console.log(`AppComponent.onLogIn(): send "logged-in" to ATS`)
           this.ess.add(EventsService.applicationEventFrom("Entra ID login request", "app.component", EventTypeId.loggedIn, EventSeverity.info))
           this.ass.frontendEventsSubject$.next("logged-in")
         },
@@ -133,9 +147,9 @@ export class AppComponent {
     })
   }
 
+  /** log out of Entra ID, log to application events service, signal to application state transition service */
   public onLogOut(): void {
       this.mas.logout()
-      console.log(`AppComponent.onLogOut(): send "logged-out" to ATS`)
       this.ess.add(EventsService.applicationEventFrom("Entra ID login request", "app.component", EventTypeId.loggedOut, EventSeverity.info))
       this.ass.frontendEventsSubject$.next("logged-out")
   }
@@ -144,6 +158,7 @@ export class AppComponent {
   //     Discarding Configuration and also the Backend system instance  
   // --------------------------------------------------------------------------------------
 
+  /** discard system in the backend and delete the system configuration in the frontend i.e. in the configuration file service; log to the application event service; signal to the appliation state transition service  */
   public onDiscard(): void {
       this.cfs.discardConfigAsJson()
       this.ass.frontendEventsSubject$.next("discarded")
@@ -152,9 +167,6 @@ export class AppComponent {
       if (this.userIsLoggedIn) {
           this.bas.dropSystem().subscribe(() => { 
             this.ess.add(EventsService.applicationEventFrom("Dropping system", "app.component", EventTypeId.systemDropped, EventSeverity.info))
-            // console.log("AppComponent.onDiscard(): response to drop request received") 
-            // console.log(`AppComponent.onDiscard(): send "discarded" to ATS`)
-            // tbc: add API call to backend to destroy the Lonely Lobster system for this session
             this.router.navigate(["../home"], { relativeTo: this.route })
           })
       }
@@ -164,34 +176,25 @@ export class AppComponent {
   //     Uploading a Configuration  
   // --------------------------------------------------------------------------------------
 
+  /** upload system configuration file into the configuration file service */
   public onFileSelected(e: any) { 
-    //console.log("onFileSelected")
     const file: File = e.target.files[0] 
     this.filename = file.name
-//  console.log(`app: onFileSelected(): filename=${this.filename}; subscribing to observable ...`)
     if (this.cfs.configAsJson()) this.bas.dropSystem()
-      //.subscribe(() => console.log("AppComponent.onFileSelected(): response to drop request received"))
 
     this.readFileContent$(file).subscribe((fileContent: string) => { 
-      //this.cfs.configAsJson = fileContent
       try {
         this.cfs.storeConfigAsJson(JSON.parse(fileContent)) 
         this.ess.add(EventsService.applicationEventFrom("parsing JSON from config file", file.name, EventTypeId.configFileLoaded, EventSeverity.info))
       } catch (error) {
         this.ess.add(EventsService.applicationEventFrom("parsing JSON from config file", file.name, EventTypeId.configJsonError, EventSeverity.fatal))
       }
-      //this.router.navigate(["../edit"], { relativeTo: this.route })
-      //console.log(`config-file.service: cfs.configObject=`)
-      //console.log(this.cfs.configObject)
-      console.log(`AppComponent.onFileSelected(): send "config-uploaded" to ATS`)
       this.ass.frontendEventsSubject$.next("config-uploaded")
-//    this.cfs.componentEvent = "ConfigLoadEvent"
-//    this.router.navigate(["../home"], { relativeTo: this.route })
-//    console.log(this.cfs.objFromJsonFile)
     })
     this.router.navigate(["../home"], { relativeTo: this.route })
   }
 
+  /** read system configuration json file through an observable */
   private readFileContent$(file: File): Observable<string> {
     return new Observable((subscriber) => {
       if (!file) subscriber.error("no file selected")
@@ -210,6 +213,7 @@ export class AppComponent {
   //     Downloading a Configuration  
   // --------------------------------------------------------------------------------------
 
+  /** write system configuration to json file in the download folder */
   private downloadToFile(blob: Blob, fileExtension: string): void {
     const link = document.createElement("a")
     link.href = URL.createObjectURL(blob)
@@ -221,9 +225,9 @@ export class AppComponent {
     this.ess.add(EventsService.applicationEventFrom("Downloaded config", "/download", EventTypeId.configDownloaded, EventSeverity.info))
   }
 
+  /** download system configuration to json file */
   public onSaveFile(): void {
     const fileContent = this.cfs.configAsJson()
-    console.log("app component: onSaveFile(): fileContent= " + fileContent)
     const blob = new Blob([JSON.stringify(fileContent, null, "\t")], { type: "application/json" })
     this.downloadToFile(blob, "json")
   }
@@ -232,6 +236,7 @@ export class AppComponent {
   //     Downloading a CSV with the workitems' events  
   // --------------------------------------------------------------------------------------
 
+  /** download the work items' lifecycle events to the download folder */
   public onDownloadEvents(): void {
       function workitemEventAsCsvRow(wie: I_WorkItemEvent): string {
           return `${wie.system};${wie.timestamp};${wie.workitem};${wie.eventType};${wie.valueChain};${wie.processStep};${wie.worker ? wie.worker : ""}`
@@ -250,10 +255,13 @@ export class AppComponent {
   // --------------------------------------------------------------------------------------
   //     Display application events list  
   // --------------------------------------------------------------------------------------
+  /** toggle display of the application events list */
   public onToggleEventsDisplay(): void { if (this.hasEvents()) this.displayEvents = !this.displayEvents }
 
+  /** true if events in the application events list */
   public hasEvents(): boolean { return this.ess.hasEvents}
 
+  /** display attributes for the youngest application event */
   get latestEventDescAndSevMatIcon(): EventDisplayDescAndSeverityMatIcon {
     if (!this.hasEvents()) return { 
         description:  "",

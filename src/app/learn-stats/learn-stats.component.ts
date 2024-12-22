@@ -6,14 +6,9 @@
 import { Component, Input, OnInit } from '@angular/core'
 import { Observable } from "rxjs"
 import { BackendApiService } from '../shared/backend-api.service'
-import { I_LearningStatsWorkers, I_WeightedSelectionStrategy, Timestamp, WorkerName } from '../shared/io_api_definitions'
+import { I_LearningStatsWorkers, Timestamp, WorkerName, ColoredWeightedSelectionStrategy } from '../shared/io_api_definitions'
 import { rgbColorToCssString } from '../shared/inventory-layout'
 import { ColorMapperService } from '../shared/color-mapper.service';
-
-/** weighted strategy with its display color */
-type ColoredWeightedSelectionStrategy = I_WeightedSelectionStrategy & {
-  backgroundColor: string // string with css color codes 
-}
 
 /** weighted strategy with its display color at a timestamp */
 type ColoredWeightedSelectionStrategiesAtTimestamp = {

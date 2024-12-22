@@ -75,7 +75,7 @@ export class SystemStatsComponent implements OnInit {
        * @returns rounded n in x.xx format
        * @example n = 0.1 => 0.10
        * @example n = 12.15 => 12.15
-       * @example n = 3.156 => 3.16
+       * @example n = 3.15678 => 3.16
        */
       function nicelyRounded(n: number): NicelyRounded {
         const roundedTo2decs = (Math.round(n * 100) / 100).toString()

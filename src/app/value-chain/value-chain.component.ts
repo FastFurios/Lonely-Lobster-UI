@@ -1,15 +1,17 @@
+//-------------------------------------------------------------------
+// VALUE CHAIN COMPONENT
+//-------------------------------------------------------------------
+// last code cleaning: 22.12.2024
+
 import { Component, OnInit, OnChanges, Input, ChangeDetectionStrategy, TrackByFunction } from '@angular/core'
-import { Injection, ProcessStepId, PsWorkerUtilization, PsExtended, VcExtended, I_ProcessStepStatistics, WorkerWithUtilization, I_WorkItemStatistics } from '../shared/io_api_definitions'
+import { Injection, ProcessStepId, PsWorkerUtilization, PsExtended, VcExtended, I_ProcessStepStatistics, WorkerWithUtilization, I_WorkItemStatistics, I_FlowStats } from '../shared/io_api_definitions'
 import { ColorMapperService, RgbColor } from '../shared/color-mapper.service'
 import { WorkorderFeederService  } from '../shared/workorder-feeder.service'
 import { UiBoxSize, UiVcBoxLeftMargin} from '../shared/ui-boxes-definitions'
 
-interface I_FlowStats {
-  tpv: number,  // throughput measured in value
-  tpi: number,  // throughput measured in #items
-  ct:  number   // cycle time
-}
-
+/**
+ * @class This Angular component renders a value-chain.
+ */
 @Component({
   selector: 'app-value-chain',
   templateUrl: './value-chain.component.html',
@@ -22,8 +24,10 @@ export class ValueChainComponent implements OnInit, OnChanges {
   @Input() invVisible:  boolean
   feedParms:            Injection | undefined = undefined
   
-  workitemStats:        I_WorkItemStatistics | undefined
+  vcStats:              I_WorkItemStatistics | undefined
+  /** list of extended process-step data structures  */
   pssExtended:          PsExtended[]
+  /** value-chain flow statistics  */
   vcFlowStats:          I_FlowStats
   valueChainColor:      RgbColor | undefined
 
@@ -31,8 +35,10 @@ export class ValueChainComponent implements OnInit, OnChanges {
               private wof: WorkorderFeederService) { 
   }
  
+  /** on component initialization, set the workorder feeding parameters: if not yet defined in this component, take them from the work order feeder service. If there not defined either take the 
+   * values from the iteration request and update the workorder feeder; get the value-chain color 
+   */
   ngOnInit(): void {
-    //console.log(`Value-Chain ${this.vcExtended.vc.id}: ngOnInit`)
     if (this.feedParms) {
       this.wof.setInjectionParms(this.vcExtended.vc.id, this.feedParms)
     }
@@ -47,9 +53,11 @@ export class ValueChainComponent implements OnInit, OnChanges {
     this.calcSizeOfProcessStepBox()  
   }
 
+  /**
+   * on changes, update flow statistics of value chain and its process steps 
+   */
   ngOnChanges(): void {
-    //console.log(`Value-Chain ${this.vcExtended.vc.id}: ngOnChanges`)
-    this.workitemStats = this.vcExtended.flowStats?.stats?.vc
+    this.vcStats = this.vcExtended.flowStats?.stats?.vc
     this.pssExtended = this.vcExtended.vc.processSteps
                                   .map(ps => { return {
                                     ps: ps,
@@ -60,24 +68,33 @@ export class ValueChainComponent implements OnInit, OnChanges {
     this.calcSizeOfProcessStepBox()
   }
   
+  /** when user changes feeding parameters, update work order feeder service */
   public feedParmsInputHandler(e: Event) {
     this.wof.setInjectionParms(this.vcExtended.vc.id, this.feedParms!)
   }
 
+  /** return flow statistics of the value chain's process steps */
   private flowStatsOfProcessStep(psId: ProcessStepId): I_ProcessStepStatistics | undefined {
-    const aux = this.vcExtended.flowStats?.stats.pss.find(psFlowStats => psFlowStats.id == psId)
-    return aux
+    return this.vcExtended.flowStats?.stats.pss.find(psFlowStats => psFlowStats.id == psId)
   }
 
-  public identify(index: number, psExt: PsExtended): ProcessStepId { // https://stackoverflow.com/questions/42108217/how-to-use-trackby-with-ngfor // https://upmostly.com/angular/using-trackby-with-ngfor-loops-in-angular // https://angular.io/api/common/NgFor
-    //console.log("Value-Chain: identify() returning psExt.ps.id = " + psExt.ps.id )
+  /**    
+   * when rendering the process steps in the *ngFor loop, help Angular runtime to avoid re-rendering the html element for all process steps, instead only for process steps where the id was changed 
+   * i.e. a new system with other process steps was built
+   * @param index - unused
+   * @param psExt - process step extended data structure
+   * @returns process step id 
+   */
+  public identify(index: number, psExt: PsExtended): ProcessStepId {
     return psExt.ps.id
   } 
 
-
-  // ----- (re-)sizing of childs' UI boxes  -------------
+  // ---------------------------------------------------------------------------------------
+  // (re-)sizing of childs' UI boxes  
+  // ---------------------------------------------------------------------------------------
   psBoxSize:          UiBoxSize // = { width: 0, height: 0 }
 
+  /** calculate UI boxes' sizes */
   private calcSizeOfProcessStepBox(): void {
     this.psBoxSize = { 
       width:  Math.round((this.vcBoxSize.width - UiVcBoxLeftMargin) / this.vcExtended.vc.processSteps.length),
@@ -85,6 +102,7 @@ export class ValueChainComponent implements OnInit, OnChanges {
     }
   }
 
+  /** extract workers with utilizations from the extended value chain data structure */
   private workersWithUtilOfProcessStep(ps: ProcessStepId): WorkerWithUtilization[] {
     return this.vcExtended.wosUtil.filter((woUtil: PsWorkerUtilization) => woUtil.assignedProcessSteps.some(_ps => _ps == ps))
                                         .map((woUtil: PsWorkerUtilization) => { 

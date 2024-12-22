@@ -7,7 +7,7 @@ import { Component, Input, OnInit } from '@angular/core'
 import { I_WorkItemStatistics } from '../shared/io_api_definitions'
 
 /** flow statistics  */
-interface I_FlowStatsDisplay {
+export interface I_FlowStatsDisplay {
   tpv: string,  // throughput measured in value
   tpi: string,  // throughput measured in #items
   ct:  string   // cycle time

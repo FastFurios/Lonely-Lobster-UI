@@ -326,6 +326,11 @@ export interface I_WeightedSelectionStrategy {
     weight: number
 }
 
+/** weighted strategy with its display color */
+export type ColoredWeightedSelectionStrategy = I_WeightedSelectionStrategy & {
+    backgroundColor: string // string with css color codes 
+}
+  
 /**
  * statistics of a worker
  */
@@ -417,6 +422,13 @@ export interface I_ValueChainStatistics {
         pss: I_ProcessStepStatistics[]
     }
 } 
+
+/** used in frontend only */
+export interface I_FlowStats {
+    tpv: number,  // throughput measured in value
+    tpi: number,  // throughput measured in #items
+    ct:  number   // cycle time
+}
 
 /**
  * work item based statistics for the output basket, i.e. for the entire system
