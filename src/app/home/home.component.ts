@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
 
   /** system configuration getter used in the html template */
   get configAsJson() {
-    return this.cfs.configAsJson
+    return this.cfs.configAsJson()
   }
 
   /** calculate the number of all process steps in the system */

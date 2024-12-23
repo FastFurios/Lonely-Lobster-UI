@@ -1,26 +1,12 @@
-<!-- <p>events-display works!</p>
- -->
-
-
  <div class="table-container">
     <table>
-<!--         <colgroup>
-            <col style="width: 10%;">
-            <col style="width: 15%;">
-            <col style="width: 15%;">
-            <col style="width: 30%;">
-            <col style="width: 30%;">
-        </colgroup> -->
-<!--         <thead>
- -->            <tr>
+            <tr>
                 <th>(i)</th>
-                <th>Millisecs</th>
+                <th>Time</th>
                 <th>Source</th>
                 <th>Description</th>
                 <th>Context</th>
             </tr>
-<!--         </thead>
- --><!--         <tbody> -->
             <tr *ngFor="let event of events" [style]="materialIconAndCssStyle(event.severity).cssStyle">
                 <td><i class="material-symbols-outlined">{{ materialIconAndCssStyle(event.severity).materialIcon }}</i></td>
                 <td>{{ event.dateAndtime | date: "H:mm:ss" }}</td>
@@ -28,6 +14,5 @@
                 <td>{{ event.description }}</td>
                 <td>{{ event.context }}</td>
             </tr>
-        <!-- </tbody> -->
     </table>
 </div>

@@ -46,16 +46,6 @@
     text-align: left;
 }
 
-/* .flex-multi-columns {
-    display: flex;
-    flex-direction: row;
-    background-color: cornsilk;
-    align-items:flex-start;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: small; 
-    text-align: left;
-} */
-
 .navbar {
     display:flex;
     flex-direction: row;
@@ -90,14 +80,4 @@ i:hover {
 .right-padding-20 {
     padding-right: 20px;
 }
-
-.vertically-centered {
-    display: grid;
-    place-items: center; /* centers both vertically and horizontally */
-}
-
-
-.error {
-    color: red
-  }
 

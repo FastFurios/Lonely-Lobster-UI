@@ -334,7 +334,6 @@ export class EditorComponent implements OnInit {
   public onSubmitForm() {
     this.cfs.storeConfigAsJson(this.configObjectAsJsonFromForm())
     this.ess.add(EventsService.applicationEventFrom("Saved edit changes.", "", EventTypeId.configSaved, EventSeverity.info))
-    console.log(`Editor.onSubmitForm(): send "config-edit-saved" to ATS`)
     this.ass.frontendEventsSubject$.next("config-edit-saved")
   }
 

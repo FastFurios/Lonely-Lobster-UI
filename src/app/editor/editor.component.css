@@ -39,14 +39,6 @@ button:hover {
     border-color: rgb(255, 255, 255);
 }
 
-.section-padding {
-    background-color: rgb(246, 234, 192);
-    border-style:solid;
-    border-color: rgb(255, 255, 255);
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
 .vertically-aligned-property-label {
     text-align: right;
     padding-top: 2px;

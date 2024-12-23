@@ -107,7 +107,6 @@ export class AppStateService {
    * @param e - event received from a component
   */
   private transitionToNewState(e: FrontendEvent): void {
-      console.log(`app-state.service: transitionToNewState(): Current state= ${this.currentStateId}, possible transitions= ${states[this.currentStateId].transitions.map(t => `${t.event}=>${t.newStateId}`)}, received event=${e}`)
       if (!e) {
         console.log(`app-state.service: transitionToNewState(): No defined transition => currentState stays unchanged at ${this.currentStateId}`)
         return
@@ -115,9 +114,6 @@ export class AppStateService {
       const newStateId =  states[this.currentStateId].transitions.find(t => t.event == e)?.newStateId
       if(newStateId != undefined) {
          this.currentStateId = newStateId
-         console.log(`app-state.service: transitionToNewState(): currentStateId set to ${this.currentStateId}`)
-      } else {
-        console.log(`app-state.service: transitionToNewState(): newStateId= ${newStateId}; no change to current state`)
       }
       this.broadcastState()
   }
@@ -126,7 +122,6 @@ export class AppStateService {
    * broadcasts the current state to the components subscribed to {@link frontendNewStateBroadcastSubject$}
   */
   private broadcastState(): void {
-    console.log(`app-state.service: broadcastState(): New current state= ${this.currentStateId}`)
     this.frontendNewStateBroadcastSubject$.next(states[this.currentStateId])
   }  
 }

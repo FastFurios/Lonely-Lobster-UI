@@ -6,15 +6,6 @@
   font-size: x-small; 
 }
 
-.stats-stale {
-  width: 200px;
-  height: 30px;
-  background-color: yellow;
-  text-align: center;
-  vertical-align: bottom;
-  font-size: large; 
-}
-
 .worker-header {
   width: 120px;
   text-align: center;

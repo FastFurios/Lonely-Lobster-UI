@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClient, /* HttpClientModule, HTTP_INTERCEPTORS, */ provideHttpClient, withInterceptors } from '@angular/common/http'
+import { provideHttpClient, withInterceptors } from '@angular/common/http'
 
 import { PublicClientApplication, IPublicClientApplication } from "@azure/msal-browser"
 import { MsalModule, MsalService, MSAL_INSTANCE } from "@azure/msal-angular";
@@ -35,18 +35,11 @@ import { EditorMessagesComponent } from './editor-messages/editor-messages.compo
 import { EventsDisplayComponent } from './events-display/events-display.component';
 import { HomeComponent } from './home/home.component';
 
-/*
-const routes: Routes = [
-  { path: 'simulate', component: SystemComponent },
-  { path: 'learn-stats', component: LearnStatsComponent },
-  { path: '', redirectTo: '/simulate', pathMatch: 'full'}
-]
-*/
-
+/** create a new client application instance for Entra Id authentication */
 export function MsalInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
       auth: {
-        clientId:     environment.msalConfig.clientId,  // id of this application i.e. the Angular front end
+        clientId:     environment.msalConfig.clientId,  // id of this application i.e. the Angular frontend
         authority:    environment.msalConfig.authority,
         redirectUri:  environment.msalConfig.redirectUri
       }
@@ -91,9 +84,7 @@ export function MsalInstanceFactory(): IPublicClientApplication {
         useFactory: MsalInstanceFactory
       },
       MsalService,
-      HttpClient, // *** really required?   
       provideHttpClient(withInterceptors([addAuthTokenToHttpHeader$, handleResponseError$]))
-      // provideHttpClient(withInterceptorsFromDi())
     ],    
     bootstrap: [AppComponent] 
   })

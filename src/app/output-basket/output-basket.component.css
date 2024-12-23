@@ -15,17 +15,3 @@
     justify-content: space-between;
     align-items: center;
 }
-
-.output-basket-header-stats {
-  box-sizing: border-box;
-  padding-left: 5px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: flex-end;
-}
-
-.output-basket-header-stat {
-  padding-left: 5px;
-  padding-right: 5px;
-}

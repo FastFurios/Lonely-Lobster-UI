@@ -9,23 +9,23 @@
     text-align: center;
 }
 
-  .process-step-inv-and-arrow {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: x-small; 
-    text-align: center;
-  }
+.process-step-inv-and-arrow {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: x-small; 
+  text-align: center;
+}
 
-  .process-step-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    box-sizing: border-box; 
-    align-items: center;
-  }
+.process-step-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  box-sizing: border-box; 
+  align-items: center;
+}
 
 .process-step-workers {
   display: flex;
@@ -34,20 +34,4 @@
   font-family: Arial, Helvetica, sans-serif;
   font-size: x-small; 
   text-align: center;
-}
-
-.util-low {
-  background-color: lightgreen
-}
-
-.util-medium {
-  background-color: yellow
-}
-
-.util-high {
-  background-color: orange
-}
-
-.util-extreme {
-  background-color: red
 }

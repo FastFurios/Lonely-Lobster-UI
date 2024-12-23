@@ -1,6 +1,5 @@
 
 
-<!-- <div class="flex-multi-columns"> -->
     <input type="file" class="file-input" (change)="onFileSelected($event)" #fileUpload>
     <div class="flex-strechted-left-to-right">
         <div class="navbar">
@@ -13,7 +12,6 @@
             <i class="material-symbols-outlined" [style]="actionsPossible.downloadConfig ? undefined : greyOut" (click)="onSaveFile()">download</i>
             <i class="material-symbols-outlined" routerLink="events-download" routerLinkActive="active" [style]="actionsPossible.downloadEvents ? undefined : greyOut" (click)="onDownloadEvents()">format_list_numbered</i>
             <i class="material-symbols-outlined" [style]="actionsPossible.discard ? undefined : greyOut" (click)="onDiscard()">delete_forever</i>
-<!--             <a class="material-symbols-outlined" routerLink="events" routerLinkActive="active">report</a> -->
             <i class="material-symbols-outlined" [style]="hasEvents() ? undefined : greyOut" (click)="onToggleEventsDisplay()">{{ displayEvents ? "report_off" : "report" }}</i>
         </div>
         <div>
@@ -46,13 +44,8 @@
         </div>
     </div>
 
-<!-- </div> -->
 <router-outlet></router-outlet>
 
 <!-- 
-<router-outlet (systemSaved)="updateCanRunDownloadDiscard()"></router-outlet>
-<app-system></app-system>
-<app-editor></app-editor>
-
 <app-test-parent></app-test-parent>
 -->

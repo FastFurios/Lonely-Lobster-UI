@@ -82,15 +82,11 @@
                 <input type="text" class="bold-text" placeholder="Strategy Name" formControlName="id">
                 <button type="button" class="material-symbols-outlined button_icon" (click)="deleteGloballyDefinedWorkitemSelectionStrategyFg(k)"> delete_forever </button>
             </div>
-<!--
-            <app-editor-messages [control]="worker.get('assignments')!" controlName="workerAssignments"></app-editor-messages>
--->
             <div class="flex-multi-columns"> 
                 <div>
                     <div><label> Sort vectors </label>  <button type="button" class="material-symbols-outlined button_icon" (click)="addSortVectorFg(sortVectorsFa(strategy))"> add_circle </button></div>
                 </div>
                 <div *ngFor="let sortVector of sortVectorsFa(strategy).controls; let j = index" [formGroup]="sortVector" class="left-margin">
-                    <!--{{ sortVector.get("measure")?.value }}-->
                     <select formControlName="measure">
                         <option *ngFor="let m of workItemSelectionStrategyMeasures" [ngValue]="m">
                             {{ m }} 
@@ -102,9 +98,6 @@
                         </option>
                     </select> 
                     <button type="button" class="material-symbols-outlined button_icon" (click)="deleteSortVectorFg(strategy, j)"> delete_forever </button>
-<!--
-                    <app-editor-messages [control]="assignment" controlName="workerAssignment"></app-editor-messages>
--->
                 </div>
             </div>
         </div>
@@ -156,7 +149,6 @@
     <!-- PARAMETERS ------------------------------------------------------------------------------------------->
     <div class="section">
         <label for="parameters">Parameters</label>
-    <!-- -->
         <div class="flex-multi-columns">  
             <div [formGroup]="frontendPresetParametersFg" class="left-margin">
                 <div> 

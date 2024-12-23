@@ -48,7 +48,6 @@ export class AuthenticationService {
     let decodedToken: JwtPayload | null = null 
     try {
           decodedToken = jwtDecode<JwtPayload>(this.accessToken)
-          console.log('Decoded Token:', decodedToken)
         } 
     catch (error) {
       console.error('Error decoding token:', error)
