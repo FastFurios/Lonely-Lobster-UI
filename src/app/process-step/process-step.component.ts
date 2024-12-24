@@ -4,7 +4,9 @@
 // last code cleaning: 22.12.2024
 
 import { Component, OnInit, OnChanges, Input } from '@angular/core'
-import { I_WorkItem, PsExtended } from '../shared/io_api_definitions'
+import { I_WorkItem } from '../shared/io_api_definitions'
+import { PsExtended } from '../shared/frontend_definitions'
+
 import { ColorMapperService } from '../shared/color-mapper.service'
 import { UiBoxSize, UiPsHeaderHeight, UiInvWidthOfPsWidth, UiInventoryBoxHeightShrink, UiWorkerNameHeight} from '../shared/ui-boxes-definitions'
 import { WorkorderFeederService } from '../shared/workorder-feeder.service'

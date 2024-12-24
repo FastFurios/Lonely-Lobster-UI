@@ -8,7 +8,8 @@ import { environment } from '../../environments/environment'
 import { HttpClient, HttpErrorResponse } from '@angular/common/http'
 import { Observable, throwError } from "rxjs"
 import { catchError } from "rxjs/operators"
-import { I_IterationRequests, I_SystemState, I_SystemStatistics, I_WorkItemEvents, I_LearningStatsWorkers, I_ConfigAsJson, TimeInterval, ApplicationEvent } from './io_api_definitions'
+import { I_IterationRequests, I_SystemState, I_SystemStatistics, I_LearningStatsWorkers, I_ConfigAsJson, ApplicationEvent } from './io_api_definitions'
+import { I_WorkItemEvents, TimeInterval } from './frontend_definitions'
 import { EventsService } from './events.service'
 
 /**

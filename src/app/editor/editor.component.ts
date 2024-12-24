@@ -5,7 +5,8 @@
 
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators, ValidationErrors, AbstractControl } from '@angular/forms';
-import { I_ConfigAsJson, I_ValueChainAsJson, I_ProcessStepAsJson, I_GloballyDefinedWorkitemSelectionStrategyAsJson, I_WorkerAsJson, I_ValueChainAndProcessStepAsJson, valueDegradationFunctionNames, successMeasureFunctionNames, I_SelectionStrategy, I_sortVector, workItemSelectionStrategyMeasureNames, selectionCriterionNames, I_SortVectorAsJson, EventTypeId, EventSeverity } from '../shared/io_api_definitions'
+import { I_ConfigAsJson, I_ValueChainAsJson, I_ProcessStepAsJson, I_GloballyDefinedWorkitemSelectionStrategyAsJson, I_WorkerAsJson, I_ValueChainAndProcessStepAsJson, valueDegradationFunctionNames, successMeasureFunctionNames, I_SelectionStrategy, I_sortVector, I_SortVectorAsJson, EventTypeId, EventSeverity } from '../shared/io_api_definitions'
+import { workItemSelectionStrategyMeasureNames, selectionCriterionNames } from '../shared/frontend_definitions'
 import { ConfigFileService } from '../shared/config-file.service'
 import { AppStateService, FrontendState } from '../shared/app-state.service'
 import { EventsService } from '../shared/events.service'

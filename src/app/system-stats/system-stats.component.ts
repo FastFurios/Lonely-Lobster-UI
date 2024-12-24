@@ -4,7 +4,8 @@
 // last code cleaning: 22.12.2024
 
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core'
-import { I_SystemStatistics, Timestamp, TimeInterval } from '../shared/io_api_definitions'
+import { I_SystemStatistics, Timestamp } from '../shared/io_api_definitions'
+import { TimeInterval } from '../shared/frontend_definitions'
 
 /** display string of a rounded number */
 type NicelyRounded = string 

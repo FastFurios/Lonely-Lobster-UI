@@ -6,7 +6,8 @@
 import { Component, Input, OnInit } from '@angular/core'
 import { Observable } from "rxjs"
 import { BackendApiService } from '../shared/backend-api.service'
-import { I_LearningStatsWorkers, Timestamp, WorkerName, ColoredWeightedSelectionStrategy } from '../shared/io_api_definitions'
+import { I_LearningStatsWorkers, Timestamp, WorkerName } from '../shared/io_api_definitions'
+import { ColoredWeightedSelectionStrategy } from '../shared/frontend_definitions'
 import { rgbColorToCssString } from '../shared/inventory-layout'
 import { ColorMapperService } from '../shared/color-mapper.service';
 

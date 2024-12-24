@@ -4,7 +4,8 @@
 // last code cleaning: 22.12.2024
 
 import { Component, Input, OnInit, OnChanges } from '@angular/core'
-import { I_WorkItem, ObExtended } from '../shared/io_api_definitions'
+import { I_WorkItem } from '../shared/io_api_definitions'
+import { ObExtended } from '../shared/frontend_definitions'
 import { ColorMapperService } from '../shared/color-mapper.service'
 import { UiBoxSize, UiObHeaderHeight, UiInventoryBoxHeightShrink, UiPsHeaderHeight, UiWorkerNameHeight} from '../shared/ui-boxes-definitions'
 

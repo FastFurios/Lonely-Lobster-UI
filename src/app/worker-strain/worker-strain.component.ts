@@ -4,7 +4,7 @@
 // last code cleaning: 22.12.2024
 
 import { Component, OnInit, Input } from '@angular/core'
-import { WorkerWithUtilization } from '../shared/io_api_definitions'
+import { WorkerWithUtilization } from '../shared/frontend_definitions'
 
 /**
  * @class This Angular class renders the worker's name with the background color set according his/her utilization

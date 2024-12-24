@@ -4,7 +4,8 @@
 // last code cleaning: 22.12.2024
 
 import { Component, OnInit, OnChanges, Input, ChangeDetectionStrategy, TrackByFunction } from '@angular/core'
-import { Injection, ProcessStepId, PsWorkerUtilization, PsExtended, VcExtended, I_ProcessStepStatistics, WorkerWithUtilization, I_WorkItemStatistics, I_FlowStats } from '../shared/io_api_definitions'
+import { Injection, ProcessStepId, I_ProcessStepStatistics, I_WorkItemStatistics } from '../shared/io_api_definitions'
+import { PsWorkerUtilization, PsExtended, VcExtended, WorkerWithUtilization, I_FlowStats } from '../shared/frontend_definitions'
 import { ColorMapperService, RgbColor } from '../shared/color-mapper.service'
 import { WorkorderFeederService  } from '../shared/workorder-feeder.service'
 import { UiBoxSize, UiVcBoxLeftMargin} from '../shared/ui-boxes-definitions'

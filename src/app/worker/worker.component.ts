@@ -4,7 +4,8 @@
 // last code cleaning: 22.12.2024
 
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
-import { I_WorkerState, WorkerWithUtilization, ColoredWeightedSelectionStrategy } from '../shared/io_api_definitions'
+import { I_WorkerState } from '../shared/io_api_definitions'
+import { WorkerWithUtilization, ColoredWeightedSelectionStrategy } from '../shared/frontend_definitions'
 import { ColorMapperService } from '../shared/color-mapper.service'
 import { rgbColorToCssString } from '../shared/inventory-layout'
 

@@ -6,7 +6,8 @@
 import { Component, OnChanges, HostListener } from '@angular/core'
 import { Observable, catchError, throwError } from "rxjs"
 import { BackendApiService } from '../shared/backend-api.service'
-import { TimeInterval, I_SystemState, I_SystemStatistics, I_ValueChainStatistics, ObExtended, PsWorkerUtilization, ValueChainId, VcExtended, I_ConfigAsJson, EventTypeId, EventSeverity } from "../shared/io_api_definitions"
+import { I_SystemState, I_SystemStatistics, I_ValueChainStatistics, ValueChainId, I_ConfigAsJson, EventTypeId, EventSeverity } from "../shared/io_api_definitions"
+import { TimeInterval, ObExtended, PsWorkerUtilization, VcExtended  } from "../shared/frontend_definitions"
 import { WorkorderFeederService } from '../shared/workorder-feeder.service'
 import { UiBoxSize, UiBoxMarginToWindow, UiSystemHeaderHeight, UiWorkerStatsHeight } from '../shared/ui-boxes-definitions'
 import { environment } from '../../environments/environment.prod'
