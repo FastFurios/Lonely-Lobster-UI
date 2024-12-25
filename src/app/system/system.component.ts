@@ -55,7 +55,7 @@ export class SystemComponent implements OnChanges {
   /** number of remaining iterations to go in the current run */
   numIterationsToGo:        number
   /** system configuration object */
-  configObject:             I_ConfigAsJson 
+  configObject:             I_ConfigAsJson | undefined
   /**  */
   showSystemState:          boolean  = false
   reloadLearnStatsLegend:   boolean  = false
@@ -216,7 +216,7 @@ export class SystemComponent implements OnChanges {
    * read the system configuration from the configuration file service, build the system in the backend, initialize the work order feeder and the color mapper service 
    */
   private parseAndInititalize(): void {
-      this.configObject = this.cfs.configAsJson() 
+      this.configObject = this.cfs.configAsJson()
       this.setOrResetSystem() // build the system
       this.wof.initialize()   // initialize work order feeder  
       this.cms.clear()  // initialize color mapper ...
@@ -229,12 +229,12 @@ export class SystemComponent implements OnChanges {
    */
   private setOrResetSystem() {
       this.numIterationsToGo = 0
-      this.systemState$ = this.bas.systemStateOnInitialization(this.configObject)
+      this.systemState$ = this.bas.systemStateOnInitialization(this.configObject!)
           .pipe(
               catchError((err: any) => {
                 this.showSystemState = false
                 this.ess.add(EventsService.applicationEventFrom("setOrResetSystem", "(Re)setting system", EventTypeId.systemFailed, EventSeverity.fatal))
-                return throwError(() => err)
+                return throwError(() => err)  // re-factor: through uncatched runtime error; how can this be avoided?
             })
       )
       this.systemState$.subscribe(systemState => {

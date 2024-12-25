@@ -24,6 +24,7 @@
                 <div class="parameter-label-input">
                     <label>Value-add:</label>
                     <input type="number" placeholder=">=0" formControlName="valueAdd" min="0" step="1"> 
+                    <app-editor-messages [control]="valueChain.get('valueAdd')!" controlName="common"></app-editor-messages>
                 </div>    
                 <div [formGroup]="valueDegradationFg(valueChain)" class="left-margin">
                     <div>Value Degradation:</div> 
@@ -64,7 +65,9 @@
                     <div><input class="bold-text" type="text" formControlName="id"></div> 
                     <app-editor-messages [control]="processStep.get('id')!" controlName="id"></app-editor-messages>
                     <div><input type="number" placeholder=">=0"   formControlName="normEffort" min="0" step="1"></div>
+                    <app-editor-messages [control]="processStep.get('normEffort')!" controlName="common"></app-editor-messages>
                     <div><input type="number" placeholder="0=none, else >=1"     formControlName="wipLimit" min="0" step="1"></div>
+                    <app-editor-messages [control]="processStep.get('wipLimit')!" controlName="common"></app-editor-messages>
                 </div>
             </div>
         </div>

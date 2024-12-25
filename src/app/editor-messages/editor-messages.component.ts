@@ -7,7 +7,7 @@ import { Component, OnInit, Input } from '@angular/core'
 import { AbstractControl } from "@angular/forms"
 
 /**
- * @class This Angular component renderes validation messages in the system configuration editor. 
+ * @class This Angular component renders validation messages in the system configuration editor. 
  */
 @Component({
   selector: 'app-editor-messages',
@@ -20,12 +20,15 @@ export class EditorMessagesComponent implements OnInit {
 
   private allMessages: Record<string, Record<string, string>> = {
     id: {
-      required: "id must not be empty",
+      required: "Id must not be empty",
       idWithoutPeriod: "Value-chain and process-step IDs must not have a period in their name"
     },
     workerAssignments: {
-      duplicates: "An assignment connot be selected more than once for a worker",
-      empty: "assignment must not be empty"
+      duplicates: "An assignment cannot be selected more than once for a worker",
+      empty: "Assignment must not be empty"
+    },
+    common: {
+      noInteger: "No decimals allowed",
     }
   }
   /** @private  */

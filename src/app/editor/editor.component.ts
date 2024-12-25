@@ -135,7 +135,7 @@ export class EditorComponent implements OnInit {
   public addValueChainFg(cfVc?: I_ValueChainAsJson): FormGroup {
     const newVcFg = this.fb.group({
       id:               [cfVc ? cfVc.value_chain_id : "", [Validators.required, EditorComponent.vcPsNameFormatCheck]],
-      valueAdd:         [cfVc ? cfVc.value_add      : ""],
+      valueAdd:         [cfVc ? cfVc.value_add      : "", [EditorComponent.numberIsIntegerCheck]],
       valueDegradation: this.fb.group({
           function:     [cfVc ? cfVc.value_degradation?.function : ""],
           argument:     [cfVc ? cfVc.value_degradation?.argument : ""]
@@ -153,8 +153,8 @@ export class EditorComponent implements OnInit {
   public addProcessStepFg(pss: FormArray, cfPs?: I_ProcessStepAsJson): FormGroup {
     const newPsFg = this.fb.group({
       id:               [cfPs ? cfPs.process_step_id : "", [ Validators.required, EditorComponent.vcPsNameFormatCheck ]],
-      normEffort:       [cfPs ? cfPs.norm_effort : ""],
-      wipLimit:         [cfPs ? cfPs.wip_limit : ""]
+      normEffort:       [cfPs ? cfPs.norm_effort : "", [EditorComponent.numberIsIntegerCheck]],
+      wipLimit:         [cfPs ? cfPs.wip_limit : "", [EditorComponent.numberIsIntegerCheck]]
     })
     pss.push(newPsFg)
     return newPsFg
@@ -257,6 +257,12 @@ export class EditorComponent implements OnInit {
     const valueOccurancesCounts: number[] = woAssFormArrayFormGroups.map(fg => woAssFormArrayFormGroups.filter(e => e.get("vcIdpsId")!.value == fg.get("vcIdpsId")!.value).length)  
     return Math.max(...valueOccurancesCounts) > 1 ? { duplicates: { valid: false } } : null
   }
+
+  static numberIsIntegerCheck(numCtrl: AbstractControl): ValidationErrors | null {
+    const numCtrlVal = numCtrl.value
+    return numCtrlVal != Math.round(numCtrlVal) ? { noInteger: { valid: false } } : null
+  }
+
  
   // ---------------------------------------------------------------------------------------
   // getting form elements

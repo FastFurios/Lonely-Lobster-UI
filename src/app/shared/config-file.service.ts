@@ -28,7 +28,7 @@ export class ConfigFileService {
    * Stores a new system configuration in this service and emits a component event
    * @param configJson - system configuration in parsed JSON form, i.e. a POJO  
    */
-  storeConfigAsJson(configJson: I_ConfigAsJson | undefined): void {
+  storeConfigAsJson(configJson: I_ConfigAsJson): void {
     this._configAsJson = configJson 
   }
 
