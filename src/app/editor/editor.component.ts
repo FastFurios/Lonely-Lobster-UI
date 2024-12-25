@@ -1,10 +1,10 @@
 //-------------------------------------------------------------------
 // EDITOR COMPONENT
 //-------------------------------------------------------------------
-// last code cleaning: 21.12.2024
+// last code cleaning: 25.12.2024
 
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, FormControl, Validators, ValidationErrors, AbstractControl } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray, FormControl, Validators, ValidationErrors, AbstractControl, ValidatorFn } from '@angular/forms';
 import { I_ConfigAsJson, I_ValueChainAsJson, I_ProcessStepAsJson, I_GloballyDefinedWorkitemSelectionStrategyAsJson, I_WorkerAsJson, I_ValueChainAndProcessStepAsJson, valueDegradationFunctionNames, successMeasureFunctionNames, I_SelectionStrategy, I_sortVector, I_SortVectorAsJson, EventTypeId, EventSeverity } from '../shared/io_api_definitions'
 import { workItemSelectionStrategyMeasureNames, selectionCriterionNames } from '../shared/frontend_definitions'
 import { ConfigFileService } from '../shared/config-file.service'
@@ -153,8 +153,8 @@ export class EditorComponent implements OnInit {
   public addProcessStepFg(pss: FormArray, cfPs?: I_ProcessStepAsJson): FormGroup {
     const newPsFg = this.fb.group({
       id:               [cfPs ? cfPs.process_step_id : "", [ Validators.required, EditorComponent.vcPsNameFormatCheck ]],
-      normEffort:       [cfPs ? cfPs.norm_effort : "", [EditorComponent.numberIsIntegerCheck]],
-      wipLimit:         [cfPs ? cfPs.wip_limit : "", [EditorComponent.numberIsIntegerCheck]]
+      normEffort:       [cfPs ? cfPs.norm_effort : "", [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsGreaterThanCheck(0)]],
+      wipLimit:         [cfPs ? cfPs.wip_limit : "", [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsGreaterThanCheck(0)]]
     })
     pss.push(newPsFg)
     return newPsFg
@@ -243,28 +243,6 @@ export class EditorComponent implements OnInit {
   }
     
   // ---------------------------------------------------------------------------------------
-  // validators
-  // ---------------------------------------------------------------------------------------
-
-  /** Check if form control value is in the "value-chain.process-step" format  */
-  static vcPsNameFormatCheck(control: FormControl): ValidationErrors | null {
-    return control.value.includes(".") ? { idWithoutPeriod: { valid: false } } : null
-  }
-
-  /** Check if worker is assigned to a process step just once */
-  static workerAssignmentsDuplicateCheck(woAss: AbstractControl): ValidationErrors | null {
-    const woAssFormArrayFormGroups = (<FormArray>woAss).controls
-    const valueOccurancesCounts: number[] = woAssFormArrayFormGroups.map(fg => woAssFormArrayFormGroups.filter(e => e.get("vcIdpsId")!.value == fg.get("vcIdpsId")!.value).length)  
-    return Math.max(...valueOccurancesCounts) > 1 ? { duplicates: { valid: false } } : null
-  }
-
-  static numberIsIntegerCheck(numCtrl: AbstractControl): ValidationErrors | null {
-    const numCtrlVal = numCtrl.value
-    return numCtrlVal != Math.round(numCtrlVal) ? { noInteger: { valid: false } } : null
-  }
-
- 
-  // ---------------------------------------------------------------------------------------
   // getting form elements
   // ---------------------------------------------------------------------------------------
 
@@ -332,6 +310,32 @@ export class EditorComponent implements OnInit {
     return this.globallyDefinedWorkitemSelectionStrategiesFa.controls.flatMap(wiSs => wiSs.get("id")?.value)
   }
 
+  // ---------------------------------------------------------------------------------------
+  // validators
+  // ---------------------------------------------------------------------------------------
+
+  /** Check if form control value is in the "value-chain.process-step" format  */
+  static vcPsNameFormatCheck(control: FormControl): ValidationErrors | null {
+    return control.value.includes(".") ? { idWithoutPeriod: { valid: false } } : null
+  }
+
+  /** Check if worker is assigned to a process step just once */
+  static workerAssignmentsDuplicateCheck(woAss: AbstractControl): ValidationErrors | null {
+    const woAssFormArrayFormGroups = (<FormArray>woAss).controls
+    const valueOccurancesCounts: number[] = woAssFormArrayFormGroups.map(fg => woAssFormArrayFormGroups.filter(e => e.get("vcIdpsId")!.value == fg.get("vcIdpsId")!.value).length)  
+    return Math.max(...valueOccurancesCounts) > 1 ? { duplicates: { valid: false } } : null
+  }
+
+  static numberIsIntegerCheck(numCtrl: AbstractControl): ValidationErrors | null {
+    const numCtrlVal = numCtrl.value
+    return numCtrlVal != Math.round(numCtrlVal) ? { noInteger: { valid: false } } : null
+  }
+
+  static numberIsGreaterThanCheck(min: number): ValidatorFn | null {
+    return (numCtrl: AbstractControl) => numCtrl.value < min ? { negative: { valid: false } } : null
+  }
+  
+  
   // ---------------------------------------------------------------------------------------
   // handlers
   // ---------------------------------------------------------------------------------------

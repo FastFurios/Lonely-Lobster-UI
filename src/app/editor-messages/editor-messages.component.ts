@@ -29,6 +29,7 @@ export class EditorMessagesComponent implements OnInit {
     },
     common: {
       noInteger: "No decimals allowed",
+      negative:  "Number must be positive",
     }
   }
   /** @private  */
