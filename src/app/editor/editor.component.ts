@@ -54,13 +54,13 @@ export class EditorComponent implements OnInit {
     this.systemFg = this.fb.group({
       id:                                   [cfo  ? cfo.system_id : "", Validators.required],
       frontendPresetParameters: this.fb.group({
-          numIterationsPerBatch:            [cfo ? cfo.frontend_preset_parameters?.num_iterations_per_batch : ""],
-          economicsStatsInterval:           [cfo ? cfo.frontend_preset_parameters?.economics_stats_interval : ""]
+          numIterationsPerBatch:            [cfo ? cfo.frontend_preset_parameters?.num_iterations_per_batch : "", [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheck(1)]],
+          economicsStatsInterval:           [cfo ? cfo.frontend_preset_parameters?.economics_stats_interval : "", [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheck(0)]]
       }),
       learnAndAdaptParms: this.fb.group({
-          observationPeriod:                [cfo ? cfo.learn_and_adapt_parms?.observation_period : ""],
+          observationPeriod:                [cfo ? cfo.learn_and_adapt_parms?.observation_period : "", [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheck(1)]],
           successMeasureFunction:           [cfo ? cfo.learn_and_adapt_parms?.success_measure_function : ""],
-          adjustmentFactor:                 [cfo ? cfo.learn_and_adapt_parms?.adjustment_factor : ""],
+          adjustmentFactor:                 [cfo ? cfo.learn_and_adapt_parms?.adjustment_factor : "", [EditorComponent.numberIsInRangeCheck(0, 1)]],
       }),
       wipLimitSearchParms: this.fb.group({
           initialTemperature:               [cfo ? cfo.wip_limit_search_parms?.initial_temperature : ""],
@@ -153,8 +153,8 @@ export class EditorComponent implements OnInit {
   public addProcessStepFg(pss: FormArray, cfPs?: I_ProcessStepAsJson): FormGroup {
     const newPsFg = this.fb.group({
       id:               [cfPs ? cfPs.process_step_id : "", [ Validators.required, EditorComponent.vcPsNameFormatCheck ]],
-      normEffort:       [cfPs ? cfPs.norm_effort : "", [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsGreaterThanCheck(0)]],
-      wipLimit:         [cfPs ? cfPs.wip_limit : "", [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsGreaterThanCheck(0)]]
+      normEffort:       [cfPs ? cfPs.norm_effort : "", [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheck(0)]],
+      wipLimit:         [cfPs ? cfPs.wip_limit : "", [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheck(0)]]
     })
     pss.push(newPsFg)
     return newPsFg
@@ -314,6 +314,7 @@ export class EditorComponent implements OnInit {
   // validators
   // ---------------------------------------------------------------------------------------
 
+  // plain validators:
   /** Check if form control value is in the "value-chain.process-step" format  */
   static vcPsNameFormatCheck(control: FormControl): ValidationErrors | null {
     return control.value.includes(".") ? { idWithoutPeriod: { valid: false } } : null
@@ -328,14 +329,27 @@ export class EditorComponent implements OnInit {
 
   static numberIsIntegerCheck(numCtrl: AbstractControl): ValidationErrors | null {
     const numCtrlVal = numCtrl.value
-    return numCtrlVal != Math.round(numCtrlVal) ? { noInteger: { valid: false } } : null
+//    return numCtrlVal != Math.round(numCtrlVal) ? { noInteger: { valid: false } } : null
+    return numCtrlVal != Math.round(numCtrlVal) ? { noInteger: { message: "Value must not have decimals" } } : null
   }
 
-  static numberIsGreaterThanCheck(min: number): ValidatorFn | null {
-    return (numCtrl: AbstractControl) => numCtrl.value < min ? { negative: { valid: false } } : null
+  // validator factories:
+
+  // static numberIsGreaterEqualThanCheck(min: number): ValidatorFn | null {
+  //   return (numCtrl: AbstractControl) => numCtrl.value < min ? { below: { valid: false } } : null
+  // }
+  
+  // static numberIsLessEqualThanCheck(max: number): ValidatorFn | null {
+  //   return (numCtrl: AbstractControl) => numCtrl.value > max ? { above: { valid: false } } : null
+  // }
+  
+  static numberIsInRangeCheck(min: number | undefined, max?: number): ValidatorFn | null {
+//  return (numCtrl: AbstractControl) => ((min && numCtrl.value < min) || (max && numCtrl.value > max)) ? { range: { message: `Value must be in the range of ${min} and ${max}` } } : null
+    return (numCtrl: AbstractControl) => (min != undefined && numCtrl.value < min) || (max && numCtrl.value > max) ? { range: { message: `Value is ${numCtrl.value} -  must be in the range of ${min} and ${max}` } } : null
   }
   
-  
+
+
   // ---------------------------------------------------------------------------------------
   // handlers
   // ---------------------------------------------------------------------------------------

@@ -48,6 +48,7 @@ export class EditorMessagesComponent implements OnInit {
   public errorsForControl(): string[] {
     const messages = this.allMessages[this.controlName]
     if (!this.control || !this.control.errors || !messages || !this.control.dirty) { return [] }
-    return Object.keys(this.control.errors).map(err => messages[err])
+//    return Object.keys(this.control.errors).map(err => messages[err])
+    return Object.values(this.control.errors).map(err => err.message)
   }
 }

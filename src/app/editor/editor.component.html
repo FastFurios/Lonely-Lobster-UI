@@ -184,6 +184,7 @@
                     <div class="parameter-label-input">
                         <label>Adjustment Factor:</label>
                         <input  type="number" placeholder=">=0.1" formControlName="adjustmentFactor" min="0.1" step="0.1">
+                        <app-editor-messages [control]="learnAndAdaptParmsFg.get('adjustmentFactor')!" controlName="common"></app-editor-messages>
                     </div>
                 </div>
             </div>
