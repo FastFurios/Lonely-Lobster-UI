@@ -7,7 +7,7 @@
 }
 
 .button_icon {
-    font-size: large;
+    /* font-size: large; */
     padding: 0px;
     border: 0px;
     margin: 2px;
@@ -64,3 +64,7 @@ input[type='number']{
     width: 80px;
     text-align: right; 
 } 
+
+big-icon {
+    font-size: x-large;
+}

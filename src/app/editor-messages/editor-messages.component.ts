@@ -16,12 +16,12 @@ import { AbstractControl } from "@angular/forms"
 })
 export class EditorMessagesComponent implements OnInit {
   @Input() control:     AbstractControl
-  @Input() controlName: string 
+/*   @Input() controlName: string 
 
   private allMessages: Record<string, Record<string, string>> = {
     id: {
       required: "Id must not be empty",
-      idWithoutPeriod: "Value-chain and process-step IDs must not have a period in their name"
+      idContainsPeriod: "Value-chain and process-step IDs must not have a period in their name"
     },
     workerAssignments: {
       duplicates: "An assignment cannot be selected more than once for a worker",
@@ -31,7 +31,7 @@ export class EditorMessagesComponent implements OnInit {
       noInteger: "No decimals allowed",
       negative:  "Number must be positive",
     }
-  }
+  } */
   /** @private  */
   constructor() { }
   /** @private  */
@@ -46,8 +46,9 @@ export class EditorMessagesComponent implements OnInit {
    * @returns Validation message
    */
   public errorsForControl(): string[] {
-    const messages = this.allMessages[this.controlName]
-    if (!this.control || !this.control.errors || !messages || !this.control.dirty) { return [] }
+//    const messages = this.allMessages[this.controlName]
+//    if (!this.control || !this.control.errors || !messages || !this.control.dirty) { return [] }
+    if (!this.control || !this.control.errors || !this.control.dirty) { return [] }
 //    return Object.keys(this.control.errors).map(err => messages[err])
     return Object.values(this.control.errors).map(err => err.message)
   }

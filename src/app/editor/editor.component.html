@@ -1,32 +1,34 @@
 <form [formGroup]="systemFg" class="editor-text" (ngSubmit)="onSubmitForm()">
     <div class="section">
-        <label>System</label>
+        <label>System:</label>
         <input  type="text" formControlName="id">
-        <button class="material-symbols-outlined button_icon" type="submit"
-            [disabled]="systemFg.invalid">
+        <button class="material-symbols-outlined icon-big button_icon" type="submit" [disabled]="systemFg.invalid">
             save
         </button>
+        System FormGroup invald: {{ systemFg.invalid }}
+        <app-editor-messages [control]="systemFg" controlName="id"></app-editor-messages>
     </div>
 
     <!-- VALUE CHAINS ------------------------------------------------------------------------------------------->
     <div class="section">
         <label>Value Chains</label>
         <button type="button" class="material-symbols-outlined button_icon" (click)="addValueChainFg()"> add_circle </button>
+        <app-editor-messages [control]="valueChainsFa" controlName="id"></app-editor-messages>
     </div>
     <div formArrayName="valueChains">
-        <div class="section" *ngFor="let valueChain of valueChainsFa.controls; let i = index" [formGroup]="valueChain">
+        <div class="section" *ngFor="let valueChainFg of valueChainsFa.controls; let i = index" [formGroup]="valueChainFg">
             <div>
                 <input  type="text" class="bold-text" placeholder="Value chain" formControlName="id">
+                <app-editor-messages [control]="valueChainFg.get('id')!" controlName="id"></app-editor-messages>
                 <button type="button" class="material-symbols-outlined button_icon" (click)="deleteValueChainFg(i)"> delete_forever </button>
-                <app-editor-messages [control]="valueChain.get('id')!" controlName="id"></app-editor-messages>
             </div>
             <div class="flex-multi-columns"> 
                 <div class="parameter-label-input">
                     <label>Value-add:</label>
                     <input type="number" placeholder=">=0" formControlName="valueAdd" min="0" step="1"> 
-                    <app-editor-messages [control]="valueChain.get('valueAdd')!" controlName="common"></app-editor-messages>
+                    <app-editor-messages [control]="valueChainFg.get('valueAdd')!" controlName="common"></app-editor-messages>
                 </div>    
-                <div [formGroup]="valueDegradationFg(valueChain)" class="left-margin">
+                <div [formGroup]="valueDegradationFg(valueChainFg)" class="left-margin">
                     <div>Value Degradation:</div> 
                     <div class="parameter-label-input">
                         <label>Function:</label>
@@ -41,33 +43,45 @@
                         <input type="number" placeholder="number" formControlName="argument">
                     </div>
                 </div>          
-                <div [formGroup]="injectionFg(valueChain)" class="left-margin">
+                <div [formGroup]="injectionFg(valueChainFg)" class="left-margin">
                     <div>Injection:</div> 
                     <div class="parameter-label-input">
                         <label>Throughput:</label>
                         <input type="number" placeholder=">=0"   formControlName="throughput" min="0" step="0.1">
+                        <app-editor-messages [control]="injectionFg(valueChainFg).get('throughput')!" controlName="id"></app-editor-messages>
                     </div>
                     <div class="parameter-label-input">
                         <label>Probability:</label>
                         <input type="number" placeholder="0.1-1.0 " formControlName="probability" min="0.1" max="1" step="0.1">
+                        <app-editor-messages [control]="injectionFg(valueChainFg).get('probability')!" controlName="id"></app-editor-messages>
                     </div>
                 </div>          
             </div>          
             <div class="flex-multi-columns"> 
                 <div>
-                    <div><label> Process Steps </label>  <button type="button" class="material-symbols-outlined button_icon" (click)="addProcessStepFg(processStepsFa(valueChain))"> add_circle </button> </div>
+                    <div>
+                        <label> Process Steps </label>  
+                        <button type="button" class="material-symbols-outlined button_icon" (click)="addProcessStepFg(processStepsFa(valueChainFg))"> add_circle </button> 
+                        <app-editor-messages [control]="processStepsFa(valueChainFg)" controlName="id"></app-editor-messages>
+                    </div>
                     <div class="vertically-aligned-property-label">Id:</div>
                     <div class="vertically-aligned-property-label">Norm Effort:</div>
                     <div class="vertically-aligned-property-label">WIP Limit:</div>
                 </div>
-                <div *ngFor="let processStep of processStepsFa(valueChain).controls; let j = index" [formGroup]="processStep">
-                    <button type="button" class="material-symbols-outlined button_icon" (click)="deleteProcessStepFg(valueChain, j)"> delete_forever </button>
-                    <div><input class="bold-text" type="text" formControlName="id"></div> 
-                    <app-editor-messages [control]="processStep.get('id')!" controlName="id"></app-editor-messages>
-                    <div><input type="number" placeholder=">=0"   formControlName="normEffort" min="0" step="1"></div>
-                    <app-editor-messages [control]="processStep.get('normEffort')!" controlName="common"></app-editor-messages>
-                    <div><input type="number" placeholder="0=none, else >=1"     formControlName="wipLimit" min="0" step="1"></div>
-                    <app-editor-messages [control]="processStep.get('wipLimit')!" controlName="common"></app-editor-messages>
+                <div *ngFor="let processStepFg of processStepsFa(valueChainFg).controls; let j = index" [formGroup]="processStepFg">
+                    <button type="button" class="material-symbols-outlined button_icon" (click)="deleteProcessStepFg(valueChainFg, j)"> delete_forever </button>
+                    <div>
+                        <input class="bold-text" type="text" formControlName="id">
+                        <app-editor-messages [control]="processStepFg.get('id')!" controlName="id"></app-editor-messages>
+                    </div> 
+                    <div>
+                        <input type="number" placeholder=">=0"   formControlName="normEffort" min="0" step="1">
+                        <app-editor-messages [control]="processStepFg.get('normEffort')!" controlName="common"></app-editor-messages>
+                    </div>
+                    <div>
+                        <input type="number" placeholder="0=none, else >=1"     formControlName="wipLimit" min="0" step="1">
+                        <app-editor-messages [control]="processStepFg.get('wipLimit')!" controlName="common"></app-editor-messages>
+                    </div>
                 </div>
             </div>
         </div>
@@ -78,18 +92,19 @@
     <div class="section">
         <label>Globally defined workitem selection strategies</label>
         <button type="button" class="material-symbols-outlined button_icon" (click)="addGloballyDefinedWorkitemSelectionStrategyFg()">add_circle </button>
+        <app-editor-messages [control]="globallyDefinedWorkitemSelectionStrategiesFa!" controlName="common"></app-editor-messages>
     </div>
     <div formArrayName="globallyDefinedWorkitemSelectionStrategies">
-        <div class="section" *ngFor="let strategy of globallyDefinedWorkitemSelectionStrategiesFa.controls; let k = index" [formGroup]="strategy" >
+        <div class="section" *ngFor="let strategyFg of globallyDefinedWorkitemSelectionStrategiesFa.controls; let k = index" [formGroup]="strategyFg" >
             <div>
                 <input type="text" class="bold-text" placeholder="Strategy Name" formControlName="id">
                 <button type="button" class="material-symbols-outlined button_icon" (click)="deleteGloballyDefinedWorkitemSelectionStrategyFg(k)"> delete_forever </button>
             </div>
             <div class="flex-multi-columns"> 
                 <div>
-                    <div><label> Sort vectors </label>  <button type="button" class="material-symbols-outlined button_icon" (click)="addSortVectorFg(sortVectorsFa(strategy))"> add_circle </button></div>
+                    <div><label> Sort vectors </label>  <button type="button" class="material-symbols-outlined button_icon" (click)="addSortVectorFg(sortVectorsFa(strategyFg))"> add_circle </button></div>
                 </div>
-                <div *ngFor="let sortVector of sortVectorsFa(strategy).controls; let j = index" [formGroup]="sortVector" class="left-margin">
+                <div *ngFor="let sortVectorFg of sortVectorsFa(strategyFg).controls; let j = index" [formGroup]="sortVectorFg" class="left-margin">
                     <select formControlName="measure">
                         <option *ngFor="let m of workItemSelectionStrategyMeasures" [ngValue]="m">
                             {{ m }} 
@@ -100,7 +115,7 @@
                             {{ sc }} 
                         </option>
                     </select> 
-                    <button type="button" class="material-symbols-outlined button_icon" (click)="deleteSortVectorFg(strategy, j)"> delete_forever </button>
+                    <button type="button" class="material-symbols-outlined button_icon" (click)="deleteSortVectorFg(strategyFg, j)"> delete_forever </button>
                 </div>
             </div>
         </div>
@@ -110,42 +125,45 @@
     <div class="section">
         <label>Workers</label>
         <button type="button" class="material-symbols-outlined button_icon" (click)="addWorkerFg()">add_circle </button>
+        <app-editor-messages [control]="workersFa" controlName="id"></app-editor-messages>
     </div>
     <div formArrayName="workers">
-        <div class="section" *ngFor="let worker of workersFa.controls; let k = index" [formGroup]="worker" >
+        <div class="section" *ngFor="let workerFg of workersFa.controls; let k = index" [formGroup]="workerFg" >
             <div>
                 <input type="text" class="bold-text" placeholder="Worker Name" formControlName="id">
+                <app-editor-messages [control]="workerFg.get('id')!" controlName="common"></app-editor-messages>
                 <button type="button" class="material-symbols-outlined button_icon" (click)="deleteWorkerFg(k)"> delete_forever </button>
             </div>
-            <app-editor-messages [control]="worker.get('assignments')!" controlName="workerAssignments"></app-editor-messages>
+
             <div class="flex-multi-columns"> 
                 <div>
-                    <div><label> Assignments </label>  <button type="button" class="material-symbols-outlined button_icon" (click)="addWorkerAssignmentFg(workerAssignmentsFa(worker))"> add_circle </button></div>
+                    <div><label> Assignments </label>  <button type="button" class="material-symbols-outlined button_icon" (click)="addWorkerAssignmentFg(workerAssignmentsFa(workerFg))"> add_circle </button></div>
                 </div>
-                <div *ngFor="let assignment of workerAssignmentsFa(worker).controls; let l = index" [formGroup]="assignment" class="left-margin">
+                <div *ngFor="let assignmentFg of workerAssignmentsFa(workerFg).controls; let l = index" [formGroup]="assignmentFg" class="left-margin">
                     <select formControlName="vcIdpsId">
                         <option *ngFor="let vcPs of processStepsOfValueChainsStrings" [ngValue]="vcPs">
                             {{ vcPs }} 
                         </option>
                     </select> 
-                    <button type="button" class="material-symbols-outlined button_icon" (click)="deleteAssignmentFg(worker, l)"> delete_forever </button>
-                    <app-editor-messages [control]="assignment" controlName="workerAssignment"></app-editor-messages>
+                    <button type="button" class="material-symbols-outlined button_icon" (click)="deleteAssignmentFg(workerFg, l)"> delete_forever </button>
                 </div>
             </div>
+            <app-editor-messages [control]="workerAssignmentsFa(workerFg)!" controlName="workerAssignments"></app-editor-messages>
+            
             <div class="flex-multi-columns"> 
                 <div>
-                    <div><label> Strategies </label>  <button type="button" class="material-symbols-outlined button_icon" (click)="addWorkerStrategyFg(workerStrategiesFa(worker))"> add_circle </button></div>
+                    <div><label> Strategies </label>  <button type="button" class="material-symbols-outlined button_icon" (click)="addWorkerStrategyFg(workerStrategiesFa(workerFg))"> add_circle </button></div>
                 </div>
-                <div *ngFor="let workerStrategy of workerStrategiesFa(worker).controls; let l = index" [formGroup]="workerStrategy" class="left-margin">
+                <div *ngFor="let workerStrategyFg of workerStrategiesFa(workerFg).controls; let l = index" [formGroup]="workerStrategyFg" class="left-margin">
                     <select formControlName="woWiSsId">
                         <option *ngFor="let wiSsId of globallyDefinedWorkitemSelectionStrategiesIdsStrings" [ngValue]="wiSsId">
                             {{ wiSsId }} 
                         </option>
                     </select> 
-                    <button type="button" class="material-symbols-outlined button_icon" (click)="deleteWorkerStrategyFg(worker, l)"> delete_forever </button>
-                    <app-editor-messages [control]="workerStrategy" controlName="workerStrategy"></app-editor-messages>
+                    <button type="button" class="material-symbols-outlined button_icon" (click)="deleteWorkerStrategyFg(workerFg, l)"> delete_forever </button>
                 </div>
             </div>
+            <app-editor-messages [control]="workerStrategiesFa(workerFg)!" controlName="workerAssignments"></app-editor-messages>
         </div>
     </div>
 
@@ -158,11 +176,17 @@
                     <label class="bold-text">Presetting:</label>
                     <div class="parameter-label-input">
                         <label>#Iterations per batch:</label>
-                        <input type="number" placeholder=">=1" formControlName="numIterationsPerBatch" min="1">
+                        <div>
+                            <input type="number" placeholder=">=1" formControlName="numIterationsPerBatch" min="1">
+                            <app-editor-messages [control]="frontendPresetParametersFg.get('numIterationsPerBatch')!" controlName="id"></app-editor-messages>
+                        </div>
                     </div>
                     <div class="parameter-label-input">
                         <label>Economics stats interval:</label>
-                        <input type="number" placeholder=">=1" formControlName="economicsStatsInterval" min="1">
+                        <div>
+                            <input type="number" placeholder=">=1" formControlName="economicsStatsInterval" min="1">
+                            <app-editor-messages [control]="frontendPresetParametersFg.get('economicsStatsInterval')!" controlName="id"></app-editor-messages>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -171,7 +195,10 @@
                     <label class="bold-text">Learn and Adapt:</label>
                     <div class="parameter-label-input">
                         <label>Observation Period:</label>
-                        <input type="number" placeholder=">=1" formControlName="observationPeriod" min="1">
+                        <div>
+                            <input type="number" placeholder=">=1" formControlName="observationPeriod" min="1">
+                            <app-editor-messages [control]="learnAndAdaptParmsFg.get('observationPeriod')!" controlName="id"></app-editor-messages>
+                        </div>
                     </div>
                     <div class="parameter-label-input">
                         <label>Success Measure Function:</label>
@@ -183,8 +210,10 @@
                     </div>
                     <div class="parameter-label-input">
                         <label>Adjustment Factor:</label>
-                        <input  type="number" placeholder=">=0.1" formControlName="adjustmentFactor" min="0.1" step="0.1">
-                        <app-editor-messages [control]="learnAndAdaptParmsFg.get('adjustmentFactor')!" controlName="common"></app-editor-messages>
+                        <div>
+                            <input  type="number" placeholder=">=0.1" formControlName="adjustmentFactor" min="0.1" step="0.1">
+                            <app-editor-messages [control]="learnAndAdaptParmsFg.get('adjustmentFactor')!" controlName="common"></app-editor-messages>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -193,27 +222,45 @@
                     <label class="bold-text">WIP limit optimization:</label>
                     <div class="parameter-label-input">
                         <label>Initial Temperature:</label>
-                        <input type="number" placeholder=">=0" formControlName="initialTemperature" min="0" step="10">
+                        <div>
+                            <input type="number" placeholder=">=0" formControlName="initialTemperature" min="0" step="10">
+                            <app-editor-messages [control]="wipLimitSearchParmsFg.get('initialTemperature')!" controlName="common"></app-editor-messages>
+                        </div>
                     </div>
                     <div class="parameter-label-input">
                         <label>Cooling Factor:</label>
-                        <input type="number" placeholder="<1.0" formControlName="coolingParameter" min="0" max="0.99" step="0.01">
+                        <div>
+                            <input type="number" placeholder="0 - 1.0" formControlName="coolingParameter" min="0" max="0.99" step="0.01">
+                            <app-editor-messages [control]="wipLimitSearchParmsFg.get('coolingParameter')!" controlName="common"></app-editor-messages>
+                        </div>
                     </div>
                     <div class="parameter-label-input">
                         <label>Degrees per Downhill Step Tolerance:</label>
-                        <input type="number" placeholder=">=1" formControlName="degreesPerDownhillStepTolerance" min="1" step="1">
+                        <div>
+                            <input type="number" placeholder=">=1" formControlName="degreesPerDownhillStepTolerance" min="1" step="1">
+                            <app-editor-messages [control]="wipLimitSearchParmsFg.get('degreesPerDownhillStepTolerance')!" controlName="common"></app-editor-messages>
+                        </div>
                     </div>
                     <div class="parameter-label-input">
                         <label>Initial Jump Distance:</label>
-                        <input type="number" placeholder=">=1" formControlName="initialJumpDistance" min="1" step="1">
+                        <div>
+                            <input type="number" placeholder=">=1" formControlName="initialJumpDistance" min="1" step="1">
+                            <app-editor-messages [control]="wipLimitSearchParmsFg.get('initialJumpDistance')!" controlName="common"></app-editor-messages>
+                        </div>
                     </div>
                     <div class="parameter-label-input">
                         <label>Measurement Period:</label>
-                        <input type="number" placeholder=">=1" formControlName="measurementPeriod" min="1" step="10">
+                        <div>
+                            <input type="number" placeholder=">=1" formControlName="measurementPeriod" min="1" step="10">
+                            <app-editor-messages [control]="wipLimitSearchParmsFg.get('measurementPeriod')!" controlName="common"></app-editor-messages>
+                        </div>
                     </div>
                     <div class="parameter-label-input">
                         <label>WIP Limit Upper Boundary Factor:</label>
-                        <input type="number" placeholder=">=1.5" formControlName="wipLimitUpperBoundaryFactor" min="1.5" step="0.1">
+                        <div>
+                            <input type="number" placeholder=">=1.5" formControlName="wipLimitUpperBoundaryFactor" min="1.5" step="0.1">
+                            <app-editor-messages [control]="wipLimitSearchParmsFg.get('wipLimitUpperBoundaryFactor')!" controlName="common"></app-editor-messages>
+                        </div>
                     </div>
                 </div>
             </div>

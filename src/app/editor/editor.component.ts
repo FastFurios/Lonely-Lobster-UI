@@ -52,30 +52,30 @@ export class EditorComponent implements OnInit {
  // ---------------------------------------------------------------------------------------
   private initForm(cfo?: I_ConfigAsJson): void {
     this.systemFg = this.fb.group({
-      id:                                   [cfo  ? cfo.system_id : "", Validators.required],
+      id:                                   [cfo  ? cfo.system_id : "", [Validators.required] ],
       frontendPresetParameters: this.fb.group({
-          numIterationsPerBatch:            [cfo ? cfo.frontend_preset_parameters?.num_iterations_per_batch : "", [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheck(1)]],
-          economicsStatsInterval:           [cfo ? cfo.frontend_preset_parameters?.economics_stats_interval : "", [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheck(0)]]
+          numIterationsPerBatch:            [cfo ? cfo.frontend_preset_parameters?.num_iterations_per_batch : "",         [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(1)]],
+          economicsStatsInterval:           [cfo ? cfo.frontend_preset_parameters?.economics_stats_interval : "",         [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(0)]]
       }),
       learnAndAdaptParms: this.fb.group({
-          observationPeriod:                [cfo ? cfo.learn_and_adapt_parms?.observation_period : "", [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheck(1)]],
+          observationPeriod:                [cfo ? cfo.learn_and_adapt_parms?.observation_period : "",                    [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(1)]],
           successMeasureFunction:           [cfo ? cfo.learn_and_adapt_parms?.success_measure_function : ""],
-          adjustmentFactor:                 [cfo ? cfo.learn_and_adapt_parms?.adjustment_factor : "", [EditorComponent.numberIsInRangeCheck(0, 1)]],
+          adjustmentFactor:                 [cfo ? cfo.learn_and_adapt_parms?.adjustment_factor : "",                     [EditorComponent.numberIsInRangeCheckFactory(0, 1)]],
       }),
       wipLimitSearchParms: this.fb.group({
-          initialTemperature:               [cfo ? cfo.wip_limit_search_parms?.initial_temperature : ""],
-          coolingParameter:                 [cfo ? cfo.wip_limit_search_parms?.cooling_parm : ""],
-          degreesPerDownhillStepTolerance:  [cfo ? cfo.wip_limit_search_parms?.degrees_per_downhill_step_tolerance : ""],
-          initialJumpDistance:              [cfo ? cfo.wip_limit_search_parms?.initial_jump_distance : ""],
-          measurementPeriod:                [cfo ? cfo.wip_limit_search_parms?.measurement_period : ""],
-          wipLimitUpperBoundaryFactor:      [cfo ? cfo.wip_limit_search_parms?.wip_limit_upper_boundary_factor : ""],
+          initialTemperature:               [cfo ? cfo.wip_limit_search_parms?.initial_temperature : "",                  [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(1)]],
+          coolingParameter:                 [cfo ? cfo.wip_limit_search_parms?.cooling_parm : "",                         [EditorComponent.numberIsInRangeCheckFactory(0, 1)]],
+          degreesPerDownhillStepTolerance:  [cfo ? cfo.wip_limit_search_parms?.degrees_per_downhill_step_tolerance : "",  [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(0)]],
+          initialJumpDistance:              [cfo ? cfo.wip_limit_search_parms?.initial_jump_distance : "",                [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(1)]],
+          measurementPeriod:                [cfo ? cfo.wip_limit_search_parms?.measurement_period : "",                   [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(1)]],
+          wipLimitUpperBoundaryFactor:      [cfo ? cfo.wip_limit_search_parms?.wip_limit_upper_boundary_factor : "",      [EditorComponent.numberIsInRangeCheckFactory(1.5)]],
           searchOnAtStart:                  [cfo ? cfo.wip_limit_search_parms?.search_on_at_start : ""],
           verbose:                          [cfo ? cfo.wip_limit_search_parms?.verbose : ""]
         }),
-        valueChains:                        this.fb.array([]),
-        globallyDefinedWorkitemSelectionStrategies: this.fb.array([]),
-        workers:                            this.fb.array([])
-    })
+        valueChains:                        this.fb.array([],         [EditorComponent.idsDuplicateCheckFactory("id")!]),
+        globallyDefinedWorkitemSelectionStrategies: this.fb.array([], [EditorComponent.idsDuplicateCheckFactory("id")!]),
+        workers:                            this.fb.array([],         [EditorComponent.idsDuplicateCheckFactory("id")!])
+    }, { validators: [EditorComponent.atLeastOneValueChainCheck, EditorComponent.atLeastOneProcessStepCheck, EditorComponent.atLeastOneWorkerCheck] })
 
     if (cfo?.value_chains)                  this.addValueChainsFgs(cfo.value_chains)
     if (cfo?.globally_defined_workitem_selection_strategies) this.addGloballyDefinedWorkitemSelectionStrategiesFgs(cfo.globally_defined_workitem_selection_strategies)
@@ -141,10 +141,10 @@ export class EditorComponent implements OnInit {
           argument:     [cfVc ? cfVc.value_degradation?.argument : ""]
       }),
       injection: this.fb.group({
-          throughput:   [cfVc ? cfVc.injection?.throughput  : ""],
-          probability:  [cfVc ? cfVc.injection?.probability : ""]
+          throughput:   [cfVc ? cfVc.injection?.throughput  : "", [EditorComponent.numberIsInRangeCheckFactory(0)]],
+          probability:  [cfVc ? cfVc.injection?.probability : "", [EditorComponent.numberIsInRangeCheckFactory(0.1, 1)]]
       }),
-      processSteps:     this.fb.array([])
+      processSteps:     this.fb.array([], [EditorComponent.idsDuplicateCheckFactory("id")!])
     })
     this.valueChainsFa.push(newVcFg)
     return newVcFg
@@ -152,9 +152,9 @@ export class EditorComponent implements OnInit {
 
   public addProcessStepFg(pss: FormArray, cfPs?: I_ProcessStepAsJson): FormGroup {
     const newPsFg = this.fb.group({
-      id:               [cfPs ? cfPs.process_step_id : "", [ Validators.required, EditorComponent.vcPsNameFormatCheck ]],
-      normEffort:       [cfPs ? cfPs.norm_effort : "", [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheck(0)]],
-      wipLimit:         [cfPs ? cfPs.wip_limit : "", [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheck(0)]]
+      id:               [cfPs ? cfPs.process_step_id : "",  [Validators.required, EditorComponent.vcPsNameFormatCheck]],
+      normEffort:       [cfPs ? cfPs.norm_effort : "",      [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(0)]],
+      wipLimit:         [cfPs ? cfPs.wip_limit : "",        [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(0, 3)]]
     })
     pss.push(newPsFg)
     return newPsFg
@@ -162,9 +162,9 @@ export class EditorComponent implements OnInit {
 
   public addWorkerFg(cfWo?: I_WorkerAsJson): FormGroup {
     const newWoFg = this.fb.group({
-      id:               [cfWo ? cfWo.worker_id : ""],
-      assignments:      this.fb.array([], [EditorComponent.workerAssignmentsDuplicateCheck]),
-      strategies:       this.fb.array([])
+      id:               [cfWo ? cfWo.worker_id : "", [Validators.required]],
+      assignments:      this.fb.array([], [EditorComponent.idsDuplicateCheckFactory("vcIdpsId")!]),
+      strategies:       this.fb.array([], [EditorComponent.idsDuplicateCheckFactory("woWiSsId")!])
     })
     this.workersFa.push(newWoFg)
     return newWoFg
@@ -317,38 +317,51 @@ export class EditorComponent implements OnInit {
   // plain validators:
   /** Check if form control value is in the "value-chain.process-step" format  */
   static vcPsNameFormatCheck(control: FormControl): ValidationErrors | null {
-    return control.value.includes(".") ? { idWithoutPeriod: { valid: false } } : null
+    return control.value.includes(".") ? { idContainsPeriod: { message: "IDs must not contain a period" } } : null
   }
 
-  /** Check if worker is assigned to a process step just once */
-  static workerAssignmentsDuplicateCheck(woAss: AbstractControl): ValidationErrors | null {
-    const woAssFormArrayFormGroups = (<FormArray>woAss).controls
-    const valueOccurancesCounts: number[] = woAssFormArrayFormGroups.map(fg => woAssFormArrayFormGroups.filter(e => e.get("vcIdpsId")!.value == fg.get("vcIdpsId")!.value).length)  
-    return Math.max(...valueOccurancesCounts) > 1 ? { duplicates: { valid: false } } : null
-  }
-
+  /** Check if number is an integer */
   static numberIsIntegerCheck(numCtrl: AbstractControl): ValidationErrors | null {
     const numCtrlVal = numCtrl.value
-//    return numCtrlVal != Math.round(numCtrlVal) ? { noInteger: { valid: false } } : null
-    return numCtrlVal != Math.round(numCtrlVal) ? { noInteger: { message: "Value must not have decimals" } } : null
+    return numCtrlVal != null && (numCtrlVal != Math.round(numCtrlVal)) ? { noInteger: { message: "Value must not have decimals" } } : null
   }
 
-  // validator factories:
-
-  // static numberIsGreaterEqualThanCheck(min: number): ValidatorFn | null {
-  //   return (numCtrl: AbstractControl) => numCtrl.value < min ? { below: { valid: false } } : null
-  // }
-  
-  // static numberIsLessEqualThanCheck(max: number): ValidatorFn | null {
-  //   return (numCtrl: AbstractControl) => numCtrl.value > max ? { above: { valid: false } } : null
-  // }
-  
-  static numberIsInRangeCheck(min: number | undefined, max?: number): ValidatorFn | null {
-//  return (numCtrl: AbstractControl) => ((min && numCtrl.value < min) || (max && numCtrl.value > max)) ? { range: { message: `Value must be in the range of ${min} and ${max}` } } : null
-    return (numCtrl: AbstractControl) => (min != undefined && numCtrl.value < min) || (max && numCtrl.value > max) ? { range: { message: `Value is ${numCtrl.value} -  must be in the range of ${min} and ${max}` } } : null
+  /** Check if at least one value chain is defined */
+  static atLeastOneValueChainCheck(systemFg: AbstractControl): ValidationErrors | null {
+    const vcsNum = (<FormArray>systemFg.get("valueChains"))?.controls.length   
+    return !vcsNum || vcsNum < 1 ? { noValuechain: { message: "System must have at least 1 value chain" } } : null
   }
-  
 
+  /** Check if at least one process step is defined */
+  static atLeastOneProcessStepCheck(systemFg: AbstractControl): ValidationErrors | null {
+    const pssNum = (<FormArray>systemFg.get("valueChains"))?.controls.flatMap(vcFg => (<FormArray>vcFg.get("processSteps"))?.controls.length).reduce((a: number, b: number) => a + b, 0)
+    return !pssNum || pssNum < 1 ? { noProcessStep: { message: "System must have at least 1 process step" } } : null
+  }
+
+  /** Check if at least one worker is defined */
+  static atLeastOneWorkerCheck(systemFg: AbstractControl): ValidationErrors | null {
+    const vcsNum = (<FormArray>systemFg.get("workers"))?.controls.length   
+    return !vcsNum || vcsNum < 1 ? { noWorker: { message: "System must have at least 1 worker" } } : null
+  }
+
+  // validator factories (used when validators require parameterization when assigned to a control at runtime):
+  /** Check if number value of control is within a given range
+   * @example numberIsInRangeCheck(1, 5) - values from 1 to 5 are OK, below or above is not OK
+   * @example numberIsInRangeCheck(1) - values greater or equal 1 are OK, below are is OK
+   * @example numberIsInRangeCheck(undefined, 5) - values to 5 are OK, babove is not OK
+   */
+  static numberIsInRangeCheckFactory(min: number | undefined, max?: number): ValidatorFn | null {
+    return (numCtrl: AbstractControl) => numCtrl.value != null && (min != undefined && numCtrl.value < min) || (max && numCtrl.value > max) ? { range: { message: `Value must be in the range of ${min} and ${max}` } } : null
+  }
+
+  /** Check if an ID is unique in an array of FormGroups */
+  static idsDuplicateCheckFactory(idAttribute: string): ValidatorFn | null {
+    return (xxs: AbstractControl) => { 
+      const xxsFormArrayFormGroups = (<FormArray>xxs).controls
+      const valueOccurancesCounts: number[] = xxsFormArrayFormGroups.map(fg => xxsFormArrayFormGroups.filter(e => e.get(idAttribute)!.value == fg.get(idAttribute)!.value).length)  
+      return Math.max(...valueOccurancesCounts) > 1 ? { duplicates: { message: "IDs must be unique" } } : null
+    }
+  }
 
   // ---------------------------------------------------------------------------------------
   // handlers

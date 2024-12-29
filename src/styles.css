@@ -89,6 +89,10 @@ input:checked + .slider:before {
   'opsz' 24
 }
 
+.icon-big {
+  font-size: xx-large;
+}
+
 .material-symbols-outlined:hover {
 /*  color: white;
   background-color:orangered; */
