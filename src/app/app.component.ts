@@ -192,7 +192,7 @@ export class AppComponent {
       }
       this.ass.frontendEventsSubject$.next("config-uploaded")
     })
-    this.router.navigate(["../home"], { relativeTo: this.route })
+    this.router.navigate(["../edit"], { relativeTo: this.route })
   }
 
   /** read system configuration json file through an observable */

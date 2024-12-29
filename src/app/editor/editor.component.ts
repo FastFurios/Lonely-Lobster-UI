@@ -52,25 +52,25 @@ export class EditorComponent implements OnInit {
  // ---------------------------------------------------------------------------------------
   private initForm(cfo?: I_ConfigAsJson): void {
     this.systemFg = this.fb.group({
-      id:                                   [cfo  ? cfo.system_id : "", [Validators.required] ],
+      id:                                   [cfo  ? cfo.system_id : undefined, [Validators.required, EditorComponent.noValueCheck] ],
       frontendPresetParameters: this.fb.group({
-          numIterationsPerBatch:            [cfo ? cfo.frontend_preset_parameters?.num_iterations_per_batch : "",         [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(1)]],
-          economicsStatsInterval:           [cfo ? cfo.frontend_preset_parameters?.economics_stats_interval : "",         [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(0)]]
+          numIterationsPerBatch:            [cfo ? cfo.frontend_preset_parameters?.num_iterations_per_batch : undefined,         [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(1)]],
+          economicsStatsInterval:           [cfo ? cfo.frontend_preset_parameters?.economics_stats_interval : undefined,         [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(0)]]
       }),
       learnAndAdaptParms: this.fb.group({
-          observationPeriod:                [cfo ? cfo.learn_and_adapt_parms?.observation_period : "",                    [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(1)]],
-          successMeasureFunction:           [cfo ? cfo.learn_and_adapt_parms?.success_measure_function : ""],
-          adjustmentFactor:                 [cfo ? cfo.learn_and_adapt_parms?.adjustment_factor : "",                     [EditorComponent.numberIsInRangeCheckFactory(0, 1)]],
+          observationPeriod:                [cfo ? cfo.learn_and_adapt_parms?.observation_period : undefined,                   [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(1)]],
+          successMeasureFunction:           [cfo ? cfo.learn_and_adapt_parms?.success_measure_function : undefined],
+          adjustmentFactor:                 [cfo ? cfo.learn_and_adapt_parms?.adjustment_factor : undefined,                   [EditorComponent.numberIsInRangeCheckFactory(0, 1)]],
       }),
       wipLimitSearchParms: this.fb.group({
-          initialTemperature:               [cfo ? cfo.wip_limit_search_parms?.initial_temperature : "",                  [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(1)]],
-          coolingParameter:                 [cfo ? cfo.wip_limit_search_parms?.cooling_parm : "",                         [EditorComponent.numberIsInRangeCheckFactory(0, 1)]],
-          degreesPerDownhillStepTolerance:  [cfo ? cfo.wip_limit_search_parms?.degrees_per_downhill_step_tolerance : "",  [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(0)]],
-          initialJumpDistance:              [cfo ? cfo.wip_limit_search_parms?.initial_jump_distance : "",                [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(1)]],
-          measurementPeriod:                [cfo ? cfo.wip_limit_search_parms?.measurement_period : "",                   [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(1)]],
-          wipLimitUpperBoundaryFactor:      [cfo ? cfo.wip_limit_search_parms?.wip_limit_upper_boundary_factor : "",      [EditorComponent.numberIsInRangeCheckFactory(1.5)]],
-          searchOnAtStart:                  [cfo ? cfo.wip_limit_search_parms?.search_on_at_start : ""],
-          verbose:                          [cfo ? cfo.wip_limit_search_parms?.verbose : ""]
+          initialTemperature:               [cfo ? cfo.wip_limit_search_parms?.initial_temperature : undefined,                [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(1)]],
+          coolingParameter:                 [cfo ? cfo.wip_limit_search_parms?.cooling_parm : undefined,                      [EditorComponent.numberIsInRangeCheckFactory(0, 1)]],
+          degreesPerDownhillStepTolerance:  [cfo ? cfo.wip_limit_search_parms?.degrees_per_downhill_step_tolerance : undefined, [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(0)]],
+          initialJumpDistance:              [cfo ? cfo.wip_limit_search_parms?.initial_jump_distance : undefined,                [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(1)]],
+          measurementPeriod:                [cfo ? cfo.wip_limit_search_parms?.measurement_period : undefined,                 [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(1)]],
+          wipLimitUpperBoundaryFactor:      [cfo ? cfo.wip_limit_search_parms?.wip_limit_upper_boundary_factor : undefined,      [EditorComponent.numberIsInRangeCheckFactory(1.5)]],
+          // searchOnAtStart:                  [cfo ? cfo.wip_limit_search_parms?.search_on_at_start : undefined],
+          // verbose:                          [cfo ? cfo.wip_limit_search_parms?.verbose : undefined]
         }),
         valueChains:                        this.fb.array([],         [EditorComponent.idsDuplicateCheckFactory("id")!]),
         globallyDefinedWorkitemSelectionStrategies: this.fb.array([], [EditorComponent.idsDuplicateCheckFactory("id")!]),
@@ -134,15 +134,15 @@ export class EditorComponent implements OnInit {
 
   public addValueChainFg(cfVc?: I_ValueChainAsJson): FormGroup {
     const newVcFg = this.fb.group({
-      id:               [cfVc ? cfVc.value_chain_id : "", [Validators.required, EditorComponent.vcPsNameFormatCheck]],
-      valueAdd:         [cfVc ? cfVc.value_add      : "", [EditorComponent.numberIsIntegerCheck]],
+      id:               [cfVc ? cfVc.value_chain_id : undefined, [/* Validators.required,  */EditorComponent.noValueCheck, EditorComponent.vcPsNameFormatCheck]],
+      valueAdd:         [cfVc ? cfVc.value_add      : undefined, [EditorComponent.numberIsIntegerCheck]],
       valueDegradation: this.fb.group({
-          function:     [cfVc ? cfVc.value_degradation?.function : ""],
-          argument:     [cfVc ? cfVc.value_degradation?.argument : ""]
+          function:     [cfVc ? cfVc.value_degradation?.function : undefined],
+          argument:     [cfVc ? cfVc.value_degradation?.argument : undefined]
       }),
       injection: this.fb.group({
-          throughput:   [cfVc ? cfVc.injection?.throughput  : "", [EditorComponent.numberIsInRangeCheckFactory(0)]],
-          probability:  [cfVc ? cfVc.injection?.probability : "", [EditorComponent.numberIsInRangeCheckFactory(0.1, 1)]]
+          throughput:   [cfVc ? cfVc.injection?.throughput  : undefined, [EditorComponent.numberIsInRangeCheckFactory(0)]],
+          probability:  [cfVc ? cfVc.injection?.probability : undefined, [EditorComponent.numberIsInRangeCheckFactory(0.1, 1)]]
       }),
       processSteps:     this.fb.array([], [EditorComponent.idsDuplicateCheckFactory("id")!])
     })
@@ -152,9 +152,9 @@ export class EditorComponent implements OnInit {
 
   public addProcessStepFg(pss: FormArray, cfPs?: I_ProcessStepAsJson): FormGroup {
     const newPsFg = this.fb.group({
-      id:               [cfPs ? cfPs.process_step_id : "",  [Validators.required, EditorComponent.vcPsNameFormatCheck]],
-      normEffort:       [cfPs ? cfPs.norm_effort : "",      [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(0)]],
-      wipLimit:         [cfPs ? cfPs.wip_limit : "",        [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(0, 3)]]
+      id:               [cfPs ? cfPs.process_step_id : undefined,  [/* Validators.required,  */EditorComponent.noValueCheck, EditorComponent.vcPsNameFormatCheck]],
+      normEffort:       [cfPs ? cfPs.norm_effort : undefined,      [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(0)]],
+      wipLimit:         [cfPs ? cfPs.wip_limit : undefined,        [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(0, 3)]]
     })
     pss.push(newPsFg)
     return newPsFg
@@ -162,7 +162,7 @@ export class EditorComponent implements OnInit {
 
   public addWorkerFg(cfWo?: I_WorkerAsJson): FormGroup {
     const newWoFg = this.fb.group({
-      id:               [cfWo ? cfWo.worker_id : "", [Validators.required]],
+      id:               [cfWo ? cfWo.worker_id : undefined, [Validators.required, EditorComponent.noValueCheck]],
       assignments:      this.fb.array([], [EditorComponent.idsDuplicateCheckFactory("vcIdpsId")!]),
       strategies:       this.fb.array([], [EditorComponent.idsDuplicateCheckFactory("woWiSsId")!])
     })
@@ -172,7 +172,7 @@ export class EditorComponent implements OnInit {
 
   public addGloballyDefinedWorkitemSelectionStrategyFg(cfWiSS?: I_GloballyDefinedWorkitemSelectionStrategyAsJson): FormGroup {
     const newWiSSFg = this.fb.group({
-      id:               [cfWiSS ? cfWiSS.id : "", [Validators.required]],
+      id:               [cfWiSS ? cfWiSS.id : undefined, [Validators.required, EditorComponent.noValueCheck]],
       strategy:         this.fb.array([])
     })
     this.globallyDefinedWorkitemSelectionStrategiesFa.push(newWiSSFg)
@@ -187,7 +187,7 @@ export class EditorComponent implements OnInit {
     }
     const newSvFg = this.fb.group({
       measure:               [measureDescription(cfSV), [ Validators.required ]],
-      selectionCriterion:    [cfSV ? cfSV.selection_criterion: "", [ Validators.required ]]
+      selectionCriterion:    [cfSV ? cfSV.selection_criterion: undefined, [ Validators.required ]]
     })
     svs.push(newSvFg)
     return newSvFg
@@ -195,7 +195,7 @@ export class EditorComponent implements OnInit {
 
   public addWorkerAssignmentFg(ass: FormArray, cfAs?: I_ValueChainAndProcessStepAsJson): FormGroup {
     const newAsFg = this.fb.group({
-      vcIdpsId: [cfAs ? `${cfAs.value_chain_id}.${cfAs.process_steps_id}` : ""]
+      vcIdpsId: [cfAs ? `${cfAs.value_chain_id}.${cfAs.process_steps_id}` : undefined]
     })
     ass.push(newAsFg)
     return newAsFg
@@ -204,7 +204,7 @@ export class EditorComponent implements OnInit {
   
   public addWorkerStrategyFg(woWiSSs: FormArray, cfWiSSId?: string): FormGroup | undefined {
     const newWiSSFg = this.fb.group({
-      woWiSsId: [cfWiSSId ? cfWiSSId : ""],
+      woWiSsId: [cfWiSSId ? cfWiSSId : undefined],
     })
     woWiSSs.push(newWiSSFg)
     return newWiSSFg
@@ -315,15 +315,20 @@ export class EditorComponent implements OnInit {
   // ---------------------------------------------------------------------------------------
 
   // plain validators:
+  /** Check if form control value is not empty  */
+  static noValueCheck(control: FormControl): ValidationErrors | null {
+    return !control.value ? { noValue: { message: "Field must not be empty" } } : null
+  }
+
   /** Check if form control value is in the "value-chain.process-step" format  */
   static vcPsNameFormatCheck(control: FormControl): ValidationErrors | null {
-    return control.value.includes(".") ? { idContainsPeriod: { message: "IDs must not contain a period" } } : null
+    return control.value?.includes(".") ? { idWithoutPeriod: { message: "IDs must not contain a period" } } : null
   }
 
   /** Check if number is an integer */
   static numberIsIntegerCheck(numCtrl: AbstractControl): ValidationErrors | null {
     const numCtrlVal = numCtrl.value
-    return numCtrlVal != null && (numCtrlVal != Math.round(numCtrlVal)) ? { noInteger: { message: "Value must not have decimals" } } : null
+    return numCtrlVal != null && numCtrlVal != undefined && (numCtrlVal != Math.round(numCtrlVal)) ? { isNoInteger: { message: "Value must not have decimals" } } : null
   }
 
   /** Check if at least one value chain is defined */
@@ -351,7 +356,8 @@ export class EditorComponent implements OnInit {
    * @example numberIsInRangeCheck(undefined, 5) - values to 5 are OK, babove is not OK
    */
   static numberIsInRangeCheckFactory(min: number | undefined, max?: number): ValidatorFn | null {
-    return (numCtrl: AbstractControl) => numCtrl.value != null && (min != undefined && numCtrl.value < min) || (max && numCtrl.value > max) ? { range: { message: `Value must be in the range of ${min} and ${max}` } } : null
+    return (numCtrl: AbstractControl) => numCtrl.value&& (min != undefined && numCtrl.value < min) || (max && numCtrl.value > max) 
+              ? { notInRange: { message: `Value must be in the range of ${min} and ${max}` } } : null
   }
 
   /** Check if an ID is unique in an array of FormGroups */
@@ -359,7 +365,7 @@ export class EditorComponent implements OnInit {
     return (xxs: AbstractControl) => { 
       const xxsFormArrayFormGroups = (<FormArray>xxs).controls
       const valueOccurancesCounts: number[] = xxsFormArrayFormGroups.map(fg => xxsFormArrayFormGroups.filter(e => e.get(idAttribute)!.value == fg.get(idAttribute)!.value).length)  
-      return Math.max(...valueOccurancesCounts) > 1 ? { duplicates: { message: "IDs must be unique" } } : null
+      return Math.max(...valueOccurancesCounts) > 1 ? { idDuplicates: { message: "IDs must be unique" } } : null
     }
   }
 
@@ -367,9 +373,32 @@ export class EditorComponent implements OnInit {
   // handlers
   // ---------------------------------------------------------------------------------------
 
+  /* utiliy */ listInvalidControls(): void {
+    console.log("\nEntire configuration: " + this.systemFg?.invalid)
+    console.log("System id: " + this.systemFg.get("id")?.invalid)
+    //console.log("Value chains: errors: " + this.systemFg.get("valueChains")?.errors)
+    console.log("Presets: " + this.frontendPresetParametersFg?.invalid)
+    console.log("\t#Iterations: " + this.frontendPresetParametersFg?.get("numIterationsPerBatch")?.invalid)
+    console.log("\t#Eco stats intervall: " + this.frontendPresetParametersFg?.get("economicsStatsInterval")?.invalid)
+    console.log("Learn&adapt: " + this.learnAndAdaptParmsFg?.invalid)
+    console.log("\t#Observation period: " + this.learnAndAdaptParmsFg?.get("observationPeriod")?.invalid)
+    console.log("\t#SUccess Measure: " + this.learnAndAdaptParmsFg?.get("successMeasureFunction")?.invalid)
+    console.log("\t#ADjustment factor: " + this.learnAndAdaptParmsFg?.get("adjustmentFactor")?.invalid)
+    console.log("WIP limt opti: " + this.wipLimitSearchParmsFg?.invalid)
+    console.log("Value chains: " + this.systemFg.get("valueChains")?.invalid)
+    console.log("Strategies: " + this.globallyDefinedWorkitemSelectionStrategiesFa?.invalid)
+    console.log("Workers: " + this.systemFg.get("workers")?.invalid)
+  }
+
+
+
+
   /** when form is submitted store edited configuration in the configuration file service, add an application event to the application event service 
    * and notify the application state transition service that configuration was edited and saved */
   public onSubmitForm() {
+    this.systemFg.markAllAsTouched();
+    this.systemFg.updateValueAndValidity();
+    this.listInvalidControls()
     this.cfs.storeConfigAsJson(this.configObjectAsJsonFromForm())
     this.ess.add(EventsService.applicationEventFrom("Saved edit changes.", "", EventTypeId.configSaved, EventSeverity.info))
     this.ass.frontendEventsSubject$.next("config-edit-saved")
