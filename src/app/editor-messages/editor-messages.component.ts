@@ -35,18 +35,37 @@ export class EditorMessagesComponent implements OnInit {
   /** @private  */
   constructor() { }
   /** @private  */
-  ngOnInit(): void { }
+  ngOnInit(): void { 
+     //console.log(`------ EditorMessages: ngInit(): @Input control is defined = ${this.control ? "yes" : "no"}; it is invalid = ${this.control?.invalid}; it is enabled = ${this.control?.enabled} -------------------------`)
+  }
 
   // ---------------------------------------------------------------------------------------
-  // validators
+  // list of validation errors 
   // ---------------------------------------------------------------------------------------
 
   /**
-   * Validation messages for a control and its current value 
-   * @returns Validation message
+   * Validation messages for a control 
+   * @returns Validation messages
    */
   public errorsForControl(): string[] {
-    if (!this.control || !this.control.errors || !this.control.dirty) { return [] }
-    return Object.values(this.control.errors).map(err => err.message)
+    //if (!this.control || !this.control.errors || !this.control.dirty) { return ["undefined or no errors or dirty"] }
+    const aux = this.getErrorsAsArray(this.control)
+    return aux.filter(err => err.key != "required").map(err => `${err.key == "required" ? err.value : err.value.message}`)
   }
+
+  /**
+   * List of validation error message of the control 
+   * @returns Validation messages as array of key-value-pair objects
+   */
+  private getErrorsAsArray(control: AbstractControl): { key: string; value: any }[] {
+    if (!control.errors) return []
+    return Object.keys(control.errors).map(key => ({
+      key,
+      value: control.errors![key]
+    }))
+  }
+
+
+
+
 }

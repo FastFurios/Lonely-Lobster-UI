@@ -1,15 +1,16 @@
 <form [formGroup]="systemFg" class="editor-text" (ngSubmit)="onSubmitForm()">
     <div class="section">
         <label>System:</label>
-        <input  type="text" formControlName="id">
-<!--         <button class="material-symbols-outlined icon-big button_icon" type="submit" [disabled]="systemFg.invalid">
-            save
-        </button> -->
-        <button class="material-symbols-outlined icon-big button_icon" type="submit">
-            save
-        </button>
-        Something in form still invalid? {{ systemFg.invalid }}
-        <app-editor-messages [control]="systemFg"></app-editor-messages>
+        <div>
+            <input  type="text" formControlName="id" required>
+                <button class="material-symbols-outlined icon-big button_icon" type="submit" [disabled]="systemFg.invalid">
+                    save
+                </button>
+<!--             <br/>
+            System ID FormControl invalid = {{ systemFg.get('id')!.invalid }}<br -->/>
+                <app-editor-messages [control]="systemFg.get('id')!"></app-editor-messages><br/>
+        </div>
+         <app-editor-messages [control]="systemFg"></app-editor-messages>
     </div>
 
     <!-- VALUE CHAINS ------------------------------------------------------------------------------------------->
@@ -86,13 +87,13 @@
                         <app-editor-messages [control]="processStepFg.get('wipLimit')!"></app-editor-messages>
                     </div>
                 </div>
+                <app-editor-messages [control]="processStepsFa(valueChainFg)"></app-editor-messages>
             </div>
         </div>
     </div>
-
-
+ 
     <!-- STRATEGIES ------------------------------------------------------------------------------------------->
-    <div class="section">
+     <div class="section">
         <label>Globally defined workitem selection strategies</label>
         <button type="button" class="material-symbols-outlined button_icon" (click)="addGloballyDefinedWorkitemSelectionStrategyFg()">add_circle </button>
         <app-editor-messages [control]="globallyDefinedWorkitemSelectionStrategiesFa!"></app-editor-messages>
@@ -125,7 +126,7 @@
     </div>
 
     <!-- WORKERS ------------------------------------------------------------------------------------------->
-    <div class="section">
+     <div class="section">
         <label>Workers</label>
         <button type="button" class="material-symbols-outlined button_icon" (click)="addWorkerFg()">add_circle </button>
         <app-editor-messages [control]="workersFa"></app-editor-messages>
@@ -169,9 +170,9 @@
             <app-editor-messages [control]="workerStrategiesFa(workerFg)!"></app-editor-messages>
         </div>
     </div>
-
+ 
     <!-- PARAMETERS ------------------------------------------------------------------------------------------->
-    <div class="section">
+     <div class="section">
         <label for="parameters">Parameters</label>
         <div class="flex-multi-columns">  
             <div [formGroup]="frontendPresetParametersFg" class="left-margin">
@@ -268,5 +269,5 @@
                 </div>
             </div>
         </div>
-    </div> 
+    </div>
 </form>

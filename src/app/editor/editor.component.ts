@@ -52,8 +52,8 @@ export class EditorComponent implements OnInit {
  // ---------------------------------------------------------------------------------------
   private initForm(cfo?: I_ConfigAsJson): void {
     this.systemFg = this.fb.group({
-      id:                                   [cfo  ? cfo.system_id : undefined, [Validators.required, EditorComponent.noValueCheck] ],
-      frontendPresetParameters: this.fb.group({
+      id:                                   [cfo ? cfo.system_id : "", [/* Validators.required, */ EditorComponent.noValueCheck] ],
+       frontendPresetParameters: this.fb.group({
           numIterationsPerBatch:            [cfo ? cfo.frontend_preset_parameters?.num_iterations_per_batch : undefined,         [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(1)]],
           economicsStatsInterval:           [cfo ? cfo.frontend_preset_parameters?.economics_stats_interval : undefined,         [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(0)]]
       }),
@@ -72,14 +72,16 @@ export class EditorComponent implements OnInit {
           // searchOnAtStart:                  [cfo ? cfo.wip_limit_search_parms?.search_on_at_start : undefined],
           // verbose:                          [cfo ? cfo.wip_limit_search_parms?.verbose : undefined]
         }),
-        valueChains:                        this.fb.array([],         [EditorComponent.idsDuplicateCheckFactory("id")!]),
+        valueChains:                        this.fb.array([],         [EditorComponent.idsDuplicateCheckFactory("id")!, EditorComponent.atLeastOneValueChainCheck]),
         globallyDefinedWorkitemSelectionStrategies: this.fb.array([], [EditorComponent.idsDuplicateCheckFactory("id")!]),
         workers:                            this.fb.array([],         [EditorComponent.idsDuplicateCheckFactory("id")!])
-    }, { validators: [EditorComponent.atLeastOneValueChainCheck, EditorComponent.atLeastOneProcessStepCheck, EditorComponent.atLeastOneWorkerCheck] })
+    }, 
+    { validators: [EditorComponent.atLeastOneProcessStepCheck, EditorComponent.atLeastOneWorkerCheck] })
 
     if (cfo?.value_chains)                  this.addValueChainsFgs(cfo.value_chains)
     if (cfo?.globally_defined_workitem_selection_strategies) this.addGloballyDefinedWorkitemSelectionStrategiesFgs(cfo.globally_defined_workitem_selection_strategies)
     if (cfo?.workers)                       this.addWorkersFgs(cfo.workers)
+//    /*tbd*/ this.systemFg.updateValueAndValidity()
   }
 
   private addValueChainsFgs(cfVcs: I_ValueChainAsJson[]): void {
@@ -317,7 +319,13 @@ export class EditorComponent implements OnInit {
   // plain validators:
   /** Check if form control value is not empty  */
   static noValueCheck(control: FormControl): ValidationErrors | null {
-    return !control.value ? { noValue: { message: "Field must not be empty" } } : null
+    // console.log("\n------ Editor: this.noValueCheck(): -------------------------")
+    // console.log(control)
+    const aux2: ValidationErrors | null = control.value == undefined || control.value == null ||control.value == "" ? { noValue: { message: "Field must not be empty" } } : null
+//  console.log(aux2)
+    if (!aux2 ) { /* console.log("\tis null"); */ return aux2 }
+//  console.log(`\tis: {${aux2["key"]}: {${aux2["noValue"].message.key}: ${aux2["noValue"].message.value}}}`)
+    return aux2
   }
 
   /** Check if form control value is in the "value-chain.process-step" format  */
@@ -327,20 +335,22 @@ export class EditorComponent implements OnInit {
 
   /** Check if number is an integer */
   static numberIsIntegerCheck(numCtrl: AbstractControl): ValidationErrors | null {
-    const numCtrlVal = numCtrl.value
-    return numCtrlVal != null && numCtrlVal != undefined && (numCtrlVal != Math.round(numCtrlVal)) ? { isNoInteger: { message: "Value must not have decimals" } } : null
-  }
+    return numCtrl.value && numCtrl.value != Math.round(numCtrl.value) ? { isNoInteger: { message: "Value must not have decimals" } } : null
+  } 
 
   /** Check if at least one value chain is defined */
-  static atLeastOneValueChainCheck(systemFg: AbstractControl): ValidationErrors | null {
-    const vcsNum = (<FormArray>systemFg.get("valueChains"))?.controls.length   
-    return !vcsNum || vcsNum < 1 ? { noValuechain: { message: "System must have at least 1 value chain" } } : null
+  // static atLeastOneValueChainCheck(systemFg: AbstractControl): ValidationErrors | null {
+  //   const vcsNum = (<FormArray>systemFg.get("valueChains"))?.controls.length   
+  //   return true || vcsNum < 1 ? { noValuechain: { message: "System must have at least 1 value chain" } } : null
+  // }
+  static atLeastOneValueChainCheck(vcFa: AbstractControl): ValidationErrors | null {
+    return (<FormArray>vcFa).controls.length < 1 ? { noValuechain: { message: "System must have at least 1 value chain" } } : null
   }
 
   /** Check if at least one process step is defined */
   static atLeastOneProcessStepCheck(systemFg: AbstractControl): ValidationErrors | null {
     const pssNum = (<FormArray>systemFg.get("valueChains"))?.controls.flatMap(vcFg => (<FormArray>vcFg.get("processSteps"))?.controls.length).reduce((a: number, b: number) => a + b, 0)
-    return !pssNum || pssNum < 1 ? { noProcessStep: { message: "System must have at least 1 process step" } } : null
+    return pssNum < 1 ? { noProcessStep: { message: "System must have at least 1 process step" } } : null
   }
 
   /** Check if at least one worker is defined */
@@ -356,7 +366,7 @@ export class EditorComponent implements OnInit {
    * @example numberIsInRangeCheck(undefined, 5) - values to 5 are OK, babove is not OK
    */
   static numberIsInRangeCheckFactory(min: number | undefined, max?: number): ValidatorFn | null {
-    return (numCtrl: AbstractControl) => numCtrl.value&& (min != undefined && numCtrl.value < min) || (max && numCtrl.value > max) 
+    return (numCtrl: AbstractControl) => numCtrl.value && (min != undefined && numCtrl.value < min) || (max && numCtrl.value > max) 
               ? { notInRange: { message: `Value must be in the range of ${min} and ${max}` } } : null
   }
 
@@ -373,9 +383,13 @@ export class EditorComponent implements OnInit {
   // handlers
   // ---------------------------------------------------------------------------------------
 
-  /* utiliy */ listInvalidControls(): void {
+  /* utiliy listInvalidControls(): void {
     console.log("\nEntire configuration: " + this.systemFg?.invalid)
     console.log("System id: " + this.systemFg.get("id")?.invalid)
+
+    for (const err in this.systemFg.get("id"!)?.errors)
+      console.log("System id: error: " + err)
+
     //console.log("Value chains: errors: " + this.systemFg.get("valueChains")?.errors)
     console.log("Presets: " + this.frontendPresetParametersFg?.invalid)
     console.log("\t#Iterations: " + this.frontendPresetParametersFg?.get("numIterationsPerBatch")?.invalid)
@@ -386,19 +400,27 @@ export class EditorComponent implements OnInit {
     console.log("\t#ADjustment factor: " + this.learnAndAdaptParmsFg?.get("adjustmentFactor")?.invalid)
     console.log("WIP limt opti: " + this.wipLimitSearchParmsFg?.invalid)
     console.log("Value chains: " + this.systemFg.get("valueChains")?.invalid)
+    for (const err in this.systemFg.get("valueChains")?.errors)
+      console.log("Value chains: error: " + err)
     console.log("Strategies: " + this.globallyDefinedWorkitemSelectionStrategiesFa?.invalid)
-    console.log("Workers: " + this.systemFg.get("workers")?.invalid)
+    console.log("Workers: " + this.systemFg.get("workers")?.invalid) 
   }
 
-
-
+   utiliy *controlErrorsLength(control: AbstractControl): string {
+    let errorsString: string = "["
+    for (let err in control.errors)
+      errorsString += err + ";"
+    errorsString += "]"
+    console.log("Editor: controlErrorsLength(): errorStrings= " + errorsString)
+    return errorsString
+  }
+ */
 
   /** when form is submitted store edited configuration in the configuration file service, add an application event to the application event service 
    * and notify the application state transition service that configuration was edited and saved */
   public onSubmitForm() {
     this.systemFg.markAllAsTouched();
-    this.systemFg.updateValueAndValidity();
-    this.listInvalidControls()
+//    this.listInvalidControls()
     this.cfs.storeConfigAsJson(this.configObjectAsJsonFromForm())
     this.ess.add(EventsService.applicationEventFrom("Saved edit changes.", "", EventTypeId.configSaved, EventSeverity.info))
     this.ass.frontendEventsSubject$.next("config-edit-saved")
