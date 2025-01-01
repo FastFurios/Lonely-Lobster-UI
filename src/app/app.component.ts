@@ -21,6 +21,7 @@ import { I_WorkItemEvents } from './shared/frontend_definitions'
 import { AppStateService, FrontendState } from './shared/app-state.service'
 import { EventsService, MaterialIconAndCssStyle } from './shared/events.service'
 import { EventSeverity, EventTypeId } from './shared/io_api_definitions'
+import { ConsoleLogger } from '@angular/compiler-cli'
 
 
 /** list of possible user actions */
@@ -177,37 +178,29 @@ export class AppComponent {
   //     Uploading a Configuration  
   // --------------------------------------------------------------------------------------
 
-  /** upload system configuration file into the configuration file service */
-  public onFileSelected(e: any) { 
-    const file: File = e.target.files[0] 
+  /** upload system configuration json file into the configuration file service */
+  public onFileSelected(e: Event): void { 
+    const file: File = (<any>e.target).files[0] 
     this.filename = file.name
     if (this.cfs.configAsJson()) this.bas.dropSystem()
 
-    this.readFileContent$(file).subscribe((fileContent: string) => { 
+    const reader = new FileReader()
+    reader.readAsText(file)
+    reader.onerror = (error) => this.ess.add(EventsService.applicationEventFrom("reading config json file", file.name, EventTypeId.configFileLoadError, EventSeverity.fatal))
+    reader.onload = () => {
+      (<HTMLInputElement>e.target).value = "" // clear the event input to allow event detection of re-selection of same file
+      if (!reader.result) {
+        this.ess.add(EventsService.applicationEventFrom("reading config json file", file.name, EventTypeId.configFileLoadError, EventSeverity.fatal))
+        return
+      }
       try {
-        this.cfs.storeConfigAsJson(JSON.parse(fileContent)) 
+        this.cfs.storeConfigAsJson(JSON.parse(reader.result.toString())) 
         this.ess.add(EventsService.applicationEventFrom("parsing JSON from config file", file.name, EventTypeId.configFileLoaded, EventSeverity.info))
       } catch (error) {
         this.ess.add(EventsService.applicationEventFrom("parsing JSON from config file", file.name, EventTypeId.configJsonError, EventSeverity.fatal))
       }
       this.ass.frontendEventsSubject$.next("config-uploaded")
-    })
-    this.router.navigate(["../edit"], { relativeTo: this.route })
-  }
-
-  /** read system configuration json file through an observable */
-  private readFileContent$(file: File): Observable<string> {
-    return new Observable((subscriber) => {
-      if (!file) subscriber.error("no file selected")
-      if (file.size == 0) subscriber.error("selected file is empty")
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        if (!reader.result) subscriber.error("no result from reading")
-        else subscriber.next(reader.result.toString())
-      }
-      reader.onerror = (error) => subscriber.error(error)
-      reader.readAsText(file)
-    })
+    }
   }
 
   // --------------------------------------------------------------------------------------

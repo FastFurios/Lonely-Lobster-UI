@@ -63,13 +63,13 @@ interface I_LearnAndAdaptParamsAsJson {
 }
 
 /** value degradation function and argument */
-interface I_ValueDegradationAsJson {
+export interface I_ValueDegradationAsJson {
     function: string,
     argument: number
 }
 
 /** value chain injection parameters */
-interface I_InjectionAsJson {
+export interface I_InjectionAsJson {
     throughput: number,
     probability?: number
 }
@@ -427,6 +427,7 @@ export enum EventTypeId {
     loggedOut           = "logged out.",
 
     configFileLoaded    = "Configuration File loaded",
+    configFileLoadError = "Configuration File loading error",
     configFileNotFound  = "Configuration File not found",
     configJsonError     = "JSON of configuration file is corrupt.",
     configCorrupt       = "Configuration is corrupt",
