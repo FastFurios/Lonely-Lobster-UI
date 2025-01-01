@@ -44,13 +44,11 @@ export class EditorMessagesComponent implements OnInit {
   // ---------------------------------------------------------------------------------------
 
   /**
-   * Validation messages for a control 
+   * Lists validation messages for a control if not null i.e. deemed OK by the validators 
    * @returns Validation messages
    */
   public errorsForControl(): string[] {
-    //if (!this.control || !this.control.errors || !this.control.dirty) { return ["undefined or no errors or dirty"] }
-    const aux = this.getErrorsAsArray(this.control)
-    return aux.filter(err => err.key != "required").map(err => `${err.key == "required" ? err.value : err.value.message}`)
+    return this.getErrorsAsArray(this.control).filter(err => err.key != "required").map(err => `${err.key == "required" ? err.value : err.value.message}`)
   }
 
   /**
@@ -64,8 +62,4 @@ export class EditorMessagesComponent implements OnInit {
       value: control.errors![key]
     }))
   }
-
-
-
-
 }

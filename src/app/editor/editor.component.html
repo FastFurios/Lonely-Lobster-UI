@@ -6,8 +6,6 @@
                 <button class="material-symbols-outlined icon-big button_icon" type="submit" [disabled]="systemFg.invalid">
                     save
                 </button>
-<!--             <br/>
-            System ID FormControl invalid = {{ systemFg.get('id')!.invalid }}<br -->/>
                 <app-editor-messages [control]="systemFg.get('id')!"></app-editor-messages><br/>
         </div>
          <app-editor-messages [control]="systemFg"></app-editor-messages>
@@ -29,7 +27,7 @@
             <div class="flex-multi-columns"> 
                 <div class="parameter-label-input">
                     <label>Value-add:</label>
-                    <input type="number" placeholder=">=0" formControlName="valueAdd" min="0" step="1"> 
+                    <input type="number" placeholder=">=0" formControlName="valueAdd" step="1"> 
                     <app-editor-messages [control]="valueChainFg.get('valueAdd')!"></app-editor-messages>
                 </div>    
                 <div [formGroup]="valueDegradationFg(valueChainFg)" class="left-margin">
@@ -51,12 +49,12 @@
                     <div>Injection:</div> 
                     <div class="parameter-label-input">
                         <label>Throughput:</label>
-                        <input type="number" placeholder=">=0"   formControlName="throughput" min="0" step="0.1">
+                        <input type="number" placeholder=">=0"   formControlName="throughput" step="0.1">
                         <app-editor-messages [control]="injectionFg(valueChainFg).get('throughput')!"></app-editor-messages>
                     </div>
                     <div class="parameter-label-input">
                         <label>Probability:</label>
-                        <input type="number" placeholder="0.1-1.0 " formControlName="probability" min="0.1" max="1" step="0.1">
+                        <input type="number" placeholder="0.1-1.0 " formControlName="probability" step="0.1">
                         <app-editor-messages [control]="injectionFg(valueChainFg).get('probability')!"></app-editor-messages>
                     </div>
                 </div>          
@@ -79,15 +77,14 @@
                         <app-editor-messages [control]="processStepFg.get('id')!"></app-editor-messages>
                     </div> 
                     <div>
-                        <input type="number" placeholder=">=0"   formControlName="normEffort" min="0" step="1">
+                        <input type="number" placeholder=">=0"   formControlName="normEffort" step="1">
                         <app-editor-messages [control]="processStepFg.get('normEffort')!"></app-editor-messages>
                     </div>
                     <div>
-                        <input type="number" placeholder="0=none, else >=1"     formControlName="wipLimit" min="0" step="1">
+                        <input type="number" placeholder="0=none, else >=1"     formControlName="wipLimit" step="1">
                         <app-editor-messages [control]="processStepFg.get('wipLimit')!"></app-editor-messages>
                     </div>
                 </div>
-                <app-editor-messages [control]="processStepsFa(valueChainFg)"></app-editor-messages>
             </div>
         </div>
     </div>
@@ -102,6 +99,7 @@
         <div class="section" *ngFor="let strategyFg of globallyDefinedWorkitemSelectionStrategiesFa.controls; let k = index" [formGroup]="strategyFg" >
             <div>
                 <input type="text" class="bold-text" placeholder="Strategy Name" formControlName="id">
+                <app-editor-messages [control]="strategyFg.get('id')!"></app-editor-messages>
                 <button type="button" class="material-symbols-outlined button_icon" (click)="deleteGloballyDefinedWorkitemSelectionStrategyFg(k)"> delete_forever </button>
             </div>
             <div class="flex-multi-columns"> 
@@ -181,14 +179,14 @@
                     <div class="parameter-label-input">
                         <label>#Iterations per batch:</label>
                         <div>
-                            <input type="number" placeholder=">=1" formControlName="numIterationsPerBatch" min="1">
+                            <input type="number" placeholder=">=1" formControlName="numIterationsPerBatch" >
                             <app-editor-messages [control]="frontendPresetParametersFg.get('numIterationsPerBatch')!"></app-editor-messages>
                         </div>
                     </div>
                     <div class="parameter-label-input">
                         <label>Economics stats interval:</label>
                         <div>
-                            <input type="number" placeholder=">=1" formControlName="economicsStatsInterval" min="1">
+                            <input type="number" placeholder=">=1" formControlName="economicsStatsInterval">
                             <app-editor-messages [control]="frontendPresetParametersFg.get('economicsStatsInterval')!"></app-editor-messages>
                         </div>
                     </div>
@@ -200,7 +198,7 @@
                     <div class="parameter-label-input">
                         <label>Observation Period:</label>
                         <div>
-                            <input type="number" placeholder=">=1" formControlName="observationPeriod" min="1">
+                            <input type="number" placeholder=">=1" formControlName="observationPeriod">
                             <app-editor-messages [control]="learnAndAdaptParmsFg.get('observationPeriod')!"></app-editor-messages>
                         </div>
                     </div>
@@ -215,7 +213,7 @@
                     <div class="parameter-label-input">
                         <label>Adjustment Factor:</label>
                         <div>
-                            <input  type="number" placeholder=">=0.1" formControlName="adjustmentFactor" min="0.1" step="0.1">
+                            <input  type="number" placeholder=">=0.1" formControlName="adjustmentFactor" step="0.1">
                             <app-editor-messages [control]="learnAndAdaptParmsFg.get('adjustmentFactor')!"></app-editor-messages>
                         </div>
                     </div>
@@ -227,42 +225,42 @@
                     <div class="parameter-label-input">
                         <label>Initial Temperature:</label>
                         <div>
-                            <input type="number" placeholder=">=0" formControlName="initialTemperature" min="0" step="10">
+                            <input type="number" placeholder=">=0" formControlName="initialTemperature" step="10">
                             <app-editor-messages [control]="wipLimitSearchParmsFg.get('initialTemperature')!"></app-editor-messages>
                         </div>
                     </div>
                     <div class="parameter-label-input">
                         <label>Cooling Factor:</label>
                         <div>
-                            <input type="number" placeholder="0 - 1.0" formControlName="coolingParameter" min="0" max="0.99" step="0.01">
+                            <input type="number" placeholder="0 - 1.0" formControlName="coolingParameter" step="0.01">
                             <app-editor-messages [control]="wipLimitSearchParmsFg.get('coolingParameter')!"></app-editor-messages>
                         </div>
                     </div>
                     <div class="parameter-label-input">
                         <label>Degrees per Downhill Step Tolerance:</label>
                         <div>
-                            <input type="number" placeholder=">=1" formControlName="degreesPerDownhillStepTolerance" min="1" step="1">
+                            <input type="number" placeholder=">=1" formControlName="degreesPerDownhillStepTolerance" step="1">
                             <app-editor-messages [control]="wipLimitSearchParmsFg.get('degreesPerDownhillStepTolerance')!" controlName="common"></app-editor-messages>
                         </div>
                     </div>
                     <div class="parameter-label-input">
                         <label>Initial Jump Distance:</label>
                         <div>
-                            <input type="number" placeholder=">=1" formControlName="initialJumpDistance" min="1" step="1">
+                            <input type="number" placeholder=">=1" formControlName="initialJumpDistance" step="1">
                             <app-editor-messages [control]="wipLimitSearchParmsFg.get('initialJumpDistance')!"></app-editor-messages>
                         </div>
                     </div>
                     <div class="parameter-label-input">
                         <label>Measurement Period:</label>
                         <div>
-                            <input type="number" placeholder=">=1" formControlName="measurementPeriod" min="1" step="10">
+                            <input type="number" placeholder=">=1" formControlName="measurementPeriod" step="10">
                             <app-editor-messages [control]="wipLimitSearchParmsFg.get('measurementPeriod')!"></app-editor-messages>
                         </div>
                     </div>
                     <div class="parameter-label-input">
                         <label>WIP Limit Upper Boundary Factor:</label>
                         <div>
-                            <input type="number" placeholder=">=1.5" formControlName="wipLimitUpperBoundaryFactor" min="1.5" step="0.1">
+                            <input type="number" placeholder=">=1.5" formControlName="wipLimitUpperBoundaryFactor" step="0.1">
                             <app-editor-messages [control]="wipLimitSearchParmsFg.get('wipLimitUpperBoundaryFactor')!"></app-editor-messages>
                         </div>
                     </div>
