@@ -3,7 +3,7 @@
 //-------------------------------------------------------------------
 // last code cleaning: 22.12.2024
 
-import { Component, OnChanges, Input } from '@angular/core'
+import { Component, OnChanges, Input, ChangeDetectorRef } from '@angular/core'
 import { I_WorkerState } from '../shared/io_api_definitions'
 import { ColorMapperService, ColorLegendItem } from '../shared/color-mapper.service'
 
@@ -24,7 +24,7 @@ export class WorkersStatsComponent implements OnChanges {
   showColorLegend:          boolean           = false
 
   /** @private */
-  constructor() { }
+  constructor(private cdr: ChangeDetectorRef) { }
   /** @private */
   ngOnInit(): void { }
 
@@ -38,5 +38,6 @@ export class WorkersStatsComponent implements OnChanges {
   public workerGotColorsAssignedHandler(e: any): void {
     this.numWorkerSignalsReceived++
     this.showColorLegend = this.numWorkerSignalsReceived >= this.wosStats.length
+    // this.cdr.detectChanges() // Resolve NG0100
   }
 }

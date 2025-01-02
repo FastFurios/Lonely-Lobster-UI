@@ -1,6 +1,0 @@
-{
-    "entryPointStrategy": "merge",
-    "entryPoints": ["src/app"],
-    "exclude": ["*.spec.ts"],
-    "out": "doc"
-}
