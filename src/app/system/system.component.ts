@@ -109,9 +109,9 @@ export class SystemComponent implements OnChanges {
       return /* just initializing */ 
     }
 
-//  this.numIterationsToGo--
-    if (this.numIterationsToGo > 0)
+    if (this.numIterationsToGo > 0) {
       this.iterateNextStates()
+    }
     else {
       this.fetchSystemStatistics()
     }
@@ -127,6 +127,7 @@ export class SystemComponent implements OnChanges {
                                                                                                     : this.numIterationsToGo
     this.systemState$ = this.bas.nextSystemStateOnInput(this.wof.iterationRequestsForAllVcs(miniBatchSize, this.optimizeWipLimits))
     this.systemState$.subscribe(systemState => {
+//      console.log(systemState) // ##
       this.numIterationsToGo -= miniBatchSize
       this.processIteration(systemState)
     })

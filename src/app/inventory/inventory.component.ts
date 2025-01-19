@@ -37,7 +37,13 @@ export class InventoryComponent implements OnInit {
 
   /** adapt inventory display when work items in inventory change or display area size is changed */
   ngOnChanges(): void {
+    console.log("Inventory.ngOnChanges(): @Input wis = ")
+    console.log(this.wis)
+
     this.psInventory = workitemsAsPsInventory(this.wis, this.isListOfEndProducts)
+    console.log("Inventory.ngOnChanges(): psInventory = ")
+    console.log(this.psInventory)
+    
     this.calcSizesOfInventoryColumn()
   }
 

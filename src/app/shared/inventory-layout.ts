@@ -58,8 +58,7 @@ export type PsInventoryWi = {
     valueChainId:      ValueChainId,
     isEndProduct:      boolean,
     rgbColor:          RgbColor,
-    valueOfValueChain: Value,   
-    maxEffort:         Effort, 
+    normEffort:        Effort, 
     accumulatedEffort: number,
     elapsedTime:       number,
 }
@@ -86,7 +85,7 @@ export type PsInventoryShow = {
 }
 
 /**
- * Creates a process inventory from a list of workitems. THe inventory is at least 5 columns wide.
+ * Creates a process inventory from a list of workitems. The inventory is at least 5 columns wide.
  * @param wiList - List of workitems e.g. from a process step or the output basket 
  * @param isListOfEndProducts - if true it indicates the workitems are from the output basket
  * @returns a process step inventory 
@@ -94,6 +93,9 @@ export type PsInventoryShow = {
 export function workitemsAsPsInventory(wiList: I_WorkItem[], isListOfEndProducts: boolean): PsInventory {
   const max = <T>(a:T, b:T): T => a > b ? a : b
   const maxEt = (wis: I_WorkItem[]): number => wis.length == 0 ? 0 : wis.reduce((wi1, wi2) => wi1.elapsedTime > wi2.elapsedTime ? wi1 : wi2).elapsedTime // maximum elapsed time in the workitems list wis
+
+// ##    console.log(`inventory-layout.workitemsAsPsInventory(): here are the wiList=`)
+// ##    console.log(wiList)
 
   let psInventory: PsInventory = [] 
   for (let col = 0; col <= max<number>(maxEt(wiList), 5); col++) {
@@ -106,14 +108,16 @@ export function workitemsAsPsInventory(wiList: I_WorkItem[], isListOfEndProducts
                           valueChainId:       wi.valueChainId,
                           isEndProduct:       isListOfEndProducts,
                           rgbColor:           wi.rgbColor!,
-                          valueOfValueChain:  wi.value,
-                          maxEffort:          wi.maxEffort,
+                          normEffort:         wi.normEffort,
                           accumulatedEffort:  wi.accumulatedEffort,
-                          elapsedTime:        wi.elapsedTime
+                          elapsedTime:        wi.elapsedTime       // is the cycle time in the value chain if it is an end product 
                         }})
           }
       )
   }
+// ##  console.log(`inventory-layout.workitemsAsPsInventory(): here is the psInventory=`)
+// ##  console.log(psInventory)
+
   return psInventory
 }
 

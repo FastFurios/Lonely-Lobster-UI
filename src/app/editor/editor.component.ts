@@ -5,12 +5,11 @@
 
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators, ValidationErrors, AbstractControl, ValidatorFn } from '@angular/forms';
-import { I_ConfigAsJson, I_ValueChainAsJson, I_ProcessStepAsJson, I_GloballyDefinedWorkitemSelectionStrategyAsJson, I_WorkerAsJson, I_ValueChainAndProcessStepAsJson, valueDegradationFunctionNames, successMeasureFunctionNames, I_SelectionStrategy, I_sortVector, I_SortVectorAsJson, EventTypeId, EventSeverity } from '../shared/io_api_definitions'
+import { I_ConfigAsJson, I_ValueChainAsJson, I_ProcessStepAsJson, I_GloballyDefinedWorkitemSelectionStrategyAsJson, I_WorkerAsJson, I_ValueChainAndProcessStepAsJson, valueDegradationFunctionNames, successMeasureFunctionNames,  I_SortVectorAsJson, EventTypeId, EventSeverity } from '../shared/io_api_definitions'
 import { workItemSelectionStrategyMeasureNames, selectionCriterionNames } from '../shared/frontend_definitions'
 import { ConfigFileService } from '../shared/config-file.service'
 import { AppStateService, FrontendState } from '../shared/app-state.service'
 import { EventsService } from '../shared/events.service'
-import { isNumericLiteral } from 'typescript';
 
 /**
  * @class This Angular component is an editor with which a system configuration can be created or updated. In the code the symbol suffix "fg" stands for a Reactive Form Group, "fa" for a Reactive Form Array. 
@@ -70,8 +69,8 @@ export class EditorComponent implements OnInit {
           initialJumpDistance:              [cfo ? cfo.wip_limit_search_parms?.initial_jump_distance : undefined,               [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(1)]],
           measurementPeriod:                [cfo ? cfo.wip_limit_search_parms?.measurement_period : undefined,                  [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(1)]],
           wipLimitUpperBoundaryFactor:      [cfo ? cfo.wip_limit_search_parms?.wip_limit_upper_boundary_factor : undefined,     [EditorComponent.numberIsInRangeCheckFactory(1.5)]],
-          // searchOnAtStart:               [cfo ? cfo.wip_limit_search_parms?.search_on_at_start : undefined],
-          // verbose:                       [cfo ? cfo.wip_limit_search_parms?.verbose : undefined]
+          searchOnAtStart:               [cfo ? cfo.wip_limit_search_parms?.search_on_at_start : undefined], // not displayed and editable in Editor
+          verbose:                       [cfo ? cfo.wip_limit_search_parms?.verbose : undefined]             // not displayed and editable in Editor
         }),
         valueChains:                        this.fb.array([],         [EditorComponent.idsDuplicateCheckFactory("id")!, EditorComponent.atLeastOneCheckFactory("value chain")!]),
         globallyDefinedWorkitemSelectionStrategies: this.fb.array([], [EditorComponent.idsDuplicateCheckFactory("id")!]),
@@ -104,7 +103,7 @@ export class EditorComponent implements OnInit {
         console.log(`Editor.initForm().addGloballyDefinedWorkitemSelectionStrategyFormGroupsToFormArray(): no strategy FormArray found`)
         return
       }       
-      cfWiSS.strategy.forEach((cfSv: I_sortVector) => this.addSortVectorFg(<FormArray>newWiSSFgSvsFa, cfSv))
+      cfWiSS.strategy.forEach((cfSv: I_SortVectorAsJson) => this.addSortVectorFg(<FormArray>newWiSSFgSvsFa, cfSv))
     })
   }
 
@@ -454,7 +453,7 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  private addStrategyAsJson(wiSs: any): I_SelectionStrategy {
+  private addStrategyAsJson(wiSs: any): I_GloballyDefinedWorkitemSelectionStrategyAsJson {
     return {
       id:   wiSs.id,
       strategy: wiSs.strategy.map((svs: any) => { return {

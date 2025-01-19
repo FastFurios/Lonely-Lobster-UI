@@ -35,7 +35,7 @@ export class InventoryWorkitemComponent implements OnInit {
   /** CSS color darkened by the effort that has gone into the work item in the current process step */
   private darkenedByEffort(): RgbColor {
     const darkeningRange: number = Math.min(...this.wi.rgbColor)
-    const darkeningStep:  number = this.wi.maxEffort > 0 ? this.wi.accumulatedEffort / this.wi.maxEffort * darkeningRange : 0
+    const darkeningStep:  number = this.wi.normEffort > 0 ? this.wi.accumulatedEffort / this.wi.normEffort * darkeningRange : 0
     return <RgbColor>this.wi.rgbColor.map(ch => Math.round(ch - darkeningStep))
   }
 }

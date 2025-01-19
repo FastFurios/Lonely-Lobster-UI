@@ -27,6 +27,8 @@ export type Value          = TimeUnits
 
 export type ValueChainId   = string
 export type ProcessStepId  = string
+export type WorkItemBasketHolderId  = string
+
 export type WorkItemId     = number
 /** Workitem display tag (used for console display in batch mode only) */
 export type WorkItemTag    = [string, string]
@@ -44,8 +46,8 @@ export type RgbColor       = [number, number, number]
  * @example If throughput is 1 and probability is 0.5 then the systems adds 1 new workorder to the accumulated number of new workorders until the rolled dice at the end of every timestamp decides to flush out the accumulated new workorders and inject them.
  * A remainder < 1 may be left over. The system continues to ad another new workorder to the accumulated number of new workorders and rolls the dice and so on...   
  */
-export type Injection      = { 
-    throughput: number, 
+export type Injection = { 
+    throughput:  number, 
     probability: number
 }
 /** Work in progress limit: if 0 then no limit, if > 0 then the wip limit restricts the number of workitems allowed in a process step at any given time. */
@@ -57,9 +59,9 @@ export type WipLimit       = number
 
 /** worker learning and adaption parameters */
 interface I_LearnAndAdaptParamsAsJson {
-    observation_period: number,
-    success_measure_function: string,
-    adjustment_factor: number
+    observation_period:         number,
+    success_measure_function:   string,
+    adjustment_factor:          number
 }
 
 /** value degradation function and argument */
@@ -70,50 +72,50 @@ export interface I_ValueDegradationAsJson {
 
 /** value chain injection parameters */
 export interface I_InjectionAsJson {
-    throughput: number,
-    probability?: number
+    throughput:     number,
+    probability?:   number
 }
 
 /** process step definition */
 export interface I_ProcessStepAsJson { // frontend
-    process_step_id: string,
-    norm_effort: number,
-    wip_limit: number,
-    bar_length?: number // for backend stand-alone batch mode only 
+    process_step_id:    string,
+    norm_effort:        number,
+    wip_limit:          number,
+    bar_length?:        number // for backend stand-alone batch mode only 
 }
 
 /** value chain definition  */
 export interface I_ValueChainAsJson {  // frontend
-    value_chain_id: string,
-    value_add: number,
+    value_chain_id:     string,
+    value_add:          number,
     value_degradation?: I_ValueDegradationAsJson,
-    injection?: I_InjectionAsJson,
-    process_steps: I_ProcessStepAsJson[]
+    injection?:         I_InjectionAsJson,
+    process_steps:      I_ProcessStepAsJson[]
 }
 
 /** sorting dimension */
 export interface I_SortVectorAsJson { // frontend
-    measure: string,
-    selection_criterion: string
+    measure:                string,
+    selection_criterion:    string
 }
 
 /** workitem selection strategy */
 export interface I_GloballyDefinedWorkitemSelectionStrategyAsJson { // frontend
-    id: string,
-    strategy: I_SortVectorAsJson[]
+    id:         string,
+    strategy:   I_SortVectorAsJson[]
 }
 
 /** value chain and process step ids */
 export interface I_ValueChainAndProcessStepAsJson { // frontend
-    value_chain_id: string,
-    process_steps_id: string
+    value_chain_id:     string,
+    process_steps_id:   string
 }
 
 /** worker with his workitem selection strategies at hand and his assignments to process steps */
 export interface I_WorkerAsJson { // frontend
-    worker_id: string,
+    worker_id:                      string,
     workitem_selection_strategies?: string[],
-    process_step_assignments: I_ValueChainAndProcessStepAsJson[]
+    process_step_assignments:       I_ValueChainAndProcessStepAsJson[]
 }
 
 /** frontend iteration preset values */
@@ -145,14 +147,14 @@ interface I_WipLimitSearchParmsAsJson {
 
 /** system configuration as provided by the JSON file ??? */
 export type I_ConfigAsJson = {  // frontend
-    system_id: string,
-    frontend_preset_parameters?: I_FrontendPresetParametersAsJson,
-    learn_and_adapt_parms?: I_LearnAndAdaptParamsAsJson,
-    wip_limit_search_parms?: I_WipLimitSearchParmsAsJson,
-    value_chains: I_ValueChainAsJson[],
+    system_id:                      string,
+    frontend_preset_parameters?:    I_FrontendPresetParametersAsJson,
+    learn_and_adapt_parms?:         I_LearnAndAdaptParamsAsJson,
+    wip_limit_search_parms?:        I_WipLimitSearchParmsAsJson,
+    value_chains:                   I_ValueChainAsJson[],
 	globally_defined_workitem_selection_strategies?: I_GloballyDefinedWorkitemSelectionStrategyAsJson[]
-    workers: I_WorkerAsJson[]
-} // | undefined
+    workers:                        I_WorkerAsJson[]
+}
 
 // -----------------------------------------------------------
 /** Request to iterate */
@@ -192,15 +194,16 @@ export interface I_WorkItem {
     /** not assigned at backend but by the frontend after having received system-state data */
     rgbColor?:                      RgbColor 
     valueChainId:                   ValueChainId
-    value:                          Value
-    /** total effort required to make a workorder to an end product i.e. the sum of norm efforts of the process steps in a value chain */
-    maxEffort:                      Effort
+    /** total effort required to make a workorder to an end product i.e. the norm efforts of the process steps in a value chain */
     processStepId:                  ProcessStepId
-    /** accumulated effort in process step or overall when in the Output basket */
-    accumulatedEffort:              number 
-    /** elapsed time in process step or when in the Output basket overall since injection as workorder */
-    elapsedTime:                    number 
+    /** norm efforts of the current process step or if in output basket the norm of the norm effort of the value chain */
+    normEffort:                     Effort
+    /** accumulated effort in the current process step or overall when already in the output basket */
+    accumulatedEffort:              Effort 
+    /** elapsed time in process step or when in the output basket the cycle time through the value chain*/
+    elapsedTime:                    TimeUnits 
 }
+
 /** process step */
 export interface I_ProcessStep {
     id:                             ProcessStepId
@@ -348,13 +351,13 @@ export interface I_SystemStatistics {
 // -----------------------------------------------------------
 
 export interface I_WorkItemEvent {
-    system:         string
-    timestamp:      Timestamp
-    workitem:       WorkItemId
-    eventType:      string
-    valueChain:     ValueChainId
-    processStep:    ProcessStepId  // if eventType == movedTo then this is the target process-step
-    worker?:        WorkerName     // if eventType == workedOn then this is filled
+    timestamp:                  Timestamp
+    workItemId:                 WorkItemId
+    eventType:                  string
+    valueChainId:               ValueChainId
+    fromProcessStepId?:         ProcessStepId  // if eventType == movedTo then this is the from process step; if injected then undefined    
+    workItemBasketHolderId?:    WorkItemBasketHolderId, // if eventType == movedTo then this is the target work item basket holder 
+    worker?:                    WorkerName     // if eventType == workedOn then this is filled
 }
 
 // -----------------------------------------------------------
@@ -379,18 +382,6 @@ export type I_LearningStatsWorkers = I_LearningStatsWorker[]
 // -----------------------------------------------------------
 /** types and value lists for the editor */ 
 // -----------------------------------------------------------
-
-/** sort vector i.e. a measurement kpi (measure) and the sort order (ascending/descending) */ 
-export interface I_sortVector {
-    measure:             string
-    selection_criterion: string
-}
-
-/** a list of sort vectors ordered by the sequence the multi-columnar sort takes place */ 
-export interface I_SelectionStrategy {
-    id:         string
-    strategy:   I_sortVector[]
-}
 
 /** function that calculates the discounting of the value of the end product dependent on the elapsed time beyond the minimum cycle time */ 
 export const valueDegradationFunctionNames = [

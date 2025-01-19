@@ -21,7 +21,6 @@ import { I_WorkItemEvents } from './shared/frontend_definitions'
 import { AppStateService, FrontendState } from './shared/app-state.service'
 import { EventsService, MaterialIconAndCssStyle } from './shared/events.service'
 import { EventSeverity, EventTypeId } from './shared/io_api_definitions'
-import { ConsoleLogger } from '@angular/compiler-cli'
 
 
 /** list of possible user actions */
@@ -233,7 +232,7 @@ export class AppComponent {
   /** download the work items' lifecycle events to the download folder */
   public onDownloadEvents(): void {
       function workitemEventAsCsvRow(wie: I_WorkItemEvent): string {
-          return `${wie.system};${wie.timestamp};${wie.workitem};${wie.eventType};${wie.valueChain};${wie.processStep};${wie.worker ? wie.worker : ""}`
+          return `${wie.timestamp};${wie.workItemId};${wie.eventType};${wie.valueChainId};${wie.fromProcessStepId};${wie.worker ? wie.worker : ""}`
       }
       this.workItemEvents$ = this.bas.workItemEvents()
       this.workItemEvents$.subscribe(wies => {
