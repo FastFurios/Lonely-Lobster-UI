@@ -282,7 +282,7 @@ interface WorkItemStatsCycleTime {
     max: number | undefined
 }
 
-/** throughput statitics for process steps, value chains or the entire system */
+/** throughput statistics for process steps, value chains or the entire system */
 interface WorkItemStatsThroughput {
     itemsPerTimeUnit:    number | undefined,
     valuePerTimeUnit:    number | undefined

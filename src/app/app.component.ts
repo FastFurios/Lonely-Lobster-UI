@@ -232,11 +232,11 @@ export class AppComponent {
   /** download the work items' lifecycle events to the download folder */
   public onDownloadEvents(): void {
       function workitemEventAsCsvRow(wie: I_WorkItemEvent): string {
-          return `${wie.timestamp};${wie.workItemId};${wie.eventType};${wie.valueChainId};${wie.fromProcessStepId};${wie.worker ? wie.worker : ""}`
+          return `${wie.timestamp};${wie.workItemId};${wie.eventType};${wie.valueChainId};${wie.workItemBasketHolderId};${wie.worker ? wie.worker : ""}`
       }
       this.workItemEvents$ = this.bas.workItemEvents()
       this.workItemEvents$.subscribe(wies => {
-          const wiesAsStringRows: string[] = ["system; time; workitem;event;value-chain;process-step; worker"]
+          const wiesAsStringRows: string[] = ["time; workitem;event;value-chain;process-step; worker"]
                                             .concat(wies.map(wie => workitemEventAsCsvRow(wie)))
           const csvContent = wiesAsStringRows.join('\n')
           const blob = new Blob([csvContent], { type: "text/csv" })

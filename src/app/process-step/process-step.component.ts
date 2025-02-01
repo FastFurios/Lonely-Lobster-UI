@@ -39,7 +39,7 @@ export class ProcessStepComponent implements OnInit, OnChanges {
 
   /** on changes update work items for display, add utilization statistics to t,he workers and adjust the display area size if necessary */
   ngOnChanges(): void {
-    console.log(this.psExtended) //##
+    // console.log(this.psExtended) //##
     this.psExtended.wosUtil.sort((w1, w2) => w1.worker < w2.worker ? -1 : 1 )
     this.wis = this.psExtended.ps.workItems.map(wi =>  { 
       return  { 

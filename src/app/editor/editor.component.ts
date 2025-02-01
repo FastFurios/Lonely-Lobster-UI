@@ -69,8 +69,8 @@ export class EditorComponent implements OnInit {
           initialJumpDistance:              [cfo ? cfo.wip_limit_search_parms?.initial_jump_distance : undefined,               [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(1)]],
           measurementPeriod:                [cfo ? cfo.wip_limit_search_parms?.measurement_period : undefined,                  [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(1)]],
           wipLimitUpperBoundaryFactor:      [cfo ? cfo.wip_limit_search_parms?.wip_limit_upper_boundary_factor : undefined,     [EditorComponent.numberIsInRangeCheckFactory(1.5)]],
-          searchOnAtStart:               [cfo ? cfo.wip_limit_search_parms?.search_on_at_start : undefined], // not displayed and editable in Editor
-          verbose:                       [cfo ? cfo.wip_limit_search_parms?.verbose : undefined]             // not displayed and editable in Editor
+          searchOnAtStart:                  [cfo ? cfo.wip_limit_search_parms?.search_on_at_start : undefined], // not displayed and editable in Editor
+          verbose:                          [cfo ? cfo.wip_limit_search_parms?.verbose : undefined]             // not displayed and editable in Editor
         }),
         valueChains:                        this.fb.array([],         [EditorComponent.idsDuplicateCheckFactory("id")!, EditorComponent.atLeastOneCheckFactory("value chain")!]),
         globallyDefinedWorkitemSelectionStrategies: this.fb.array([], [EditorComponent.idsDuplicateCheckFactory("id")!]),
@@ -139,7 +139,7 @@ export class EditorComponent implements OnInit {
       valueAdd:         [cfVc ? cfVc.value_add      : undefined, [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(0)]],
       valueDegradation: this.fb.group({
           function:     [cfVc ? cfVc.value_degradation?.function : undefined],
-          argument:     [cfVc ? cfVc.value_degradation?.argument : undefined]
+          argument:     [cfVc ? cfVc.value_degradation?.argument : undefined, EditorComponent.valueDegradationArgumentCheck]
       }),
       injection: this.fb.group({
           throughput:   [cfVc ? cfVc.injection?.throughput  : undefined, [EditorComponent.numberIsInRangeCheckFactory(0)]],
@@ -153,9 +153,9 @@ export class EditorComponent implements OnInit {
 
   public addProcessStepFg(pss: FormArray, cfPs?: I_ProcessStepAsJson): FormGroup {
     const newPsFg = this.fb.group({
-      id:               [cfPs ? cfPs.process_step_id : undefined,  [/* Validators.required,  */EditorComponent.noValueCheck, EditorComponent.vcPsNameFormatCheck]],
-      normEffort:       [cfPs ? cfPs.norm_effort : undefined,      [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(0)]],
-      wipLimit:         [cfPs ? cfPs.wip_limit : undefined,        [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(0)]]
+      id:               [cfPs ? cfPs.process_step_id : undefined,  [EditorComponent.noValueCheck, EditorComponent.vcPsNameFormatCheck]],
+      normEffort:       [cfPs ? cfPs.norm_effort     : undefined,  [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(0)]],
+      wipLimit:         [cfPs ? cfPs.wip_limit       : undefined,  [EditorComponent.numberIsIntegerCheck, EditorComponent.numberIsInRangeCheckFactory(0)]]
     })
     pss.push(newPsFg)
     return newPsFg
@@ -330,6 +330,17 @@ export class EditorComponent implements OnInit {
   /** Check if number is an integer */
   static numberIsIntegerCheck(numCtrl: AbstractControl): ValidationErrors | null {
     return numCtrl.value && numCtrl.value != Math.round(numCtrl.value) ? { isNoInteger: { message: "Value must not have decimals" } } : null
+  } 
+
+  /** Check the argument for the value degradation functions */
+  static valueDegradationArgumentCheck(argCtrl: AbstractControl): ValidationErrors | null {
+    const functionFc: FormControl = <FormControl>argCtrl.parent?.get('function')
+    switch (functionFc?.value) {
+      case "discounted": return  Math.abs(argCtrl.value) > 1 ? { isNoBtwMinusAndPlusOne: { message: "Value must be between -1.0 (i.e. compounding) and +1.0 (i.e. discounting)" } } : null    
+      case "expired":    return  argCtrl.value && (argCtrl.value < 1 || argCtrl.value != Math.round(argCtrl.value)) ? { isNoPositiveInteger: { message: "Value must be positive and must not have decimals" } } : null 
+      case "net":        return  { noValueRequired: { message: "no value required, leave empty" } }
+      default:           return null
+    }
   } 
 
   // validator factories (used when validators require parameterization when assigned to a control at runtime):

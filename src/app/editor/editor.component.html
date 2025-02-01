@@ -43,6 +43,7 @@
                     <div class="parameter-label-input">
                         <label>Argument:</label>
                         <input type="number" placeholder="number" formControlName="argument">
+                        <app-editor-messages [control]="valueDegradationFg(valueChainFg).get('argument')!"></app-editor-messages>
                     </div>
                 </div>          
                 <div [formGroup]="injectionFg(valueChainFg)" class="left-margin">

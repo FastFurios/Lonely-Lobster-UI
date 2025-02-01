@@ -26,18 +26,20 @@ export class WorkersStatsComponent implements OnChanges {
   /** @private */
   constructor(private cdr: ChangeDetectorRef) { }
   /** @private */
-  ngOnInit(): void { }
+  ngOnInit(): void { 
+    this.showColorLegend = false
+  }
 
   /** on change, sort workers by name and set display of color legend to false */
   ngOnChanges(): void {
     this.wosStats = this.wosStats.sort((a, b) => a.worker < b.worker ? -1 : 1)  //sort workers by name asc
-    this.showColorLegend = false
+    // this.showColorLegend = false
   }
   
   /** handle events from the worker components signalling that they finshed their initialization; when all worker components sent signals then show color legend */
   public workerGotColorsAssignedHandler(e: any): void {
     this.numWorkerSignalsReceived++
     this.showColorLegend = this.numWorkerSignalsReceived >= this.wosStats.length
-    // this.cdr.detectChanges() // Resolve NG0100
+    //this.cdr.detectChanges() // Resolve NG0100 ## now many errors; w/o just 1 initial NG100 then nothing any more
   }
 }

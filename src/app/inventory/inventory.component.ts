@@ -3,7 +3,7 @@
 //-------------------------------------------------------------------
 // last code cleaning: 21.12.2024
 
-import { Component, OnInit, Input } from '@angular/core'
+import { Component, OnInit, Input, OnChanges } from '@angular/core'
 import { I_WorkItem } from '../shared/io_api_definitions'
 import { PsInventory, PsInventoryShow, workitemsAsPsInventory } from '../shared/inventory-layout'
 import { UiBoxSize, UiInventoryColWidth } from '../shared/ui-boxes-definitions'
@@ -16,7 +16,7 @@ import { UiBoxSize, UiInventoryColWidth } from '../shared/ui-boxes-definitions'
   templateUrl: './inventory.component.html',
   styleUrls: ['./inventory.component.css']
 })
-export class InventoryComponent implements OnInit {
+export class InventoryComponent implements OnInit, OnChanges {
   /** work items in the inventory */
   @Input() wis:                 I_WorkItem[]
   /** true if inventory of output basket */
@@ -37,12 +37,12 @@ export class InventoryComponent implements OnInit {
 
   /** adapt inventory display when work items in inventory change or display area size is changed */
   ngOnChanges(): void {
-    console.log("Inventory.ngOnChanges(): @Input wis = ")
-    console.log(this.wis)
+    // console.log("Inventory.ngOnChanges(): @Input wis = ")
+    // console.log(this.wis)
 
     this.psInventory = workitemsAsPsInventory(this.wis, this.isListOfEndProducts)
-    console.log("Inventory.ngOnChanges(): psInventory = ")
-    console.log(this.psInventory)
+    // console.log("Inventory.ngOnChanges(): psInventory = ")
+    // console.log(this.psInventory)
     
     this.calcSizesOfInventoryColumn()
   }

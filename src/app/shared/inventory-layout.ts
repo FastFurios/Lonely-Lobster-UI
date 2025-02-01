@@ -120,4 +120,3 @@ export function workitemsAsPsInventory(wiList: I_WorkItem[], isListOfEndProducts
 
   return psInventory
 }
-
