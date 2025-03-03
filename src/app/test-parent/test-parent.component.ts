@@ -1,3 +1,8 @@
+//**************************************************************************
+// just a test bed for testing some techniques in Angular; 
+// is not part of the Lonely-Lobster application 
+//**************************************************************************
+
 import { Component, OnInit } from '@angular/core';
 import { Observable, throwError } from "rxjs"
 //import { Injectable } from '@angular/core';

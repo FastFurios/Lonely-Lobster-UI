@@ -1,3 +1,8 @@
+//**************************************************************************
+// just a test bed for testing some techniques in Angular; 
+// is not part of the Lonely-Lobster application 
+//**************************************************************************
+
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
