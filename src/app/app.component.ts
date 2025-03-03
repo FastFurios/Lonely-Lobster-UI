@@ -1,7 +1,6 @@
 //-------------------------------------------------------------------
 // APP COMPONENT
 //-------------------------------------------------------------------
-// last code cleaning: 22.12.2024
 
 import { Component } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
