@@ -1,0 +1,270 @@
+{
+	"system_id": "Pizzeria",
+	"frontend_preset_parameters": {
+		"num_iterations_per_batch": 100,
+		"economics_stats_interval": null
+	},
+	"learn_and_adapt_parms": {
+		"observation_period": 20,
+		"success_measure_function": "roce",
+		"adjustment_factor": 0.3
+	},
+    "wip_limit_search_parms"  : {
+        "initial_temperature"       : 100,
+        "cooling_parm"              : 0.99,
+        "degrees_per_downhill_step_tolerance" : 50,
+        "initial_jump_distance"     : 1,
+        "measurement_period"        : 20,
+        "wip_limit_upper_boundary_factor" : 1.5,
+        "search_on_at_start"        : true,
+        "verbose"                   : false              
+    },
+	"value_chains": [
+		{
+			"value_chain_id": "Pizza",
+			"value_add": 12,
+			"value_degradation": {
+				"function": "discounted",
+				"argument": 0.1
+			},
+			"injection": {
+				"throughput": 0.3,
+				"probability": 0.8
+			},
+			"process_steps": [
+				{
+					"process_step_id": "prep dough",
+					"norm_effort": 3,
+					"wip_limit": null
+				},
+				{
+					"process_step_id": "add toppings",
+					"norm_effort": 2,
+					"wip_limit": null
+				},
+				{
+					"process_step_id": "bake",
+					"norm_effort": 2,
+					"wip_limit": null
+				}
+			]
+		},
+		{
+			"value_chain_id": "Pasta",
+			"value_add": 10,
+			"value_degradation": {
+				"function": "discounted",
+				"argument": 0.1
+			},
+			"injection": {
+				"throughput": 0.4,
+				"probability": 0.2
+			},
+			"process_steps": [
+				{
+					"process_step_id": "make sauce",
+					"norm_effort": 4,
+					"wip_limit": null
+				},
+				{
+					"process_step_id": "add noodles",
+					"norm_effort": 1,
+					"wip_limit": null
+				}
+			]
+		},
+		{
+			"value_chain_id": "Insalata",
+			"value_add": 8,
+			"value_degradation": {
+				"function": "discounted",
+				"argument": 0.1
+			},
+			"injection": {
+				"throughput": 0.1,
+				"probability": 0.6
+			},
+			"process_steps": [
+				{
+					"process_step_id": "prep vegetables",
+					"norm_effort": 3,
+					"wip_limit": null
+				},
+				{
+					"process_step_id": "mix and season",
+					"norm_effort": 2,
+					"wip_limit": null
+				}
+			]
+		},
+		{
+			"value_chain_id": "Espresso",
+			"value_add": 3,
+			"value_degradation": {
+				"function": "discounted",
+				"argument": 0.2
+			},
+			"injection": {
+				"throughput": 0.7,
+				"probability": 0.7
+			},
+			"process_steps": [
+				{
+					"process_step_id": "brew",
+					"norm_effort": 2,
+					"wip_limit": null
+				}
+			]
+		}
+	],
+	"workers": [
+		{
+			"worker_id": "Luigi",
+			"process_step_assignments": [
+				{
+					"value_chain_id": "Pizza",
+					"process_steps_id": "prep dough"
+				},
+				{
+					"value_chain_id": "Pizza",
+					"process_steps_id": "add toppings"
+				}
+			],
+			"workitem_selection_strategies": [
+				"random",
+				"reetpsminmax",
+				"cvcmax-reetvcmin"
+			]
+		},
+		{
+			"worker_id": "Marco",
+			"process_step_assignments": [
+				{
+					"value_chain_id": "Pizza",
+					"process_steps_id": "bake"
+				},
+				{
+					"value_chain_id": "Espresso",
+					"process_steps_id": "brew"
+				}
+			],
+			"workitem_selection_strategies": [
+				"random",
+				"reetpsminmax",
+				"cvcmax-reetvcmin"
+			]
+		},
+		{
+			"worker_id": "Antonio",
+			"process_step_assignments": [
+				{
+					"value_chain_id": "Pasta",
+					"process_steps_id": "make sauce"
+				},
+				{
+					"value_chain_id": "Pasta",
+					"process_steps_id": "add noodles"
+				}
+			],
+			"workitem_selection_strategies": [
+				"random",
+				"reetpsminmax",
+				"cvcmax-reetvcmin"
+			]
+		},
+		{
+			"worker_id": "Giovanni",
+			"process_step_assignments": [
+				{
+					"value_chain_id": "Insalata",
+					"process_steps_id": "prep vegetables"
+				},
+				{
+					"value_chain_id": "Insalata",
+					"process_steps_id": "mix and season"
+				},
+				{
+					"value_chain_id": "Pasta",
+					"process_steps_id": "make sauce"
+				},
+				{
+					"value_chain_id": "Pasta",
+					"process_steps_id": "add noodles"
+				}
+			],
+			"workitem_selection_strategies": [
+				"random",
+				"reetpsminmax",
+				"cvcmax-reetvcmin"
+			]
+		},
+		{
+			"worker_id": "Francesco",
+			"process_step_assignments": [
+				{
+					"value_chain_id": "Espresso",
+					"process_steps_id": "brew"
+				}
+			],
+			"workitem_selection_strategies": [
+				"random",
+				"reetpsminmax",
+				"cvcmax-reetvcmin"
+			]
+		},
+		{
+			"worker_id": "Dino",
+			"process_step_assignments": [
+				{
+					"value_chain_id": "Pizza",
+					"process_steps_id": "add toppings"
+				},
+				{
+					"value_chain_id": "Pasta",
+					"process_steps_id": "make sauce"
+				}
+			],
+			"workitem_selection_strategies": [
+				"random",
+				"reetpsminmax",
+				"cvcmax-reetvcmin"
+			]
+		}
+	],
+	"globally_defined_workitem_selection_strategies": [
+		{
+			"id": "cvcmax-reetvcmin",
+			"strategy": [
+				{
+					"measure": "contributionOfValueChain",
+					"selection_criterion": "maximum"
+				},
+				{
+					"measure": "remainingEffortInValueChain",
+					"selection_criterion": "minimum"
+				},
+				{
+					"measure": "elapsedTimeInValueChain",
+					"selection_criterion": "minimum"
+				}
+			]
+		},
+		{
+			"id": "reetpsminmax",
+			"strategy": [
+				{
+					"measure": "remainingEffortInValueChain",
+					"selection_criterion": "minimum"
+				},
+				{
+					"measure": "elapsedTimeInValueChain",
+					"selection_criterion": "maximum"
+				}
+			]
+		},
+		{
+			"id": "random",
+			"strategy": []
+		}
+	]
+}
