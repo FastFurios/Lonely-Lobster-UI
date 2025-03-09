@@ -15,7 +15,7 @@ FILE_DEV="./src/environments/environment.ts"
 FILE_DEV_HIDE="${FILE_DEV}.hide"
 echo "DEV: files $FILE_DEV and $FILE_DEV_HIDE"
 
-SEARCH_TENANT="https://login.microsoftonline.com/49bf30a4-54b2-47ae-b9b1-ffa71ed3d475"
+SEARCH_TENANT="49bf30a4-54b2-47ae-b9b1-ffa71ed3d475"
 SEARCH_CLIENT_PROD="65f67e5b-d0c0-4677-adf8-fc895254393a"
 SEARCH_CLIENT_DEV="7d27668f-05e5-4bbf-a904-b97b2574c813"
 
@@ -28,7 +28,8 @@ cp $FILE_PROD $FILE_PROD_HIDE
 cp $FILE_DEV $FILE_DEV_HIDE
 
 # replace my Azure tenant's references
-sed -i "s/${SEARCH_TENANT}/${REPLACEMENT_CLIENT_PROD}/g" "$FILE_PROD"
+sed -i "s/${SEARCH_TENANT}/${REPLACEMENT_TENANT}/g" "$FILE_PROD"
+sed -i "s/${SEARCH_TENANT}/${REPLACEMENT_TENANT}/g" "$FILE_DEV"
 sed -i "s/${SEARCH_CLIENT_PROD}/${REPLACEMENT_CLIENT_PROD}/g" "$FILE_PROD"
 sed -i "s/${SEARCH_CLIENT_DEV}/${REPLACEMENT_CLIENT_DEV}/g" "$FILE_DEV"
 
