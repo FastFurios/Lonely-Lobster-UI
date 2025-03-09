@@ -9,8 +9,8 @@ export const environment = {
 
   // msal config details
   msalConfig: {
-    clientId: "<use your own Azure IDP reference for DEV>", // Azure Portal / Entra Standardverzeichnis / App Registration: Application (client) ID: it is the application id of this Angular "Lonely Lobster Frontend (DEV) 
-    authority: "https://login.microsoftonline.com/<use your own Azure tenant>",  // Azure Portal / Entra Standardverzeichnis / App Registration: Directory (tenant) ID i.e. my tenant id
+    clientId: "<use your own Azure IDP reference for DEV>", // Azure Portal / Entra Overview / App Registration: Application (client) ID: it is the application id of this Angular "Lonely Lobster Frontend (DEV) 
+    authority: "https://login.microsoftonline.com/<use your own Azure tenant>",  // Azure Portal / Entra Overview / App Registration: Directory (tenant) ID i.e. my tenant id
     redirectUri: 'http://localhost:4200' // change redirect url based on where u want to redirect after the authentication
   }
 }

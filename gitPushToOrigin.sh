@@ -38,12 +38,7 @@ git status
 git commit -m "$1"
 git push origin
 
-#echo "--- Production file: ------------------"
-#more $FILE_PROD
-#echo "--- Development file: ------------------"
-#more $FILE_DEV
-
-mv $FILE_PROD_HIDE $FILE_PROD  
-mv $FILE_DEV_HIDE  $FILE_DEV  
+cp $FILE_PROD_HIDE $FILE_PROD  
+cp $FILE_DEV_HIDE  $FILE_DEV  
 
 echo ">> Push to origin done."
