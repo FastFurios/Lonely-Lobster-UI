@@ -11,6 +11,10 @@
 npm-debug.log
 yarn-error.log
 
+
+# secrets - more or less
+*.hide
+
 # IDEs and editors
 .idea/
 .project

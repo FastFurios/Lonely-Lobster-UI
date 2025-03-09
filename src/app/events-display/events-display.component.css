@@ -15,12 +15,12 @@
     overflow-y: auto; /* Enable vertical scrolling */
     border: 1px solid #ddd;
     border-radius: 8px;
+    z-index: 1;
 
 }
 table {
     width: 100%;
     border-collapse: collapse;
-    z-index: -1;
 }
 
 th, td {
@@ -32,7 +32,6 @@ th {
     background-color: #f4f4f4;
     position: sticky;
     top: 0; /* Makes the header sticky */
-/*    z-index: 1; */
 }
 tr:nth-child(even) {
     background-color: #f9f9f9;
