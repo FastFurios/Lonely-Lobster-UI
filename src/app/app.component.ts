@@ -212,9 +212,6 @@ export class AppComponent {
     if (!this.configAsJson) return
     const now = new Date()
     link.download = `${this.configAsJson()?.system_id}_${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}_${now.getHours().toString().padStart(2, "0")}-${now.getMinutes().toString().padStart(2, "0")}.${fileExtension}`
-    console.log(`app.component: downloadToFile(): ${link.download}`)
-    console.log(`app.component: downloadToFile(): ${now.getMonth()+1}`)
-    console.log(`app.component: downloadToFile(): ${now.getDate()}`)
     link.click()
     link.remove()
     this.ess.add(EventsService.applicationEventFrom("Downloaded config", "/download", EventTypeId.configDownloaded, EventSeverity.info))
