@@ -1,22 +1,39 @@
 
-<h1>** Welcome to Lonely Lobster **</h1>
-<div *ngIf="configAsJson" class="columns general-font">
-    <div>
-        <div class="flex-row">
-            <div>System:</div>
-            <div>{{ configAsJson.system_id ? configAsJson!.system_id : "-" }}</div>
-        </div>
-        <div class="flex-row">
-            <div>Value-Chains:</div>
-            <div> {{ configAsJson.value_chains ? configAsJson!.value_chains.length : "-" }}</div>
-        </div>
-        <div class="flex-row">
-            <div>Process-steps:</div>
-            <div>{{ configAsJson ? numSystemProcessSteps : "-" }}</div>
-        </div>
-        <div class="flex-row">
-            <div>Workers:</div>
-            <div>{{ configAsJson.workers ? configAsJson!.workers.length : "-" }}</div>
-        </div>
-    </div>
+<div class="homepage">
+    <div class="config-text" *ngIf="configAsJson">The current system configuration's name is <strong>"{{ configAsJson!.system_id }}"</strong>. It consists of <strong>{{ configAsJson!.value_chains.length }} </strong> value chains with <strong>{{ numSystemProcessSteps }} </strong> process steps and <strong> {{ configAsJson!.workers.length }} </strong> workers overall.</div>
+    <br>
+    <br>
+    <h1>Welcome to Lonely-Lobster</h1>
+    <h3>Simulating the effects of sharing critical resources over multiple value chains</h3>
+    <br>
+    <br>
+    <img src="../../../assets/DALL·E Office-and-work-flow.webp" alt="Knowledge Workers and Work-Flow" height="400">
+    <br>
+    <br>
+    <span> Have you ever wondered why work flows so well organized in industrial production lines, however pretty rarely in the office where specialists need to cooperate? </span>
+    <br>
+    <span>Then, Lonely-Lobster might be for you! </span>
+    <br>
+    <span>Lonely-Lobster allows you to model multiple value chains, control influx of new work, assign workers to the process steps and even share them between various process steps. 
+    Then run a simulation and observe how the workers learn to select the best strategies which work item to pick next. You want to apply work-in-progress limits to steamline the flow through the value chains? 
+    Do it yourself or let Lonely-Lobster help you to find good settings. Play around with the parameters and see how they influence statistical data such as the overall performance.</span>
+    <br>
+    <span>Interested?</span> 
+    <br>
+    <span>Then contact <a href="mailto:technology@lindorfer.com" style="color: blue; text-decoration: none;">Gerold Lindorfer</a> and I will provide you with full access i.e. to the system simulation engine.</span>   
+    <br>
+    <br>
+    <span>For more background and a user guide check the GitHub repo of the Lonely-Lobster backend: </span>
+    <a href="https://github.com/FastFurios/Lonely-Lobster?tab=readme-ov-file#lonely-lobster" target="_blank">Lonely-Lobster Intro</a>
+    <br>
+    <br>
+    <br>
+    <span> You are a software developer and would like to inspect or clone the code repositories?</span>
+    <br>
+    <span>Then, check out the </span>  
+    <a href="https://github.com/FastFurios/Lonely-Lobster-UI" target="_blank">Angular frontend</a>  
+    <span> and the </span>
+    <a href="https://github.com/FastFurios/Lonely-Lobster" target="_blank">Node.js/Express backend </a>
 </div>
+
+
