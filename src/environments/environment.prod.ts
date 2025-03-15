@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   API_URL: "https://lonely-lobster-ftdqhshte9abe3eq.germanywestcentral-01.azurewebsites.net/",
-  version: "7.0.4",
+  version: "7.0.5",
 
   // msal config details
   msalConfig: {
