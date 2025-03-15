@@ -1,6 +1,6 @@
 <div class="value-chain" [style]="'height:' + vcBoxSize.height + 'px'">
     <div class="feeder-section">
-        <h2> {{ vcExtended.vc.id }} </h2>
+        <h2 [style]="'background-color:' + valueChainColorString"> {{ vcExtended.vc.id }} </h2>
         <h5>Value: {{ vcExtended.vc.totalValueAdd }}</h5> 
         <label for="throughput">Throughput:</label>
         <input type="number" class="inputFormNumber" id="throughput" name="throughput" min="0" step="0.1"

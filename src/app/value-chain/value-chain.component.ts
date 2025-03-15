@@ -31,6 +31,7 @@ export class ValueChainComponent implements OnInit, OnChanges {
   /** value-chain flow statistics  */
   vcFlowStats:          I_FlowStats
   valueChainColor:      RgbColor | undefined
+  valueChainColorString:string 
 
   constructor(private cms: ColorMapperService,
               private wof: WorkorderFeederService) { 
@@ -51,6 +52,7 @@ export class ValueChainComponent implements OnInit, OnChanges {
       }
     }
     this.valueChainColor = this.cms.colorOfObject("value-chain", this.vcExtended.vc.id)
+    this.valueChainColorString = this.valueChainColor ? `rgb(${this.valueChainColor[0]}, ${this.valueChainColor[1]}, ${this.valueChainColor[2]})` : "rgb(0, 0, 0)"
     this.calcSizeOfProcessStepBox()  
   }
 

@@ -39,15 +39,6 @@ export class ObjectColorMap extends Map<ObjectId, RgbColor> {
   constructor(private colDisp: ColorDispenser) { 
     super() 
   }
-  // /**
-  //  *  ... ??? 
-  //  * @returns ??? true the map was changed
-  //  */
-  // public changed(): boolean {
-  //   let aux = this.changeAndResetChangeIndicatorState
-  //   this.changeAndResetChangeIndicatorState = false
-  //   return aux
-  // }
   /** 
    * @param id - id of the object which's color is looked up  
    * @returns the assigned color of the object 
@@ -112,14 +103,4 @@ export class ColorMapperService extends Map<ColoringCategory, ObjectColorMap> {
     //for (let e of this.allAssignedColors(cat)!) arr.push(e)
     return [...(this.allAssignedColors(cat)!.entries())] // return arr
   }
-
-  // /** 
-  //  * Looks up if the objects and their assigned colors
-  //  * @param cat - the category
-  //  * @returns an array of tuples of object ids and their color    
-  //  */
-  // public changed(cat: ColoringCategory): boolean {
-  //   if (this.get(cat)) return this.get(cat)!.changed()
-  //   return false
-  // }
 }
