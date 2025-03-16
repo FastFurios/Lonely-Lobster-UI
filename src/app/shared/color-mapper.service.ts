@@ -35,7 +35,6 @@ class ColorDispenser {
  * @class Manages a map that maps objects to assigned colors.
  */
 export class ObjectColorMap extends Map<ObjectId, RgbColor> {
-  private changeAndResetChangeIndicatorState: boolean = true // true if lately   .... dubious
   constructor(private colDisp: ColorDispenser) { 
     super() 
   }
@@ -48,7 +47,6 @@ export class ObjectColorMap extends Map<ObjectId, RgbColor> {
     if (!color) { // in case it has no color yet, a color is assigned
       color = this.colDisp.nextColor
       this.set(id, color)
-      this.changeAndResetChangeIndicatorState = true
     }
     return color
   }
