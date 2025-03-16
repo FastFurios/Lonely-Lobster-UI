@@ -24,6 +24,8 @@ git*.sh
 *.launch
 .settings/
 *.sublime-workspace
+.editorconfig
+.vscode
 
 # Visual Studio Code
 .vscode/*
