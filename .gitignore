@@ -14,7 +14,7 @@ yarn-error.log
 
 # secrets - more or less
 *.hide
-gitPushOrigin.sh
+git*.sh
 
 # IDEs and editors
 .idea/
