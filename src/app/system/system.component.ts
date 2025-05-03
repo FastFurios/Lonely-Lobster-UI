@@ -59,10 +59,11 @@ export class SystemComponent implements OnChanges {
   /**  */
   showSystemState:          boolean  = false
   reloadLearnStatsLegend:   boolean  = false
-  /** show inventories when true  */
-  invVisible:               boolean  = true
+  /** specifies if injection is driven by injection parameters (false) or from work orders file (true) */
+  workordersComeFromFile:   boolean  = false
   /** if true then number of iterations per run is 1 */
   iterateOneByOne:          boolean  = true
+  invVisible:               boolean  = true // ## re-factor as it has no use anymore ## 
   optimizeWipLimits:        boolean  = false 
   /** remaining iterations to go after an interrupting stop of a run */
   resumeRemainingIterations:number
@@ -125,7 +126,7 @@ export class SystemComponent implements OnChanges {
     const miniBatchSize = this.iterateOneByOne ? 1 
                                                : this.numIterationsToGo > c_IterationRequestMaxSize ? c_IterationRequestMaxSize 
                                                                                                     : this.numIterationsToGo
-    this.systemState$ = this.bas.nextSystemStateOnInput(this.wof.iterationRequestsForAllVcs(miniBatchSize, this.optimizeWipLimits))
+    this.systemState$ = this.bas.nextSystemStateOnInput(this.wof.iterationRequestsForAllVcs(miniBatchSize, this.optimizeWipLimits, this.workordersComeFromFile))
     this.systemState$.subscribe(systemState => {
 //      console.log(systemState) // ##
       this.numIterationsToGo -= miniBatchSize

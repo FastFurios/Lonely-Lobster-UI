@@ -20,6 +20,7 @@ import { I_WorkItemEvents } from './shared/frontend_definitions'
 import { AppStateService, FrontendState } from './shared/app-state.service'
 import { EventsService, MaterialIconAndCssStyle } from './shared/events.service'
 import { EventSeverity, EventTypeId } from './shared/io_api_definitions'
+import { WorkorderFeederService } from './shared/workorder-feeder.service'
 
 
 /** list of possible user actions */
@@ -41,6 +42,13 @@ type EventDisplayDescAndSeverityMatIcon = {
     cssStyle:     string
 }
 
+/** holds the content of a parsed work order csv file */
+export type WorkOrdersFromFile = {
+  header:   string[],
+  rows:     number[][]
+}
+// export type WorkordersForTimestamp = {[key: string]: number}  // object with many properties (key) with numbers as property values 
+
 /**
  * @class This Angular component renders the control bar of the frontend. 
  */
@@ -50,7 +58,9 @@ type EventDisplayDescAndSeverityMatIcon = {
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  filename: string = ""
+  public  configFilename:     string = ""
+  public  workordersFilename: string = ""
+
   greyOut = "color: lightgrey;"
 
   /** frontend version */
@@ -75,6 +85,7 @@ export class AppComponent {
               private mas:      MsalService, 
               private aus:      AuthenticationService,
               private cfs:      ConfigFileService,
+              private wos:      WorkorderFeederService,
               private ass:      AppStateService,
               private bas:      BackendApiService,
               private ess:      EventsService,
@@ -177,9 +188,9 @@ export class AppComponent {
   // --------------------------------------------------------------------------------------
 
   /** upload system configuration json file into the configuration file service */
-  public onFileSelected(e: Event): void { 
+  public onConfigFileSelected(e: Event): void { 
     const file: File = (<any>e.target).files[0] 
-    this.filename = file.name
+    this.configFilename = file.name
     if (this.cfs.configAsJson()) this.bas.dropSystem()
 
     const reader = new FileReader()
@@ -223,6 +234,57 @@ export class AppComponent {
     const blob = new Blob([JSON.stringify(fileContent, null, "\t")], { type: "application/json" })
     this.downloadToFile(blob, "json")
   }
+
+  // --------------------------------------------------------------------------------------
+  //     Uploading a Work Order File  
+  // --------------------------------------------------------------------------------------
+
+  /** upload work order load file csv file into the work order feeder service */
+  public onWorkordersFileSelected(e: Event): void { 
+    const file: File = (<any>e.target).files[0] 
+    this.workordersFilename = file.name
+    console.log("AppComponent: onWorkloadFileSelected(): uploading workload file = " + this.workordersFilename)
+
+    const reader = new FileReader()
+
+    reader.onload = () => {
+      (<HTMLInputElement>e.target).value = "" // clear the event input to allow event detection of re-selection of same file
+      if (!reader.result) {
+        this.ess.add(EventsService.applicationEventFrom("reading work order csv file", file.name, EventTypeId.workordersFileLoadError, EventSeverity.fatal))
+        return
+      }
+      try {
+          const wosFromFile = this.csvTextParse(reader.result.toString())
+          console.log(wosFromFile)
+          this.wos.storeWorkordersFromFile(file.name, wosFromFile) 
+          this.ess.add(EventsService.applicationEventFrom("parsing CSV from work orders file", file.name, EventTypeId.workordersFileLoaded, EventSeverity.info))
+      } catch (error) {
+          this.ess.add(EventsService.applicationEventFrom((<any>error).error, file.name, EventTypeId.workordersCsvError, EventSeverity.fatal))
+      }
+      //this.ass.frontendEventsSubject$.next("config-uploaded")
+    }
+    reader.onerror = (error) => this.ess.add(EventsService.applicationEventFrom("reading work orders file", file.name, EventTypeId.workordersFileLoadError, EventSeverity.fatal))
+
+    reader.readAsText(file)
+  }
+
+  private csvTextParse(csvText: string): WorkOrdersFromFile {
+      const rawRows = csvText.replace(/\r/g, "").split("\n")
+      const header  = rawRows[0].split(";")
+      if (header.length < 2)  {
+        console.log("app.csvTextParse(): no real content column")
+        this.ess.add(EventsService.applicationEventFrom("parsing CSV from work orders file", this.workordersFilename, EventTypeId.workordersCsvErrorNoWorkordersHeader, EventSeverity.fatal))
+        throw Error()
+      }
+      const rows    = rawRows.slice(1) // skip header row
+                             .map(r => r.split(";").map(v => parseInt(v)))
+                             .filter(r => r.length == header.length) // get rid of all rows with number of vales other than the heaader's 
+      return {
+          header: header,
+          rows:   rows
+      }
+  }
+
 
   // --------------------------------------------------------------------------------------
   //     Downloading a CSV with the workitems' events  

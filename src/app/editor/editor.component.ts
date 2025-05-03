@@ -338,7 +338,7 @@ export class EditorComponent implements OnInit {
     switch (functionFc?.value) {
       case "discounted": return  Math.abs(argCtrl.value) > 1 ? { isNoBtwMinusAndPlusOne: { message: "Value must be between -1.0 (i.e. compounding) and +1.0 (i.e. discounting)" } } : null    
       case "expired":    return  argCtrl.value && (argCtrl.value < 1 || argCtrl.value != Math.round(argCtrl.value)) ? { isNoPositiveInteger: { message: "Value must be positive and must not have decimals" } } : null 
-      case "net":        return  { noValueRequired: { message: "no value required, leave empty" } }
+      case "net":        return  argCtrl.value ? { noValueRequired: { message: "no value required, leave empty" } } : null
       default:           return null
     }
   } 

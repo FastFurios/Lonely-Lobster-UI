@@ -3,7 +3,8 @@
 //-------------------------------------------------------------------
 // last code cleaning: 15.12.2024
 import { Injectable } from '@angular/core'
-import { I_IterationRequest, I_IterationRequests, ValueChainId, Injection, ProcessStepId, I_VcPsWipLimit,WipLimit } from './io_api_definitions'
+import { I_IterationRequest, I_IterationRequests, ValueChainId, Injection, ProcessStepId, I_VcPsWipLimit,WipLimit, I_VcWorkOrders } from './io_api_definitions'
+import { WorkOrdersFromFile } from "../app.component"
 import { DoubleStringMap } from './helpers'
 
 
@@ -13,7 +14,34 @@ type VcFeederParmsAndState = {
 }
 
 /**
+ * @class This class holds the work orders read from the file and serves them in round-robin fashion to the callers of next()
+ */
+class WorkordersFromFile {
+    private nextWosTimeUnitIdx: number
+
+    constructor(public  filename:   string,
+                private workorders: WorkOrdersFromFile) {
+        this.reset()
+    }   
+
+    public next(): I_VcWorkOrders[] {
+        const wosForTimeunit = this.workorders.rows[this.nextWosTimeUnitIdx]
+        this.nextWosTimeUnitIdx = (this.nextWosTimeUnitIdx + 1) % this.workorders.rows.length
+        return wosForTimeunit.slice(1).map((numWos, idx) => { return {
+            valueChainId:   this.workorders.header.slice(1)[idx],
+            numWorkOrders:  numWos
+        }})
+    }
+
+    private reset(): void {
+        this.nextWosTimeUnitIdx = 0
+    }
+}
+
+
+/**
  * @class This Angular service generates the workorders to be injected into the value chains based on the injection parameters  
+ * or alteratively based on the uploaded work order file
  */
 @Injectable({
   providedIn: 'root'
@@ -28,6 +56,10 @@ export class WorkorderFeederService {
      * Maps that contains for each process step the current wip limit
      */
     private vcPsWipLimitMap:        DoubleStringMap<WipLimit>
+    /**
+     * The list of work orders uploaded from a csv file
+     */
+    private workordersFromFile:     WorkordersFromFile
 
     /**
     * @private
@@ -75,13 +107,13 @@ export class WorkorderFeederService {
     }
 
     /**
-     * Generates an iteration request to be sent to the backend for all value chains based on the current injection and wip limit settings and the current accumulated virtual worksorders for each value chain.
+     * Generates an iteration request to be sent to the backend for all value chains based on the current injection and wip limit settings and the current accumulated virtual work orders for each value chain.
      * See also in "io_api_definitions.ts" for examples how work order injection works.
-     * @param batchSize - number of iterations the requests is for 
+     * @param batchSize - number of iterations the request is for 
      * @param optimizeWipLimits - true if auto optimization of wip limits is turned on
      * @returns iteration request for an iteration (or for each iteration within an iteration batch)  
      */
-    public iterationRequestsForAllVcs(batchSize: number, optimizeWipLimits: boolean): I_IterationRequests {
+    public iterationRequestsForAllVcs(batchSize: number, optimizeWipLimits: boolean, workordersComeFromFile: boolean): I_IterationRequests {
         const iterationRequests: I_IterationRequests = []
         const constWipLimits: I_VcPsWipLimit[] = []
 
@@ -94,26 +126,47 @@ export class WorkorderFeederService {
                 vcsWorkOrders:      [],
                 wipLimits:          [],
                 optimizeWipLimits:  optimizeWipLimits
-            } 
-            for (const [vcId, vcFeederParmsAndState] of this.vcFeederTimeUnitMap.entries()) { // for all value-chains
-                vcFeederParmsAndState.aggregatedWorkOrders += vcFeederParmsAndState.parms.throughput // add throughput number of workitems to the already accumulated new work orders
-
-                let injectWosNum: number
-                if (Math.random() < vcFeederParmsAndState.parms.probability) {  // "roll the dice" if it is time for injection 
-                    injectWosNum = Math.floor(vcFeederParmsAndState.aggregatedWorkOrders)  // take all work orders
-                    vcFeederParmsAndState.aggregatedWorkOrders -= injectWosNum  // leave back the remainder 
-                }
-                else injectWosNum = 0
-
-                iterationRequest.vcsWorkOrders.push({
-                    valueChainId:  vcId, 
-                    numWorkOrders: injectWosNum
-                })
             }
+            if (workordersComeFromFile) { 
+                // feeding work orders that come from the selected work orders file
+                iterationRequest.vcsWorkOrders = this.workordersFromFile.next()
+            }
+            else { 
+                // feeding work orders by injection parameters
+                for (const [vcId, vcFeederParmsAndState] of this.vcFeederTimeUnitMap.entries()) { // for all value-chains
+                    vcFeederParmsAndState.aggregatedWorkOrders += vcFeederParmsAndState.parms.throughput // add throughput number of workitems to the already accumulated new work orders
+
+                    let injectWosNum: number
+                    if (Math.random() < vcFeederParmsAndState.parms.probability) {  // "roll the dice" if it is time for injection 
+                        injectWosNum = Math.floor(vcFeederParmsAndState.aggregatedWorkOrders)  // take all work orders
+                        vcFeederParmsAndState.aggregatedWorkOrders -= injectWosNum  // leave back the remainder 
+                    }
+                    else injectWosNum = 0
+
+                    iterationRequest.vcsWorkOrders.push({
+                        valueChainId:  vcId, 
+                        numWorkOrders: injectWosNum
+                    })
+                }
+            }
+
             iterationRequest.wipLimits = constWipLimits
             iterationRequests.push(iterationRequest)
         }           
+        console.log("Workorder Feeder.iterationRequestsForAllVcs():")
+        console.log(iterationRequests)
         return iterationRequests
+    }
+
+    /**
+     * store the filename from which the work orders were read and also the work order array
+     * @param wosFilename name of file from where the work orders were read
+     * @param wosFromFile array over time units with work orders objects for each value chains
+     */
+    public storeWorkordersFromFile(wosFilename: string, wosFromFile: WorkOrdersFromFile): void {
+        this.workordersFromFile = new WorkordersFromFile(wosFilename, wosFromFile) 
+        console.log("Workorder Feeder: storeWorkordersFromFile():")
+        console.log(this.workordersFromFile)
     }
 
     /**
@@ -124,3 +177,5 @@ export class WorkorderFeederService {
         this.vcPsWipLimitMap     = new DoubleStringMap<WipLimit>()
     }
 }
+
+

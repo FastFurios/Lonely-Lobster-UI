@@ -282,7 +282,7 @@ interface WorkItemStatsCycleTime {
     max: number | undefined
 }
 
-/** throughput statistics for process steps, value chains or the entire system */
+/** throughput statitics for process steps, value chains or the entire system */
 interface WorkItemStatsThroughput {
     itemsPerTimeUnit:    number | undefined,
     valuePerTimeUnit:    number | undefined
@@ -422,6 +422,13 @@ export enum EventTypeId {
     configFileNotFound  = "Configuration File not found",
     configJsonError     = "JSON of configuration file is corrupt.",
     configCorrupt       = "Configuration is corrupt",
+    
+    workordersFileLoaded    = "Work orders File loaded",
+    workordersFileLoadError = "Work orders File loading error",
+    workordersFileNotFound  = "Work orders File not found",
+    workordersCsvError  = "Something went wrong parsing the work order csv content.",
+    workordersCsvErrorNoWorkordersHeader        = "No column with work orders found.",
+    workordersCorrupt       = "Work orders are corrupt",
     
     configEdited        = "Configuration edited.",
     configSaved         = "Configuration changes saved.",
