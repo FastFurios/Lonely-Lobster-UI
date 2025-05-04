@@ -427,7 +427,9 @@ export enum EventTypeId {
     workordersFileLoadError = "Work orders File loading error",
     workordersFileNotFound  = "Work orders File not found",
     workordersCsvError  = "Something went wrong parsing the work order csv content.",
-    workordersCsvErrorNoWorkordersHeader        = "No column with work orders found.",
+    workordersCsvErrorNoWorkordersHeader = "No column with work orders found.",
+    workordersCsvErrorNotFittingColumns  = "Some rows do not fit the header columns.",
+    workordersCsvErrorNoUseableRows  = "No useable rows left after deleting non fitting rows.",
     workordersCorrupt       = "Work orders are corrupt",
     
     configEdited        = "Configuration edited.",

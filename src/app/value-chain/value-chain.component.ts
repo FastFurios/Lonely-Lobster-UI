@@ -23,6 +23,8 @@ export class ValueChainComponent implements OnInit, OnChanges {
   @Input() vcExtended:  VcExtended
   @Input() vcBoxSize:   UiBoxSize
   @Input() invVisible:  boolean
+  @Input() workordersComeFromFile:  boolean
+  
   feedParms:            Injection | undefined = undefined
   
   vcStats:              I_WorkItemStatistics | undefined
@@ -91,6 +93,11 @@ export class ValueChainComponent implements OnInit, OnChanges {
   public identify(index: number, psExt: PsExtended): ProcessStepId {
     return psExt.ps.id
   } 
+
+  /** getter of filename of work order file from the workOrderFeeder service */
+  get workordersFileName(): string {
+    return this.wof.workordersFromFile.filename
+  }
 
   // ---------------------------------------------------------------------------------------
   // (re-)sizing of childs' UI boxes  

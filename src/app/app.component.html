@@ -1,7 +1,7 @@
 
 
-    <input type="file" class="file-input" (change)="onConfigFileSelected($event)" #configFileUpload>
-    <input type="file" class="file-input" (change)="onWorkordersFileSelected($event)" #workloadFileUpload>
+    <input type="file" class="file-input" (change)="onConfigFileSelected($event)"     accept=".json" #configFileUpload>
+    <input type="file" class="file-input" (change)="onWorkordersFileSelected($event)" accept=".csv"  #workloadFileUpload>
     <div class="flex-strechted-left-to-right">
         <div class="navbar">
             <img src="../../../assets/LonelyLobster.jfif" alt="Lonely Lobster" height="50">

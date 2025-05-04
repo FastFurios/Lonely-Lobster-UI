@@ -2,16 +2,18 @@
     <div class="feeder-section">
         <h2 [style]="'background-color:' + valueChainColorString"> {{ vcExtended.vc.id }} </h2>
         <h5>Value: {{ vcExtended.vc.totalValueAdd }}</h5> 
-        <label for="throughput">Throughput:</label>
-        <input type="number" class="inputFormNumber" id="throughput" name="throughput" min="0" step="0.1"
-            required
-            [(ngModel)]="feedParms!.throughput"
-            (change)="feedParmsInputHandler($event)">
-        <label for="probability">Inject Prob:</label>
-        <input type="number" class="inputFormNumber" id="probability" name="probability" min="0" max="1" step="0.1"
-            required
-            [(ngModel)]="feedParms!.probability"
-            (change)="feedParmsInputHandler($event)">
+        <div *ngIf="!workordersComeFromFile; else showWorkordersFilename">
+            <label for="throughput">Throughput:</label>
+            <input type="number" class="inputFormNumber" id="throughput" name="throughput" min="0" step="0.1"
+                required
+                [(ngModel)]="feedParms!.throughput"
+                (change)="feedParmsInputHandler($event)">
+            <label for="probability">Inject Prob:</label>
+            <input type="number" class="inputFormNumber" id="probability" name="probability" min="0" max="1" step="0.1"
+                required
+                [(ngModel)]="feedParms!.probability"
+                (change)="feedParmsInputHandler($event)">
+        </div>
         <app-flow-stats [workitemStats]="vcStats" [displayVerbose]="true" [showTpv]="true"></app-flow-stats>
     </div>
 
@@ -19,4 +21,9 @@
             <app-process-step [psExtended]="psExtended" [psBoxSize]="psBoxSize" [invVisible]="invVisible"></app-process-step>
     </div>
 </div>
+
+<ng-template #showWorkordersFilename>
+    Work orders from:
+    <div> {{ workordersFileName }} </div>
+</ng-template>
 

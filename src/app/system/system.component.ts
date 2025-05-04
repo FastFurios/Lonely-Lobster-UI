@@ -187,6 +187,9 @@ export class SystemComponent implements OnChanges {
   public runResumeIterationsHandler() {
     this.numIterationsToGo = this.runResumeButton == RunResumeButton.resume ? this.resumeRemainingIterations - 1 : this.numIterationsToExecute 
     this.runResumeButton = RunResumeButton.run
+    if (!this.wof.valueChainsHaveMatchingWorkorderFileColumns(this.vcsExtended.map(vce => vce.vc.id))) {
+      this.ess.add(EventsService.applicationEventFrom("Going to run", this.wof.workordersFromFile.filename, EventTypeId.workordersCsvErrorNotFittingColumns, EventSeverity.fatal))
+    }
     this.iterateNextStates()
   }
   

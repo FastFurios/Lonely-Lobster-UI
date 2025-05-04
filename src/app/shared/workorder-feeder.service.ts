@@ -36,6 +36,11 @@ class WorkordersFromFile {
     private reset(): void {
         this.nextWosTimeUnitIdx = 0
     }
+
+    /** returns the header names for the columns with the work order values */
+    get headers(): string[] {
+        return this.workorders.header.slice(1)
+    }
 }
 
 
@@ -59,7 +64,7 @@ export class WorkorderFeederService {
     /**
      * The list of work orders uploaded from a csv file
      */
-    private workordersFromFile:     WorkordersFromFile
+    public  workordersFromFile:     WorkordersFromFile
 
     /**
     * @private
@@ -168,6 +173,17 @@ export class WorkorderFeederService {
         console.log("Workorder Feeder: storeWorkordersFromFile():")
         console.log(this.workordersFromFile)
     }
+
+    /**
+     * check if the headers of the work order file match the value chain ids of the system configuration;
+     * returns true if a work order file has been loaded AND contains a column for each value chain of the system configuration;
+     * returns false otherwise i.e. if no work order file is yet loaded or at least one value chain does not have a corresponding work order file column   
+     */
+    public valueChainsHaveMatchingWorkorderFileColumns(vcIds: ValueChainId[]): boolean {
+        if (this.workordersFromFile == undefined) return false
+        return vcIds.map(vcId => this.workordersFromFile.headers.includes(vcId)).reduce((b1, b2) => b1 && b2)
+    }
+
 
     /**
      * Initialize the feeder service

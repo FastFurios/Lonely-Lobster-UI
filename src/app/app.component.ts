@@ -254,7 +254,7 @@ export class AppComponent {
         return
       }
       try {
-          const wosFromFile = this.csvTextParse(reader.result.toString())
+          const wosFromFile = this.parsedCsvText(reader.result.toString())
           console.log(wosFromFile)
           this.wos.storeWorkordersFromFile(file.name, wosFromFile) 
           this.ess.add(EventsService.applicationEventFrom("parsing CSV from work orders file", file.name, EventTypeId.workordersFileLoaded, EventSeverity.info))
@@ -268,20 +268,43 @@ export class AppComponent {
     reader.readAsText(file)
   }
 
-  private csvTextParse(csvText: string): WorkOrdersFromFile {
-      const rawRows = csvText.replace(/\r/g, "").split("\n")
+  private parsedCsvText(csvText: string): WorkOrdersFromFile {
+      console.log("app.parsedCsvText(): csvText=")
+      console.log(csvText)
+      const rawRows = csvText.replace(/\r/g, "")
+                             .split("\n")
+                             .filter (r => r.length > 0)  // discard empty rows
+                             .filter(r => r[0][0] != "/") // filter rows that are no comments i.e. that do not start with a "/"
+      console.log("app.parsedCsvText(): rawRows=")
+      console.log(rawRows)
       const header  = rawRows[0].split(";")
+      console.log("app.parsedCsvText(): header=")
+      console.log(header)
       if (header.length < 2)  {
         console.log("app.csvTextParse(): no real content column")
         this.ess.add(EventsService.applicationEventFrom("parsing CSV from work orders file", this.workordersFilename, EventTypeId.workordersCsvErrorNoWorkordersHeader, EventSeverity.fatal))
         throw Error()
       }
       const rows    = rawRows.slice(1) // skip header row
-                             .map(r => r.split(";").map(v => parseInt(v)))
-                             .filter(r => r.length == header.length) // get rid of all rows with number of vales other than the heaader's 
+                             .map(r => r.split(";").map(v => Number.isNaN(parseInt(v)) ? 0 : parseInt(v))) // read the number values
+      console.log("app.parsedCsvText(): rows=")
+      console.log(rows)
+      if (rows.map(r => r.length != header.length).reduce((b1, b2) => b1 || b2)) { // there are rows with a number of values not matching the number of header columns titels 
+          console.log("app.csvTextParse(): some rows do not fit header columns ")
+          this.ess.add(EventsService.applicationEventFrom("parsing CSV from work orders file", this.workordersFilename, EventTypeId.workordersCsvErrorNotFittingColumns, EventSeverity.warning))
+      }
+      const rowsTrimmed = rows.filter(r => r.length == header.length) // get rid of all rows with number of vales other than the heaader's 
+      console.log("app.parsedCsvText(): rowsTrimmed=")
+      console.log(rowsTrimmed)
+
+      if (rowsTrimmed.length < 1) { // there are no rows left after deleting non fitting rows 
+        console.log("app.csvTextParse(): no useable rows left after trimming")
+        this.ess.add(EventsService.applicationEventFrom("parsing CSV from work orders file", this.workordersFilename, EventTypeId.workordersCsvErrorNoUseableRows, EventSeverity.fatal))
+        throw Error()
+      }
       return {
           header: header,
-          rows:   rows
+          rows:   rowsTrimmed
       }
   }
 
