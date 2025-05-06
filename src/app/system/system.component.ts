@@ -1,7 +1,6 @@
 //-------------------------------------------------------------------
 // SYSTEM COMPONENT
 //-------------------------------------------------------------------
-// last code cleaning: 22.12.2024
 
 import { Component, OnChanges, HostListener } from '@angular/core'
 import { Observable, catchError, throwError } from "rxjs"
@@ -63,7 +62,6 @@ export class SystemComponent implements OnChanges {
   workordersComeFromFile:   boolean  = false
   /** if true then number of iterations per run is 1 */
   iterateOneByOne:          boolean  = true
-  invVisible:               boolean  = true // ## re-factor as it has no use anymore ## 
   optimizeWipLimits:        boolean  = false 
   /** remaining iterations to go after an interrupting stop of a run */
   resumeRemainingIterations:number
@@ -86,7 +84,7 @@ export class SystemComponent implements OnChanges {
     this.ass.frontendEventsSubject$.next("system-instantiated")
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(): void { 
     this.calcSizeOfUiBoxes()
   }
 
@@ -128,7 +126,6 @@ export class SystemComponent implements OnChanges {
                                                                                                     : this.numIterationsToGo
     this.systemState$ = this.bas.nextSystemStateOnInput(this.wof.iterationRequestsForAllVcs(miniBatchSize, this.optimizeWipLimits, this.workordersComeFromFile))
     this.systemState$.subscribe(systemState => {
-//      console.log(systemState) // ##
       this.numIterationsToGo -= miniBatchSize
       this.processIteration(systemState)
     })
@@ -187,9 +184,6 @@ export class SystemComponent implements OnChanges {
   public runResumeIterationsHandler() {
     this.numIterationsToGo = this.runResumeButton == RunResumeButton.resume ? this.resumeRemainingIterations - 1 : this.numIterationsToExecute 
     this.runResumeButton = RunResumeButton.run
-    if (!this.wof.valueChainsHaveMatchingWorkorderFileColumns(this.vcsExtended.map(vce => vce.vc.id))) {
-      this.ess.add(EventsService.applicationEventFrom("Going to run", this.wof.workordersFromFile.filename, EventTypeId.workordersCsvErrorNotFittingColumns, EventSeverity.fatal))
-    }
     this.iterateNextStates()
   }
   
@@ -295,6 +289,31 @@ export class SystemComponent implements OnChanges {
   private applyPresets(systemState: I_SystemState): void {
     this.numIterationsToExecute = systemState.frontendPresets.numIterationPerBatch
     this.statsInterval          = systemState.frontendPresets.economicsStatsInterval
+  }
+
+  // ---------------------------------------------------------------------------------------
+  // auxiliary functions: dealing with work order files as feeding input  
+  // ---------------------------------------------------------------------------------------
+
+  /** returns work order file name or undefined if none has been loaded */
+  get workordersFileName(): string | undefined {
+    return this.wof.workordersFileName 
+  }
+
+  /** check if feeding the system with work orders is doable  */
+  public workordersToggleHandler() {
+    if (this.workordersComeFromFile) {  // change event fires before ngModel has changed the workordersComeFromFile boolean 
+      if(!this.wof.workordersFileName) {
+        this.ess.add(EventsService.applicationEventFrom("Going to run", this.wof.workordersFileName || "no work order file loaded", EventTypeId.workordersNoFileLoaded, EventSeverity.warning))
+        setTimeout(() => { this.workordersComeFromFile = false}, 100) // turn off the toggle for reading from file as it is not possible; does with a small delay as it seems to interfere with ngModel processing the change too
+        return
+      }
+      if (!this.wof.valueChainsHaveMatchingWorkorderFileColumns(this.vcsExtended.map(vce => vce.vc.id))) {
+        this.ess.add(EventsService.applicationEventFrom("Going to run", this.wof.workordersFileName, EventTypeId.workordersCsvErrorNotFittingColumns, EventSeverity.warning))
+        setTimeout(() => { this.workordersComeFromFile = false}, 100) // turn off the toggle for reading from file as it is not possible; does with a small delay as it seems to interfere with ngModel processing the change too
+        return
+      }
+    }
   }
 
   // ---------------------------------------------------------------------------------------

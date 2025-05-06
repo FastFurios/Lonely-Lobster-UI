@@ -243,10 +243,7 @@ export class AppComponent {
   public onWorkordersFileSelected(e: Event): void { 
     const file: File = (<any>e.target).files[0] 
     this.workordersFilename = file.name
-    console.log("AppComponent: onWorkloadFileSelected(): uploading workload file = " + this.workordersFilename)
-
     const reader = new FileReader()
-
     reader.onload = () => {
       (<HTMLInputElement>e.target).value = "" // clear the event input to allow event detection of re-selection of same file
       if (!reader.result) {
@@ -255,50 +252,38 @@ export class AppComponent {
       }
       try {
           const wosFromFile = this.parsedCsvText(reader.result.toString())
-          console.log(wosFromFile)
           this.wos.storeWorkordersFromFile(file.name, wosFromFile) 
           this.ess.add(EventsService.applicationEventFrom("parsing CSV from work orders file", file.name, EventTypeId.workordersFileLoaded, EventSeverity.info))
       } catch (error) {
           this.ess.add(EventsService.applicationEventFrom((<any>error).error, file.name, EventTypeId.workordersCsvError, EventSeverity.fatal))
       }
-      //this.ass.frontendEventsSubject$.next("config-uploaded")
     }
     reader.onerror = (error) => this.ess.add(EventsService.applicationEventFrom("reading work orders file", file.name, EventTypeId.workordersFileLoadError, EventSeverity.fatal))
-
     reader.readAsText(file)
   }
 
+  /** parse the csv content into a header and the rows; first column is ignored as it is intended for time or sequence numbers 
+   * @param csvText content of the csv file as a string
+   * @returns a WorkOrdersFromFile object with the header and a 2 dimensional array of the rows and their values 
+   */
   private parsedCsvText(csvText: string): WorkOrdersFromFile {
-      console.log("app.parsedCsvText(): csvText=")
-      console.log(csvText)
       const rawRows = csvText.replace(/\r/g, "")
-                             .split("\n")
+                             .split("\n") // split into lines
                              .filter (r => r.length > 0)  // discard empty rows
                              .filter(r => r[0][0] != "/") // filter rows that are no comments i.e. that do not start with a "/"
-      console.log("app.parsedCsvText(): rawRows=")
-      console.log(rawRows)
-      const header  = rawRows[0].split(";")
-      console.log("app.parsedCsvText(): header=")
-      console.log(header)
+      const header  = rawRows[0].split(";").map(h => h.trim()) // split into trimmed column header titles 
       if (header.length < 2)  {
-        console.log("app.csvTextParse(): no real content column")
         this.ess.add(EventsService.applicationEventFrom("parsing CSV from work orders file", this.workordersFilename, EventTypeId.workordersCsvErrorNoWorkordersHeader, EventSeverity.fatal))
         throw Error()
       }
       const rows    = rawRows.slice(1) // skip header row
                              .map(r => r.split(";").map(v => Number.isNaN(parseInt(v)) ? 0 : parseInt(v))) // read the number values
-      console.log("app.parsedCsvText(): rows=")
-      console.log(rows)
       if (rows.map(r => r.length != header.length).reduce((b1, b2) => b1 || b2)) { // there are rows with a number of values not matching the number of header columns titels 
-          console.log("app.csvTextParse(): some rows do not fit header columns ")
           this.ess.add(EventsService.applicationEventFrom("parsing CSV from work orders file", this.workordersFilename, EventTypeId.workordersCsvErrorNotFittingColumns, EventSeverity.warning))
       }
       const rowsTrimmed = rows.filter(r => r.length == header.length) // get rid of all rows with number of vales other than the heaader's 
-      console.log("app.parsedCsvText(): rowsTrimmed=")
-      console.log(rowsTrimmed)
 
       if (rowsTrimmed.length < 1) { // there are no rows left after deleting non fitting rows 
-        console.log("app.csvTextParse(): no useable rows left after trimming")
         this.ess.add(EventsService.applicationEventFrom("parsing CSV from work orders file", this.workordersFilename, EventTypeId.workordersCsvErrorNoUseableRows, EventSeverity.fatal))
         throw Error()
       }
@@ -308,6 +293,10 @@ export class AppComponent {
       }
   }
 
+  /** getter for the file name ot the work orders file */ 
+  get workordersFileName(): string | undefined{
+    return this.wos.workordersFileName
+  }
 
   // --------------------------------------------------------------------------------------
   //     Downloading a CSV with the workitems' events  

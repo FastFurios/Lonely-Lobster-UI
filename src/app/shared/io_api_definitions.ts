@@ -426,6 +426,7 @@ export enum EventTypeId {
     workordersFileLoaded    = "Work orders File loaded",
     workordersFileLoadError = "Work orders File loading error",
     workordersFileNotFound  = "Work orders File not found",
+    workordersNoFileLoaded  = "No work order file loaded.",
     workordersCsvError  = "Something went wrong parsing the work order csv content.",
     workordersCsvErrorNoWorkordersHeader = "No column with work orders found.",
     workordersCsvErrorNotFittingColumns  = "Some rows do not fit the header columns.",

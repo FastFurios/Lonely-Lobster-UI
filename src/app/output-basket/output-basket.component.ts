@@ -21,7 +21,7 @@ export class OutputBasketComponent implements OnInit, OnChanges {
   @Input() obExtended:  ObExtended
   @Input() obBoxSize:   UiBoxSize
   /** inventory is only shown if true */
-  @Input() invVisible:  boolean
+//##  @Input() invVisible:  boolean
   /** work items to be displayed */
   wis:                  I_WorkItem[]
 

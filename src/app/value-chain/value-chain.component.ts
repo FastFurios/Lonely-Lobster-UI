@@ -22,11 +22,9 @@ import { UiBoxSize, UiVcBoxLeftMargin} from '../shared/ui-boxes-definitions'
 export class ValueChainComponent implements OnInit, OnChanges {
   @Input() vcExtended:  VcExtended
   @Input() vcBoxSize:   UiBoxSize
-  @Input() invVisible:  boolean
   @Input() workordersComeFromFile:  boolean
   
   feedParms:            Injection | undefined = undefined
-  
   vcStats:              I_WorkItemStatistics | undefined
   /** list of extended process-step data structures  */
   pssExtended:          PsExtended[]
@@ -94,9 +92,9 @@ export class ValueChainComponent implements OnInit, OnChanges {
     return psExt.ps.id
   } 
 
-  /** getter of filename of work order file from the workOrderFeeder service */
-  get workordersFileName(): string {
-    return this.wof.workordersFromFile.filename
+  /** returns filename of work order file from the workOrderFeeder service */
+  get workordersFileName(): string | undefined {
+    return this.wof.workordersFileName
   }
 
   // ---------------------------------------------------------------------------------------

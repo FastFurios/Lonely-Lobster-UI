@@ -3,8 +3,8 @@
         <div><h3>Output Basket</h3></div>
         <app-flow-stats [workitemStats]="obExtended.flowStats" [displayVerbose]="true" [showTpv]="true"></app-flow-stats>
     </div>
-    <div *ngIf="invVisible">
-        <div *ngIf="invVisible" [style]="'height:' + inventoryBoxSize.height + 'px'">
+    <div>
+        <div [style]="'height:' + inventoryBoxSize.height + 'px'">
             <app-inventory [wis]=wis [isListOfEndProducts]="true" [inventoryBoxSize]="inventoryBoxSize"></app-inventory>
         </div>
     </div>

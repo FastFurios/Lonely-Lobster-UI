@@ -1,7 +1,7 @@
 //-------------------------------------------------------------------
 // WORKORDER FEEDER SERVICE
 //-------------------------------------------------------------------
-// last code cleaning: 15.12.2024
+
 import { Injectable } from '@angular/core'
 import { I_IterationRequest, I_IterationRequests, ValueChainId, Injection, ProcessStepId, I_VcPsWipLimit,WipLimit, I_VcWorkOrders } from './io_api_definitions'
 import { WorkOrdersFromFile } from "../app.component"
@@ -16,7 +16,7 @@ type VcFeederParmsAndState = {
 /**
  * @class This class holds the work orders read from the file and serves them in round-robin fashion to the callers of next()
  */
-class WorkordersFromFile {
+class WorkordersFromFileContainer {
     private nextWosTimeUnitIdx: number
 
     constructor(public  filename:   string,
@@ -52,7 +52,6 @@ class WorkordersFromFile {
   providedIn: 'root'
 })
 export class WorkorderFeederService {
-
     /**
      * Maps that contains for each value chain the current injection parameters and the current state i.e. the accumulated workorders
      */
@@ -64,7 +63,7 @@ export class WorkorderFeederService {
     /**
      * The list of work orders uploaded from a csv file
      */
-    public  workordersFromFile:     WorkordersFromFile
+    private  workordersFromFile:     WorkordersFromFileContainer
 
     /**
     * @private
@@ -158,8 +157,6 @@ export class WorkorderFeederService {
             iterationRequest.wipLimits = constWipLimits
             iterationRequests.push(iterationRequest)
         }           
-        console.log("Workorder Feeder.iterationRequestsForAllVcs():")
-        console.log(iterationRequests)
         return iterationRequests
     }
 
@@ -169,9 +166,12 @@ export class WorkorderFeederService {
      * @param wosFromFile array over time units with work orders objects for each value chains
      */
     public storeWorkordersFromFile(wosFilename: string, wosFromFile: WorkOrdersFromFile): void {
-        this.workordersFromFile = new WorkordersFromFile(wosFilename, wosFromFile) 
-        console.log("Workorder Feeder: storeWorkordersFromFile():")
-        console.log(this.workordersFromFile)
+        this.workordersFromFile = new WorkordersFromFileContainer(wosFilename, wosFromFile) 
+    }
+
+    /** returns work order file name or undefined if none has been loaded */
+    get workordersFileName(): string | undefined {
+        return this.workordersFromFile?.filename 
     }
 
     /**
@@ -183,7 +183,6 @@ export class WorkorderFeederService {
         if (this.workordersFromFile == undefined) return false
         return vcIds.map(vcId => this.workordersFromFile.headers.includes(vcId)).reduce((b1, b2) => b1 && b2)
     }
-
 
     /**
      * Initialize the feeder service

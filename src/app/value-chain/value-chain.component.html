@@ -18,12 +18,11 @@
     </div>
 
     <div *ngFor="let psExtended of pssExtended; trackBy:identify">
-            <app-process-step [psExtended]="psExtended" [psBoxSize]="psBoxSize" [invVisible]="invVisible"></app-process-step>
+            <app-process-step [psExtended]="psExtended" [psBoxSize]="psBoxSize"></app-process-step>
     </div>
 </div>
 
 <ng-template #showWorkordersFilename>
-    Work orders from:
-    <div> {{ workordersFileName }} </div>
+    Work orders fed from file
 </ng-template>
 

@@ -12,7 +12,7 @@
     </div>
 
 
-    <div *ngIf="invVisible" class="process-step-inv-and-arrow" [style]="'height:' + inventoryBoxSize.height + 'px; width:' + psBoxSize.width + 'px'">
+    <div class="process-step-inv-and-arrow" [style]="'height:' + inventoryBoxSize.height + 'px; width:' + psBoxSize.width + 'px'">
         <div>
             <app-inventory [wis]="wis" [isListOfEndProducts]="false" [inventoryBoxSize]="inventoryBoxSize"></app-inventory>
         </div>

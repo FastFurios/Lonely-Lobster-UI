@@ -43,7 +43,7 @@
             </div>
             <div class="switch-label">
                 <label class="switch">
-                    <input type="checkbox" [(ngModel)]="workordersComeFromFile">
+                    <input type="checkbox" [(ngModel)]="workordersComeFromFile" (change)="workordersToggleHandler()">
                     <span class="slider round"></span>
                 </label>
                 take work orders from file
@@ -61,11 +61,11 @@
         <div class="valueChainsAndOutputBasket" [style]="'height:' +  vcsBoxSize.height  + 'px'" >
             <div class="valueChains" [style]="'width:' + vcsBoxSize.width + 'px; height:' + vcsBoxSize.height + 'px' ">
                 <div *ngFor="let vcExtended of vcsExtended; trackBy:identify">
-                    <app-value-chain [vcExtended]="vcExtended" [vcBoxSize]="vcBoxSize" [invVisible]="invVisible" [workordersComeFromFile]="workordersComeFromFile"></app-value-chain>
+                    <app-value-chain [vcExtended]="vcExtended" [vcBoxSize]="vcBoxSize" [workordersComeFromFile]="workordersComeFromFile"></app-value-chain>
                 </div>
             </div>
             <div class="outputBasket" [style]="'width:' + obBoxSize.width + 'px;' ">
-                <app-output-basket [obExtended]="obExtended" [obBoxSize]="obBoxSize" [invVisible]="invVisible"></app-output-basket>
+                <app-output-basket [obExtended]="obExtended" [obBoxSize]="obBoxSize"></app-output-basket>
             </div>
         </div>
     </div>
