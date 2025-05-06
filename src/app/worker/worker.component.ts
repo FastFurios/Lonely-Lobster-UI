@@ -1,7 +1,6 @@
 //-------------------------------------------------------------------
 // WORKER COMPONENT
 //-------------------------------------------------------------------
-// last code cleaning: 22.12.2024
 
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
 import { I_WorkerState } from '../shared/io_api_definitions'
