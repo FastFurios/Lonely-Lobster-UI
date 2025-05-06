@@ -1,0 +1,7 @@
+<div class="worker-strain" [ngStyle]="{'background-color': (woUtil.utilization < 50) ? ('lightgreen') 
+                                   : (woUtil.utilization < 80) ? ('green') 
+                                   : (woUtil.utilization < 90) ? ('orange')
+                                   : 'red'
+                }">
+        {{ woUtil.worker }}
+</div>

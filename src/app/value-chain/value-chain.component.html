@@ -1,0 +1,28 @@
+<div class="value-chain" [style]="'height:' + vcBoxSize.height + 'px'">
+    <div class="feeder-section">
+        <h2 [style]="'background-color:' + valueChainColorString"> {{ vcExtended.vc.id }} </h2>
+        <h5>Value: {{ vcExtended.vc.totalValueAdd }}</h5> 
+        <div *ngIf="!workordersComeFromFile; else showWorkordersFilename">
+            <label for="throughput">Throughput:</label>
+            <input type="number" class="inputFormNumber" id="throughput" name="throughput" min="0" step="0.1"
+                required
+                [(ngModel)]="feedParms!.throughput"
+                (change)="feedParmsInputHandler($event)">
+            <label for="probability">Inject Prob:</label>
+            <input type="number" class="inputFormNumber" id="probability" name="probability" min="0" max="1" step="0.1"
+                required
+                [(ngModel)]="feedParms!.probability"
+                (change)="feedParmsInputHandler($event)">
+        </div>
+        <app-flow-stats [workitemStats]="vcStats" [displayVerbose]="true" [showTpv]="true"></app-flow-stats>
+    </div>
+
+    <div *ngFor="let psExtended of pssExtended; trackBy:identify">
+            <app-process-step [psExtended]="psExtended" [psBoxSize]="psBoxSize"></app-process-step>
+    </div>
+</div>
+
+<ng-template #showWorkordersFilename>
+    Work orders fed from file
+</ng-template>
+

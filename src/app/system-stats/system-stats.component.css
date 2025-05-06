@@ -1,0 +1,77 @@
+.system-stats-row-of-columns {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  
+.system-stats-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+.system-stat {
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    box-sizing: border-box;
+    width: 200px;
+    border-style: solid;
+    border-width:medium;
+    border-color: white;
+    padding: 3px;
+    background-color: cornsilk;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: x-small; 
+  }
+
+.system-stat-name {
+    text-align: left;
+}
+
+.system-stat-value {
+    padding-left: 5px;
+    text-align: right;
+}
+
+.system-stats-interval-selector {
+  font-size: small;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 0.8;
+}

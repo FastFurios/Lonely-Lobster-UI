@@ -1,0 +1,25 @@
+<br/>
+<div class="workers-stats"> 
+    <button type="button" class="submitButton" (click)="updateLearnStatsHandler()">
+        Update Learning Statistics
+    </button>
+</div>
+<div class="workers-stats"> 
+    <app-color-legend [reload]="reloadLearnStatsLegend" [colorCat]="'selection-strategy' "></app-color-legend>
+
+    <div *ngFor="let coloredLearnStatsWorker of coloredLearnStatsWorkers">
+        <div class="worker-header">{{ coloredLearnStatsWorker.worker }}</div>
+        <div>
+            <ng-container *ngFor="let colWeightedSestsAtTimestamp of coloredLearnStatsWorker.series">
+                <div class="timestamp-stats">
+                    <div class="timestamp">{{ colWeightedSestsAtTimestamp.timestamp }}</div>
+                    <div class="strategyWeights">
+                        <ng-container *ngFor="let colSestNamesWithWeight of colWeightedSestsAtTimestamp.coloredSelectionStrategiesNamesWithWeights">
+                            <div class="strategyWeightProportional" [style]="'flex-grow:' + colSestNamesWithWeight.weight + '; background-color:' + colSestNamesWithWeight.backgroundColor + '; color:' + colSestNamesWithWeight.backgroundColor">.</div>
+                        </ng-container>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

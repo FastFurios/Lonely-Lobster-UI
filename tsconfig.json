@@ -1,24 +1,35 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
-    "compilerOptions": {
-      "noImplicitAny": true,
-      "removeComments": true,
-      "outDir" : "target/",
-      //"resolveJsonModule" : true  
-      "esModuleInterop": true,
-      "lib": ["es2020"],
-      "module": "es2020",
-      "preserveConstEnums": true,
-      "moduleResolution": "node",
-      "strict": true,
-      "sourceMap": true,
-      "target": "esnext",
-      "types": ["node"]
-    },
-    "files": [
-      "src/_main.ts",
-      "src/__testbed__.ts"
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "strictPropertyInitialization": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "sourceMap": true,
+    "declaration": false,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "esnext",  // es2022
+    "module": "es2020",
+    "lib": [
+      "es2020",
+      "dom"
     ],
-//    "include": ["src/**/*"],
-    "exclude": ["node_modules"]
-  
-  }
+    "useDefineForClassFields": false
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "stric,tInputAccessModifiers": true,
+    "strictTemplates": true
+  },
+  "include": ["src/**/*.ts"],    // Include all TypeScript files in the src directory
+  "exclude": ["node_modules", "dist"]
+}

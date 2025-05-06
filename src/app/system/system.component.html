@@ -1,0 +1,79 @@
+<ng-container *ngIf="showSystemState; else loading">
+    
+    <div class="headerRow">
+        <div>
+            <div>
+                <div class="app-title">
+                    <div class=version>
+                        <div class="version">Backend: v{{ systemState.version }}</div>
+                    </div>
+                </div>
+            </div>
+            <div>Time: {{ systemState.time }} </div>
+            <label for="numIteration" class="iterations-selector">#iterations:</label>
+            <input  type="number" 
+                    class="inputFormNumber" 
+                    min="1"
+                    id="numIteration" 
+                    [(ngModel)] = "numIterationsToExecute">
+
+            <button type="button" class="submitButton" (click)="runResumeIterationsHandler()" (keyup.enter)="runResumeIterationsHandler()">
+                {{ runResumeButton }}
+            </button>
+            <button type="button" class="submitButton" (click)="stopIterationsHandler()">
+                Stop
+            </button>
+            <button type="button" class="submitButton" (click)="resetSystemHandler()">
+                Reset
+            </button>
+        </div>    
+        <div>
+            <app-workers-stats [wosStats]="systemState.workersState"></app-workers-stats>
+        </div>
+        <div>
+            <app-system-stats [systemStatistics]="systemStatistics" [systemTime]="systemState.time" [statsAreUpToDate]="statsAreUpToDate" [interval]="statsInterval" (intervalEventEmitter)="changedStatsIntervalHandler($event)"></app-system-stats>
+        </div>
+        <div class="toggles-column">
+            <div class="switch-label">
+                <label class="switch">
+                    <input type="checkbox" [(ngModel)]="iterateOneByOne">
+                    <span class="slider round"></span>
+                </label>
+                update view every iteration 
+            </div>
+            <div class="switch-label">
+                <label class="switch">
+                    <input type="checkbox" [(ngModel)]="workordersComeFromFile" (change)="workordersToggleHandler()">
+                    <span class="slider round"></span>
+                </label>
+                take work orders from file
+            </div>
+            <div class="switch-label">
+                <label class="switch">
+                    <input type="checkbox" [(ngModel)]="optimizeWipLimits">
+                    <span class="slider round"></span>
+                </label>
+                optimize WIP limits
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="valueChainsAndOutputBasket" [style]="'height:' +  vcsBoxSize.height  + 'px'" >
+            <div class="valueChains" [style]="'width:' + vcsBoxSize.width + 'px; height:' + vcsBoxSize.height + 'px' ">
+                <div *ngFor="let vcExtended of vcsExtended; trackBy:identify">
+                    <app-value-chain [vcExtended]="vcExtended" [vcBoxSize]="vcBoxSize" [workordersComeFromFile]="workordersComeFromFile"></app-value-chain>
+                </div>
+            </div>
+            <div class="outputBasket" [style]="'width:' + obBoxSize.width + 'px;' ">
+                <app-output-basket [obExtended]="obExtended" [obBoxSize]="obBoxSize"></app-output-basket>
+            </div>
+        </div>
+    </div>
+    <app-learn-stats [reloadLearnStatsLegend]="reloadLearnStatsLegend"></app-learn-stats>
+</ng-container>
+
+<ng-template #loading>
+    <div class="ui active dimmer">
+        <div class="ui large text loader">No configuration file ... </div>
+    </div>
+</ng-template>

@@ -1,0 +1,83 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.app-title {
+    color: orangered;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: x-large; 
+    font-weight: bold;
+    text-align: center;
+    padding-left: 20px;
+    padding-right: 50px;
+}
+
+.flex-strechted-left-to-right {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: cornsilk;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: small; 
+    text-align: left;
+}
+
+.flex-from-left-to-right {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: cornsilk;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: small; 
+    text-align: left;
+}
+
+.flex-pushed-to-the-right {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: cornsilk;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: small; 
+    text-align: left;
+}
+
+.navbar {
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    top: 0px;
+    column-gap: 20px;
+}
+
+.file-input {
+    display: none;
+}
+
+.active {
+    background-color:red;
+    color: white;
+}
+
+a {
+    text-decoration: none;
+    font-size: x-large;
+    transition: color 0.3s ease-in-out;
+}
+
+a.menu_links { 
+    cursor: pointer; 
+}
+
+i:hover { 
+    cursor: pointer; 
+}
+
+.right-padding-20 {
+    padding-right: 20px;
+}
+

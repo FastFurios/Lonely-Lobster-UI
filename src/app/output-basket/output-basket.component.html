@@ -1,0 +1,11 @@
+<div class="output-basket">
+    <div class="output-basket-header" [style]="'height:' + uiObHeaderHeight + 'px; width:' + inventoryBoxSize.width + 'px'">
+        <div><h3>Output Basket</h3></div>
+        <app-flow-stats [workitemStats]="obExtended.flowStats" [displayVerbose]="true" [showTpv]="true"></app-flow-stats>
+    </div>
+    <div>
+        <div [style]="'height:' + inventoryBoxSize.height + 'px'">
+            <app-inventory [wis]=wis [isListOfEndProducts]="true" [inventoryBoxSize]="inventoryBoxSize"></app-inventory>
+        </div>
+    </div>
+</div>

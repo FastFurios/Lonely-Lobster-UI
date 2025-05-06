@@ -1,0 +1,70 @@
+.editor-text {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.bold-text {
+    font-weight: bold;
+}
+
+.button_icon {
+    /* font-size: large; */
+    padding: 0px;
+    border: 0px;
+    margin: 2px;
+    background: rgb(246, 234, 192);
+    vertical-align: middle;
+}
+
+button:hover { 
+    cursor: pointer; 
+}
+
+.flex-multi-columns {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: small; 
+    text-align: left;
+}
+
+.flex-multi-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: small; 
+    text-align: left;
+}
+
+.left-margin {
+    margin-left: 10px;
+}
+
+.section {
+    background-color: rgb(246, 234, 192);
+    border-style:solid;
+    border-color: rgb(255, 255, 255);
+}
+
+.vertically-aligned-property-label {
+    text-align: right;
+    padding-top: 2px;
+    padding-bottom: 3px;
+}
+
+.parameter-label-input {
+    display: flex;
+    justify-content: space-between; 
+}
+
+input[type='number']{
+    width: 80px;
+    text-align: right; 
+} 
+
+big-icon {
+    font-size: x-large;
+}

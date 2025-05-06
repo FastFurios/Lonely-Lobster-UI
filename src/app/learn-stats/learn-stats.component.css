@@ -1,0 +1,40 @@
+.workers-stats {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: x-small; 
+}
+
+.worker-header {
+  width: 120px;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: small; 
+}
+
+.timestamp-stats {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: x-small; 
+}
+
+.timestamp {
+  width: 30px;
+  text-align: right;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: x-small; 
+}
+
+.strategyWeights {
+  display: flex;
+  flex-direction: row;
+  width: 70px;
+}
+
+.strategyWeightProportional {
+  flex-shrink: 1;
+  flex-basis: auto;
+}

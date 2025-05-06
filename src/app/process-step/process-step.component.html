@@ -1,0 +1,29 @@
+<div class="process-step" [style]="'height:' + psBoxSize.height + 'px'">
+    <div class="process-step-header" [style]="'height:' + uiPsHeaderHeight + 'px; width:' + inventoryBoxSize.width + 'px'">
+        <h3>{{ psExtended.ps.id}} </h3> 
+        <h5>NE={{psExtended.ps.normEffort}}</h5> 
+        <label for="wipLimit"> WIP={{psExtended.ps.workItems.length}} of max.
+            <input type="number" class="inputFormNumber" id="wipLimit" name="wipLimit" min="0" step="1"
+                required
+                [(ngModel)]="psExtended.ps.wipLimit"
+                (change)="wipLimitHandler()">
+        </label>
+        <app-flow-stats [workitemStats]="psExtended.flowStats?.stats" [displayVerbose]="true" [showTpv]="false"></app-flow-stats>
+    </div>
+
+
+    <div class="process-step-inv-and-arrow" [style]="'height:' + inventoryBoxSize.height + 'px; width:' + psBoxSize.width + 'px'">
+        <div>
+            <app-inventory [wis]="wis" [isListOfEndProducts]="false" [inventoryBoxSize]="inventoryBoxSize"></app-inventory>
+        </div>
+        <div>
+            <app-flow-arrow [flowRate]="psExtended.ps.workItemFlow" [flowArrowBoxSize]="flowArrowBoxSize"></app-flow-arrow>
+        </div>
+    </div>
+
+    <div class="process-step-workers" [style]="'height:' + uiWorkerNameHeight + 'px'">
+        <div *ngFor="let woUtil of psExtended.wosUtil">
+            <app-worker-strain [woUtil]="woUtil"></app-worker-strain>
+        </div> 
+    </div>
+</div>

@@ -1,0 +1,43 @@
+{
+	"system_id": "RatherSimple",
+	"value_chains": [
+		{
+			"value_chain_id": "Alpha",
+			"value_add": 5,
+			"process_steps": [
+				{
+					"process_step_id": "One",
+					"norm_effort": 1
+				},
+				{
+					"process_step_id": "Two",
+					"norm_effort": 2
+				}
+			]
+		}
+	],
+	"workers": [
+		{
+			"worker_id": "Sally",
+			"process_step_assignments": [
+				{
+					"value_chain_id": "Alpha",
+					"process_steps_id": "One"
+				},
+				{
+					"value_chain_id": "Alpha",
+					"process_steps_id": "Two"
+				}
+			]
+		},
+		{
+			"worker_id": "Rusty",
+			"process_step_assignments": [
+				{
+					"value_chain_id": "Alpha",
+					"process_steps_id": "Two"
+				}
+			]
+		}
+	]
+}

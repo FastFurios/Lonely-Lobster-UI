@@ -1,0 +1,7 @@
+<div class="workers-stats">
+    <div *ngFor="let woStats of wosStats">
+        <app-worker [woStats]="woStats" (signalGotColorsAssigned)="workerGotColorsAssignedHandler($event)"></app-worker>
+    </div>
+     <app-color-legend *ngIf="showColorLegend" [colorCat]="'selection-strategy'"></app-color-legend>
+<!--    <app-color-legend [colorCat]="'selection-strategy'"></app-color-legend>
+ --></div>

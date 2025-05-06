@@ -1,0 +1,40 @@
+<div class= "system-stats-interval-selector">
+    <label for="interval">Economics Statistics Interval:</label>
+    <input type="number" class="inputFormNumber" id="interval" name="interval" min="0" step="5"
+        required
+        [(ngModel)]="interval"
+        (change)="statsIntervalInputHandler($event)">
+    <div class="tooltip">&#9432;
+        <span class="tooltiptext">if 0: from start to now; if >1 then interval length, ending now</span>
+    </div>
+</div>
+<div class="system-stats-row-of-columns" [style]="textColor">
+    <div class="system-stats-column">
+        <div class="system-stat">
+            <div class="system-stat-name"> Timestamp of Stats: </div> 
+            <div class="system-stat-value"> {{ prettifiedStats.timestamp }} </div>
+        </div>
+        <div class="system-stat">
+            <div class="system-stat-name"> #End Products: </div> 
+            <div class="system-stat-value"> {{ prettifiedStats.numWis }} </div>
+        </div>
+        <div class="system-stat">
+            <div class="system-stat-name"> Avg.Cycle Time: </div> 
+            <div class="system-stat-value"> {{ prettifiedStats.avgElapsedTime }} </div>
+        </div>
+    </div>
+    <div class="system-stats">
+        <div class="system-stat">
+            <div class="system-stat-name"> Avg. Contribution Margin: </div> 
+            <div class="system-stat-value"> {{ prettifiedStats.avgContributionMargin }} </div>
+        </div>
+        <div class="system-stat">
+            <div class="system-stat-name"> Avg.Working Capital: </div> 
+            <div class="system-stat-value"> {{ prettifiedStats.avgWorkingCapital }} </div>
+        </div>
+        <div class="system-stat">
+            <div class="system-stat-name"> ROCE var/fix: </div> 
+            <div class="system-stat-value"> {{ prettifiedStats.roceVar }}% / {{ prettifiedStats.roceFix }}% </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,12 @@
+<div class="worker">
+    <app-worker-strain [woUtil]="woUtil"></app-worker-strain>
+    {{ woStats.utilization }} % 
+    <div class="strategyWeights">
+        <ng-container *ngFor="let woWeigthColorSest of woWeigthColorSests">
+            <div class="strategyWeightProportional" [style]="'flex-grow:' + woWeigthColorSest.weight + '; background-color:' + woWeigthColorSest.backgroundColor + '; color:' + woWeigthColorSest.backgroundColor">.</div>
+        </ng-container>
+    </div>
+    <div *ngFor="let woAss of woStats.assignments">
+        {{ woAss.valueChain }}.{{ woAss.processStep }}  
+   </div>
+</div>

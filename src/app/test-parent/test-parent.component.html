@@ -1,0 +1,57 @@
+<h3>-------- test-parent -------- </h3>
+
+<!--
+<h5>-------- Sessions -------- </h5>
+
+<input type="text" id="textToAdd" placeholder="put some text here..."
+  [(ngModel)]="textToAdd"
+  (change)="postToBackend()">
+  <p>Press enter to submit</p>
+<br/>
+<br/>
+
+<button type="button" class="ui mini button"
+  (click)="getFromBackend()">
+  Get text stored in the backend
+</button>
+<h5>Backend response:</h5>
+<p> {{ textInMyBackendSession }}</p>
+<br/>
+
+<h5>-------- Selecting and reading files -------- </h5>
+
+<input type="file" required 
+  (change)="onFileSelected($event)"/>
+
+<p>File name is: {{filename}}</p>
+
+<p>Firstname is: {{firstname}}; Lastname is: {{lastname}}</p>
+-->
+
+
+<br/>
+<br/>
+<h5>-------- Parent: communication with child components -------- </h5>
+
+<li *ngFor="let elem of complexObject.coll"> 
+  id={{elem.id}}, val={{elem.val}}
+  <button type="button" class="ui mini button"
+  (click)="clickHandler(elem.id)">
+  Increment
+  </button>
+</li>
+
+
+<br/>
+<br/>
+<br/>
+
+<div *ngFor="let elem of complexObject.coll; trackBy: idOfChild">
+  <app-test-child [childCounter]="elem"></app-test-child>
+</div>
+<!--
+<div *ngFor="let elem of complexObject.coll">
+  <app-test-child [childCounter]="elem" (submitChildCounter)="syncCounters($event)"></app-test-child>
+</div>
+<app-test-child [childCounter]="complexObject.counters[0]" (submitChildCounter)="syncCounters($event)"></app-test-child>
+-->
