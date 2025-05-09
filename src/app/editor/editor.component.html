@@ -222,7 +222,14 @@
             </div>
             <div [formGroup]="wipLimitSearchParmsFg" class="left-margin">
                 <div> 
-                    <label class="bold-text">WIP limit optimization:</label>
+                    <label class="bold-text">WIP limit optimization turned on?</label>
+                    <div class="parameter-label-input">
+                        <label>Start from beginning?</label>
+                        <div>
+                            <input type="checkbox" formControlName="searchOnAtStart">
+                            <app-editor-messages [control]="wipLimitSearchParmsFg.get('searchOnAtStart')!"></app-editor-messages>
+                        </div>
+                    </div>
                     <div class="parameter-label-input">
                         <label>Initial Temperature:</label>
                         <div>
