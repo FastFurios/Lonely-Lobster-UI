@@ -1,0 +1,14 @@
+/ workorder file for configurations with Alpha and Beta as value chains
+seqNr; Alpha; Beta
+1;1;3
+2;2;1   
+/ sudden surge
+3;10;10
+/ calm ...
+4;0;0
+5;0;0
+6;0;0
+7;0;0
+8;0;0
+9;0;0
+10;0;0
