@@ -6,7 +6,7 @@
 /**
  * Helper types and functions to build a proper process step nventory from a list of workitems and their statistics
  */
-import { ValueChainId, Effort, Value, RgbColor, I_WorkItem } from "./io_api_definitions"
+import { ValueChainId, Effort, Progress, RgbColor, I_WorkItem } from "./io_api_definitions"
 import { CssColorList } from "./color-mapper.service"
 
 /**
@@ -60,7 +60,8 @@ export type PsInventoryWi = {
     rgbColor:          RgbColor,
     normEffort:        Effort, 
     accumulatedEffort: number,
-    elapsedTime:       number,
+    progress:          Progress,
+    elapsedTime:       number
 }
   
 /**
@@ -110,13 +111,11 @@ export function workitemsAsPsInventory(wiList: I_WorkItem[], isListOfEndProducts
                           rgbColor:           wi.rgbColor!,
                           normEffort:         wi.normEffort,
                           accumulatedEffort:  wi.accumulatedEffort,
+                          progress:           wi.progress,
                           elapsedTime:        wi.elapsedTime       // is the cycle time in the value chain if it is an end product 
                         }})
           }
       )
   }
-// ##  console.log(`inventory-layout.workitemsAsPsInventory(): here is the psInventory=`)
-// ##  console.log(psInventory)
-
   return psInventory
 }
