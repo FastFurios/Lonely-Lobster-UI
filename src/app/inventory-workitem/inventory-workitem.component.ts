@@ -5,7 +5,9 @@
 
 import { Component, OnInit, Input } from '@angular/core'
 import { PsInventoryWi } from '../shared/inventory-layout'
+import { WorkitemQuality } from '../shared/io_api_definitions'
 import { RgbColor } from '../shared/color-mapper.service'
+
 
 /**
  * @class This Angular component renders a single work item of the inventory.
@@ -37,5 +39,15 @@ export class InventoryWorkitemComponent implements OnInit {
     const darkeningRange: number = Math.min(...this.wi.rgbColor)
     const darkeningStep:  number = this.wi.normEffort > 0 ? this.wi.accumulatedEffort / this.wi.normEffort * darkeningRange : 0
     return <RgbColor>this.wi.rgbColor.map(ch => Math.round(ch - darkeningStep))
+  }
+
+  /** color of the work item id: if defective then red */
+  get idColor(): string {
+    return this.wi.quality == WorkitemQuality.good ? "black" : "red"
+  }
+
+  /** display text of the work item quality */
+  get wiQuality(): string {
+    return this.wi.quality == WorkitemQuality.good ? "good" : "defect"
   }
 }

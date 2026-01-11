@@ -1,10 +1,12 @@
 
-<div class="workitem" [style]="'background-color:' + rgbColorString"> 
+<div class="workitem" [style]="'background-color:' + rgbColorString + '; color:' + idColor"> 
     {{ wi.id }} 
     <span class="workitemdetails">
         #{{ wi.id }}:<br/>
-        accum. effort:{{ wi.accumulatedEffort }}<br/>
-        elapsed time:{{ wi.elapsedTime }}<br/>
-        progress real/apparent: {{ wi.progress.real }}/{{ wi.progress.apparent }}
+        accum.effort(PS):{{ wi.accumulatedEffort }}<br/>
+        elapsed time(PS):{{ wi.elapsedTime }}<br/>
+        progr.real/app.: {{ wi.progress.real }}/{{ wi.progress.apparent }}<br/>
+        mat. value: {{ wi.materializedValue }}<br/>
+        quality: {{ wiQuality }}
     </span>
 </div>

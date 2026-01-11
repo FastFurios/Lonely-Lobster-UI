@@ -208,8 +208,12 @@ export interface I_WorkItem {
     accumulatedEffort:              Effort 
     /** progress made by the work item, both the real progress and the apparent progress */
     progress:                       Progress,
+    /** current quality of the work item */
+    quality:                        WorkitemQuality,
     /** elapsed time in process step or when in the output basket the cycle time through the value chain*/
     elapsedTime:                    TimeUnits 
+    /** materialized value (is 0 unless reached the Output Basket; may be discounted due to delay)  */
+    materializedValue:              Value 
 }
 
 /** process step */
